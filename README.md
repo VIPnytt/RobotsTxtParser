@@ -7,6 +7,8 @@
 [![Chat](https://badges.gitter.im/VIPnytt/RobotsTxtParser.svg)](https://gitter.im/VIPnytt/RobotsTxtParser)
 
 # Robots.txt parser class
+
+[![Join the chat at https://gitter.im/VIPnytt/RobotsTxtParser](https://badges.gitter.im/VIPnytt/RobotsTxtParser.svg)](https://gitter.im/VIPnytt/RobotsTxtParser?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 PHP class to parse `robots.txt` according to _Google_, _Yandex_, _W3C_ and _The Web Robots Pages_ specifications.
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/6fb47427-166b-45d0-bd41-40f7a63c2b0c/big.png)](https://insight.sensiolabs.com/projects/6fb47427-166b-45d0-bd41-40f7a63c2b0c)
