@@ -201,7 +201,7 @@ class TxtParser
         // Cache directive/rule variables to after inline directives has been parsed
         $directive = $this->directive;
         $rule = $this->rule;
-        $this->line = $this->rule;
+        $this->line = (string)$this->rule;
         if (($inline = $this->parseLine($this->directive)) !== false) {
             $rule = $inline;
         };
@@ -277,10 +277,13 @@ class TxtParser
     /**
      * Add Clean-Param record
      *
-     * @return array
+     * @return array|false
      */
     private function addCleanParam()
     {
+        if (!is_string($this->rule)) {
+            return false;
+        }
         $result = [];
         $cleanParam = $this->explodeCleanParamRule($this->rule);
         foreach ($cleanParam['param'] as $param) {
@@ -350,7 +353,10 @@ class TxtParser
      */
     private function addHost()
     {
-        if (($parsed = parse_url(($this->rule = $this->urlEncode($this->rule)))) === false) {
+        if (
+            !is_string($this->rule)
+            || ($parsed = parse_url(($this->rule = $this->urlEncode($this->rule)))) === false
+        ) {
             return false;
         }
         $host = isset($parsed['host']) ? $parsed['host'] : $parsed['path'];
@@ -409,7 +415,10 @@ class TxtParser
      */
     private function addSitemap()
     {
-        if (!$this->urlValidate(($url = $this->urlEncode($this->rule)))) {
+        if (
+            !is_string($this->rule)
+            || !$this->urlValidate(($url = $this->urlEncode($this->rule)))
+        ) {
             return false;
         }
         return [
