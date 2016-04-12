@@ -1,59 +1,39 @@
 <?php
 namespace vipnytt\RobotsTxtParser;
 
-use vipnytt\RobotsTxtParser\Exceptions\TxtParserException;
+use vipnytt\RobotsTxtParser\Exceptions;
 
 /**
- * Class TxtParser
+ * Class Read
  *
  * @package vipnytt\RobotsTxtParser
  */
-class TxtParser
+class Parser implements RobotsTxtInterface
 {
-    /**
-     * Robots.txt max length in bytes
-     */
-    const DEFAULT_BYTE_LIMIT = 500000;
+    use UrlToolbox;
 
     /**
-     * Max rule length
+     * Max length for each rule
      */
-    const RULE_MAX_LENGTH = 500;
-
-    /**
-     * Directives
-     */
-    const DIRECTIVE_ALLOW = 'allow';
-    const DIRECTIVE_CACHE_DELAY = 'cache-delay'; // unofficial
-    const DIRECTIVE_CLEAN_PARAM = 'clean-param'; // Yandex only
-    const DIRECTIVE_CRAWL_DELAY = 'crawl-delay';
-    const DIRECTIVE_DISALLOW = 'disallow';
-    const DIRECTIVE_HOST = 'host';  // Yandex only
-    const DIRECTIVE_SITEMAP = 'sitemap';
-    const DIRECTIVE_USER_AGENT = 'user-agent';
-
-    /**
-     * Default User-Agent
-     */
-    const FALLBACK_USER_AGENT = '*';
+    protected $maxRuleLength = self::MAX_LENGTH_RULE;
 
     /**
      * RAW robots.txt content
      * @var string
      */
-    private $raw = '';
+    protected $raw = '';
 
     /**
      * Rule array
      * @var array
      */
-    private $rules = [];
+    protected $rules = [];
 
     /**
      * User-Agents
      * @var array
      */
-    private $userAgents = [self::FALLBACK_USER_AGENT];
+    private $userAgents = [self::USER_AGENT];
 
     /**
      * Current line
@@ -83,19 +63,17 @@ class TxtParser
      * Constructor
      *
      * @param string $content - file content
-     * @param string|null $encoding - character encoding
-     * @param int|null $byteLimit - maximum of bytes to parse
-     * @throws TxtParserException
+     * @param string $encoding - character encoding
+     * @param integer|null $byteLimit - maximum of bytes to parse
+     * @param integer|null $maxRuleLength - max length of each rule
+     * @throws Exceptions\ParserException
      */
-    public function __construct($content, $encoding = null, $byteLimit = self::DEFAULT_BYTE_LIMIT)
+    public function __construct($content, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT, $maxRuleLength = self::MAX_LENGTH_RULE)
     {
-        if ($encoding === null) {
-            $encoding = mb_detect_encoding($content);
-        }
         if (!mb_internal_encoding($encoding)) {
-            throw new TxtParserException('Unable to set internal character encoding to `' . $encoding . '`');
+            throw new Exceptions\ParserException('Unable to set internal character encoding to `' . $encoding . '`');
         }
-
+        $this->maxRuleLength = $maxRuleLength;
         $this->raw = is_int($byteLimit) ? mb_strcut($content, 0, $byteLimit, $encoding) : $content;
         $this->parseTxt();
     }
@@ -107,15 +85,19 @@ class TxtParser
      */
     private function parseTxt()
     {
-        $lines = array_filter(array_map('trim', mb_split('\n', $this->raw)));
+        $lines = array_filter(array_map('trim', mb_split('\r\n|\n|\r', $this->raw)));
         // Parse each line individually
         foreach ($lines as $this->line) {
-            // Limit rule length and remove comments
-            $this->line = mb_split('#', mb_substr($this->line, 0, self::RULE_MAX_LENGTH), 2)[0];
+            // Limit rule length
+            if (is_int($this->maxRuleLength)) {
+                $this->line = mb_substr($this->line, 0, $this->maxRuleLength);
+            }
+            // Remove comments
+            $this->line = mb_split('#', $this->line, 2)[0];
             // Parse line
             if (
-                ($this->generateRulePair()) === false
-                || ($result = $this->parseLine()) === false
+                ($this->generateRulePair()) === false ||
+                ($result = $this->parseLine()) === false
             ) {
                 continue;
             }
@@ -137,9 +119,9 @@ class TxtParser
         $pair = array_map('trim', mb_split(':', $this->line, 2));
         // Check if the line contains a rule
         if (
-            empty($pair[1])
-            || empty($pair[0])
-            || !in_array(($pair[0] = mb_strtolower($pair[0])), $this->directives())
+            empty($pair[1]) ||
+            empty($pair[0]) ||
+            !in_array(($pair[0] = mb_strtolower($pair[0])), $this->directives())
         ) {
             // Line does not contain any supported directive
             return false;
@@ -193,8 +175,8 @@ class TxtParser
     private function parseLine($parent = null)
     {
         if (
-            ($this->generateRulePair()) === false
-            || !in_array($this->directive, $this->directives($parent))
+            ($this->generateRulePair()) === false ||
+            !in_array($this->directive, $this->directives($parent))
         ) {
             return false;
         }
@@ -287,7 +269,7 @@ class TxtParser
         $result = [];
         $cleanParam = $this->explodeCleanParamRule($this->rule);
         foreach ($cleanParam['param'] as $param) {
-            $result[$this->directive]['path'][$cleanParam['path']]['param'][] = $param;
+            $result[$this->directive][$param][] = $cleanParam['path'];
         }
         return $result;
     }
@@ -304,46 +286,12 @@ class TxtParser
         $array = array_map('trim', mb_split('\s+', $rule, 2));
         $cleanParam = [];
         // strip any invalid characters from path prefix
-        $cleanParam['path'] = isset($array[1]) ? $this->urlEncode(mb_ereg_replace('[^A-Za-z0-9\.-\/\*\_]', '', $array[1])) : "/*";
+        $cleanParam['path'] = isset($array[1]) ? $this->urlEncode(mb_ereg_replace('[^A-Za-z0-9\.-\/\*\_]', '', $array[1])) : '/*';
         $param = array_map('trim', mb_split('&', $array[0]));
         foreach ($param as $key) {
             $cleanParam['param'][] = $key;
         }
         return $cleanParam;
-    }
-
-    /**
-     * URL encoder according to RFC 3986
-     * Returns a string containing the encoded URL with disallowed characters converted to their percentage encodings.
-     * @link http://publicmind.in/blog/url-encoding/
-     *
-     * @param string $url
-     * @return string
-     */
-    private function urlEncode($url)
-    {
-        $reserved = [
-            ":" => '!%3A!ui',
-            "/" => '!%2F!ui',
-            "?" => '!%3F!ui',
-            "#" => '!%23!ui',
-            "[" => '!%5B!ui',
-            "]" => '!%5D!ui',
-            "@" => '!%40!ui',
-            "!" => '!%21!ui',
-            "$" => '!%24!ui',
-            "&" => '!%26!ui',
-            "'" => '!%27!ui',
-            "(" => '!%28!ui',
-            ")" => '!%29!ui',
-            "*" => '!%2A!ui',
-            "+" => '!%2B!ui',
-            "," => '!%2C!ui',
-            ";" => '!%3B!ui',
-            "=" => '!%3D!ui',
-            "%" => '!%25!ui'
-        ];
-        return preg_replace(array_values($reserved), array_keys($reserved), rawurlencode($url));
     }
 
     /**
@@ -354,15 +302,16 @@ class TxtParser
     private function addHost()
     {
         if (
-            !is_string($this->rule)
-            || ($parsed = parse_url(($this->rule = $this->urlEncode($this->rule)))) === false
+            !is_string($this->rule) ||
+            ($parsed = parse_url(($this->rule = $this->urlEncode(mb_strtolower($this->rule))))) === false
         ) {
             return false;
         }
         $host = isset($parsed['host']) ? $parsed['host'] : $parsed['path'];
         if (
-            !$this->urlValidateHost($host)
-            || isset($parsed['scheme']) && !$this->urlValidateScheme($parsed['scheme'])
+            !$this->urlValidateHost($host) ||
+            isset($parsed['scheme']) &&
+            !$this->urlValidateScheme($parsed['scheme'])
         ) {
             return false;
         }
@@ -376,39 +325,6 @@ class TxtParser
     }
 
     /**
-     * Validate host name
-     *
-     * @link http://stackoverflow.com/questions/1755144/how-to-validate-domain-name-in-php
-     *
-     * @param  string $host
-     * @return bool
-     */
-    private static function  urlValidateHost($host)
-    {
-        return (
-            mb_ereg_match("/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i", $host) //valid chars check
-            && mb_ereg_match("/^.{1,253}$/", $host) //overall length check
-            && mb_ereg_match("/^[^\.]{1,63}(\.[^\.]{1,63})*$/", $host) //length of each label
-            && !filter_var($host, FILTER_VALIDATE_IP) //is not an IP address
-        );
-    }
-
-    /**
-     * Validate URL scheme
-     *
-     * @param  string $scheme
-     * @return bool
-     */
-    private static function urlValidateScheme($scheme)
-    {
-        return in_array($scheme, [
-                'http', 'https',
-                'ftp', 'sftp'
-            ]
-        );
-    }
-
-    /**
      * Add Sitemap
      *
      * @return array|false
@@ -416,8 +332,8 @@ class TxtParser
     private function addSitemap()
     {
         if (
-            !is_string($this->rule)
-            || !$this->urlValidate(($url = $this->urlEncode($this->rule)))
+            !is_string($this->rule) ||
+            !$this->urlValidate(($url = $this->urlEncode($this->rule)))
         ) {
             return false;
         }
@@ -426,22 +342,6 @@ class TxtParser
                 $url
             ]
         ];
-    }
-
-    /**
-     * Validate URL
-     *
-     * @param string $url
-     * @return bool
-     */
-    public function urlValidate($url)
-    {
-        return (
-            filter_var($url, FILTER_VALIDATE_URL)
-            && ($parsed = parse_url($url)) !== false
-            && $this->urlValidateHost($parsed['host'])
-            && $this->urlValidateScheme($parsed['scheme'])
-        );
     }
 
     /**
@@ -483,7 +383,7 @@ class TxtParser
     /**
      * Get rules
      */
-    public function getRules()
+    public function export()
     {
         return $this->rules;
     }

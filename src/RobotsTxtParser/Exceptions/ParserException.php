@@ -4,10 +4,10 @@ namespace vipnytt\RobotsTxtParser\Exceptions;
 use Exception;
 
 /**
- * TxtParserException class
+ * Class ParserException
  *
  * @package vipnytt\RobotsTxtParser\Exceptions
  */
-class TxtParserException extends Exception
+class ParserException extends Exception
 {
 }
