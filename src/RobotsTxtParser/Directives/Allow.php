@@ -32,11 +32,10 @@ class Allow implements DirectiveInterface, RobotsTxtInterface
     protected $host;
 
 
-    public function __construct($array, $parent = null)
+    public function __construct($parent = null)
     {
-        $this->array = $array;
-        $this->cleanParam = new CleanParam([], self::DIRECTIVE);
-        $this->host = new Host([], self::DIRECTIVE);
+        $this->cleanParam = new CleanParam(self::DIRECTIVE);
+        $this->host = new Host(self::DIRECTIVE);
     }
 
     /**

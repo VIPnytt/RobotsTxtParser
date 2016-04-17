@@ -22,9 +22,8 @@ class CleanParam implements DirectiveInterface
     protected $array = [];
     protected $parent;
 
-    public function __construct($array = [], $parent = null)
+    public function __construct($parent = null)
     {
-        $this->array = $array;
     }
 
     /**

@@ -11,9 +11,9 @@ interface DirectiveInterface
     /**
      * Constructor
      *
-     * @param string $rule
+     * @param string $parent
      */
-    public function __construct($rule, $parent = null);
+    public function __construct($parent = null);
 
     /**
      * Add

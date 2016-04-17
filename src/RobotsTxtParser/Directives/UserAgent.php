@@ -25,21 +25,36 @@ class UserAgent implements DirectiveInterface, RobotsTxtInterface
      */
     const DIRECTIVE = 'User-agent';
 
+    protected $userAgent = [];
+    protected $userAgents = [];
+
     protected $parent;
     protected $array = [];
 
-    protected $allow;
-    protected $cacheDelay;
-    protected $crawlDelay;
-    protected $disallow;
+    protected $allow = [];
+    protected $cacheDelay = [];
+    protected $crawlDelay = [];
+    protected $disallow = [];
 
-    public function __construct($array, $parent = null)
+    public function __construct($parent = null)
     {
-        $this->array = $array;
-        $this->allow = new Allow([], self::DIRECTIVE);
-        $this->cacheDelay = new CacheDelay([], self::DIRECTIVE);
-        $this->crawlDelay = new CrawlDelay([], self::DIRECTIVE);
-        $this->disallow = new Disallow([], self::DIRECTIVE);
+        $this->set(self::USER_AGENT);
+    }
+
+    public function set($line, $append = false)
+    {
+        if (!$append) {
+            $this->userAgent = [];
+        }
+        $this->userAgent[] = $line;
+        if (!in_array($line, $this->userAgents)) {
+            $this->allow[$line] = new Allow(self::DIRECTIVE);
+            $this->cacheDelay[$line] = new CacheDelay(self::DIRECTIVE);
+            $this->crawlDelay[$line] = new CrawlDelay(self::DIRECTIVE);
+            $this->disallow[$line] = new Disallow(self::DIRECTIVE);
+            $this->userAgents[] = $line;
+        }
+        return true;
     }
 
     /**
@@ -50,16 +65,29 @@ class UserAgent implements DirectiveInterface, RobotsTxtInterface
      */
     public function add($line)
     {
+        $result = false;
         $pair = $this->generateRulePair($line, self::SUB_DIRECTIVES);
         switch ($pair['directive']) {
             case self::DIRECTIVE_ALLOW:
-                return $this->allow->add($pair['value']);
+                foreach ($this->userAgent as $userAgent) {
+                    $result = $this->allow[$userAgent]->add($pair['value']);
+                }
+                return $result;
             case self::DIRECTIVE_CACHE_DELAY:
-                return $this->cacheDelay->add($pair['value']);
+                foreach ($this->userAgent as $userAgent) {
+                    $result = $this->cacheDelay[$userAgent]->add($pair['value']);
+                }
+                return $result;
             case self::DIRECTIVE_CRAWL_DELAY:
-                return $this->crawlDelay->add($pair['value']);
+                foreach ($this->userAgent as $userAgent) {
+                    $result = $this->crawlDelay[$userAgent]->add($pair['value']);
+                }
+                return $result;
             case self::DIRECTIVE_DISALLOW:
-                return $this->disallow->add($pair['value']);
+                foreach ($this->userAgent as $userAgent) {
+                    $result = $this->disallow[$userAgent]->add($pair['value']);
+                }
+                return $result;
         }
         return false;
     }
@@ -84,11 +112,16 @@ class UserAgent implements DirectiveInterface, RobotsTxtInterface
 
     public function export()
     {
-        $result = $this->array
-            + $this->allow->export()
-            + $this->cacheDelay->export()
-            + $this->crawlDelay->export()
-            + $this->disallow->export();
+        $result = [];
+        foreach ($this->userAgents as $userAgent) {
+            $current = $this->allow[$userAgent]->export()
+                + $this->cacheDelay[$userAgent]->export()
+                + $this->crawlDelay[$userAgent]->export()
+                + $this->disallow[$userAgent]->export();
+            if (!empty($current)) {
+                $result[$userAgent] = $current;
+            }
+        }
         return empty($result) ? [] : [self::DIRECTIVE => $result];
     }
 }

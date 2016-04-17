@@ -10,7 +10,7 @@ class Parser implements RobotsTxtInterface
 {
     use ObjectTools;
 
-    const SUB_DIRECTIVES = [
+    const TOP_LEVEL_DIRECTIVES = [
         self::DIRECTIVE_CLEAN_PARAM,
         self::DIRECTIVE_HOST,
         self::DIRECTIVE_SITEMAP,
@@ -18,6 +18,8 @@ class Parser implements RobotsTxtInterface
     ];
 
     protected $raw;
+
+    protected $previous;
 
     protected $cleanParam;
     protected $host;
@@ -38,11 +40,10 @@ class Parser implements RobotsTxtInterface
             throw new Exceptions\ParserException('Unable to set internal character encoding to `' . $encoding . '`');
         }
 
-        $this->cleanParam = new CleanParam([]);
-        $this->host = new Host([]);
-        $this->sitemap = new Sitemap([]);
-        $this->userAgent = new UserAgent([]);
-
+        $this->cleanParam = new CleanParam();
+        $this->host = new Host();
+        $this->sitemap = new Sitemap();
+        $this->userAgent = new UserAgent();
 
         $this->raw = is_int($byteLimit) ? mb_strcut($content, 0, $byteLimit, $encoding) : $content;
         $this->parseTxt();
@@ -69,7 +70,9 @@ class Parser implements RobotsTxtInterface
 
     public function add($line)
     {
-        $pair = $this->generateRulePair($line, self::SUB_DIRECTIVES);
+        $previous = $this->previous;
+        $pair = $this->generateRulePair($line, self::TOP_LEVEL_DIRECTIVES);
+        $this->previous = $pair['directive'];
         switch ($pair['directive']) {
             case self::DIRECTIVE_CLEAN_PARAM:
                 return $this->cleanParam->add($pair['value']);
@@ -78,7 +81,7 @@ class Parser implements RobotsTxtInterface
             case self::DIRECTIVE_SITEMAP:
                 return $this->sitemap->add($pair['value']);
             case self::DIRECTIVE_USER_AGENT:
-                return $this->userAgent->add($pair['value']);
+                return $this->userAgent->set($pair['value'], ($previous === self::DIRECTIVE_USER_AGENT));
         }
         return $this->userAgent->add($line);
     }
