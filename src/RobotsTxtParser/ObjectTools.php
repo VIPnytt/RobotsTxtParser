@@ -3,6 +3,8 @@ namespace vipnytt\RobotsTxtParser;
 
 trait ObjectTools
 {
+    use UrlToolbox;
+
     /**
      * Check basic rule
      *

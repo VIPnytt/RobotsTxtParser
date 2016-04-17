@@ -1,24 +1,46 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Directives;
 
+use vipnytt\RobotsTxtParser\Exceptions\ParserException;
+use vipnytt\RobotsTxtParser\RobotsTxtInterface;
+
 /**
  * Class CrawlDelay
  *
  * @package vipnytt\RobotsTxtParser\Directives
  */
-class CrawlDelay implements DirectiveInterface
+class CrawlDelay implements DirectiveInterface, RobotsTxtInterface
 {
+    /**
+     * Directive alternatives
+     */
+    const DIRECTIVE = [
+        self::DIRECTIVE_CACHE_DELAY,
+        self::DIRECTIVE_CRAWL_DELAY,
+    ];
+
     /**
      * Directive
      */
-    const DIRECTIVE = 'Crawl-delay';
+    protected $directive;
 
+    /**
+     * Delay array
+     * @var array
+     */
     protected $array = [];
-    protected $parent;
 
-
-    public function __construct($parent = null)
+    /**
+     * CrawlDelay constructor.
+     * @param string $directive
+     * @throws ParserException
+     */
+    public function __construct($directive = self::DIRECTIVE_CRAWL_DELAY)
     {
+        if (!in_array($directive, self::DIRECTIVE, true)) {
+            throw new ParserException('Directive not allowed here, has to be `' . self::DIRECTIVE_CRAWL_DELAY . '` or `' . self::DIRECTIVE_CACHE_DELAY . '`');
+        }
+        $this->directive = mb_strtolower($directive);
     }
 
     /**
@@ -36,8 +58,13 @@ class CrawlDelay implements DirectiveInterface
         return true;
     }
 
+    /**
+     * Export
+     *
+     * @return array
+     */
     public function export()
     {
-        return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
+        return empty($this->array) ? [] : [$this->directive => $this->array];
     }
 }

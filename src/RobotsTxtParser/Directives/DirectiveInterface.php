@@ -9,13 +9,6 @@ namespace vipnytt\RobotsTxtParser\Directives;
 interface DirectiveInterface
 {
     /**
-     * Constructor
-     *
-     * @param string $parent
-     */
-    public function __construct($parent = null);
-
-    /**
      * Add
      *
      * @param string $line

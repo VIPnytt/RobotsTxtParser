@@ -2,7 +2,6 @@
 namespace vipnytt\RobotsTxtParser\Directives;
 
 use vipnytt\RobotsTxtParser\ObjectTools;
-use vipnytt\RobotsTxtParser\UrlToolbox;
 
 /**
  * Class CleanParam
@@ -12,17 +11,22 @@ use vipnytt\RobotsTxtParser\UrlToolbox;
 class CleanParam implements DirectiveInterface
 {
     use ObjectTools;
-    use UrlToolbox;
 
     /**
      * Directive
      */
     const DIRECTIVE = 'Clean-param';
 
+    /**
+     * Clean-param array
+     * @var array
+     */
     protected $array = [];
-    protected $parent;
 
-    public function __construct($parent = null)
+    /**
+     * CleanParam constructor.
+     */
+    public function __construct()
     {
     }
 
@@ -46,7 +50,7 @@ class CleanParam implements DirectiveInterface
     }
 
     /**
-     * Check Clean-Param rule
+     * Check
      *
      * @param  string $path
      * @return bool
@@ -70,15 +74,10 @@ class CleanParam implements DirectiveInterface
     }
 
     /**
-     * Rule export
+     * Export
      *
      * @return array
      */
-    public function getArray()
-    {
-        return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
-    }
-
     public function export()
     {
         return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];

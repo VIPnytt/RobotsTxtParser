@@ -17,13 +17,17 @@ class Host implements DirectiveInterface
      */
     const DIRECTIVE = 'Host';
 
+    /**
+     * Host array
+     * @var array
+     */
     protected $array = [];
-    protected $parent;
 
-
-    public function __construct($parent = null)
+    /**
+     * Host constructor.
+     */
+    public function __construct()
     {
-        $this->parent = $parent;
     }
 
     /**
@@ -54,19 +58,12 @@ class Host implements DirectiveInterface
         if (in_array($host, $this->array)) {
             return false;
         }
-        if ($this->parent !== null) {
-            $this->array[] = $host;
-            return true;
-        }
-        if (!empty($this->array)) {
-            return false;
-        }
-        $this->array = [$host];
+        $this->array[] = $host;
         return true;
     }
 
     /**
-     * Check Host rule
+     * Check
      *
      * @param string $url
      * @return bool
@@ -94,6 +91,11 @@ class Host implements DirectiveInterface
         return false;
     }
 
+    /**
+     * Export
+     *
+     * @return array
+     */
     public function export()
     {
         return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];

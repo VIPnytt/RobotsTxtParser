@@ -17,10 +17,16 @@ class Sitemap implements DirectiveInterface
      */
     const DIRECTIVE = 'Sitemap';
 
-    protected $parent;
+    /**
+     * Sitemap array
+     * @var array
+     */
     protected $array = [];
 
-    public function __construct($parent = null)
+    /**
+     * Sitemap constructor.
+     */
+    public function __construct()
     {
     }
 
@@ -42,6 +48,11 @@ class Sitemap implements DirectiveInterface
         return true;
     }
 
+    /**
+     * Export
+     *
+     * @return array
+     */
     public function export()
     {
         return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
