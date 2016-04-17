@@ -1,20 +1,30 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Directives;
 
+use vipnytt\RobotsTxtParser\Exceptions\ParserException;
 use vipnytt\RobotsTxtParser\ObjectTools;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
-use vipnytt\RobotsTxtParser\UrlToolbox;
 
 /**
- * Class Disallow
+ * Class DisAllow
  *
  * @package vipnytt\RobotsTxtParser\Directives
  */
-class Disallow implements DirectiveInterface, RobotsTxtInterface
+class DisAllow implements DirectiveInterface, RobotsTxtInterface
 {
-    use UrlToolbox;
     use ObjectTools;
 
+    /**
+     * Directive alternatives
+     */
+    const DIRECTIVE = [
+        self::DIRECTIVE_ALLOW,
+        self::DIRECTIVE_DISALLOW,
+    ];
+
+    /**
+     * Sub directives white list
+     */
     const SUB_DIRECTIVES = [
         self::DIRECTIVE_CLEAN_PARAM,
         self::DIRECTIVE_HOST,
@@ -23,18 +33,40 @@ class Disallow implements DirectiveInterface, RobotsTxtInterface
     /**
      * Directive
      */
-    const DIRECTIVE = 'Disallow';
+    protected $directive;
 
+    /**
+     * Rule array
+     * @var array
+     */
     protected $array = [];
-    protected $parent;
 
+    /**
+     * Sub-directive Clean-param
+     * @var CleanParam
+     */
     protected $cleanParam;
+
+    /**
+     * Sub-directive Host
+     * @var Host
+     */
     protected $host;
 
-    public function __construct($parent = null)
+    /**
+     * DisAllow constructor
+     *
+     * @param string $directive
+     * @throws ParserException
+     */
+    public function __construct($directive)
     {
-        $this->cleanParam = new CleanParam(self::DIRECTIVE);
-        $this->host = new Host(self::DIRECTIVE);
+        if (!in_array($directive, self::DIRECTIVE, true)) {
+            throw new ParserException('Directive not allowed here, has to be `' . self::DIRECTIVE_ALLOW . '` or `' . self::DIRECTIVE_DISALLOW . '`');
+        }
+        $this->directive = mb_strtolower($directive);
+        $this->cleanParam = new CleanParam();
+        $this->host = new Host();
     }
 
     /**
@@ -55,6 +87,12 @@ class Disallow implements DirectiveInterface, RobotsTxtInterface
         return $this->addPath($line);
     }
 
+    /**
+     * Add plain path to allow/disallow
+     *
+     * @param string $rule
+     * @return bool
+     */
     protected function addPath($rule)
     {
         // Return an array of paths
@@ -81,11 +119,16 @@ class Disallow implements DirectiveInterface, RobotsTxtInterface
         );
     }
 
+    /**
+     * Export
+     *
+     * @return array
+     */
     public function export()
     {
         $result = $this->array
             + $this->cleanParam->export()
             + $this->host->export();
-        return empty($result) ? [] : [self::DIRECTIVE => $result];
+        return empty($result) ? [] : [$this->directive => $result];
     }
 }
