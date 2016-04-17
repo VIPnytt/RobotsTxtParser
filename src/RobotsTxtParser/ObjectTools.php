@@ -3,8 +3,6 @@ namespace vipnytt\RobotsTxtParser;
 
 trait ObjectTools
 {
-    use UrlToolbox;
-
     /**
      * Check basic rule
      *
@@ -58,22 +56,18 @@ trait ObjectTools
     }
 
     /**
-     * Get path
+     * Validate directive
      *
-     * @param string $url
+     * @param $directive
+     * @param $directives
      * @return string
-     * @throws Exceptions\ClientException
+     * @throws Exceptions\ParserException
      */
-    protected function getPath($url)
+    protected function validateDirective($directive, $directives)
     {
-        $url = $this->urlEncode($url);
-        if (mb_stripos($url, '/') === 0) {
-            // URL already is a path
-            return $url;
+        if (!in_array($directive, $directives, true)) {
+            throw new Exceptions\ParserException('Directive is not allowed here');
         }
-        if (!$this->urlValidate($url)) {
-            throw new Exceptions\ClientException('Invalid URL');
-        }
-        return parse_url($url, PHP_URL_PATH);
+        return mb_strtolower($directive);
     }
 }

@@ -72,10 +72,8 @@ class UserAgent implements DirectiveInterface, RobotsTxtInterface
 
     /**
      * UserAgent constructor.
-     *
-     * @param null $parent
      */
-    public function __construct($parent = null)
+    public function __construct()
     {
         $this->set();
     }
@@ -83,22 +81,20 @@ class UserAgent implements DirectiveInterface, RobotsTxtInterface
     /**
      * Set new User-agent
      *
-     * @param string $line
-     * @param bool $append
+     * @param array $array
      * @return bool
      */
-    public function set($line = self::USER_AGENT, $append = false)
+    public function set($array = [self::USER_AGENT])
     {
-        if (!$append) {
-            $this->userAgent = [];
-        }
-        $this->userAgent[] = $line;
-        if (!in_array($line, $this->userAgents)) {
-            $this->allow[$line] = new DisAllow(self::DIRECTIVE_ALLOW);
-            $this->cacheDelay[$line] = new CrawlDelay(self::DIRECTIVE_CACHE_DELAY);
-            $this->crawlDelay[$line] = new CrawlDelay(self::DIRECTIVE_CRAWL_DELAY);
-            $this->disallow[$line] = new DisAllow(self::DIRECTIVE_DISALLOW);
-            $this->userAgents[] = $line;
+        $this->userAgent = $array;
+        foreach ($this->userAgent as $userAgent) {
+            if (!in_array($userAgent, $this->userAgents)) {
+                $this->allow[$userAgent] = new DisAllow(self::DIRECTIVE_ALLOW);
+                $this->cacheDelay[$userAgent] = new CrawlDelay(self::DIRECTIVE_CACHE_DELAY);
+                $this->crawlDelay[$userAgent] = new CrawlDelay(self::DIRECTIVE_CRAWL_DELAY);
+                $this->disallow[$userAgent] = new DisAllow(self::DIRECTIVE_DISALLOW);
+                $this->userAgents[] = $userAgent;
+            }
         }
         return true;
     }

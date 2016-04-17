@@ -19,7 +19,8 @@ class Parser implements RobotsTxtInterface
 
     protected $raw;
 
-    protected $previous;
+    protected $previousDirective;
+    protected $userAgentValues;
 
     protected $cleanParam;
     protected $host;
@@ -70,9 +71,15 @@ class Parser implements RobotsTxtInterface
 
     public function add($line)
     {
-        $previous = $this->previous;
+        $previousDirective = $this->previousDirective;
         $pair = $this->generateRulePair($line, self::TOP_LEVEL_DIRECTIVES);
-        $this->previous = $pair['directive'];
+        if ($pair['directive'] === self::DIRECTIVE_USER_AGENT) {
+            if ($previousDirective !== self::DIRECTIVE_USER_AGENT) {
+                $this->userAgentValues = [];
+            }
+            $this->userAgentValues[] = $pair['value'];
+        }
+        $this->previousDirective = $pair['directive'];
         switch ($pair['directive']) {
             case self::DIRECTIVE_CLEAN_PARAM:
                 return $this->cleanParam->add($pair['value']);
@@ -81,7 +88,7 @@ class Parser implements RobotsTxtInterface
             case self::DIRECTIVE_SITEMAP:
                 return $this->sitemap->add($pair['value']);
             case self::DIRECTIVE_USER_AGENT:
-                return $this->userAgent->set($pair['value'], ($previous === self::DIRECTIVE_USER_AGENT));
+                return $this->userAgent->set($this->userAgentValues);
         }
         return $this->userAgent->add($line);
     }

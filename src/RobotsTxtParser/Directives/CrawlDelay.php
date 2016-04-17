@@ -2,6 +2,7 @@
 namespace vipnytt\RobotsTxtParser\Directives;
 
 use vipnytt\RobotsTxtParser\Exceptions\ParserException;
+use vipnytt\RobotsTxtParser\ObjectTools;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -11,6 +12,8 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  */
 class CrawlDelay implements DirectiveInterface, RobotsTxtInterface
 {
+    use ObjectTools;
+
     /**
      * Directive alternatives
      */
@@ -28,7 +31,7 @@ class CrawlDelay implements DirectiveInterface, RobotsTxtInterface
      * Delay array
      * @var array
      */
-    protected $array = [];
+    protected $value = [];
 
     /**
      * CrawlDelay constructor.
@@ -37,10 +40,7 @@ class CrawlDelay implements DirectiveInterface, RobotsTxtInterface
      */
     public function __construct($directive = self::DIRECTIVE_CRAWL_DELAY)
     {
-        if (!in_array($directive, self::DIRECTIVE, true)) {
-            throw new ParserException('Directive not allowed here, has to be `' . self::DIRECTIVE_CRAWL_DELAY . '` or `' . self::DIRECTIVE_CACHE_DELAY . '`');
-        }
-        $this->directive = mb_strtolower($directive);
+        $this->directive = $this->validateDirective($directive, self::DIRECTIVE);
     }
 
     /**
@@ -51,10 +51,13 @@ class CrawlDelay implements DirectiveInterface, RobotsTxtInterface
      */
     public function add($line)
     {
-        if (empty(($float = floatval($this->array)))) {
+        if (isset($this->value) && $this->value > 0) {
             return false;
         }
-        $this->array = [$float];
+        if (empty(($float = floatval($line)))) {
+            return false;
+        }
+        $this->value = $float;
         return true;
     }
 
@@ -65,6 +68,6 @@ class CrawlDelay implements DirectiveInterface, RobotsTxtInterface
      */
     public function export()
     {
-        return empty($this->array) ? [] : [$this->directive => $this->array];
+        return empty($this->value) ? [] : [$this->directive => $this->value];
     }
 }

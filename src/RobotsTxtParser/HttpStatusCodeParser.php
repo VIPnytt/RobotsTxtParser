@@ -3,8 +3,16 @@ namespace vipnytt\RobotsTxtParser;
 
 use vipnytt\RobotsTxtParser\Exceptions;
 
-class HttpStatusCodeParser
+class HttpStatusCodeParser implements RobotsTxtInterface
 {
+    /**
+     * Directive alternatives
+     */
+    const DIRECTIVES = [
+        self::DIRECTIVE_ALLOW,
+        self::DIRECTIVE_DISALLOW,
+    ];
+
     /**
      * Status code
      * @var int
@@ -55,14 +63,21 @@ class HttpStatusCodeParser
     /**
      * Determine the correct group
      *
-     * @return string
+     * @param string $directive
+     * @return bool|null
+     * @throws Exceptions\ClientException
      */
-    public function isAllowed()
+    public function isAllowed($directive = self::DIRECTIVE_ALLOW)
     {
-        switch (floor($this->code / 100) * 100) {
-            case 500:
-                return false;
+        if (!in_array($directive, self::DIRECTIVES, true)) {
+            throw new Exceptions\ClientException('Directive not allowed here, has to be `' . self::DIRECTIVE_ALLOW . '` or `' . self::DIRECTIVE_DISALLOW . '`');
         }
-        return true;
+        switch (floor($this->code / 100) * 100) {
+            case 400:
+                return $directive === self::DIRECTIVE_ALLOW;
+            case 500:
+                return $directive === self::DIRECTIVE_DISALLOW;
+        }
+        return null;
     }
 }

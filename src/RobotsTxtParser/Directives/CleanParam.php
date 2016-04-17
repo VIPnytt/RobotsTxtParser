@@ -2,6 +2,7 @@
 namespace vipnytt\RobotsTxtParser\Directives;
 
 use vipnytt\RobotsTxtParser\ObjectTools;
+use vipnytt\RobotsTxtParser\UrlToolbox;
 
 /**
  * Class CleanParam
@@ -11,6 +12,7 @@ use vipnytt\RobotsTxtParser\ObjectTools;
 class CleanParam implements DirectiveInterface
 {
     use ObjectTools;
+    use UrlToolbox;
 
     /**
      * Directive

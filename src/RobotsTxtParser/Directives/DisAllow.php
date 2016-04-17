@@ -1,9 +1,10 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Directives;
 
-use vipnytt\RobotsTxtParser\Exceptions\ParserException;
+use vipnytt\RobotsTxtParser\Exceptions;
 use vipnytt\RobotsTxtParser\ObjectTools;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
+use vipnytt\RobotsTxtParser\UrlToolbox;
 
 /**
  * Class DisAllow
@@ -13,6 +14,7 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 class DisAllow implements DirectiveInterface, RobotsTxtInterface
 {
     use ObjectTools;
+    use UrlToolbox;
 
     /**
      * Directive alternatives
@@ -57,14 +59,11 @@ class DisAllow implements DirectiveInterface, RobotsTxtInterface
      * DisAllow constructor
      *
      * @param string $directive
-     * @throws ParserException
+     * @throws Exceptions\ParserException
      */
     public function __construct($directive)
     {
-        if (!in_array($directive, self::DIRECTIVE, true)) {
-            throw new ParserException('Directive not allowed here, has to be `' . self::DIRECTIVE_ALLOW . '` or `' . self::DIRECTIVE_DISALLOW . '`');
-        }
-        $this->directive = mb_strtolower($directive);
+        $this->directive = $this->validateDirective($directive, self::DIRECTIVE);
         $this->cleanParam = new CleanParam();
         $this->host = new Host();
     }
@@ -112,11 +111,31 @@ class DisAllow implements DirectiveInterface, RobotsTxtInterface
     public function check($url)
     {
         $path = $this->getPath($url);
-        return (
+        return ($path === false) ? false : (
             $this->checkPath($path, isset($this->array['path']) ? $this->array['path'] : []) ||
             $this->cleanParam->check($path) ||
             $this->host->check($url)
         );
+    }
+
+    /**
+     * Get path
+     *
+     * @param string $url
+     * @return string
+     * @throws Exceptions\ClientException
+     */
+    protected function getPath($url)
+    {
+        $url = $this->urlEncode($url);
+        if (mb_stripos($url, '/') === 0) {
+            // URL already is a path
+            return $url;
+        }
+        if (!$this->urlValidate($url)) {
+            throw new Exceptions\ClientException('Invalid URL');
+        }
+        return parse_url($url, PHP_URL_PATH);
     }
 
     /**
