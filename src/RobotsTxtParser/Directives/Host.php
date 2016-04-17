@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Directives;
 
+use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 use vipnytt\RobotsTxtParser\UrlToolbox;
 
 /**
@@ -8,14 +9,14 @@ use vipnytt\RobotsTxtParser\UrlToolbox;
  *
  * @package vipnytt\RobotsTxtParser\Directives
  */
-class Host implements DirectiveInterface
+final class Host implements DirectiveInterface, RobotsTxtInterface
 {
     use UrlToolbox;
 
     /**
      * Directive
      */
-    const DIRECTIVE = 'Host';
+    const DIRECTIVE = self::DIRECTIVE_HOST;
 
     /**
      * Host array
@@ -99,5 +100,13 @@ class Host implements DirectiveInterface
     public function export()
     {
         return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
+    }
+
+    public function optimize($url)
+    {
+        //TODO: Change scheme, Host and port
+        //$parsed = parse_url($url);
+
+        return $url;
     }
 }

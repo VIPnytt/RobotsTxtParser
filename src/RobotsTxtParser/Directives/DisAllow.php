@@ -11,7 +11,7 @@ use vipnytt\RobotsTxtParser\UrlToolbox;
  *
  * @package vipnytt\RobotsTxtParser\Directives
  */
-class DisAllow implements DirectiveInterface, RobotsTxtInterface
+final class DisAllow implements DirectiveInterface, RobotsTxtInterface
 {
     use ObjectTools;
     use UrlToolbox;

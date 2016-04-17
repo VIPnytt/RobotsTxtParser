@@ -1,16 +1,16 @@
 <?php
 namespace vipnytt\RobotsTxtParser;
 
-use vipnytt\RobotsTxtParser\Exceptions;
+use vipnytt\RobotsTxtParser\Exceptions\StatusCodeException;
 
-class HttpStatusCodeParser implements RobotsTxtInterface
+class StatusCodeParser implements RobotsTxtInterface
 {
     /**
-     * Directive alternatives
+     * Valid schemes
      */
-    const DIRECTIVES = [
-        self::DIRECTIVE_ALLOW,
-        self::DIRECTIVE_DISALLOW,
+    const VALID_SCHEME = [
+        'http',
+        'https',
     ];
 
     /**
@@ -18,6 +18,18 @@ class HttpStatusCodeParser implements RobotsTxtInterface
      * @var int
      */
     protected $code = 200;
+
+    /**
+     * Scheme
+     * @var string
+     */
+    protected $scheme;
+
+    /**
+     * Applicable
+     * @var bool
+     */
+    protected $applicable;
 
     /**
      * Replacement coded
@@ -32,18 +44,29 @@ class HttpStatusCodeParser implements RobotsTxtInterface
     /**
      * Constructor
      *
-     * @param integer $code - HTTP status code
-     * @throws Exceptions\HttpStatusCodeException
+     * @param integer|null $code - HTTP status code
+     * @param string|null $scheme
+     * @throws StatusCodeException
      */
-    public function __construct($code)
+    public function __construct($code, $scheme)
     {
-        if (!is_int($code) ||
-            $code < 100 ||
-            $code > 599
-        ) {
-            throw new Exceptions\HttpStatusCodeException('Invalid HTTP status code');
-        }
         $this->code = $code;
+        $this->scheme = $scheme;
+        $this->applicable = $this->isApplicable();
+    }
+
+    protected function isApplicable()
+    {
+        if (!in_array($this->scheme, self::VALID_SCHEME)) {
+            return false;
+        }
+        if (
+            $this->code < 100 ||
+            $this->code > 599
+        ) {
+            throw new StatusCodeException('Invalid HTTP(S) status code');
+        }
+        return true;
     }
 
     /**
@@ -63,20 +86,19 @@ class HttpStatusCodeParser implements RobotsTxtInterface
     /**
      * Determine the correct group
      *
-     * @param string $directive
-     * @return bool|null
+     * @return string|null
      * @throws Exceptions\ClientException
      */
-    public function isAllowed($directive = self::DIRECTIVE_ALLOW)
+    public function check()
     {
-        if (!in_array($directive, self::DIRECTIVES, true)) {
-            throw new Exceptions\ClientException('Directive not allowed here, has to be `' . self::DIRECTIVE_ALLOW . '` or `' . self::DIRECTIVE_DISALLOW . '`');
+        if (!$this->applicable) {
+            return null;
         }
         switch (floor($this->code / 100) * 100) {
             case 400:
-                return $directive === self::DIRECTIVE_ALLOW;
+                return self::DIRECTIVE_ALLOW;
             case 500:
-                return $directive === self::DIRECTIVE_DISALLOW;
+                return self::DIRECTIVE_DISALLOW;
         }
         return null;
     }

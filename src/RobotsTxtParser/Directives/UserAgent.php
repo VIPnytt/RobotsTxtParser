@@ -9,7 +9,7 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  *
  * @package vipnytt\RobotsTxtParser\Directives
  */
-class UserAgent implements DirectiveInterface, RobotsTxtInterface
+final class UserAgent implements DirectiveInterface, RobotsTxtInterface
 {
     use ObjectTools;
 
@@ -26,49 +26,38 @@ class UserAgent implements DirectiveInterface, RobotsTxtInterface
     /**
      * Directive
      */
-    const DIRECTIVE = 'User-agent';
-
+    const DIRECTIVE = self::DIRECTIVE_USER_AGENT;
+    
+    /**
+     * All User-agents declared
+     * @var array
+     */
+    public $userAgents = [];
+    /**
+     * Sub-directive Allow
+     * @var array
+     */
+    public $allow = [];
+    /**
+     * Sub-directive Cache-delay
+     * @var array
+     */
+    public $cacheDelay = [];
+    /**
+     * Sub-directive Crawl-delay
+     * @var array
+     */
+    public $crawlDelay = [];
+    /**
+     * Sub-directive Disallow
+     * @var array
+     */
+    public $disallow = [];
     /**
      * Current User-agent(s)
      * @var array
      */
     protected $userAgent = [];
-
-    /**
-     * All User-agents declared
-     * @var array
-     */
-    protected $userAgents = [];
-
-    /**
-     * Rule array
-     * @var array
-     */
-    protected $array = [];
-
-    /**
-     * Sub-directive Allow
-     * @var array
-     */
-    protected $allow = [];
-
-    /**
-     * Sub-directive Cache-delay
-     * @var array
-     */
-    protected $cacheDelay = [];
-
-    /**
-     * Sub-directive Crawl-delay
-     * @var array
-     */
-    protected $crawlDelay = [];
-
-    /**
-     * Sub-directive Disallow
-     * @var array
-     */
-    protected $disallow = [];
 
     /**
      * UserAgent constructor.
@@ -126,24 +115,6 @@ class UserAgent implements DirectiveInterface, RobotsTxtInterface
             }
         }
         return isset($result) ? $result : false;
-    }
-
-    /**
-     * Check
-     *
-     * @param  string $url - URL to check
-     * @param  string $type - directive to check
-     * @return bool
-     */
-    public function check($url, $type)
-    {
-        $result = ($type === self::DIRECTIVE_ALLOW);
-        foreach ([self::DIRECTIVE_DISALLOW, self::DIRECTIVE_ALLOW] as $directive) {
-            if ($this->$directive->check($url)) {
-                $result = ($type === $directive);
-            }
-        }
-        return $result;
     }
 
     /**

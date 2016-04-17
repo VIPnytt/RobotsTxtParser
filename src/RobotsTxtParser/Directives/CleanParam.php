@@ -2,6 +2,7 @@
 namespace vipnytt\RobotsTxtParser\Directives;
 
 use vipnytt\RobotsTxtParser\ObjectTools;
+use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 use vipnytt\RobotsTxtParser\UrlToolbox;
 
 /**
@@ -9,7 +10,7 @@ use vipnytt\RobotsTxtParser\UrlToolbox;
  *
  * @package vipnytt\RobotsTxtParser\Directives
  */
-class CleanParam implements DirectiveInterface
+final class CleanParam implements DirectiveInterface, RobotsTxtInterface
 {
     use ObjectTools;
     use UrlToolbox;
@@ -17,7 +18,7 @@ class CleanParam implements DirectiveInterface
     /**
      * Directive
      */
-    const DIRECTIVE = 'Clean-param';
+    const DIRECTIVE = self::DIRECTIVE_CLEAN_PARAM;
 
     /**
      * Clean-param array

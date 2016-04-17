@@ -10,7 +10,7 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  *
  * @package vipnytt\RobotsTxtParser\Directives
  */
-class CrawlDelay implements DirectiveInterface, RobotsTxtInterface
+final class CrawlDelay implements DirectiveInterface, RobotsTxtInterface
 {
     use ObjectTools;
 
@@ -25,13 +25,13 @@ class CrawlDelay implements DirectiveInterface, RobotsTxtInterface
     /**
      * Directive
      */
-    protected $directive;
+    protected $directive = self::DIRECTIVE_CRAWL_DELAY;
 
     /**
-     * Delay array
-     * @var array
+     * Delay
+     * @var float|int
      */
-    protected $value = [];
+    protected $value;
 
     /**
      * CrawlDelay constructor.
@@ -46,7 +46,7 @@ class CrawlDelay implements DirectiveInterface, RobotsTxtInterface
     /**
      * Add
      *
-     * @param string $line
+     * @param float|int|string $line
      * @return bool
      */
     public function add($line)
@@ -54,7 +54,7 @@ class CrawlDelay implements DirectiveInterface, RobotsTxtInterface
         if (isset($this->value) && $this->value > 0) {
             return false;
         }
-        if (empty(($float = floatval($line)))) {
+        if (empty($float = floatval($line))) {
             return false;
         }
         $this->value = $float;

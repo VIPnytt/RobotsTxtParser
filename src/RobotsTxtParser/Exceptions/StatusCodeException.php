@@ -4,10 +4,10 @@ namespace vipnytt\RobotsTxtParser\Exceptions;
 use Exception;
 
 /**
- * Class HttpStatusCodeException
+ * Class StatusCodeException
  *
  * @package vipnytt\RobotsTxtParser\Exceptions
  */
-class HttpStatusCodeException extends Exception
+class StatusCodeException extends Exception
 {
 }

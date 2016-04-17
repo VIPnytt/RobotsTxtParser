@@ -10,7 +10,7 @@ trait ObjectTools
      * @param array $paths
      * @return bool
      */
-    public function checkPath($path, $paths)
+    protected function checkPath($path, $paths)
     {
         // bug: https://github.com/t1gor/Robots.txt-Parser-Class/issues/62
         foreach ($paths as $robotPath) {

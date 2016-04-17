@@ -1,126 +1,24 @@
 <?php
 namespace vipnytt\RobotsTxtParser;
 
-use vipnytt\RobotsTxtParser\Directives\CleanParam;
-use vipnytt\RobotsTxtParser\Directives\Host;
-use vipnytt\RobotsTxtParser\Directives\Sitemap;
-use vipnytt\RobotsTxtParser\Directives\UserAgent;
+use vipnytt\UserAgentParser;
 
-class Parser implements RobotsTxtInterface
+class Parser extends Core
 {
-    use ObjectTools;
-
-    const TOP_LEVEL_DIRECTIVES = [
-        self::DIRECTIVE_CLEAN_PARAM,
-        self::DIRECTIVE_HOST,
-        self::DIRECTIVE_SITEMAP,
-        self::DIRECTIVE_USER_AGENT,
-    ];
-
-    protected $raw;
-
-    protected $previousDirective;
-    protected $userAgentValues;
-
-    protected $cleanParam;
-    protected $host;
-    protected $sitemap;
-    protected $userAgent;
-
     /**
-     * Constructor
-     *
-     * @param string $content - file content
-     * @param string $encoding - character encoding
-     * @param integer|null $byteLimit - maximum of bytes to parse
-     * @throws Exceptions\ParserException
+     * HTTP status code parser
+     * @var StatusCodeParser
      */
-    public function __construct($content, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT)
+    protected $statusCodeParser;
+
+    protected $origin;
+    protected $statusCode;
+
+    public function __construct($RobotsTxtURL, $statusCode, $content, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT)
     {
-        if (!mb_internal_encoding($encoding)) {
-            throw new Exceptions\ParserException('Unable to set internal character encoding to `' . $encoding . '`');
-        }
-
-        $this->cleanParam = new CleanParam();
-        $this->host = new Host();
-        $this->sitemap = new Sitemap();
-        $this->userAgent = new UserAgent();
-
-        $this->raw = is_int($byteLimit) ? mb_strcut($content, 0, $byteLimit, $encoding) : $content;
-        $this->parseTxt();
-    }
-
-    /**
-     * Parse robots.txt
-     *
-     * @return void
-     */
-    private function parseTxt()
-    {
-        $lines = array_filter(array_map('trim', mb_split('\r\n|\n|\r', $this->raw)));
-        // Parse each line individually
-        foreach ($lines as $line) {
-            // Limit rule length
-            $line = mb_substr($line, 0, self::MAX_LENGTH_RULE);
-            // Remove comments
-            $line = mb_split('#', $line, 2)[0];
-            // Parse line
-            $this->add($line);
-        }
-    }
-
-    public function add($line)
-    {
-        $previousDirective = $this->previousDirective;
-        $pair = $this->generateRulePair($line, self::TOP_LEVEL_DIRECTIVES);
-        if ($pair['directive'] === self::DIRECTIVE_USER_AGENT) {
-            if ($previousDirective !== self::DIRECTIVE_USER_AGENT) {
-                $this->userAgentValues = [];
-            }
-            $this->userAgentValues[] = $pair['value'];
-        }
-        $this->previousDirective = $pair['directive'];
-        switch ($pair['directive']) {
-            case self::DIRECTIVE_CLEAN_PARAM:
-                return $this->cleanParam->add($pair['value']);
-            case self::DIRECTIVE_HOST:
-                return $this->host->add($pair['value']);
-            case self::DIRECTIVE_SITEMAP:
-                return $this->sitemap->add($pair['value']);
-            case self::DIRECTIVE_USER_AGENT:
-                return $this->userAgent->set($this->userAgentValues);
-        }
-        return $this->userAgent->add($line);
-    }
-
-    public function export()
-    {
-        return $this->cleanParam->export()
-        + $this->host->export()
-        + $this->sitemap->export()
-        + $this->userAgent->export();
-    }
-
-    /**
-     * Check if URL is allowed to crawl
-     *
-     * @param  string $url - url to check
-     * @return bool
-     */
-    public function isAllowed($url)
-    {
-        return $this->userAgent->check($url, self::DIRECTIVE_ALLOW);
-    }
-
-    /**
-     * Check if URL is disallowed to crawl
-     *
-     * @param  string $url - url to check
-     * @return bool
-     */
-    public function isDisallowed($url)
-    {
-        return $this->userAgent->check($url, self::DIRECTIVE_DISALLOW);
+        parent::__construct($content, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT);
+        $this->origin = $RobotsTxtURL;
+        $this->statusCode = $statusCode;
     }
 
     /**
@@ -151,5 +49,20 @@ class Parser implements RobotsTxtInterface
     public function getCleanParam()
     {
         return $this->cleanParam->export();
+    }
+
+    public function optimizeURL($url)
+    {
+        return $this->host->optimize($url);
+    }
+
+    public function userAgent($string = self::USER_AGENT)
+    {
+        $uaParser = new UserAgentParser($string);
+        $userAgent = $uaParser->match($this->userAgent->userAgents, self::USER_AGENT);
+        return new UserAgentClient([
+            self::DIRECTIVE_DISALLOW => $this->userAgent->{self::DIRECTIVE_DISALLOW}[$userAgent],
+            self::DIRECTIVE_ALLOW => $this->userAgent->{self::DIRECTIVE_ALLOW}[$userAgent],
+        ], $userAgent, $this->origin, $this->statusCode);
     }
 }

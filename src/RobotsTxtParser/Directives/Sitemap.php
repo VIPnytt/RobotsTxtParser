@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Directives;
 
+use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 use vipnytt\RobotsTxtParser\UrlToolbox;
 
 /**
@@ -8,14 +9,14 @@ use vipnytt\RobotsTxtParser\UrlToolbox;
  *
  * @package vipnytt\RobotsTxtParser\Directives
  */
-class Sitemap implements DirectiveInterface
+final class Sitemap implements DirectiveInterface, RobotsTxtInterface
 {
     use UrlToolbox;
 
     /**
      * Directive
      */
-    const DIRECTIVE = 'Sitemap';
+    const DIRECTIVE = self::DIRECTIVE_SITEMAP;
 
     /**
      * Sitemap array
