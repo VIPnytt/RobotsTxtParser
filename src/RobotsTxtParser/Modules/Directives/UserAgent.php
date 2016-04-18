@@ -27,7 +27,7 @@ class UserAgent implements DirectiveInterface, RobotsTxtInterface
      * Directive
      */
     const DIRECTIVE = self::DIRECTIVE_USER_AGENT;
-    
+
     /**
      * All User-agents declared
      * @var array
@@ -80,7 +80,7 @@ class UserAgent implements DirectiveInterface, RobotsTxtInterface
      */
     public function set($array = [self::USER_AGENT])
     {
-        $this->userAgent = $array;
+        $this->userAgent = array_map('mb_strtolower', $array);
         foreach ($this->userAgent as $userAgent) {
             if (!in_array($userAgent, $this->userAgents)) {
                 $this->allow[$userAgent] = new DisAllow(self::DIRECTIVE_ALLOW);

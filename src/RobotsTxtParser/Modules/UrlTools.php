@@ -11,6 +11,25 @@ use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 trait UrlTools
 {
     /**
+     * Convert relative to full URL
+     *
+     * @param string $url
+     * @param string $base
+     * @return string
+     * @throws ClientException
+     */
+    protected function urlConvertToFull($url, $base)
+    {
+        $url = $this->urlEncode($url);
+        if ($this->urlValidate($url)) {
+            return $url;
+        } elseif (mb_stripos($url, '/') === 0) {
+            return $this->urlBase($base) . $url;
+        }
+        throw new ClientException('Invalid URL');
+    }
+
+    /**
      * URL encoder according to RFC 3986
      * Returns a string containing the encoded URL with disallowed characters converted to their percentage encodings.
      * @link http://publicmind.in/blog/url-encoding/
@@ -45,26 +64,6 @@ trait UrlTools
             $url = mb_ereg_replace($pattern, $replace, $url);
         }
         return $url;
-    }
-
-    /**
-     * Base URL
-     *
-     * @param string $url
-     * @return string
-     * @throws ClientException
-     */
-    protected function urlBase($url)
-    {
-        if ($this->urlValidate($url) === false) {
-            throw new ClientException('Invalid URL');
-        }
-        $parts = [
-            'scheme' => parse_url($url, PHP_URL_SCHEME),
-            'host' => parse_url($url, PHP_URL_HOST),
-        ];
-        $parts['port'] = is_int($port = parse_url($url, PHP_URL_PORT)) ? $port : getservbyname($parts['scheme'], 'tcp');
-        return $parts['scheme'] . '://' . $parts['host'] . ':' . $parts['port'];
     }
 
     /**
@@ -116,5 +115,25 @@ trait UrlTools
                 'sftp',
             ]
         );
+    }
+
+    /**
+     * Base URL
+     *
+     * @param string $url
+     * @return string
+     * @throws ClientException
+     */
+    protected function urlBase($url)
+    {
+        if ($this->urlValidate($url) === false) {
+            throw new ClientException('Invalid URL');
+        }
+        $parts = [
+            'scheme' => parse_url($url, PHP_URL_SCHEME),
+            'host' => parse_url($url, PHP_URL_HOST),
+        ];
+        $parts['port'] = is_int($port = parse_url($url, PHP_URL_PORT)) ? $port : getservbyname($parts['scheme'], 'tcp');
+        return $parts['scheme'] . '://' . $parts['host'] . ':' . $parts['port'];
     }
 }

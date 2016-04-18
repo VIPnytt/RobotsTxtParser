@@ -12,6 +12,8 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  */
 class UserAgentClient implements RobotsTxtInterface
 {
+    use UrlTools;
+
     /**
      * Allow rules
      * @var DisAllow
@@ -31,10 +33,10 @@ class UserAgentClient implements RobotsTxtInterface
     protected $userAgent;
 
     /**
-     * Robots.txt origin
+     * Robots.txt base URL
      * @var string
      */
-    protected $origin;
+    protected $base;
 
     /**
      * Status code parser
@@ -48,14 +50,14 @@ class UserAgentClient implements RobotsTxtInterface
      * @param DisAllow $allow
      * @param DisAllow $disallow
      * @param string $userAgent
-     * @param string $origin
+     * @param string $baseUrl
      * @param int $statusCode
      */
-    public function __construct($allow, $disallow, $userAgent, $origin, $statusCode)
+    public function __construct($allow, $disallow, $userAgent, $baseUrl, $statusCode)
     {
-        $this->statusCodeParser = new StatusCodeParser($statusCode, parse_url($origin, PHP_URL_SCHEME));
+        $this->statusCodeParser = new StatusCodeParser($statusCode, parse_url($baseUrl, PHP_URL_SCHEME));
         $this->userAgent = $userAgent;
-        $this->origin = $origin;
+        $this->base = $baseUrl;
         $this->allow = $allow;
         $this->disallow = $disallow;
     }
@@ -81,7 +83,8 @@ class UserAgentClient implements RobotsTxtInterface
      */
     protected function check($directive, $url)
     {
-        if (!$this->isUrlApplicable([$url, $this->origin])) {
+        $url = $this->urlConvertToFull($url, $this->base);
+        if (!$this->isUrlApplicable([$url, $this->base])) {
             throw new ClientException('URL belongs to a different robots.txt, please check it against that one instead');
         }
         $this->statusCodeParser->replaceUnofficial();

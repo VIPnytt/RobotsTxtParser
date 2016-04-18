@@ -96,7 +96,7 @@ class Parser extends Core
      */
     public function userAgent($string = self::USER_AGENT)
     {
-        $userAgentParser = new UserAgentParser($string);
+        $userAgentParser = new UserAgentParser(mb_strtolower($string));
         if (($userAgent = $userAgentParser->match($this->userAgent->userAgents)) === false) {
             $userAgent = self::USER_AGENT;
         }
