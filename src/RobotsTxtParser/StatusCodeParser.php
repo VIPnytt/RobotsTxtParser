@@ -45,7 +45,7 @@ class StatusCodeParser implements RobotsTxtInterface
      * Constructor
      *
      * @param integer|null $code - HTTP status code
-     * @param string|null $scheme
+     * @param string|false|null $scheme
      * @throws StatusCodeException
      */
     public function __construct($code, $scheme)

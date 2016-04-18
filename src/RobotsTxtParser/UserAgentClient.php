@@ -2,6 +2,7 @@
 namespace vipnytt\RobotsTxtParser;
 
 use vipnytt\RobotsTxtParser\Directives\DisAllow;
+use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 use vipnytt\RobotsTxtParser\Exceptions\ParserException;
 
 class UserAgentClient implements RobotsTxtInterface
@@ -13,6 +14,14 @@ class UserAgentClient implements RobotsTxtInterface
     protected $origin;
     protected $statusCodeParser;
 
+    /**
+     * UserAgentClient constructor.
+     *
+     * @param array $rules
+     * @param string $userAgent
+     * @param string $origin
+     * @param int $statusCode
+     */
     public function __construct($rules, $userAgent, $origin, $statusCode)
     {
         $this->statusCodeParser = new StatusCodeParser($statusCode, parse_url($origin, PHP_URL_SCHEME));
@@ -48,11 +57,13 @@ class UserAgentClient implements RobotsTxtInterface
      * @param string $directive
      * @param string $url - URL to check
      * @return bool
-     * @throws ParserException
+     * @throws ClientException
      */
     protected function check($directive, $url)
     {
-        //TODO: Throw new exception Cannot check URL, belongs to a different robots.txt
+        if (!$this->isUrlApplicable($url)) {
+            throw new ClientException('URL belongs to a different robots.txt, please check it against that one instead');
+        }
         $this->statusCodeParser->replaceUnofficial();
         if (($result = $this->statusCodeParser->check()) !== null) {
             return $directive === $result;
@@ -64,6 +75,21 @@ class UserAgentClient implements RobotsTxtInterface
             }
         }
         return $directive === $result;
+    }
+
+    protected function isUrlApplicable($urls)
+    {
+        foreach ($urls as $url) {
+            $parsed = parse_url($url);
+            $parsed['port'] = is_int($port = parse_url($url, PHP_URL_PORT)) ? $port : getservbyname($parsed['scheme'], 'tcp');
+            $assembled = $parsed['scheme'] . '://' . $parsed['host'] . ':' . $parsed['port'];
+            if (!isset($result)) {
+                $result = $assembled;
+            } elseif ($result !== $assembled) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -78,22 +104,24 @@ class UserAgentClient implements RobotsTxtInterface
     }
 
     /**
-     * Get Crawl-delay
-     *
-     * @return array
-     */
-    public function getCrawlDelay()
-    {
-        //TODO: Crawl-delay
-    }
-
-    /**
      * Get Cache-delay
      *
-     * @return array
+     * @return float|int
      */
     public function getCacheDelay()
     {
-        //TODO: Cache-delay
+        $exported = $this->{self::DIRECTIVE_CACHE_DELAY}->export();
+        return isset($exported[self::DIRECTIVE_CACHE_DELAY]) ? $exported[self::DIRECTIVE_CACHE_DELAY] : $this->getCrawlDelay();
+    }
+
+    /**
+     * Get Crawl-delay
+     *
+     * @return float|int
+     */
+    public function getCrawlDelay()
+    {
+        $exported = $this->{self::DIRECTIVE_CRAWL_DELAY}->export();
+        return isset($exported[self::DIRECTIVE_CRAWL_DELAY]) ? $exported[self::DIRECTIVE_CRAWL_DELAY] : 0;
     }
 }

@@ -101,12 +101,4 @@ final class Host implements DirectiveInterface, RobotsTxtInterface
     {
         return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
     }
-
-    public function optimize($url)
-    {
-        //TODO: Change scheme, Host and port
-        //$parsed = parse_url($url);
-
-        return $url;
-    }
 }

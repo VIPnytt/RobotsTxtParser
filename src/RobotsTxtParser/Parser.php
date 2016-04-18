@@ -14,10 +14,19 @@ class Parser extends Core
     protected $origin;
     protected $statusCode;
 
-    public function __construct($RobotsTxtURL, $statusCode, $content, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT)
+    /**
+     * Parser constructor.
+     *
+     * @param string $robotsTxtURL
+     * @param int|null $statusCode
+     * @param string|null $content
+     * @param string $encoding
+     * @param int $byteLimit
+     */
+    public function __construct($robotsTxtURL, $statusCode, $content, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT)
     {
-        parent::__construct($content, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT);
-        $this->origin = $RobotsTxtURL;
+        parent::__construct($content, $encoding, $byteLimit);
+        $this->origin = $robotsTxtURL;
         $this->statusCode = $statusCode;
     }
 
@@ -49,11 +58,6 @@ class Parser extends Core
     public function getCleanParam()
     {
         return $this->cleanParam->export();
-    }
-
-    public function optimizeURL($url)
-    {
-        return $this->host->optimize($url);
     }
 
     public function userAgent($string = self::USER_AGENT)
