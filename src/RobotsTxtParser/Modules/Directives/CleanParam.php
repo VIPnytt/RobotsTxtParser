@@ -1,19 +1,19 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Directives;
+namespace vipnytt\RobotsTxtParser\Modules\Directives;
 
-use vipnytt\RobotsTxtParser\ObjectTools;
+use vipnytt\RobotsTxtParser\Modules\Toolbox;
+use vipnytt\RobotsTxtParser\Modules\UrlTools;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
-use vipnytt\RobotsTxtParser\UrlToolbox;
 
 /**
  * Class CleanParam
  *
- * @package vipnytt\RobotsTxtParser\Directives
+ * @package vipnytt\RobotsTxtParser\Modules\Directives
  */
-final class CleanParam implements DirectiveInterface, RobotsTxtInterface
+class CleanParam implements DirectiveInterface, RobotsTxtInterface
 {
-    use ObjectTools;
-    use UrlToolbox;
+    use Toolbox;
+    use UrlTools;
 
     /**
      * Directive

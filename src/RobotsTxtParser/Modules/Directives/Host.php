@@ -1,17 +1,17 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Directives;
+namespace vipnytt\RobotsTxtParser\Modules\Directives;
 
+use vipnytt\RobotsTxtParser\Modules\UrlTools;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
-use vipnytt\RobotsTxtParser\UrlToolbox;
 
 /**
  * Class Host
  *
- * @package vipnytt\RobotsTxtParser\Directives
+ * @package vipnytt\RobotsTxtParser\Modules\Directives
  */
-final class Host implements DirectiveInterface, RobotsTxtInterface
+class Host implements DirectiveInterface, RobotsTxtInterface
 {
-    use UrlToolbox;
+    use UrlTools;
 
     /**
      * Directive

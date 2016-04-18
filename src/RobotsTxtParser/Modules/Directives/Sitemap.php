@@ -1,17 +1,17 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Directives;
+namespace vipnytt\RobotsTxtParser\Modules\Directives;
 
+use vipnytt\RobotsTxtParser\Modules\UrlTools;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
-use vipnytt\RobotsTxtParser\UrlToolbox;
 
 /**
  * Class Sitemap
  *
- * @package vipnytt\RobotsTxtParser\Directives
+ * @package vipnytt\RobotsTxtParser\Modules\Directives
  */
-final class Sitemap implements DirectiveInterface, RobotsTxtInterface
+class Sitemap implements DirectiveInterface, RobotsTxtInterface
 {
-    use UrlToolbox;
+    use UrlTools;
 
     /**
      * Directive

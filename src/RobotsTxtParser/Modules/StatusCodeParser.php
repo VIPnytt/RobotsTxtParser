@@ -1,12 +1,13 @@
 <?php
-namespace vipnytt\RobotsTxtParser;
+namespace vipnytt\RobotsTxtParser\Modules;
 
 use vipnytt\RobotsTxtParser\Exceptions\StatusCodeException;
+use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
  * Class StatusCodeParser
  *
- * @package vipnytt\RobotsTxtParser
+ * @package vipnytt\RobotsTxtParser\Modules
  */
 class StatusCodeParser implements RobotsTxtInterface
 {
@@ -42,7 +43,7 @@ class StatusCodeParser implements RobotsTxtInterface
      */
     protected $unofficialCodes = [
         522 => 408, // CloudFlare could not negotiate a TCP handshake with the origin server.
-        523 => 404, // CloudFlare could not reach the origin server; for example, if the DNS records for the origin server are incorrect.
+        523 => 404, // CloudFlare could not reach the origin server; for example, if the DNS records for the baseUrl server are incorrect.
         524 => 408, // CloudFlare was able to complete a TCP connection to the origin server, but did not receive a timely HTTP response.
     ];
 
@@ -98,7 +99,6 @@ class StatusCodeParser implements RobotsTxtInterface
      * Determine the correct group
      *
      * @return string|null
-     * @throws Exceptions\ClientException
      */
     public function check()
     {

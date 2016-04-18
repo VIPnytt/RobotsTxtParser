@@ -1,10 +1,12 @@
 <?php
 namespace vipnytt\RobotsTxtParser;
 
-use vipnytt\RobotsTxtParser\Directives\CleanParam;
-use vipnytt\RobotsTxtParser\Directives\Host;
-use vipnytt\RobotsTxtParser\Directives\Sitemap;
-use vipnytt\RobotsTxtParser\Directives\UserAgent;
+use vipnytt\RobotsTxtParser\Exceptions\ParserException;
+use vipnytt\RobotsTxtParser\Modules\Directives\CleanParam;
+use vipnytt\RobotsTxtParser\Modules\Directives\Host;
+use vipnytt\RobotsTxtParser\Modules\Directives\Sitemap;
+use vipnytt\RobotsTxtParser\Modules\Directives\UserAgent;
+use vipnytt\RobotsTxtParser\Modules\Toolbox;
 
 /**
  * Class Core
@@ -13,7 +15,7 @@ use vipnytt\RobotsTxtParser\Directives\UserAgent;
  */
 abstract class Core implements RobotsTxtInterface
 {
-    use ObjectTools;
+    use Toolbox;
 
     /**
      * Directive white list
@@ -73,12 +75,12 @@ abstract class Core implements RobotsTxtInterface
      * @param string $content - file content
      * @param string $encoding - character encoding
      * @param integer|null $byteLimit - maximum of bytes to parse
-     * @throws Exceptions\ParserException
+     * @throws ParserException
      */
     public function __construct($content, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT)
     {
         if (!mb_internal_encoding($encoding)) {
-            throw new Exceptions\ParserException('Unable to set internal character encoding to `' . $encoding . '`');
+            throw new ParserException('Unable to set internal character encoding to `' . $encoding . '`');
         }
         $this->cleanParam = new CleanParam();
         $this->host = new Host();

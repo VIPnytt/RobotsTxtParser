@@ -4,10 +4,15 @@ namespace vipnytt\RobotsTxtParser;
 /**
  * Interface RobotsTxtInterface
  *
- * @package vipnytt\RobotsTxtParser
+ * @package vipnytt\RobotsTxtParser\Modules
  */
 interface RobotsTxtInterface
 {
+    /**
+     * Max redirects
+     */
+    const MAX_REDIRECTS = 5;
+    
     /**
      * Expected encoding
      */

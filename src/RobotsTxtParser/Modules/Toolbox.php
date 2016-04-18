@@ -1,12 +1,14 @@
 <?php
-namespace vipnytt\RobotsTxtParser;
+namespace vipnytt\RobotsTxtParser\Modules;
+
+use vipnytt\RobotsTxtParser\Exceptions\ParserException;
 
 /**
- * Trait ObjectTools
+ * Trait DirectiveTools
  *
- * @package vipnytt\RobotsTxtParser
+ * @package vipnytt\RobotsTxtParser\Modules
  */
-trait ObjectTools
+trait Toolbox
 {
     /**
      * Check basic rule
@@ -66,12 +68,12 @@ trait ObjectTools
      * @param $directive
      * @param $directives
      * @return string
-     * @throws Exceptions\ParserException
+     * @throws ParserException
      */
     protected function validateDirective($directive, $directives)
     {
         if (!in_array($directive, $directives, true)) {
-            throw new Exceptions\ParserException('Directive is not allowed here');
+            throw new ParserException('Directive is not allowed here');
         }
         return mb_strtolower($directive);
     }

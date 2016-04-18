@@ -1,13 +1,14 @@
 <?php
-namespace vipnytt\RobotsTxtParser;
+namespace vipnytt\RobotsTxtParser\Modules;
 
-use vipnytt\RobotsTxtParser\Directives\DisAllow;
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
+use vipnytt\RobotsTxtParser\Modules\Directives\DisAllow;
+use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
  * Class UserAgentClient
  *
- * @package vipnytt\RobotsTxtParser
+ * @package vipnytt\RobotsTxtParser\Modules
  */
 class UserAgentClient implements RobotsTxtInterface
 {

@@ -1,12 +1,14 @@
 <?php
-namespace vipnytt\RobotsTxtParser;
+namespace vipnytt\RobotsTxtParser\Modules;
+
+use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 
 /**
- * Trait UrlToolbox
+ * Trait UrlTools
  *
- * @package vipnytt\RobotsTxtParser
+ * @package vipnytt\RobotsTxtParser\Modules
  */
-trait UrlToolbox
+trait UrlTools
 {
     /**
      * URL encoder according to RFC 3986
@@ -46,6 +48,26 @@ trait UrlToolbox
     }
 
     /**
+     * Base URL
+     *
+     * @param string $url
+     * @return string
+     * @throws ClientException
+     */
+    protected function urlBase($url)
+    {
+        if ($this->urlValidate($url) === false) {
+            throw new ClientException('Invalid URL');
+        }
+        $parts = [
+            'scheme' => parse_url($url, PHP_URL_SCHEME),
+            'host' => parse_url($url, PHP_URL_HOST),
+        ];
+        $parts['port'] = is_int($port = parse_url($url, PHP_URL_PORT)) ? $port : getservbyname($parts['scheme'], 'tcp');
+        return $parts['scheme'] . '://' . $parts['host'] . ':' . $parts['port'];
+    }
+
+    /**
      * Validate URL
      *
      * @param string $url
@@ -69,7 +91,7 @@ trait UrlToolbox
      * @param  string $host
      * @return bool
      */
-    protected static function  urlValidateHost($host)
+    protected static function urlValidateHost($host)
     {
         return (
             mb_ereg_match('^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$', $host) && //valid chars check

@@ -1,20 +1,20 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Directives;
+namespace vipnytt\RobotsTxtParser\Modules\Directives;
 
 use vipnytt\RobotsTxtParser\Exceptions;
-use vipnytt\RobotsTxtParser\ObjectTools;
+use vipnytt\RobotsTxtParser\Modules\Toolbox;
+use vipnytt\RobotsTxtParser\Modules\UrlTools;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
-use vipnytt\RobotsTxtParser\UrlToolbox;
 
 /**
  * Class DisAllow
  *
- * @package vipnytt\RobotsTxtParser\Directives
+ * @package vipnytt\RobotsTxtParser\Modules\Directives
  */
-final class DisAllow implements DirectiveInterface, RobotsTxtInterface
+class DisAllow implements DirectiveInterface, RobotsTxtInterface
 {
-    use ObjectTools;
-    use UrlToolbox;
+    use Toolbox;
+    use UrlTools;
 
     /**
      * Directive alternatives

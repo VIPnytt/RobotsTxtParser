@@ -1,6 +1,9 @@
 <?php
 namespace vipnytt\RobotsTxtParser;
 
+use vipnytt\RobotsTxtParser\Modules\Download;
+use vipnytt\RobotsTxtParser\Modules\StatusCodeParser;
+use vipnytt\RobotsTxtParser\Modules\UserAgentClient;
 use vipnytt\UserAgentParser;
 
 /**
@@ -22,10 +25,10 @@ class Parser extends Core
     protected $statusCodeParser;
 
     /**
-     * Robots.txt origin
+     * Robots.txt base
      * @var string
      */
-    protected $origin;
+    protected $baseUrl;
 
     /**
      * Status code
@@ -36,17 +39,23 @@ class Parser extends Core
     /**
      * Parser constructor.
      *
-     * @param string $robotsTxtURL
+     * @param string $baseUrl
      * @param int|null $statusCode
      * @param string|null $content
      * @param string $encoding
      * @param int $byteLimit
      */
-    public function __construct($robotsTxtURL, $statusCode, $content, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT)
+    public function __construct($baseUrl, $statusCode = null, $content = null, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT)
     {
-        parent::__construct($content, $encoding, $byteLimit);
-        $this->origin = $robotsTxtURL;
+        $this->baseUrl = $baseUrl;
         $this->statusCode = $statusCode;
+        if ($content === null) {
+            $client = new Download($this->baseUrl);
+            $this->statusCode = $client->getStatusCode();
+            $content = $client->getBody();
+            $encoding = $client->getEncoding();
+        }
+        parent::__construct($content, $encoding, $byteLimit);
     }
 
     /**
@@ -91,6 +100,6 @@ class Parser extends Core
         if (($userAgent = $userAgentParser->match($this->userAgent->userAgents)) === false) {
             $userAgent = self::USER_AGENT;
         }
-        return new UserAgentClient($this->userAgent->{self::DIRECTIVE_ALLOW}[$userAgent], $this->userAgent->{self::DIRECTIVE_DISALLOW}[$userAgent], $userAgent, $this->origin, $this->statusCode);
+        return new UserAgentClient($this->userAgent->{self::DIRECTIVE_ALLOW}[$userAgent], $this->userAgent->{self::DIRECTIVE_DISALLOW}[$userAgent], $userAgent, $this->baseUrl, $this->statusCode);
     }
 }
