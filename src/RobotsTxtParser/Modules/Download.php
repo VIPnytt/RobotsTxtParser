@@ -51,7 +51,7 @@ class Download implements RobotsTxtInterface
         $header = $this->response->getHeader('content-type')[0];
         $split = array_map('trim', mb_split(';', $header));
         foreach ($split as $string) {
-            if (($pos = mb_stripos($string, 'charset=')) !== false) {
+            if (mb_stripos($string, 'charset=') === 0) {
                 return mb_split('=', $string, 2)[1];
             }
         }

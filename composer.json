@@ -18,7 +18,7 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "php": ">=5.4.0",
+    "php": ">=5.5.0",
     "vipnytt/useragentparser": "0.2.*",
     "guzzlehttp/guzzle": "6.*",
     "ext-mbstring": "*"
