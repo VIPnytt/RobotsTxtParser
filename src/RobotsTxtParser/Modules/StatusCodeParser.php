@@ -106,6 +106,7 @@ class StatusCodeParser implements RobotsTxtInterface
             return null;
         }
         switch (floor($this->code / 100) * 100) {
+            case 300:
             case 400:
                 return self::DIRECTIVE_ALLOW;
             case 500:

@@ -2,7 +2,6 @@
 namespace vipnytt\RobotsTxtParser\Modules;
 
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
-use vipnytt\RobotsTxtParser\Modules\Directives\DisAllow;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -15,16 +14,10 @@ class UserAgentClient implements RobotsTxtInterface
     use UrlTools;
 
     /**
-     * Allow rules
-     * @var DisAllow
+     * Rules
+     * @var array
      */
-    protected $allow;
-
-    /**
-     * Disallow rules
-     * @var DisAllow
-     */
-    protected $disallow;
+    protected $rules;
 
     /**
      * User-agent
@@ -47,19 +40,17 @@ class UserAgentClient implements RobotsTxtInterface
     /**
      * UserAgentClient constructor.
      *
-     * @param DisAllow $allow
-     * @param DisAllow $disallow
+     * @param array $rules
      * @param string $userAgent
      * @param string $baseUrl
      * @param int $statusCode
      */
-    public function __construct($allow, $disallow, $userAgent, $baseUrl, $statusCode)
+    public function __construct($rules, $userAgent, $baseUrl, $statusCode)
     {
         $this->statusCodeParser = new StatusCodeParser($statusCode, parse_url($baseUrl, PHP_URL_SCHEME));
         $this->userAgent = $userAgent;
+        $this->rules = $rules;
         $this->base = $baseUrl;
-        $this->allow = $allow;
-        $this->disallow = $disallow;
     }
 
     /**
@@ -93,7 +84,7 @@ class UserAgentClient implements RobotsTxtInterface
         }
         $result = self::DIRECTIVE_ALLOW;
         foreach ([self::DIRECTIVE_DISALLOW, self::DIRECTIVE_ALLOW] as $currentDirective) {
-            if ($this->$currentDirective->check($url)) {
+            if ($this->rules[$currentDirective]->check($url)) {
                 $result = $currentDirective;
             }
         }
@@ -139,7 +130,7 @@ class UserAgentClient implements RobotsTxtInterface
      */
     public function getCacheDelay()
     {
-        $exported = $this->{self::DIRECTIVE_CACHE_DELAY}->export();
+        $exported = $this->rules[self::DIRECTIVE_CACHE_DELAY]->export();
         return isset($exported[self::DIRECTIVE_CACHE_DELAY]) ? $exported[self::DIRECTIVE_CACHE_DELAY] : $this->getCrawlDelay();
     }
 
@@ -150,7 +141,7 @@ class UserAgentClient implements RobotsTxtInterface
      */
     public function getCrawlDelay()
     {
-        $exported = $this->{self::DIRECTIVE_CRAWL_DELAY}->export();
+        $exported = $this->rules[self::DIRECTIVE_CRAWL_DELAY]->export();
         return isset($exported[self::DIRECTIVE_CRAWL_DELAY]) ? $exported[self::DIRECTIVE_CRAWL_DELAY] : 0;
     }
 }

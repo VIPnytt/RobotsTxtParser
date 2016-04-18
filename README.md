@@ -11,11 +11,9 @@ PHP class to parse `robots.txt` according to [_Google_](https://developers.googl
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/6fb47427-166b-45d0-bd41-40f7a63c2b0c/big.png)](https://insight.sensiolabs.com/projects/6fb47427-166b-45d0-bd41-40f7a63c2b0c)
 
-### Currently in development
-
-### Requirements:
+#### Requirements:
 - PHP >=5.6
 - PHP [mbstring](http://php.net/manual/en/book.mbstring.php) extension
 
 #### Note about HHVM compatibility
-HHVM is not yet supported due to PHP 5.6 and 7.0 incompatibility. See [facebook/hhvm#4277](https://github.com/facebook/hhvm/issues/4277) about Constant array support. Full HHVM support are planed once it has been resolved.
+Full HHVM support is planned once [facebook/hhvm#4277](https://github.com/facebook/hhvm/issues/4277) is fixed. This is due to missing "constant array" support (PHP 5.6 and 7.0 incompatibility).

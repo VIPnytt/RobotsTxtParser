@@ -65,7 +65,10 @@ class Parser extends Core
      */
     public function getSitemaps()
     {
-        return $this->sitemap->export();
+        if (isset($this->sitemap->export()[self::DIRECTIVE_SITEMAP])) {
+            return $this->sitemap->export()[self::DIRECTIVE_SITEMAP];
+        }
+        return [];
     }
 
     /**
@@ -75,7 +78,10 @@ class Parser extends Core
      */
     public function getHost()
     {
-        return $this->host->export();
+        if (isset($this->host->export()[self::DIRECTIVE_HOST])) {
+            return $this->host->export()[self::DIRECTIVE_HOST][0];
+        }
+        return null;
     }
 
     /**
@@ -85,7 +91,10 @@ class Parser extends Core
      */
     public function getCleanParam()
     {
-        return $this->cleanParam->export();
+        if (isset($this->cleanParam->export()[self::DIRECTIVE_CLEAN_PARAM])) {
+            return $this->cleanParam->export()[self::DIRECTIVE_CLEAN_PARAM];
+        }
+        return null;
     }
 
     /**
@@ -100,6 +109,12 @@ class Parser extends Core
         if (($userAgent = $userAgentParser->match($this->userAgent->userAgents)) === false) {
             $userAgent = self::USER_AGENT;
         }
-        return new UserAgentClient($this->userAgent->{self::DIRECTIVE_ALLOW}[$userAgent], $this->userAgent->{self::DIRECTIVE_DISALLOW}[$userAgent], $userAgent, $this->baseUrl, $this->statusCode);
+        $rules = [
+            self::DIRECTIVE_ALLOW => $this->userAgent->allow[$userAgent],
+            self::DIRECTIVE_DISALLOW => $this->userAgent->disallow[$userAgent],
+            self::DIRECTIVE_CRAWL_DELAY => $this->userAgent->crawlDelay[$userAgent],
+            self::DIRECTIVE_CACHE_DELAY => $this->userAgent->cacheDelay[$userAgent],
+        ];
+        return new UserAgentClient($rules, $userAgent, $this->baseUrl, $this->statusCode);
     }
 }

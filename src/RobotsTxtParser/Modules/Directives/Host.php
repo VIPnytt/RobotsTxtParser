@@ -56,10 +56,13 @@ class Host implements DirectiveInterface, RobotsTxtInterface
         $port = isset($parsed['port']) ? ':' . $parsed['port'] : '';
 
         $host = $scheme . $line . $port;
-        if (in_array($host, $this->array)) {
+        if (
+            $line !== $host ||
+            in_array($host, $this->array)
+        ) {
             return false;
         }
-        $this->array[] = $host;
+        $this->array[] = $line;
         return true;
     }
 
