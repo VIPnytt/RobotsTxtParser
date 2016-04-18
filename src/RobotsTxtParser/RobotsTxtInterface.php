@@ -1,6 +1,11 @@
 <?php
 namespace vipnytt\RobotsTxtParser;
 
+/**
+ * Interface RobotsTxtInterface
+ *
+ * @package vipnytt\RobotsTxtParser
+ */
 interface RobotsTxtInterface
 {
     /**

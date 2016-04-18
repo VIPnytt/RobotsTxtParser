@@ -19,7 +19,8 @@
   "prefer-stable": true,
   "require": {
     "php": ">=5.4.0",
-    "vipnytt/useragentparser": "0.1.*",
+    "vipnytt/useragentparser": "0.2.*",
+    "guzzlehttp/guzzle": "6.*",
     "ext-mbstring": "*"
   },
   "require-dev": {

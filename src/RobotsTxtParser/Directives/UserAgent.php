@@ -33,26 +33,31 @@ final class UserAgent implements DirectiveInterface, RobotsTxtInterface
      * @var array
      */
     public $userAgents = [];
+
     /**
      * Sub-directive Allow
      * @var array
      */
     public $allow = [];
+
     /**
      * Sub-directive Cache-delay
      * @var array
      */
     public $cacheDelay = [];
+
     /**
      * Sub-directive Crawl-delay
      * @var array
      */
     public $crawlDelay = [];
+
     /**
      * Sub-directive Disallow
      * @var array
      */
     public $disallow = [];
+
     /**
      * Current User-agent(s)
      * @var array

@@ -6,10 +6,18 @@ use vipnytt\RobotsTxtParser\Directives\Host;
 use vipnytt\RobotsTxtParser\Directives\Sitemap;
 use vipnytt\RobotsTxtParser\Directives\UserAgent;
 
+/**
+ * Class Core
+ *
+ * @package vipnytt\RobotsTxtParser
+ */
 abstract class Core implements RobotsTxtInterface
 {
     use ObjectTools;
 
+    /**
+     * Directive white list
+     */
     const TOP_LEVEL_DIRECTIVES = [
         self::DIRECTIVE_CLEAN_PARAM,
         self::DIRECTIVE_HOST,
@@ -17,18 +25,50 @@ abstract class Core implements RobotsTxtInterface
         self::DIRECTIVE_USER_AGENT,
     ];
 
+    /**
+     * RAW robots.txt content
+     * @var string
+     */
     protected $raw;
 
+    /**
+     * Previous directive
+     * @var string
+     */
     protected $previousDirective;
+
+    /**
+     * Current user-agent(s)
+     * @var array
+     */
     protected $userAgentValues;
 
+    /**
+     * Clean-param class
+     * @var CleanParam
+     */
     protected $cleanParam;
+
+    /**
+     * Host class
+     * @var Host
+     */
     protected $host;
+
+    /**
+     * Sitemap class
+     * @var Sitemap
+     */
     protected $sitemap;
+
+    /**
+     * User-agent class
+     * @var UserAgent
+     */
     protected $userAgent;
 
     /**
-     * Constructor
+     * Core constructor.
      *
      * @param string $content - file content
      * @param string $encoding - character encoding
@@ -40,7 +80,6 @@ abstract class Core implements RobotsTxtInterface
         if (!mb_internal_encoding($encoding)) {
             throw new Exceptions\ParserException('Unable to set internal character encoding to `' . $encoding . '`');
         }
-
         $this->cleanParam = new CleanParam();
         $this->host = new Host();
         $this->sitemap = new Sitemap();
@@ -69,6 +108,12 @@ abstract class Core implements RobotsTxtInterface
         }
     }
 
+    /**
+     * Add line
+     *
+     * @param string $line
+     * @return bool
+     */
     public function add($line)
     {
         $previousDirective = $this->previousDirective;
@@ -93,6 +138,11 @@ abstract class Core implements RobotsTxtInterface
         return $this->userAgent->add($line);
     }
 
+    /**
+     * Export
+     *
+     * @return array
+     */
     public function export()
     {
         return $this->cleanParam->export()

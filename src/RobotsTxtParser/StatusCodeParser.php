@@ -3,6 +3,11 @@ namespace vipnytt\RobotsTxtParser;
 
 use vipnytt\RobotsTxtParser\Exceptions\StatusCodeException;
 
+/**
+ * Class StatusCodeParser
+ *
+ * @package vipnytt\RobotsTxtParser
+ */
 class StatusCodeParser implements RobotsTxtInterface
 {
     /**
@@ -21,7 +26,7 @@ class StatusCodeParser implements RobotsTxtInterface
 
     /**
      * Scheme
-     * @var string
+     * @var string|false|null
      */
     protected $scheme;
 
@@ -55,6 +60,12 @@ class StatusCodeParser implements RobotsTxtInterface
         $this->applicable = $this->isApplicable();
     }
 
+    /**
+     * Check if URL is Applicable for Status code parsing
+     *
+     * @return bool
+     * @throws StatusCodeException
+     */
     protected function isApplicable()
     {
         if (!in_array($this->scheme, self::VALID_SCHEME)) {

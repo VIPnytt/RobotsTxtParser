@@ -3,41 +3,60 @@ namespace vipnytt\RobotsTxtParser;
 
 use vipnytt\RobotsTxtParser\Directives\DisAllow;
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
-use vipnytt\RobotsTxtParser\Exceptions\ParserException;
 
+/**
+ * Class UserAgentClient
+ *
+ * @package vipnytt\RobotsTxtParser
+ */
 class UserAgentClient implements RobotsTxtInterface
 {
+    /**
+     * Allow rules
+     * @var DisAllow
+     */
     protected $allow;
+
+    /**
+     * Disallow rules
+     * @var DisAllow
+     */
     protected $disallow;
 
+    /**
+     * User-agent
+     * @var string
+     */
     protected $userAgent;
+
+    /**
+     * Robots.txt origin
+     * @var string
+     */
     protected $origin;
+
+    /**
+     * Status code parser
+     * @var StatusCodeParser
+     */
     protected $statusCodeParser;
 
     /**
      * UserAgentClient constructor.
      *
-     * @param array $rules
+     * @param DisAllow $allow
+     * @param DisAllow $disallow
      * @param string $userAgent
      * @param string $origin
      * @param int $statusCode
      */
-    public function __construct($rules, $userAgent, $origin, $statusCode)
+    public function __construct($allow, $disallow, $userAgent, $origin, $statusCode)
     {
         $this->statusCodeParser = new StatusCodeParser($statusCode, parse_url($origin, PHP_URL_SCHEME));
         $this->userAgent = $userAgent;
         $this->origin = $origin;
-        $this->validateRules($rules);
-    }
-
-    protected function validateRules($rules)
-    {
-        foreach ([self::DIRECTIVE_DISALLOW, self::DIRECTIVE_ALLOW] as $directive) {
-            if (!$rules[$directive] instanceof DisAllow) {
-                throw new ParserException('Invalid rule object');
-            }
-            $this->$directive = $rules[$directive];
-        }
+        $this->allow = $allow;
+        $this->disallow = $disallow;
     }
 
     /**
@@ -61,7 +80,7 @@ class UserAgentClient implements RobotsTxtInterface
      */
     protected function check($directive, $url)
     {
-        if (!$this->isUrlApplicable($url)) {
+        if (!$this->isUrlApplicable([$url, $this->origin])) {
             throw new ClientException('URL belongs to a different robots.txt, please check it against that one instead');
         }
         $this->statusCodeParser->replaceUnofficial();
@@ -77,6 +96,12 @@ class UserAgentClient implements RobotsTxtInterface
         return $directive === $result;
     }
 
+    /**
+     * Check if the URL belongs to current robots.txt
+     *
+     * @param $urls
+     * @return bool
+     */
     protected function isUrlApplicable($urls)
     {
         foreach ($urls as $url) {

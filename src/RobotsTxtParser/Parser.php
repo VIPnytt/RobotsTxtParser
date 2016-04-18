@@ -3,6 +3,16 @@ namespace vipnytt\RobotsTxtParser;
 
 use vipnytt\UserAgentParser;
 
+/**
+ * Class Parser
+ *
+ * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt
+ * @link https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml
+ * @link http://www.robotstxt.org/robotstxt.html
+ * @link https://www.w3.org/TR/html4/appendix/notes.html#h-B.4.1.1
+ *
+ * @package vipnytt\RobotsTxtParser
+ */
 class Parser extends Core
 {
     /**
@@ -11,7 +21,16 @@ class Parser extends Core
      */
     protected $statusCodeParser;
 
+    /**
+     * Robots.txt origin
+     * @var string
+     */
     protected $origin;
+
+    /**
+     * Status code
+     * @var int|null
+     */
     protected $statusCode;
 
     /**
@@ -60,13 +79,18 @@ class Parser extends Core
         return $this->cleanParam->export();
     }
 
+    /**
+     * Return an User-agent instance, for future usage
+     *
+     * @param string $string
+     * @return UserAgentClient
+     */
     public function userAgent($string = self::USER_AGENT)
     {
-        $uaParser = new UserAgentParser($string);
-        $userAgent = $uaParser->match($this->userAgent->userAgents, self::USER_AGENT);
-        return new UserAgentClient([
-            self::DIRECTIVE_DISALLOW => $this->userAgent->{self::DIRECTIVE_DISALLOW}[$userAgent],
-            self::DIRECTIVE_ALLOW => $this->userAgent->{self::DIRECTIVE_ALLOW}[$userAgent],
-        ], $userAgent, $this->origin, $this->statusCode);
+        $userAgentParser = new UserAgentParser($string);
+        if (($userAgent = $userAgentParser->match($this->userAgent->userAgents)) === false) {
+            $userAgent = self::USER_AGENT;
+        }
+        return new UserAgentClient($this->userAgent->{self::DIRECTIVE_ALLOW}[$userAgent], $this->userAgent->{self::DIRECTIVE_DISALLOW}[$userAgent], $userAgent, $this->origin, $this->statusCode);
     }
 }

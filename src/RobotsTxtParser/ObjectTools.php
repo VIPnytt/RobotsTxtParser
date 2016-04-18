@@ -1,6 +1,11 @@
 <?php
 namespace vipnytt\RobotsTxtParser;
 
+/**
+ * Trait ObjectTools
+ *
+ * @package vipnytt\RobotsTxtParser
+ */
 trait ObjectTools
 {
     /**
