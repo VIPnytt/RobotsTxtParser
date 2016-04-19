@@ -56,7 +56,6 @@ class DisAllowTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent('botY-test')->isAllowed("/forum/topic"));
         $this->assertFalse($parser->userAgent('botY-test')->isAllowed("/public"));
 
-
         $this->assertTrue($parser->userAgent('crawlerZ')->isAllowed("/"));
         $this->assertTrue($parser->userAgent('crawlerZ')->isDisallowed("/forum"));
         $this->assertTrue($parser->userAgent('crawlerZ')->isDisallowed("/public"));

@@ -19,12 +19,30 @@ trait Toolbox
      */
     protected function checkPath($path, $paths)
     {
-        // bug: https://github.com/t1gor/Robots.txt-Parser-Class/issues/62
-        foreach ($paths as $robotPath) {
-            $escaped = strtr($robotPath, ["@" => '\@']);
-            if (preg_match('@' . $escaped . '@', $path)) {
-                if (mb_stripos($escaped, '$') !== false) {
-                    if (mb_strlen($escaped) - 1 == mb_strlen($path)) {
+        foreach ($paths as $rule) {
+            $escape = ['?' => '\?', '.' => '\.', '*' => '.*'];
+            foreach ($escape as $search => $replace) {
+                /**
+                 * str_replace needs to be replaced by something better, multi-byte safe
+                 */
+                $rule = str_replace($search, $replace, $rule);
+            }
+            /**
+             * Warning: preg_match need to be replaced
+             *
+             * Bug report
+             * @link https://github.com/t1gor/Robots.txt-Parser-Class/issues/62
+             *
+             * An robots.txt parser, where a bug-fix is planned
+             * @link https://github.com/diggin/Diggin_RobotRules
+             *
+             * The solution?
+             * PHP PEG (parsing expression grammar)
+             * @link https://github.com/hafriedlander/php-peg
+             */
+            if (preg_match('~' . $rule . '~', $path)) {
+                if (mb_stripos($rule, '$') !== false) {
+                    if (mb_strlen($rule) - 1 == mb_strlen($path)) {
                         return true;
                     }
                 } else {

@@ -119,7 +119,7 @@ class DisAllow implements DirectiveInterface, RobotsTxtInterface
     }
 
     /**
-     * Get path
+     * Get path and query
      *
      * @param string $url
      * @return string
@@ -135,7 +135,9 @@ class DisAllow implements DirectiveInterface, RobotsTxtInterface
         if (!$this->urlValidate($url)) {
             throw new Exceptions\ClientException('Invalid URL');
         }
-        return parse_url($url, PHP_URL_PATH);
+        $path = (($path = parse_url($url, PHP_URL_PATH)) === null) ? '/' : $path;
+        $query = (($query = parse_url($url, PHP_URL_QUERY)) === null) ? '' : '?' . $query;
+        return $path . $query;
     }
 
     /**

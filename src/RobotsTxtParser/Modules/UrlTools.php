@@ -60,10 +60,7 @@ trait UrlTools
             "=" => '!%3D!ui',
             "%" => '!%25!ui'
         ];
-        foreach ($reserved as $replace => $pattern) {
-            $url = mb_ereg_replace($pattern, $replace, $url);
-        }
-        return $url;
+        return preg_replace(array_values($reserved), array_keys($reserved), rawurlencode($url));
     }
 
     /**
@@ -93,10 +90,10 @@ trait UrlTools
     protected static function urlValidateHost($host)
     {
         return (
-            mb_ereg_match('^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$', $host) && //valid chars check
-            mb_ereg_match('^.{1,253}$', $host) && //overall length check
-            mb_ereg_match('^[^\.]{1,63}(\.[^\.]{1,63})*$', $host) && //length of each label
-            !filter_var($host, FILTER_VALIDATE_IP) //is not an IP address
+            preg_match("/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i", $host) //valid chars check
+            && preg_match("/^.{1,253}$/", $host) //overall length check
+            && preg_match("/^[^\.]{1,63}(\.[^\.]{1,63})*$/", $host) //length of each label
+            && !filter_var($host, FILTER_VALIDATE_IP) //is not an IP address
         );
     }
 
