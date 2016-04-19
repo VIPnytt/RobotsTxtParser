@@ -51,10 +51,11 @@ class CrawlDelay implements DirectiveInterface, RobotsTxtInterface
      */
     public function add($line)
     {
-        if (isset($this->value) && $this->value > 0) {
-            return false;
-        }
-        if (empty($float = floatval($line))) {
+        if (
+            empty($float = floatval($line)) ||
+            isset($this->value) &&
+            $this->value > 0
+        ) {
             return false;
         }
         $this->value = $float;

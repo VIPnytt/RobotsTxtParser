@@ -15,7 +15,7 @@ class ExportTest extends \PHPUnit_Framework_TestCase
      * @param string $robotsTxtContent
      * @param array $result
      */
-    public function testSitemap($robotsTxtContent, $result)
+    public function testExport($robotsTxtContent, $result)
     {
         $parser = new Parser('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);

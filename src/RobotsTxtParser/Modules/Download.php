@@ -26,6 +26,7 @@ class Download implements RobotsTxtInterface
             [
                 'base_uri' => $this->urlBase($url),
                 'max' => self::MAX_REDIRECTS,
+                'http_errors' => false,
             ]
         );
         $this->response = $client->request('GET', '/robots.txt');
