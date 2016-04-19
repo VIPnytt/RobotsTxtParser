@@ -33,6 +33,13 @@ class DisAllowTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent('*')->isDisallowed("/article"));
         $this->assertFalse($parser->userAgent('*')->isAllowed("/temp"));
 
+        $this->assertTrue($parser->userAgent('notListed')->isAllowed("/"));
+        $this->assertTrue($parser->userAgent('notListed')->isAllowed("/article"));
+        $this->assertTrue($parser->userAgent('notListed')->isDisallowed("/temp"));
+        $this->assertFalse($parser->userAgent('notListed')->isDisallowed("/"));
+        $this->assertFalse($parser->userAgent('notListed')->isDisallowed("/article"));
+        $this->assertFalse($parser->userAgent('notListed')->isAllowed("/temp"));
+
         $this->assertTrue($parser->userAgent('agentV')->isDisallowed("/foo"));
         $this->assertTrue($parser->userAgent('agentV')->isAllowed("/bar"));
         $this->assertTrue($parser->userAgent('agentW')->isDisallowed("/foo"));
@@ -78,6 +85,7 @@ User-agent: *
 Disallow: /admin
 Disallow: /temp#comment
 Disallow: /forum
+Disallow: /admin
 
 User-agent: agentV
 User-agent: agentW
@@ -91,6 +99,7 @@ Disallow: /assets
 
 User-agent: botY
 Disallow: /
+Disallow: &&/1@| #invalid
 Allow: /forum/$
 Allow: /article
 

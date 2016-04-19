@@ -1,28 +1,30 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 use vipnytt\RobotsTxtParser\Parser;
 
 /**
- * Class CacheDelayTest
+ * Class InvalidPathTest
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class CacheDelayTest extends \PHPUnit_Framework_TestCase
+class InvalidPathTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
      */
-    public function testCacheDelay($robotsTxtContent)
+    public function testInvalidPath($robotsTxtContent)
     {
         $parser = new Parser('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
 
-        $this->assertEquals(0.5, $parser->userAgent()->getCacheDelay());
-        $this->assertEquals(0.5, $parser->userAgent('*')->getCacheDelay());
-        $this->assertEquals(8, $parser->userAgent('GoogleBot')->getCacheDelay());
-        $this->assertEquals(9.2, $parser->userAgent('BingBot')->getCacheDelay());
+        $this->expectException(ClientException::class);
+        $this->assertTrue($parser->userAgent()->isDisallowed('&&/1@|'));
+
+        $this->expectException(ClientException::class);
+        $this->assertFalse($parser->userAgent()->isAllowed('+£€@@1¤'));
     }
 
     /**
@@ -35,17 +37,8 @@ class CacheDelayTest extends \PHPUnit_Framework_TestCase
         return [
             [
                 <<<ROBOTS
-User-Agent: *
-Crawl-Delay: 0.5
-
-User-Agent: GoogleBot
-Crawl-Delay: 3.7
-Cache-Delay: 8
-
-User-Agent: BingBot
-Crawl-Delay: 0
-Cache-Delay: 9.2
-Cache-Delay: 2.9
+User-agent: *
+Disallow: /
 ROBOTS
             ]
         ];

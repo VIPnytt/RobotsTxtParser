@@ -23,5 +23,11 @@ class EmptyTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($parser->userAgent('*')->isAllowed("/"));
         $this->assertFalse($parser->userAgent('*')->isDisallowed("/"));
+
+        $this->assertEquals([], $parser->getSitemaps());
+
+        $this->assertNull($parser->getHost());
+
+        $this->assertNull($parser->getCleanParam());
     }
 }

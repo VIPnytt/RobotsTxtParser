@@ -14,7 +14,7 @@ class StatusCodeTest extends \PHPUnit_Framework_TestCase
      * @dataProvider generateDataForTest
      * @param string $base
      * @param int $statusCode
-     * @param bool $expectedResult
+     * @param string $expectedResult
      */
     public function testStatusCode($base, $statusCode, $expectedResult)
     {
@@ -73,6 +73,11 @@ ROBOTS;
                 'http://example.com',
                 503,
                 'full disallow'
+            ],
+            [
+                'http://example.com',
+                522,
+                'full allow'
             ],
             [
                 'https://example.com',

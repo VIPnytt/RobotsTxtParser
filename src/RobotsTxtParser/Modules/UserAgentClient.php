@@ -144,4 +144,20 @@ class UserAgentClient implements RobotsTxtInterface
         $exported = $this->rules[self::DIRECTIVE_CRAWL_DELAY]->export();
         return isset($exported[self::DIRECTIVE_CRAWL_DELAY]) ? $exported[self::DIRECTIVE_CRAWL_DELAY] : 0;
     }
+
+    /**
+     * Rule export
+     *
+     * @return array
+     */
+    public function export()
+    {
+        $result = [];
+        foreach ($this->rules as $directive => $object) {
+            if (!empty($export = $object->export())) {
+                $result[$directive] = $export[$directive];
+            }
+        }
+        return $result;
+    }
 }
