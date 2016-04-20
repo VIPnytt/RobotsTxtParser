@@ -64,8 +64,8 @@ $allowed = $client->userAgent('MyBot')->isAllowed('/somepage.html'); // bool
 $denied = $client->userAgent('MyBot')->isDisallowed('/admin'); // bool
 
 // Crawl delay rules
-$crawlDelay = $client->userAgent('MyBot')->getCrawlDelay(); // integer | float
-$cacheDelay = $client->userAgent('MyBot')->getCacheDelay(); // integer | float
+$crawlDelay = $client->userAgent('MyBot')->getCrawlDelay(); // int | float
+$cacheDelay = $client->userAgent('MyBot')->getCacheDelay(); // int | float
 
 // Dynamic URL parameters
 $cleanParam = $client->getCleanParam(); // array
@@ -90,15 +90,15 @@ See our [Wiki](https://github.com/VIPnytt/RobotsTxtParser/wiki) for [Documentati
 - [x] [W3C Recommendation](https://www.w3.org/TR/html4/appendix/notes.html#h-B.4.1.2)
 
 ### Directives supported
-- [x] `User-Agent` group(s)
-  - [x] `Allow` directive
-    - [x] inline `Clean-param` directive
-    - [x] inline `Host` directive
-  - [x] `Disallow` directive
-    - [x] inline `Clean-param` directive
-    - [x] inline `Host` directive
-  - [x] `Crawl-delay` directive
-  - [x] `Cache-delay` directive
-- [x] `Clean-param` directive
-- [x] `Host` directive
-- [x] `Sitemap` directive
+- [x] `User-agent`
+  - [x] `Allow`
+    - [x] _inline_ `Clean-param`
+    - [x] _inline_ `Host`
+  - [x] `Disallow`
+    - [x] _inline_ `Clean-param`
+    - [x] _inline_ `Host`
+  - [x] `Crawl-delay`
+  - [x] `Cache-delay`
+- [x] `Clean-param`
+- [x] `Host`
+- [x] `Sitemap`

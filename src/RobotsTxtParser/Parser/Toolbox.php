@@ -40,14 +40,18 @@ trait Toolbox
              * PHP PEG (parsing expression grammar)
              * @link https://github.com/hafriedlander/php-peg
              */
-            if (preg_match('~' . $rule . '~', $path)) {
-                if (mb_stripos($rule, '$') !== false) {
-                    if (mb_strlen($rule) - 1 == mb_strlen($path)) {
+            try {
+                if (preg_match('#' . $rule . '#', $path)) {
+                    if (mb_stripos($rule, '$') !== false) {
+                        if (mb_strlen($rule) - 1 == mb_strlen($path)) {
+                            return true;
+                        }
+                    } else {
                         return true;
                     }
-                } else {
-                    return true;
                 }
+            } catch (\Exception $e) {
+                // An preg_match bug has occurred
             }
         }
         return false;
