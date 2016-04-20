@@ -25,9 +25,16 @@ class Download implements RobotsTxtInterface
     {
         $client = new GuzzleHttp\Client(
             [
+                'allow_redirects' => [
+                    'max' => self::MAX_REDIRECTS,
+                ],
                 'base_uri' => $this->urlBase($url),
-                'max' => self::MAX_REDIRECTS,
+                'headers' => [
+                    'Accept' => 'text/plain',
+                    'User-Agent' => 'RobotsTxtParser-VIPnytt/1.0 (+https://github.com/VIPnytt/RobotsTxtParser/blob/master/README.md)',
+                ],
                 'http_errors' => false,
+                'timeout' => 60,
             ]
         );
         $this->response = $client->request('GET', '/robots.txt');
