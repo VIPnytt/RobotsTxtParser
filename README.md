@@ -21,7 +21,7 @@ An easy to use, extensible PHP library to parse `robots.txt` according to [_Goog
 - Features a dedicated `User-Agent` parser and group determiner library, for maximum accuracy.
 - HTTP Status code handler, _according to [Google](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt) spec._
 - Full support for _inline directives_, _according to [Yandex](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml) spec._
-- Provides additional data like _prefered host_, dynamic _URL parameters_ and _Sitemap_ locations.
+- Provides additional data like _preferred host_, dynamic _URL parameters_ and _Sitemap_ locations.
 - FTP support
 
 #### Requirements:
@@ -47,35 +47,35 @@ php composer.phar update
 ## Getting started
 ### Basic usage example
 ```php
-$parser = new vipnytt\RobotsTxtParser\Parser('http://example.com');
-// When the robots.txt content isn't provided, it will be downloaded automaticly
-if ($parser->userAgent('MyBot')->isAllowed('/somepage.html')) {
+$client = new vipnytt\RobotsTxtParser\Parser('http://example.com');
+// When the robots.txt content isn't provided, it will be downloaded automatically
+if ($client->userAgent('MyBot')->isAllowed('/somepage.html')) {
     // Access is granted
 }
-if ($parser->userAgent('MyBot')->isDisallowed('/admin')) {
+if ($client->userAgent('MyBot')->isDisallowed('/admin')) {
     // Access is denied
 }
 ```
 ### Methods
 ```php
-// Parser syntax: $baseUrl, [$statusCode=null], [$robotsTxtContent=null], [$encoding='UTF-8'], [$byteLimit=50000]
-$parser = new vipnytt\RobotsTxtParser\Parser('http://example.com', 200, $robotsTxtContent);
+// Syntax: $baseUrl, [$statusCode=null], [$robotsTxtContent=null], [$encoding='UTF-8'], [$byteLimit=50000]
+$client = new vipnytt\RobotsTxtParser\Client('http://example.com', 200, $robotsTxtContent);
 
 // Permission checks
-$allowed = $parser->userAgent('MyBot')->isAllowed('/somepage.html'); // bool
-$denied = $parser->userAgent('MyBot')->isDisallowed('/admin'); // bool
+$allowed = $client->userAgent('MyBot')->isAllowed('/somepage.html'); // bool
+$denied = $client->userAgent('MyBot')->isDisallowed('/admin'); // bool
 // Crawl delay rules
-$crawlDelay = $parser->userAgent('MyBot')->getCrawlDelay(); // integer | float
-$cacheDelay = $parser->userAgent('MyBot')->getCacheDelay(); // integer | float
+$crawlDelay = $client->userAgent('MyBot')->getCrawlDelay(); // integer | float
+$cacheDelay = $client->userAgent('MyBot')->getCacheDelay(); // integer | float
 // Dynamic URL parameters
-$cleanParam = $parser->getCleanParam(); // array
-// Prefered host
-$host = $parser->getHost(); // string | null
+$cleanParam = $client->getCleanParam(); // array
+// Preferred host
+$host = $client->getHost(); // string | null
 // XML Sitemap locations
-$host = $parser->getSitemaps(); // array
+$host = $client->getSitemaps(); // array
 // Export
-$exportAll = $parser->export(); // array
-$exportUA = $parser->userAgent('MyBot')->export(); // array
+$exportAll = $client->export(); // array
+$exportUA = $client->userAgent('MyBot')->export(); // array
 ```
 
 See our [Wiki](https://github.com/VIPnytt/RobotsTxtParser/wiki) for [Documentation](https://github.com/VIPnytt/RobotsTxtParser/wiki) and additional [Usage examples](https://github.com/VIPnytt/RobotsTxtParser/wiki).
