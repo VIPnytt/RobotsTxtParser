@@ -1,8 +1,8 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use vipnytt\RobotsTxtParser\Client;
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
-use vipnytt\RobotsTxtParser\Parser;
 
 /**
  * Class InvalidPathTest
@@ -17,7 +17,7 @@ class InvalidPathTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidPath($robotsTxtContent)
     {
-        $parser = new Parser('http://example.com', 200, $robotsTxtContent);
+        $parser = new Client('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
 
         $this->expectException(ClientException::class);

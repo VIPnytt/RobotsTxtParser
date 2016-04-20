@@ -1,17 +1,18 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Modules;
+namespace vipnytt\RobotsTxtParser\Client;
 
 use GuzzleHttp;
+use vipnytt\RobotsTxtParser\Parser\UrlParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
  * Class Download
  *
- * @package vipnytt\RobotsTxtParser\Modules
+ * @package vipnytt\RobotsTxtParser\Client
  */
 class Download implements RobotsTxtInterface
 {
-    use UrlTools;
+    use UrlParser;
 
     private $response;
 

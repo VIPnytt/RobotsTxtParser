@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Parser;
+use vipnytt\RobotsTxtParser\Client;
 
 /**
  * Class CacheDelayTest
@@ -16,7 +16,7 @@ class CacheDelayTest extends \PHPUnit_Framework_TestCase
      */
     public function testCacheDelay($robotsTxtContent)
     {
-        $parser = new Parser('http://example.com', 200, $robotsTxtContent);
+        $parser = new Client('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
 
         $this->assertEquals(0.5, $parser->userAgent()->getCacheDelay());

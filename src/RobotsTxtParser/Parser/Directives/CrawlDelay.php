@@ -1,14 +1,14 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Modules\Directives;
+namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Exceptions\ParserException;
-use vipnytt\RobotsTxtParser\Modules\Toolbox;
+use vipnytt\RobotsTxtParser\Parser\Toolbox;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
  * Class CrawlDelay
  *
- * @package vipnytt\RobotsTxtParser\Modules\Directives
+ * @package vipnytt\RobotsTxtParser\Parser\Directives
  */
 class CrawlDelay implements DirectiveInterface, RobotsTxtInterface
 {

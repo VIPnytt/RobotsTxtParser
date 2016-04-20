@@ -2,18 +2,18 @@
 namespace vipnytt\RobotsTxtParser;
 
 use vipnytt\RobotsTxtParser\Exceptions\ParserException;
-use vipnytt\RobotsTxtParser\Modules\Directives\CleanParam;
-use vipnytt\RobotsTxtParser\Modules\Directives\Host;
-use vipnytt\RobotsTxtParser\Modules\Directives\Sitemap;
-use vipnytt\RobotsTxtParser\Modules\Directives\UserAgent;
-use vipnytt\RobotsTxtParser\Modules\Toolbox;
+use vipnytt\RobotsTxtParser\Parser\Directives\CleanParam;
+use vipnytt\RobotsTxtParser\Parser\Directives\Host;
+use vipnytt\RobotsTxtParser\Parser\Directives\Sitemap;
+use vipnytt\RobotsTxtParser\Parser\Directives\UserAgent;
+use vipnytt\RobotsTxtParser\Parser\Toolbox;
 
 /**
  * Class Core
  *
  * @package vipnytt\RobotsTxtParser
  */
-abstract class Core implements RobotsTxtInterface
+abstract class Parser implements RobotsTxtInterface
 {
     use Toolbox;
 

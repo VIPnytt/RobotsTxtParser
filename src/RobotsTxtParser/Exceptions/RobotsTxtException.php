@@ -1,11 +1,13 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Exceptions;
 
+use Exception;
+
 /**
- * Class StatusCodeException
+ * Class RobotsTxtParserException
  *
  * @package vipnytt\RobotsTxtParser\Exceptions
  */
-class StatusCodeException extends RobotsTxtParserException
+class RobotsTxtParserException extends Exception
 {
 }

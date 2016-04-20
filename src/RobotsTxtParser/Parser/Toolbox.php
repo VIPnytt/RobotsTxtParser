@@ -1,12 +1,12 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Modules;
+namespace vipnytt\RobotsTxtParser\Parser;
 
 use vipnytt\RobotsTxtParser\Exceptions\ParserException;
 
 /**
- * Trait DirectiveTools
+ * Trait Toolbox
  *
- * @package vipnytt\RobotsTxtParser\Modules
+ * @package vipnytt\RobotsTxtParser\Parser
  */
 trait Toolbox
 {

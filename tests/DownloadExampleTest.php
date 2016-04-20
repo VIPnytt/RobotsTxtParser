@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Parser;
+use vipnytt\RobotsTxtParser\Client;
 
 /**
  * Class DownloadExampleTest
@@ -16,7 +16,7 @@ class DownloadExampleTest extends \PHPUnit_Framework_TestCase
      */
     public function testDownloadExample($base)
     {
-        $parser = new Parser($base);
+        $parser = new Client($base);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
 
         $this->assertTrue($parser->userAgent()->isAllowed("/"));

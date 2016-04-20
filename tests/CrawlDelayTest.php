@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Parser;
+use vipnytt\RobotsTxtParser\Client;
 
 /**
  * Class CrawlDelayTest
@@ -16,7 +16,7 @@ class CrawlDelayTest extends \PHPUnit_Framework_TestCase
      */
     public function testCrawlDelay($robotsTxtContent)
     {
-        $parser = new Parser('http://example.com', 200, $robotsTxtContent);
+        $parser = new Client('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
 
         $this->assertEquals(0, $parser->userAgent()->getCrawlDelay());

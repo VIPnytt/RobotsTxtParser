@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Parser;
+use vipnytt\RobotsTxtParser\Client;
 
 /**
  * Class DisallowAllTest
@@ -16,7 +16,7 @@ class DisallowAllTest extends \PHPUnit_Framework_TestCase
      */
     public function testDisallowAll($robotsTxtContent)
     {
-        $parser = new Parser('http://example.com', 200, $robotsTxtContent);
+        $parser = new Client('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
 
         $this->assertTrue($parser->userAgent('*')->isDisallowed('/'));

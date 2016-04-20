@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Parser;
+use vipnytt\RobotsTxtParser\Client;
 
 /**
  * Class CleanParamTest
@@ -17,7 +17,7 @@ class CleanParamTest extends \PHPUnit_Framework_TestCase
      */
     public function testCleanParam($robotsTxtContent, $cleanParam)
     {
-        $parser = new Parser('http://www.site1.com', 200, $robotsTxtContent);
+        $parser = new Client('http://www.site1.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
 
         $this->assertTrue($parser->userAgent()->isDisallowed('http://www.site1.com/forums/showthread.php?s=681498b9648949605&ref=parent'));

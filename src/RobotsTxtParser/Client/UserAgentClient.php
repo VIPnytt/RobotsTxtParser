@@ -1,17 +1,19 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Modules;
+namespace vipnytt\RobotsTxtParser\Client;
 
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
+use vipnytt\RobotsTxtParser\Parser\StatusCodeParser;
+use vipnytt\RobotsTxtParser\Parser\UrlParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
  * Class UserAgentClient
  *
- * @package vipnytt\RobotsTxtParser\Modules
+ * @package vipnytt\RobotsTxtParser\Client
  */
 class UserAgentClient implements RobotsTxtInterface
 {
-    use UrlTools;
+    use UrlParser;
 
     /**
      * Rules

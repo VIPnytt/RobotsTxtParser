@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Parser;
+use vipnytt\RobotsTxtParser\Client;
 
 /**
  * Class SitemapTest
@@ -17,7 +17,7 @@ class SitemapTest extends \PHPUnit_Framework_TestCase
      */
     public function testSitemap($robotsTxtContent, $sitemapArray)
     {
-        $parser = new Parser('http://example.com', 200, $robotsTxtContent);
+        $parser = new Client('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
 
         $this->assertEquals($sitemapArray, $parser->getSitemaps());

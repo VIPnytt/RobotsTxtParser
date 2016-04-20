@@ -1,8 +1,8 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use vipnytt\RobotsTxtParser\Client;
 use vipnytt\RobotsTxtParser\Exceptions\StatusCodeException;
-use vipnytt\RobotsTxtParser\Parser;
 
 /**
  * Class InvalidStatusCodeTest
@@ -19,7 +19,7 @@ class InvalidStatusCodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidStatusCode($base, $statusCode, $isValid)
     {
-        $parser = new Parser($base, $statusCode, '');
+        $parser = new Client($base, $statusCode, '');
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
 
         if (!$isValid) {

@@ -15,8 +15,7 @@
   "homepage": "https://github.com/VIPnytt/RobotsTxtParser",
   "type": "library",
   "license": "MIT",
-  "minimum-stability": "dev",
-  "prefer-stable": true,
+  "minimum-stability": "stable",
   "require": {
     "php": ">=5.6.0",
     "vipnytt/useragentparser": "0.2.*",
@@ -29,14 +28,14 @@
   },
   "authors": [
     {
-      "name": "VIP nytt",
+      "name": "VIP nytt AS",
       "email": "vipnytt@gmail.com",
-      "role": "creator"
+      "role": "Creator"
     },
     {
       "name": "Jan-Petter Gundersen",
       "email": "europe.jpg@gmail.com",
-      "role": "developer"
+      "role": "Developer"
     }
   ],
   "autoload": {

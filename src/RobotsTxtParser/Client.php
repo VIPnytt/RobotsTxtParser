@@ -1,9 +1,9 @@
 <?php
 namespace vipnytt\RobotsTxtParser;
 
-use vipnytt\RobotsTxtParser\Modules\Download;
-use vipnytt\RobotsTxtParser\Modules\StatusCodeParser;
-use vipnytt\RobotsTxtParser\Modules\UserAgentClient;
+use vipnytt\RobotsTxtParser\Client\Download;
+use vipnytt\RobotsTxtParser\Client\UserAgentClient;
+use vipnytt\RobotsTxtParser\Parser\StatusCodeParser;
 use vipnytt\UserAgentParser;
 
 /**
@@ -16,7 +16,7 @@ use vipnytt\UserAgentParser;
  *
  * @package vipnytt\RobotsTxtParser
  */
-class Parser extends Core
+class Client extends Parser
 {
     /**
      * HTTP status code parser

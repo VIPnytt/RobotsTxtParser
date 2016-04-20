@@ -1,13 +1,13 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Modules\Directives;
+namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
-use vipnytt\RobotsTxtParser\Modules\Toolbox;
+use vipnytt\RobotsTxtParser\Parser\Toolbox;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
  * Class UserAgent
  *
- * @package vipnytt\RobotsTxtParser\Modules\Directives
+ * @package vipnytt\RobotsTxtParser\Parser\Directives
  */
 class UserAgent implements DirectiveInterface, RobotsTxtInterface
 {
