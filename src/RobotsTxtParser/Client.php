@@ -19,22 +19,30 @@ use vipnytt\UserAgentParser;
 class Client extends Parser
 {
     /**
+     * Status code
+     * @var int|null
+     */
+    public $statusCode;
+    /**
+     * Robots.txt content
+     * @var string
+     */
+    public $content;
+    /**
+     * Content encoding
+     * @var string
+     */
+    public $encoding;
+    /**
      * HTTP status code parser
      * @var StatusCodeParser
      */
     protected $statusCodeParser;
-
     /**
      * Robots.txt base
      * @var string
      */
     protected $baseUrl;
-
-    /**
-     * Status code
-     * @var int|null
-     */
-    protected $statusCode;
 
     /**
      * Parser constructor.
@@ -49,13 +57,15 @@ class Client extends Parser
     {
         $this->baseUrl = $baseUrl;
         $this->statusCode = $statusCode;
+        $this->content = $content;
+        $this->encoding = $encoding;
         if ($content === null) {
             $client = new Download($this->baseUrl);
             $this->statusCode = $client->getStatusCode();
-            $content = $client->getBody();
-            $encoding = $client->getEncoding();
+            $this->content = $client->getBody();
+            $this->encoding = $client->getEncoding();
         }
-        parent::__construct($content, $encoding, $byteLimit);
+        parent::__construct($this->content, $this->encoding, $byteLimit);
     }
 
     /**
