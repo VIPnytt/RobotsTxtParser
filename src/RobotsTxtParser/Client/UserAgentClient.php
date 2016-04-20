@@ -45,7 +45,7 @@ class UserAgentClient implements RobotsTxtInterface
      * @param array $rules
      * @param string $userAgent
      * @param string $baseUrl
-     * @param int $statusCode
+     * @param int|null $statusCode
      */
     public function __construct($rules, $userAgent, $baseUrl, $statusCode)
     {

@@ -50,7 +50,7 @@ class StatusCodeParser implements RobotsTxtInterface
     /**
      * Constructor
      *
-     * @param integer|null $code - HTTP status code
+     * @param int|null $code - HTTP status code
      * @param string|false|null $scheme
      * @throws StatusCodeException
      */
@@ -69,14 +69,17 @@ class StatusCodeParser implements RobotsTxtInterface
      */
     protected function isApplicable()
     {
-        if (!in_array($this->scheme, self::VALID_SCHEME)) {
+        if (
+            !in_array($this->scheme, self::VALID_SCHEME) ||
+            $this->code === null
+        ) {
             return false;
         }
         if (
             $this->code < 100 ||
             $this->code > 599
         ) {
-            throw new StatusCodeException('Invalid HTTP(S) status code');
+            throw new StatusCodeException('Invalid HTTP status code');
         }
         return true;
     }
