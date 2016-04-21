@@ -73,8 +73,10 @@ class Download implements RobotsTxtInterface
             $this->statusCode = $response->getStatusCode();
             $this->contents = $response->getBody()->getContents();
             $this->encoding = $this->headerEncoding($response->getHeader('content-type')[0]);
-        } catch (GuzzleHttp\Exception\ConnectException $e) {
-            $this->connectionIssue();
+        } catch (GuzzleHttp\Exception\TransferException $e) {
+            $this->statusCode = 523;
+            $this->contents = '';
+            $this->encoding = self::ENCODING;
         }
     }
 
@@ -119,18 +121,6 @@ class Download implements RobotsTxtInterface
     public function getContents()
     {
         return $this->contents;
-    }
-
-    /**
-     * Connection issue
-     *
-     * @return void
-     */
-    private function connectionIssue()
-    {
-        $this->statusCode = 523;
-        $this->contents = '';
-        $this->encoding = self::ENCODING;
     }
 
     /**
