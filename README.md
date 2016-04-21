@@ -45,7 +45,7 @@ Then run: ```php composer.phar update```
 ## Getting started
 ### Basic usage example
 ```php
-$client = new vipnytt\RobotsTxtParser\Parser('http://example.com');
+$client = new vipnytt\RobotsTxtParser\Client('http://example.com');
 
 if ($client->userAgent('MyBot')->isAllowed('/somepage.html')) {
     // Access is granted

@@ -74,10 +74,8 @@ abstract class Parser implements RobotsTxtInterface
      */
     public function __construct($content, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT)
     {
-        try {
-            mb_internal_encoding($encoding);
-        } catch (\Exception $e) {
-            throw new EncodingException($e);
+        if (!mb_internal_encoding($encoding)) {
+            throw new EncodingException('Unable to set internal character encoding to ' . $encoding);
         }
         $this->cleanParam = new CleanParam();
         $this->host = new Host();
