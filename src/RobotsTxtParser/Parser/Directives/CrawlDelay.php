@@ -1,9 +1,8 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
-use vipnytt\RobotsTxtParser\Exceptions\ParserException;
+use vipnytt\RobotsTxtParser\Parser\RobotsTxtInterface;
 use vipnytt\RobotsTxtParser\Parser\Toolbox;
-use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
  * Class CrawlDelay
@@ -36,7 +35,6 @@ class CrawlDelay implements DirectiveInterface, RobotsTxtInterface
     /**
      * CrawlDelay constructor.
      * @param string $directive
-     * @throws ParserException
      */
     public function __construct($directive = self::DIRECTIVE_CRAWL_DELAY)
     {

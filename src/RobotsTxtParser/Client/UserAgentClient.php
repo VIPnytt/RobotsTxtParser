@@ -2,9 +2,9 @@
 namespace vipnytt\RobotsTxtParser\Client;
 
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
+use vipnytt\RobotsTxtParser\Parser\RobotsTxtInterface;
 use vipnytt\RobotsTxtParser\Parser\StatusCodeParser;
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
-use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
  * Class UserAgentClient

@@ -2,7 +2,6 @@
 namespace vipnytt\RobotsTxtParser\Parser;
 
 use vipnytt\RobotsTxtParser\Exceptions\StatusCodeException;
-use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
  * Class StatusCodeParser

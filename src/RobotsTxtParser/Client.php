@@ -1,7 +1,6 @@
 <?php
 namespace vipnytt\RobotsTxtParser;
 
-use vipnytt\RobotsTxtParser\Client\Download;
 use vipnytt\RobotsTxtParser\Client\UserAgentClient;
 use vipnytt\RobotsTxtParser\Parser\StatusCodeParser;
 use vipnytt\UserAgentParser;
@@ -23,11 +22,13 @@ class Client extends Parser
      * @var StatusCodeParser
      */
     protected $statusCodeParser;
+
     /**
-     * Robots.txt base
+     * Robots.txt base uri
      * @var string
      */
-    protected $baseUrl;
+    protected $baseUri;
+
     /**
      * Status code
      * @var int|null
@@ -37,20 +38,20 @@ class Client extends Parser
     /**
      * Parser constructor.
      *
-     * @param string $baseUrl
+     * @param string $baseUri
      * @param int|null $statusCode
      * @param string|null $content
      * @param string $encoding
-     * @param int $byteLimit
+     * @param int|null $byteLimit
      */
-    public function __construct($baseUrl, $statusCode = null, $content = null, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT)
+    public function __construct($baseUri, $statusCode = null, $content = null, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT)
     {
-        $this->baseUrl = $baseUrl;
+        $this->baseUri = $baseUri;
         $this->statusCode = $statusCode;
         if ($content === null) {
-            $client = new Download($this->baseUrl);
+            $client = new Download($this->baseUri);
             $this->statusCode = $client->getStatusCode();
-            $content = $client->getBody();
+            $content = $client->getContents();
             $encoding = $client->getEncoding();
         }
         parent::__construct($content, $encoding, $byteLimit);
@@ -113,6 +114,6 @@ class Client extends Parser
             self::DIRECTIVE_CRAWL_DELAY => $this->userAgent->crawlDelay[$userAgent],
             self::DIRECTIVE_CACHE_DELAY => $this->userAgent->cacheDelay[$userAgent],
         ];
-        return new UserAgentClient($rules, $userAgent, $this->baseUrl, $this->statusCode);
+        return new UserAgentClient($rules, $userAgent, $this->baseUri, $this->statusCode);
     }
 }

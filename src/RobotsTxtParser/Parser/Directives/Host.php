@@ -1,8 +1,8 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
+use vipnytt\RobotsTxtParser\Parser\RobotsTxtInterface;
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
-use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
  * Class Host

@@ -56,7 +56,7 @@ if ($client->userAgent('MyBot')->isDisallowed('/admin')) {
 ```
 ### Methods
 ```php
-// Syntax: $baseUrl, [$statusCode:int|null], [$robotsTxtContent:string|null], [$encoding:string], [$byteLimit:int]
+// Syntax: $baseUri, [$statusCode:int|null], [$robotsTxtContent:string|null], [$encoding:string], [$byteLimit:int]
 $client = new vipnytt\RobotsTxtParser\Client('http://example.com', 200, $robotsTxtContent);
 
 // Permission checks

@@ -2,9 +2,9 @@
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Exceptions;
+use vipnytt\RobotsTxtParser\Parser\RobotsTxtInterface;
 use vipnytt\RobotsTxtParser\Parser\Toolbox;
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
-use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
  * Class DisAllow
@@ -59,7 +59,6 @@ class DisAllow implements DirectiveInterface, RobotsTxtInterface
      * DisAllow constructor
      *
      * @param string $directive
-     * @throws Exceptions\ParserException
      */
     public function __construct($directive)
     {

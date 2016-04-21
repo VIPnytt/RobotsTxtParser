@@ -1,11 +1,12 @@
 <?php
 namespace vipnytt\RobotsTxtParser;
 
-use vipnytt\RobotsTxtParser\Exceptions\ParserException;
+use vipnytt\RobotsTxtParser\Exceptions\EncodingException;
 use vipnytt\RobotsTxtParser\Parser\Directives\CleanParam;
 use vipnytt\RobotsTxtParser\Parser\Directives\Host;
 use vipnytt\RobotsTxtParser\Parser\Directives\Sitemap;
 use vipnytt\RobotsTxtParser\Parser\Directives\UserAgent;
+use vipnytt\RobotsTxtParser\Parser\RobotsTxtInterface;
 use vipnytt\RobotsTxtParser\Parser\Toolbox;
 
 /**
@@ -26,12 +27,6 @@ abstract class Parser implements RobotsTxtInterface
         self::DIRECTIVE_SITEMAP,
         self::DIRECTIVE_USER_AGENT,
     ];
-
-    /**
-     * RAW robots.txt content
-     * @var string
-     */
-    protected $raw;
 
     /**
      * Previous directive
@@ -74,8 +69,8 @@ abstract class Parser implements RobotsTxtInterface
      *
      * @param string $content - file content
      * @param string $encoding - character encoding
-     * @param integer|null $byteLimit - maximum of bytes to parse
-     * @throws ParserException
+     * @param int|null $byteLimit - maximum of bytes to parse
+     * @throws EncodingException
      */
     public function __construct($content, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT)
     {
@@ -83,25 +78,27 @@ abstract class Parser implements RobotsTxtInterface
             !in_array($encoding, mb_list_encodings()) ||
             !mb_internal_encoding($encoding)
         ) {
-            throw new ParserException('Unable to set internal character encoding to `' . $encoding . '`');
+            throw new EncodingException('Unable to set internal character encoding to `' . $encoding . '`');
         }
         $this->cleanParam = new CleanParam();
         $this->host = new Host();
         $this->sitemap = new Sitemap();
         $this->userAgent = new UserAgent();
-
-        $this->raw = is_int($byteLimit) ? mb_strcut($content, 0, $byteLimit, $encoding) : $content;
-        $this->parseTxt();
+        if (is_int($byteLimit) && $byteLimit > 0) {
+            $content = mb_strcut($content, 0, $byteLimit);
+        }
+        $this->parseTxt($content);
     }
 
     /**
      * Parse robots.txt
      *
+     * @param string $txt
      * @return void
      */
-    private function parseTxt()
+    private function parseTxt($txt)
     {
-        $lines = array_filter(array_map('trim', mb_split('\r\n|\n|\r', $this->raw)));
+        $lines = array_filter(array_map('trim', mb_split('\r\n|\n|\r', $txt)));
         // Parse each line individually
         foreach ($lines as $line) {
             // Limit rule length

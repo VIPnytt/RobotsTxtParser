@@ -1,10 +1,10 @@
 <?php
-namespace vipnytt\RobotsTxtParser;
+namespace vipnytt\RobotsTxtParser\Parser;
 
 /**
  * Interface RobotsTxtInterface
  *
- * @package vipnytt\RobotsTxtParser\Modules
+ * @package vipnytt\RobotsTxtParser\Parser
  */
 interface RobotsTxtInterface
 {
@@ -12,7 +12,7 @@ interface RobotsTxtInterface
      * Max redirects
      */
     const MAX_REDIRECTS = 5;
-    
+
     /**
      * Expected encoding
      */
