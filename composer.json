@@ -1,6 +1,7 @@
 {
   "name": "vipnytt/robotstxtparser",
   "description": "Robots.txt parser class, according to Google, Yandex, W3C and The Web Robots Pages specifications.",
+  "type": "library",
   "keywords": [
     "robots.txt",
     "parser",
@@ -13,19 +14,7 @@
     "Web-Crawler"
   ],
   "homepage": "https://github.com/VIPnytt/RobotsTxtParser",
-  "type": "library",
   "license": "MIT",
-  "minimum-stability": "stable",
-  "require": {
-    "php": ">=5.6.0",
-    "vipnytt/useragentparser": "0.2.*",
-    "guzzlehttp/guzzle": "6.*",
-    "ext-mbstring": "*"
-  },
-  "require-dev": {
-    "phpunit/phpunit": ">=4.0",
-    "codeclimate/php-test-reporter": ">=0.2.0"
-  },
   "authors": [
     {
       "name": "VIP nytt AS",
@@ -38,6 +27,23 @@
       "role": "Developer"
     }
   ],
+  "support": {
+    "email": "vipnytt@gmail.com",
+    "issues": "https://github.com/VIPnytt/RobotsTxtParser/issues",
+    "wiki": "https://github.com/VIPnytt/RobotsTxtParser/wiki",
+    "source": "https://github.com/VIPnytt/RobotsTxtParser",
+    "docs": "https://github.com/VIPnytt/RobotsTxtParser/wiki"
+  },
+  "require": {
+    "php": ">=5.6.0",
+    "ext-mbstring": "*",
+    "guzzlehttp/guzzle": "6.*",
+    "vipnytt/useragentparser": "0.2.*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": ">=4.0",
+    "codeclimate/php-test-reporter": ">=0.2.0"
+  },
   "autoload": {
     "psr-4": {
       "vipnytt\\": "src/"
@@ -47,5 +53,6 @@
     "psr-4": {
       "vipnytt\\RobotsTxtParser\\Tests\\": "tests/"
     }
-  }
+  },
+  "minimum-stability": "stable"
 }
