@@ -1,7 +1,6 @@
 <?php
 namespace vipnytt\RobotsTxtParser;
 
-use vipnytt\RobotsTxtParser\Client\DownloadHandler;
 use vipnytt\RobotsTxtParser\Client\UserAgentClient;
 use vipnytt\RobotsTxtParser\Parser\StatusCodeParser;
 use vipnytt\UserAgentParser;
@@ -50,7 +49,7 @@ class Client extends Parser
         $this->baseUri = $baseUri;
         $this->statusCode = $statusCode;
         if ($content === null) {
-            $client = new DownloadHandler($this->baseUri);
+            $client = new Download($this->baseUri);
             $this->statusCode = $client->getStatusCode();
             $content = $client->getContents();
             $encoding = $client->getEncoding();
