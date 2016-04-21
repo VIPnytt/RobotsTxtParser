@@ -8,7 +8,7 @@ use vipnytt\RobotsTxtParser\Parser\RobotsTxtInterface;
 /**
  * Class Download
  *
- * @package vipnytt\RobotsTxtParser\Client
+ * @package vipnytt\RobotsTxtParser
  */
 class Download implements RobotsTxtInterface
 {
