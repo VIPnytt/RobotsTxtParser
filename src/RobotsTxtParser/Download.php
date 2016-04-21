@@ -47,6 +47,7 @@ class Download implements RobotsTxtInterface
                     ],
                     'http_errors' => false,
                     'timeout' => 60,
+                    'verify' => false,
                 ],
                 $guzzleConfig
             )
