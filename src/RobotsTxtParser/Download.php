@@ -37,6 +37,9 @@ class Download implements RobotsTxtInterface
                 [
                     'allow_redirects' => [
                         'max' => self::MAX_REDIRECTS,
+                        'referer' => true,
+                        'strict' => true,
+                        'track_redirects' => true,
                     ],
                     'base_uri' => $baseUri,
                     'headers' => [
@@ -47,7 +50,7 @@ class Download implements RobotsTxtInterface
                     ],
                     'http_errors' => false,
                     'timeout' => 60,
-                    'verify' => false,
+                    'verify' => true,
                 ],
                 $guzzleConfig
             )
