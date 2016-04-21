@@ -41,7 +41,7 @@ trait Toolbox
              * @link https://github.com/hafriedlander/php-peg
              */
             try {
-                if (preg_match('#' . $rule . '#', $path)) {
+                if (preg_match('~' . $rule . '~', $path)) {
                     if (mb_stripos($rule, '$') !== false) {
                         if (mb_strlen($rule) - 1 == mb_strlen($path)) {
                             return true;

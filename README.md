@@ -18,12 +18,12 @@ An easy to use, extensible PHP library to parse `robots.txt` according to [_Goog
 - Dynamic URL parameter detection
 
 #### Advantages _(compared to most other robots.txt parsers)_
-- Automatically fetch the correct `robots.txt` if it isn't provided.
+- Automatically fetch the correct `robots.txt` if it isn't provided (http(s) only).
 - Features a dedicated `User-Agent` parser and group determiner library, for maximum accuracy.
 - HTTP Status code handler, _according to [Google](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt) spec._
 - Full support for _inline directives_, _according to [Yandex](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml) spec._
 - Provides additional data like _preferred host_, dynamic _URL parameters_ and _Sitemap_ locations.
-- FTP support
+- FTP parsing support
 
 #### Requirements:
 - PHP [>=5.6](http://php.net/supported-versions.php)
