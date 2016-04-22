@@ -72,7 +72,7 @@ class Download implements RobotsTxtInterface
             $response = $client->request('GET', '/robots.txt');
             $this->statusCode = $response->getStatusCode();
             $this->contents = $response->getBody()->getContents();
-            $this->encoding = $this->headerEncoding($response->getHeader('content-type')[0]);
+            $this->encoding = $this->headerEncoding($response->getHeader('content-type'));
         } catch (GuzzleHttp\Exception\TransferException $e) {
             $this->statusCode = 523;
             $this->contents = '';
@@ -83,17 +83,19 @@ class Download implements RobotsTxtInterface
     /**
      * HTTP header encoding
      *
-     * @param $header
+     * @param array $headers
      * @return string
      */
-    protected function headerEncoding($header)
+    protected function headerEncoding($headers)
     {
-        $split = array_map('trim', mb_split(';', $header));
-        foreach ($split as $string) {
-            if (mb_stripos($string, 'charset=') === 0) {
-                $encoding = mb_split('=', $string, 2)[1];
-                if (in_array(mb_strtolower($encoding), array_map('mb_strtolower', mb_list_encodings()))) {
-                    return $encoding;
+        foreach ($headers as $header) {
+            $split = array_map('trim', mb_split(';', $header));
+            foreach ($split as $string) {
+                if (mb_stripos($string, 'charset=') === 0) {
+                    $encoding = mb_split('=', $string, 2)[1];
+                    if (in_array(mb_strtolower($encoding), array_map('mb_strtolower', mb_list_encodings()))) {
+                        return $encoding;
+                    }
                 }
             }
         }
