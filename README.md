@@ -36,7 +36,7 @@ The recommended way to install the robots.txt parser is through [Composer](http:
 ```json
 {
     "require": {
-        "vipnytt/robotstxtparser": "0.1.*"
+        "vipnytt/robotstxtparser": "~1.0"
     }
 }
 ```
@@ -47,10 +47,10 @@ Then run: ```php composer.phar update```
 ```php
 $client = new vipnytt\RobotsTxtParser\Client('http://example.com');
 
-if ($client->userAgent('MyBot')->isAllowed('/somepage.html')) {
+if ($client->userAgent('MyBot')->isAllowed('http://example.com/somepage.html')) {
     // Access is granted
 }
-if ($client->userAgent('MyBot')->isDisallowed('/admin')) {
+if ($client->userAgent('MyBot')->isDisallowed('http://example.com/admin')) {
     // Access is denied
 }
 ```
@@ -60,8 +60,8 @@ if ($client->userAgent('MyBot')->isDisallowed('/admin')) {
 $client = new vipnytt\RobotsTxtParser\Client('http://example.com', 200, $robotsTxtContent);
 
 // Permission checks
-$allowed = $client->userAgent('MyBot')->isAllowed('/somepage.html'); // bool
-$denied = $client->userAgent('MyBot')->isDisallowed('/admin'); // bool
+$allowed = $client->userAgent('MyBot')->isAllowed('http://example.com/somepage.html'); // bool
+$denied = $client->userAgent('MyBot')->isDisallowed('http://example.com/admin'); // bool
 
 // Crawl delay rules
 $crawlDelay = $client->userAgent('MyBot')->getCrawlDelay(); // int | float
