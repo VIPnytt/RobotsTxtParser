@@ -38,19 +38,21 @@ trait Toolbox
              * @link https://github.com/hafriedlander/php-peg
              */
             try {
-                $rule = str_replace('#', '\#', $rule);
-                if (preg_match('#' . $rule . '#', $path)) {
-                    if (mb_stripos($rule, '$') !== false) {
-                        /**
-                         * Bug when not exact match
-                         * @link https://github.com/t1gor/Robots.txt-Parser-Class/issues/63
-                         */
-                        if (mb_strlen($rule) - 1 >= mb_strlen($path)) {
-                            return true;
-                        }
-                    } else {
+                if (!preg_match('#' . $rule . '#', $path)) {
+                    // Rule does not match
+                    continue;
+                } else if (mb_stripos($rule, '$') === false) {
+                    // No special parsing required
+                    return true;
+                } else if (($wildcardPos = mb_strrpos($rule, '*')) !== false) {
+                    // Rule contains both an end anchor ($) and wildcard (*)
+                    $afterWildcard = mb_substr($rule, $wildcardPos + 1, mb_strlen($rule) - $wildcardPos - 2);
+                    if ($afterWildcard == mb_substr($path, -mb_strlen($afterWildcard))) {
                         return true;
                     }
+                } else if (mb_substr($rule, 0, -1) == $path) {
+                    // Rule does contains an end anchor
+                    return true;
                 }
             } catch (\Exception $e) {
                 // An preg_match bug has occurred

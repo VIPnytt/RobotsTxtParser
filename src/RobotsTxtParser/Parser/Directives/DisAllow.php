@@ -126,9 +126,11 @@ class DisAllow implements DirectiveInterface, RobotsTxtInterface
      */
     protected function getPath($url)
     {
+        // Encode
         $url = $this->urlEncode($url);
         if (mb_stripos($url, '/') === 0) {
-            // URL already is a path
+            // Strip fragments
+            $url = mb_split('#', $url)[0];
             return $url;
         }
         if (!$this->urlValidate($url)) {

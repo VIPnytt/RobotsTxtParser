@@ -27,6 +27,9 @@ class EndAnchorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($parser->userAgent()->isDisallowed('/asd/'));
         $this->assertFalse($parser->userAgent()->isAllowed('/asd/'));
+
+        $this->assertTrue($parser->userAgent('DenyMe')->isDisallowed('http://example.com/deny_all/'));
+        $this->assertFalse($parser->userAgent('DenyMe')->isAllowed('http://example.com/deny_all/'));
     }
 
     /**
@@ -42,6 +45,11 @@ class EndAnchorTest extends \PHPUnit_Framework_TestCase
 User-Agent: *
 Disallow: /*
 Allow: /$
+
+User-Agent: DenyMe
+Disallow: /deny_all/$
+Disallow: *deny_all/$
+Disallow: deny_all/$
 ROBOTS
             ]
         ];

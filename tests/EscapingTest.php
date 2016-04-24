@@ -22,6 +22,9 @@ class EscapingTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($parser->userAgent()->isAllowed("/%5C."));
         $this->assertFalse($parser->userAgent()->isDisallowed("/%5C."));
 
+        /**
+         * Additional tests to enable in the future, currently disabled due to bugs
+         */
         //$this->assertTrue($parser->userAgent()->isDisallowed("/("));
         //$this->assertFalse($parser->userAgent()->isAllowed("/("));
     }
