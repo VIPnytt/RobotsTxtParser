@@ -22,9 +22,6 @@ trait Toolbox
         foreach ($paths as $rule) {
             $escape = ['?' => '\?', '.' => '\.', '*' => '.*'];
             foreach ($escape as $search => $replace) {
-                /**
-                 * str_replace needs to be replaced by something better, multi-byte safe
-                 */
                 $rule = str_replace($search, $replace, $rule);
             }
             /**
@@ -44,7 +41,11 @@ trait Toolbox
                 $rule = str_replace('#', '\#', $rule);
                 if (preg_match('#' . $rule . '#', $path)) {
                     if (mb_stripos($rule, '$') !== false) {
-                        if (mb_strlen($rule) - 1 == mb_strlen($path)) {
+                        /**
+                         * Bug when not exact match
+                         * @link https://github.com/t1gor/Robots.txt-Parser-Class/issues/63
+                         */
+                        if (mb_strlen($rule) - 1 >= mb_strlen($path)) {
                             return true;
                         }
                     } else {
