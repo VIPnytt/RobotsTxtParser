@@ -16,10 +16,10 @@ class RobotVersion implements DirectiveInterface, RobotsTxtInterface
     const DIRECTIVE = self::DIRECTIVE_ROBOT_VERSION;
 
     /**
-     * RobotVersion array
-     * @var array
+     * RobotVersion value
+     * @var float|int|string
      */
-    protected $array = [];
+    protected $value;
 
     /**
      * RobotVersion constructor.
@@ -31,12 +31,15 @@ class RobotVersion implements DirectiveInterface, RobotsTxtInterface
     /**
      * Add
      *
-     * @param string $line
+     * @param float|int|string $line
      * @return bool
      */
     public function add($line)
     {
-        $this->array = [$line];
+        if (!empty($this->value)) {
+            return false;
+        }
+        $this->value = $line;
         return true;
     }
 

@@ -17,9 +17,9 @@ class Comment implements DirectiveInterface, RobotsTxtInterface
 
     /**
      * Comment array
-     * @var string
+     * @var array
      */
-    protected $value;
+    protected $array;
 
     /**
      * Comment constructor.
@@ -31,12 +31,12 @@ class Comment implements DirectiveInterface, RobotsTxtInterface
     /**
      * Add
      *
-     * @param float|int|string $line
+     * @param string $line
      * @return bool
      */
     public function add($line)
     {
-        $this->value = $line;
+        $this->array[] = $line;
         return true;
     }
 
