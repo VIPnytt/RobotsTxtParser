@@ -93,7 +93,6 @@ class DisAllow implements DirectiveInterface, RobotsTxtInterface
      */
     protected function addPath($rule)
     {
-        // Return an array of paths
         if (isset($this->array['path']) && in_array($rule, $this->array['path'])) {
             return false;
         }

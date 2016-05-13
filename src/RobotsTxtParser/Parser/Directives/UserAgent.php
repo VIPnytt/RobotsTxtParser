@@ -19,8 +19,12 @@ class UserAgent implements DirectiveInterface, RobotsTxtInterface
     const SUB_DIRECTIVES = [
         self::DIRECTIVE_ALLOW,
         self::DIRECTIVE_CACHE_DELAY,
+        self::DIRECTIVE_COMMENT,
         self::DIRECTIVE_CRAWL_DELAY,
         self::DIRECTIVE_DISALLOW,
+        self::DIRECTIVE_REQUEST_RATE,
+        self::DIRECTIVE_ROBOT_VERSION,
+        self::DIRECTIVE_VISIT_TIME,
     ];
 
     /**
@@ -36,27 +40,51 @@ class UserAgent implements DirectiveInterface, RobotsTxtInterface
 
     /**
      * Sub-directive Allow
-     * @var array
+     * @var DisAllow[]
      */
     public $allow = [];
 
     /**
      * Sub-directive Cache-delay
-     * @var array
+     * @var CrawlDelay[]
      */
     public $cacheDelay = [];
 
     /**
+     * Sub-directive Comment
+     * @var Comment[]
+     */
+    public $comment = [];
+
+    /**
      * Sub-directive Crawl-delay
-     * @var array
+     * @var CrawlDelay[]
      */
     public $crawlDelay = [];
 
     /**
      * Sub-directive Disallow
-     * @var array
+     * @var DisAllow[]
      */
     public $disallow = [];
+
+    /**
+     * Sub-directive Request-rate
+     * @var RequestRate[]
+     */
+    public $requestRate = [];
+
+    /**
+     * Sub-directive Robot-version
+     * @var RobotVersion[]
+     */
+    public $robotVersion = [];
+
+    /**
+     * Sub-directive Visit-time
+     * @var VisitTime[]
+     */
+    public $visitTime = [];
 
     /**
      * Current User-agent(s)
@@ -78,15 +106,19 @@ class UserAgent implements DirectiveInterface, RobotsTxtInterface
      * @param array $array
      * @return bool
      */
-    public function set($array = [self::USER_AGENT])
+    public function set(array $array = [self::USER_AGENT])
     {
         $this->userAgent = array_map('mb_strtolower', $array);
         foreach ($this->userAgent as $userAgent) {
             if (!in_array($userAgent, $this->userAgents)) {
                 $this->allow[$userAgent] = new DisAllow(self::DIRECTIVE_ALLOW);
                 $this->cacheDelay[$userAgent] = new CrawlDelay(self::DIRECTIVE_CACHE_DELAY);
+                $this->comment[$userAgent] = new Comment();
                 $this->crawlDelay[$userAgent] = new CrawlDelay(self::DIRECTIVE_CRAWL_DELAY);
                 $this->disallow[$userAgent] = new DisAllow(self::DIRECTIVE_DISALLOW);
+                $this->requestRate[$userAgent] = new RequestRate();
+                $this->robotVersion[$userAgent] = new RobotVersion();
+                $this->visitTime[$userAgent] = new VisitTime();
                 $this->userAgents[] = $userAgent;
             }
         }
@@ -111,11 +143,23 @@ class UserAgent implements DirectiveInterface, RobotsTxtInterface
                 case self::DIRECTIVE_CACHE_DELAY:
                     $result = $this->cacheDelay[$userAgent]->add($pair['value']);
                     break;
+                case self::DIRECTIVE_COMMENT:
+                    $result = $this->comment[$userAgent]->add($pair['value']);
+                    break;
                 case self::DIRECTIVE_CRAWL_DELAY:
                     $result = $this->crawlDelay[$userAgent]->add($pair['value']);
                     break;
                 case self::DIRECTIVE_DISALLOW:
                     $result = $this->disallow[$userAgent]->add($pair['value']);
+                    break;
+                case self::DIRECTIVE_REQUEST_RATE:
+                    $result = $this->requestRate[$userAgent]->add($pair['value']);
+                    break;
+                case self::DIRECTIVE_ROBOT_VERSION:
+                    $result = $this->robotVersion[$userAgent]->add($pair['value']);
+                    break;
+                case self::DIRECTIVE_VISIT_TIME:
+                    $result = $this->visitTime[$userAgent]->add($pair['value']);
                     break;
             }
         }
@@ -133,8 +177,12 @@ class UserAgent implements DirectiveInterface, RobotsTxtInterface
         foreach ($this->userAgents as $userAgent) {
             $current = $this->allow[$userAgent]->export()
                 + $this->cacheDelay[$userAgent]->export()
+                + $this->comment[$userAgent]->export()
                 + $this->crawlDelay[$userAgent]->export()
-                + $this->disallow[$userAgent]->export();
+                + $this->disallow[$userAgent]->export()
+                + $this->requestRate[$userAgent]->export()
+                + $this->robotVersion[$userAgent]->export()
+                + $this->visitTime[$userAgent]->export();
             if (!empty($current)) {
                 $result[$userAgent] = $current;
             }

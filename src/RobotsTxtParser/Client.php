@@ -12,6 +12,7 @@ use vipnytt\UserAgentParser;
  * @link https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml
  * @link http://www.robotstxt.org/robotstxt.html
  * @link https://www.w3.org/TR/html4/appendix/notes.html#h-B.4.1.1
+ * @link http://www.conman.org/people/spc/robots2.html
  *
  * @package vipnytt\RobotsTxtParser
  */
@@ -110,9 +111,13 @@ class Client extends Parser
         }
         $rules = [
             self::DIRECTIVE_ALLOW => $this->userAgent->allow[$userAgent],
-            self::DIRECTIVE_DISALLOW => $this->userAgent->disallow[$userAgent],
-            self::DIRECTIVE_CRAWL_DELAY => $this->userAgent->crawlDelay[$userAgent],
             self::DIRECTIVE_CACHE_DELAY => $this->userAgent->cacheDelay[$userAgent],
+            self::DIRECTIVE_COMMENT => $this->userAgent->comment[$userAgent],
+            self::DIRECTIVE_CRAWL_DELAY => $this->userAgent->crawlDelay[$userAgent],
+            self::DIRECTIVE_DISALLOW => $this->userAgent->disallow[$userAgent],
+            self::DIRECTIVE_REQUEST_RATE => $this->userAgent->requestRate[$userAgent],
+            self::DIRECTIVE_ROBOT_VERSION => $this->userAgent->robotVersion[$userAgent],
+            self::DIRECTIVE_VISIT_TIME => $this->userAgent->visitTime[$userAgent],
         ];
         return new UserAgentClient($rules, $userAgent, $this->baseUri, $this->statusCode);
     }

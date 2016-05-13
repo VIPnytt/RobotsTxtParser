@@ -9,7 +9,9 @@
     "Yandex",
     "W3C",
     "The Web Robots Pages",
+    "Robot exclusion standard",
     "Robot",
+    "Robots",
     "Spider",
     "Web-Crawler"
   ],
@@ -32,7 +34,7 @@
     "issues": "https://github.com/VIPnytt/RobotsTxtParser/issues",
     "wiki": "https://github.com/VIPnytt/RobotsTxtParser/wiki",
     "source": "https://github.com/VIPnytt/RobotsTxtParser",
-    "docs": "https://github.com/VIPnytt/RobotsTxtParser/wiki"
+    "docs": "https://github.com/VIPnytt/RobotsTxtParser/tree/master/docs"
   },
   "require": {
     "php": ">=5.6.0",
@@ -44,6 +46,9 @@
     "phpunit/phpunit": ">=4.0",
     "codeclimate/php-test-reporter": ">=0.2.0"
   },
+  "suggest": {
+    "vipnytt/x-robots-tag-parser": "X-Robots-Tag HTTP header parser"
+  },
   "autoload": {
     "psr-4": {
       "vipnytt\\": "src/"
@@ -53,6 +58,5 @@
     "psr-4": {
       "vipnytt\\RobotsTxtParser\\Tests\\": "tests/"
     }
-  },
-  "minimum-stability": "stable"
+  }
 }

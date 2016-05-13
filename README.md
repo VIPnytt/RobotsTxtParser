@@ -18,7 +18,7 @@ An easy to use, extensible PHP library to parse `robots.txt` according to [_Goog
 - Dynamic URL parameter detection
 
 #### Advantages _(compared to most other robots.txt parsers)_
-- Automatically fetch the correct `robots.txt` if it isn't provided (http/s only).
+- Automatically fetch the correct `robots.txt` if it isn't provided. _http(s) only._
 - Features a dedicated `User-Agent` parser and group determiner library, for maximum accuracy.
 - HTTP Status code handler, _according to [Google](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt) spec._
 - Full support for _inline directives_, _according to [Yandex](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml) spec._
@@ -88,6 +88,7 @@ See our [Wiki](https://github.com/VIPnytt/RobotsTxtParser/wiki) for [Documentati
 - [x] [Yandex robots.txt specifications](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml)
 - [x] [The Web Robots Pages](http://www.robotstxt.org/)
 - [x] [W3C Recommendation](https://www.w3.org/TR/html4/appendix/notes.html#h-B.4.1.2)
+- [x] [The Web Robots Pages, version 2.0 draft](http://www.conman.org/people/spc/robots2.html)
 
 ### Directives supported
 - [x] `User-agent`
@@ -99,6 +100,9 @@ See our [Wiki](https://github.com/VIPnytt/RobotsTxtParser/wiki) for [Documentati
     - [x] _inline_ `Host`
   - [x] `Crawl-delay`
   - [x] `Cache-delay`
+  - [x] `Request-rate`
+  - [x] `Visit-time`
+  - [x] `Robot-version`
 - [x] `Clean-param`
 - [x] `Host`
 - [x] `Sitemap`

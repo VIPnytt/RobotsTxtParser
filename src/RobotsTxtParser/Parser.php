@@ -10,7 +10,7 @@ use vipnytt\RobotsTxtParser\Parser\RobotsTxtInterface;
 use vipnytt\RobotsTxtParser\Parser\Toolbox;
 
 /**
- * Class Core
+ * Class Parser
  *
  * @package vipnytt\RobotsTxtParser
  */

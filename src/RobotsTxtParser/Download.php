@@ -42,7 +42,7 @@ class Download implements RobotsTxtInterface
      * @param string $baseUri
      * @param array $guzzleConfig
      */
-    public function __construct($baseUri, $guzzleConfig = [])
+    public function __construct($baseUri, array $guzzleConfig = [])
     {
         $this->baseUri = $baseUri;
         try {
@@ -86,7 +86,7 @@ class Download implements RobotsTxtInterface
      * @param array $headers
      * @return string
      */
-    protected function headerEncoding($headers)
+    protected function headerEncoding(array $headers)
     {
         foreach ($headers as $header) {
             $split = array_map('trim', mb_split(';', $header));

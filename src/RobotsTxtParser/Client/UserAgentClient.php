@@ -40,6 +40,12 @@ class UserAgentClient implements RobotsTxtInterface
     protected $statusCodeParser;
 
     /**
+     * Comment export status
+     * @var bool
+     */
+    protected $commentsExported = false;
+
+    /**
      * UserAgentClient constructor.
      *
      * @param array $rules
@@ -47,7 +53,7 @@ class UserAgentClient implements RobotsTxtInterface
      * @param string $baseUrl
      * @param int|null $statusCode
      */
-    public function __construct($rules, $userAgent, $baseUrl, $statusCode)
+    public function __construct(array $rules, $userAgent, $baseUrl, $statusCode)
     {
         $this->statusCodeParser = new StatusCodeParser($statusCode, parse_url($baseUrl, PHP_URL_SCHEME));
         $this->userAgent = $userAgent;
@@ -132,8 +138,8 @@ class UserAgentClient implements RobotsTxtInterface
      */
     public function getCacheDelay()
     {
-        $exported = $this->rules[self::DIRECTIVE_CACHE_DELAY]->export();
-        return isset($exported[self::DIRECTIVE_CACHE_DELAY]) ? $exported[self::DIRECTIVE_CACHE_DELAY] : $this->getCrawlDelay();
+        $delay = $this->rules[self::DIRECTIVE_CACHE_DELAY]->export();
+        return isset($delay[self::DIRECTIVE_CACHE_DELAY]) ? $delay[self::DIRECTIVE_CACHE_DELAY] : $this->getCrawlDelay();
     }
 
     /**
@@ -143,8 +149,55 @@ class UserAgentClient implements RobotsTxtInterface
      */
     public function getCrawlDelay()
     {
-        $exported = $this->rules[self::DIRECTIVE_CRAWL_DELAY]->export();
-        return isset($exported[self::DIRECTIVE_CRAWL_DELAY]) ? $exported[self::DIRECTIVE_CRAWL_DELAY] : 0;
+        $delay = $this->rules[self::DIRECTIVE_CRAWL_DELAY]->export();
+        return isset($delay[self::DIRECTIVE_CRAWL_DELAY]) ? $delay[self::DIRECTIVE_CRAWL_DELAY] : $this->getRequestRate();
+    }
+
+    /**
+     * Get Request-rate
+     *
+     * @param int|null $timestamp
+     * @return float|int
+     */
+    protected function getRequestRate($timestamp = null)
+    {
+        if ($timestamp === null) {
+            $timestamp = time();
+        }
+        $rates = $this->getRequestRates();
+        $values = [];
+        foreach ($rates as $array) {
+            if (
+                !isset($array['from']) ||
+                !isset($array['to'])
+            ) {
+                $values[] = $array['rate'];
+                continue;
+            }
+            $from = mktime(mb_substr($array['from'], 0, mb_strlen($array['from']) - 2), mb_substr($array['from'], -2, 2), 0);
+            $to = mktime(mb_substr($array['to'], 0, mb_strlen($array['to']) - 2), mb_substr($array['to'], -2, 2), 59);
+            if ($from > $to) {
+                $to = mktime(mb_substr($array['to'] + 24, 0, mb_strlen($array['to']) - 2), mb_substr($array['to'], -2, 2), 59);
+            }
+            if (
+                $timestamp >= $from &&
+                $timestamp <= $to
+            ) {
+                $values[] = $array['rate'];
+            }
+        };
+        return ($rate = min($values)) > 0 ? $rate : 0;
+    }
+
+    /**
+     * Get Request-rates
+     *
+     * @return array
+     */
+    public function getRequestRates()
+    {
+        $array = $this->rules[self::DIRECTIVE_REQUEST_RATE]->export();
+        return isset($array[self::DIRECTIVE_REQUEST_RATE]) ? $array[self::DIRECTIVE_REQUEST_RATE] : [];
     }
 
     /**
@@ -161,5 +214,41 @@ class UserAgentClient implements RobotsTxtInterface
             }
         }
         return $result;
+    }
+
+    /**
+     * UserAgentClient destructor.
+     */
+    public function __destruct()
+    {
+        if (!$this->commentsExported) {
+            // Comment from the `Comments` directive exists, but has not been exported.
+            foreach ($this->getComments() as $message) {
+                trigger_error('Comment for `' . $this->userAgent . '` at `' . $this->base . '/robots.txt`: ' . $message, E_USER_NOTICE);
+            }
+        }
+    }
+
+    /**
+     * Get Comments
+     *
+     * @return array
+     */
+    public function getComments()
+    {
+        $this->commentsExported = true;
+        $comments = $this->rules[self::DIRECTIVE_COMMENT]->export();
+        return isset($comments[self::DIRECTIVE_COMMENT]) ? $comments[self::DIRECTIVE_COMMENT] : [];
+    }
+
+    /**
+     * Get Visit-time
+     *
+     * @return array|false
+     */
+    public function getVisitTime()
+    {
+        $times = $this->rules[self::DIRECTIVE_VISIT_TIME]->export();
+        return isset($times[self::DIRECTIVE_VISIT_TIME]) ? $times[self::DIRECTIVE_VISIT_TIME] : [];
     }
 }

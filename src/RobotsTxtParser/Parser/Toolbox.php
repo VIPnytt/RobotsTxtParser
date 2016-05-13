@@ -17,7 +17,7 @@ trait Toolbox
      * @param array $paths
      * @return bool
      */
-    protected function checkPath($path, $paths)
+    protected function checkPath($path, array $paths)
     {
         foreach ($paths as $rule) {
             $escape = ['?' => '\?', '.' => '\.', '*' => '.*'];
@@ -68,7 +68,7 @@ trait Toolbox
      * @param array $whiteList
      * @return array|false
      */
-    protected function generateRulePair($line, $whiteList)
+    protected function generateRulePair($line, array $whiteList)
     {
         $whiteList = array_map('mb_strtolower', $whiteList);
         // Split by directive and rule
@@ -91,16 +91,64 @@ trait Toolbox
     /**
      * Validate directive
      *
-     * @param $directive
-     * @param $directives
+     * @param string $directive
+     * @param array $directives
      * @return string
      * @throws ParserException
      */
-    protected function validateDirective($directive, $directives)
+    protected function validateDirective($directive, array $directives)
     {
         if (!in_array($directive, $directives, true)) {
             throw new ParserException('Directive is not allowed here');
         }
         return mb_strtolower($directive);
+    }
+
+    /**
+     * Parse rate as specified in the `Robot exclusion standard` version 2.0 draft
+     * rate = numDocuments / timeUnit
+     * @link http://www.conman.org/people/spc/robots2.html#format.directives.request-rate
+     *
+     * @param $string
+     * @return int|float|false
+     */
+    protected function draftParseRate($string)
+    {
+        $parts = array_map('trim', mb_split('/', $string));
+        if (count($parts) != 2) {
+            return false;
+        }
+        $multiplier = 1;
+        switch (mb_substr(mb_strtolower(preg_replace('/[^A-Za-z]/', '', $parts[1])), 0, 1)) {
+            case 'm':
+                $multiplier = 60;
+                break;
+            case 'h':
+                $multiplier = 3600;
+                break;
+            case 'd':
+                $multiplier = 86400;
+                break;
+        }
+        $num = intval(preg_replace('/[^0-9]/', '', $parts[0]));
+        $sec = intval(preg_replace('/[^0-9]/', '', $parts[1])) * $multiplier;
+        $rate = $num / $sec;
+        return $rate > 0 ? $rate : false;
+    }
+
+    protected function draftParseTime($string)
+    {
+        $array = preg_replace('/[^0-9]/', '', mb_split('-', $string));
+        if (
+            count($array) != 2 ||
+            ($from = date_create_from_format('Hi', $array[0], 'UTC')) === false ||
+            ($to = date_create_from_format('Hi', $array[1], 'UTC')) === false
+        ) {
+            return false;
+        }
+        return [
+            'from' => date_format($from, 'Hi'),
+            'to' => date_format($to, 'Hi'),
+        ];
     }
 }
