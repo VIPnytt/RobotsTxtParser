@@ -81,7 +81,7 @@ $exportAll = $client->export(); // array
 $exportUA = $client->userAgent('MyBot')->export(); // array
 ```
 
-See our [Wiki](https://github.com/VIPnytt/RobotsTxtParser/wiki) for [Documentation](https://github.com/VIPnytt/RobotsTxtParser/wiki) and additional [Usage examples](https://github.com/VIPnytt/RobotsTxtParser/wiki).
+See our [Wiki](https://github.com/VIPnytt/RobotsTxtParser/wiki) for [Documentation](https://github.com/VIPnytt/RobotsTxtParser/tree/master/docs) and additional [Usage examples](https://github.com/VIPnytt/RobotsTxtParser/wiki).
 
 ## Specifications
 - [x] [Google's robots.txt specifications](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt)

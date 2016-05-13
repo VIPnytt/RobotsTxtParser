@@ -186,7 +186,13 @@ class UserAgentClient implements RobotsTxtInterface
                 $values[] = $array['rate'];
             }
         };
-        return ($rate = min($values)) > 0 ? $rate : 0;
+        if (
+            count($values) > 0 &&
+            $rate = min($values) > 0
+        ) {
+            return $rate;
+        }
+        return 0;
     }
 
     /**
