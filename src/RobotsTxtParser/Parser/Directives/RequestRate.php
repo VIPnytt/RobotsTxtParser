@@ -16,7 +16,7 @@ class RequestRate implements DirectiveInterface, RobotsTxtInterface
     /**
      * Directive
      */
-    const DIRECTIVE = self::DIRECTIVE_VISIT_TIME;
+    const DIRECTIVE = self::DIRECTIVE_REQUEST_RATE;
 
     /**
      * RequestRate array
@@ -51,6 +51,7 @@ class RequestRate implements DirectiveInterface, RobotsTxtInterface
         ) {
             $result = array_merge($result, $times);
         }
+        var_dump($result);
         $this->array[] = $result;
         return true;
     }

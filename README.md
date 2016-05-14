@@ -18,12 +18,13 @@ An easy to use, extensible PHP library to parse `robots.txt` according to [_Goog
 - Dynamic URL parameter detection
 
 #### Advantages _(compared to most other robots.txt parsers)_
-- Automatically fetch the correct `robots.txt` if it isn't provided. _http(s) only._
-- Features a dedicated `User-Agent` parser and group determiner library, for maximum accuracy.
+- Optional: Automatic download of the the correct `robots.txt` if it isn't provided. _http(s) only._
+- Support for every single directive ever existed, including drafts.
 - HTTP Status code handler, _according to [Google](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt) spec._
+- Features a dedicated `User-Agent` parser and group determiner library, for maximum accuracy.
 - Full support for _inline directives_, _according to [Yandex](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml) spec._
-- Provides additional data like _preferred host_, dynamic _URL parameters_ and _Sitemap_ locations.
-- FTP parsing support
+- Provides additional data like _preferred host_, dynamic _URL parameters_, _Sitemap_ locations, etc.
+- ``FTP``, ``SFTP`` and ``FTP/S`` parsing support.
 
 #### Requirements:
 - PHP [>=5.6](http://php.net/supported-versions.php)
@@ -91,18 +92,18 @@ See our [Wiki](https://github.com/VIPnytt/RobotsTxtParser/wiki) for [Documentati
 - [x] [The Web Robots Pages, version 2.0 draft](http://www.conman.org/people/spc/robots2.html)
 
 ### Directives supported
-- [x] `User-agent`
-  - [x] `Allow`
-    - [x] _inline_ `Clean-param`
-    - [x] _inline_ `Host`
-  - [x] `Disallow`
-    - [x] _inline_ `Clean-param`
-    - [x] _inline_ `Host`
-  - [x] `Crawl-delay`
-  - [x] `Cache-delay`
-  - [x] `Request-rate`
-  - [x] `Visit-time`
-  - [x] `Robot-version`
-- [x] `Clean-param`
-- [x] `Host`
-- [x] `Sitemap`
+- [x] [`User-agent`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#user-agent)
+  - [x] [`Allow`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#allow)
+    - [x] _inline_ [`Clean-param`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#clean-param)
+    - [x] _inline_ [`Host`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#host)
+  - [x] [`Disallow`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#disallow)
+    - [x] _inline_ [`Clean-param`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#clean-param)
+    - [x] _inline_ [`Host`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#host)
+  - [x] [`Crawl-delay`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#crawl-delay)
+  - [x] [`Cache-delay`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#cache-delay)
+  - [x] [`Request-rate`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#request-rate)
+  - [x] [`Visit-time`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#visit-time)
+  - [x] [`Robot-version`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#robot-version)
+- [x] [`Clean-param`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#clean-param)
+- [x] [`Host`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#host)
+- [x] [`Sitemap`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#sitemap)

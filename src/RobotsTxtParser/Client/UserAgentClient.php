@@ -174,10 +174,10 @@ class UserAgentClient implements RobotsTxtInterface
                 $values[] = $array['rate'];
                 continue;
             }
-            $from = mktime(mb_substr($array['from'], 0, mb_strlen($array['from']) - 2), mb_substr($array['from'], -2, 2), 0);
-            $to = mktime(mb_substr($array['to'], 0, mb_strlen($array['to']) - 2), mb_substr($array['to'], -2, 2), 59);
+            $from = gmmktime(mb_substr($array['from'], 0, mb_strlen($array['from']) - 2), mb_substr($array['from'], -2, 2), 0);
+            $to = gmmktime(mb_substr($array['to'], 0, mb_strlen($array['to']) - 2), mb_substr($array['to'], -2, 2), 59);
             if ($from > $to) {
-                $to = mktime(mb_substr($array['to'] + 24, 0, mb_strlen($array['to']) - 2), mb_substr($array['to'], -2, 2), 59);
+                $to = gmmktime(mb_substr($array['to'] + 24, 0, mb_strlen($array['to']) - 2), mb_substr($array['to'], -2, 2), 59);
             }
             if (
                 $timestamp >= $from &&
@@ -188,7 +188,7 @@ class UserAgentClient implements RobotsTxtInterface
         };
         if (
             count($values) > 0 &&
-            $rate = min($values) > 0
+            ($rate = min($values)) > 0
         ) {
             return $rate;
         }

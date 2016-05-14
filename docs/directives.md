@@ -1,28 +1,28 @@
 # Directives
 
-- [Allow](#Allow)
-- [Cache-delay](#Cache-delay)
-- [Clean-param](#Clean-param)
-- [Comment](#Comment)
-- [Crawl-delay](#Crawl-delay)
-- [Disallow](#Disallow)
-- [Host](#Host)
-- [Request-rate](#Request-rate)
-- [Robot-version](#Robot-version)
-- [Sitemap](#Sitemap)
-- [User-agent](#User-agent)
-- [Visit-time](#Visit-time)
+- [Allow](#allow)
+- [Cache-delay](#cache-delay)
+- [Clean-param](#clean-param)
+- [Comment](#comment)
+- [Crawl-delay](#crawl-delay)
+- [Disallow](#disallow)
+- [Host](#host)
+- [Request-rate](#request-rate)
+- [Robot-version](#robot-version)
+- [Sitemap](#sitemap)
+- [User-agent](#user-agent)
+- [Visit-time](#visit-time)
 
 ## Allow
 The ``allow`` directive specifies paths that may be accessed by the designated crawlers. When no path is specified, the directive is ignored.
 
-__Usage:__
+__robots.txt:__
 ````
 allow: [path]
 ````
 
 __See also:__
-- [Disallow](#Disallow)
+- [Disallow](#disallow)
 
 __References:__
 - [Google's robots.txt specifications](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#allow)
@@ -31,18 +31,25 @@ __References:__
 - [The Web Robots Pages, version 2.0 draft](http://www.conman.org/people/spc/robots2.html#format.directives.allow)
 
 ## Cache-delay
-Identical to ``Crawl-delay``, except it applies to content caching only.
+The ``Cache-delay`` directive specifies the minimum interval (in seconds) for a robot to wait after caching one page, before starting to caching another.
 
-__Note:__ _This is an unofficial directive._
+__robots.txt:__
+````
+cache-delay: [seconds]
+````
+
+__Note:__ _This is an unofficial directive, but still used by many web-pages._
+
+__Parser specific:__ If the value is requested, but isn't defined, the value of ``Crawl-delay`` is returned to maintain compatibility.
 
 __See also:__
-- [Crawl-delay](#Crawl-delay)
-- [Request-rate](#Request-rate)
+- [Crawl-delay](#crawl-delay)
+- [Request-rate](#request-rate)
 
 ## Clean-param
 If page addresses contain dynamic parameters that do not affect the content (e.g. identifiers of sessions, users, referrers etc.), they can be described using the ``Clean-param`` directive.
 
-__Usage:__
+__robots.txt:__
 ````
 Clean-param: p0[&p1&p2&..&pn] [path]
 ````
@@ -51,9 +58,9 @@ __References:__
 - [Yandex robots.txt specifications](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#clean-param)
 
 ## Comment
-Comments witch are supposed to be sent back to the author/user of the robot. It can be used to eg. explain the robot policy of a site (say, that one government site that hates robots).
+Comments witch are supposed to be sent back to the author/user of the robot. It can be used to eg. provide contact information for white-listing requests, or even explain the robot policy of a site.
 
-__Usage:__
+__robots.txt:__
 ````
 comment: [text]
 ````
@@ -64,14 +71,16 @@ __References:__
 ## Crawl-delay
 The ``Crawl-delay`` directive specifies the minimum interval (in seconds) for a robot to wait after loading one page, before starting to load another.
 
-__Usage:__
+__robots.txt:__
 ````
 crawl-delay: [seconds]
 ````
 
+__Parser specific:__ If the value is requested, but isn't defined, the value of ``Request-rate`` is returned to maintain backwards compatibility.
+
 __See also:__
-- [Cache-delay](#Cache-delay)
-- [Request-rate](#Request-rate)
+- [Request-rate](#request-rate)
+- [Cache-delay](#cache-delay)
 
 __References:__
 - [Yandex robots.txt specifications](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#crawl-delay)
@@ -79,13 +88,13 @@ __References:__
 ## Disallow
 The ``disallow`` directive specifies paths that must not be accessed by the designated crawlers. When no path is specified, the directive is ignored.
 
-__Usage:__
+__robots.txt:__
 ````
 disallow: [path]
 ````
 
 __See also:__
-- [Allow](#Allow)
+- [Allow](#allow)
 
 __References:__
 - [Google's robots.txt specifications](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#disallow)
@@ -97,7 +106,7 @@ __References:__
 ## Host
 If a site has mirrors, the ``host`` directive is used to indicate which site is main one.
 
-__Usage:__
+__robots.txt:__
 ````
 host: [host]
 ````
@@ -109,16 +118,16 @@ disallow: host: [host]
 ````
 
 __See also:__
-- [Allow](#Allow)
-- [Disallow](#Disallow)
+- [Allow](#allow)
+- [Disallow](#disallow)
 
 __References:__
 - [Yandex robots.txt specifications](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#host)
 
 ## Request-rate
-The ``request-rate`` directive specifies the minimum time of how often a robot can request a page.
+The ``request-rate`` directive specifies the minimum time of how often a robot can request a page, along with timestamps in UTC.
 
-__Usage:__
+__robots.txt:__
 ````
 request-rate: [rate]
 ````
@@ -126,10 +135,12 @@ request-rate: [rate]
 request-rate: [rate] [time]-[time]
 ````
 
+__Note:__ _This directive has been replaced by ``Crawl-delay``, and is only found in drafts. Usage should be avoided._
+
 __See also:__
-- [Cache-delay](#Cache-delay)
-- [Crawl-delay](#Crawl-delay)
-- [Visit-time](#Visit-time)
+- [Cache-delay](#cache-delay)
+- [Crawl-delay](#crawl-delay)
+- [Visit-time](#visit-time)
 
 __References:__
 - [The Web Robots Pages, version 2.0 draft](http://www.conman.org/people/spc/robots2.html#format.directives.request-rate)
@@ -139,7 +150,7 @@ Witch _Robot exclusion standard_ version to use for parsing.
 - [Version 1.0](http://www.robotstxt.org/robotstxt.html) (default)
 - [Version 2.0 draft](http://www.conman.org/people/spc/robots2.html)
 
-__Usage:__
+__robots.txt:__
 ````
 robot-version: [version]
 ````
@@ -152,7 +163,7 @@ __References:__
 ## Sitemap
 The ``sitemap`` directive is used to list URL's witch describes the site structure.
 
-__Usage:__
+__robots.txt:__
 ````
 sitemap: [absoluteURL]
 ````
@@ -162,11 +173,14 @@ __References:__
 - [Yandex robots.txt specifications](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#sitemap)
 
 ## User-agent
-The ``user-agent`` directive is used as an _start-of-group_ record, and specifies witch User-agent the following rules should be applied to.
+The ``user-agent`` directive is used as an _start-of-group_ record, and specifies witch User-agent(s) the following rules should be applied to.
 
-__Usage:__
+__robots.txt:__
 ````
 user-agent: [name]
+````
+````
+user-agent: [name/version]
 ````
 
 __References:__
@@ -179,13 +193,13 @@ __References:__
 ## Visit-time
 The robot is requested to only visit the site inside the given ``visit-time`` window.
 
-__Usage:__
+__robots.txt:__
 ````
 visit-time: [time]-[time]
 ````
 
 __See also:__
-- [Request-rate](#Request-rate)
+- [Request-rate](#request-rate)
 
 __References:__
 - [The Web Robots Pages, version 2.0 draft](http://www.conman.org/people/spc/robots2.html#format.directives.visit-time)

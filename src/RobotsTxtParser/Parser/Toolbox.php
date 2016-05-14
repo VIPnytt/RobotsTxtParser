@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Parser;
 
+use DateTimeZone;
 use vipnytt\RobotsTxtParser\Exceptions\ParserException;
 
 /**
@@ -136,13 +137,20 @@ trait Toolbox
         return $rate > 0 ? $rate : false;
     }
 
+    /**
+     * Parse timestamp range as specified in the `Robot exclusion standard` version 2.0 draft
+     * @link http://www.conman.org/people/spc/robots2.html#format.directives.visit-time
+     *
+     * @param $string
+     * @return array|bool
+     */
     protected function draftParseTime($string)
     {
         $array = preg_replace('/[^0-9]/', '', mb_split('-', $string));
         if (
             count($array) != 2 ||
-            ($from = date_create_from_format('Hi', $array[0], 'UTC')) === false ||
-            ($to = date_create_from_format('Hi', $array[1], 'UTC')) === false
+            ($from = date_create_from_format('Hi', $array[0], new DateTimeZone('UTC'))) === false ||
+            ($to = date_create_from_format('Hi', $array[1], new DateTimeZone('UTC'))) === false
         ) {
             return false;
         }

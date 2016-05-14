@@ -34,13 +34,11 @@ class ExportTest extends \PHPUnit_Framework_TestCase
             [
                 <<<ROBOTS
 User-agent: *
-Robot-version: 2.0
 Disallow: /admin/
 Allow: /public/
 Crawl-delay: 5
 
 User-agent: Googlebot
-Robot-version: 1.0
 Disallow: /
 
 Host: example.com
@@ -78,7 +76,6 @@ ROBOTS
                                                     '/admin/',
                                                 ],
                                         ],
-                                    'robot-version' => '2.0',
                                 ],
                             'googlebot' =>
                                 [
@@ -89,7 +86,6 @@ ROBOTS
                                                     '/',
                                                 ],
                                         ],
-                                    'robot-version' => '1.0',
                                 ],
                         ],
                 ]
