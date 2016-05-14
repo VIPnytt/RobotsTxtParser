@@ -17,14 +17,15 @@ An easy to use, extensible PHP library to parse `robots.txt` according to [_Goog
 - Host preference detection
 - Dynamic URL parameter detection
 
-#### Advantages _(compared to most other robots.txt parsers)_
+#### Advantages
+_(compared to most other robots.txt parsers)_
 - Automatic download of the the _correct_ `robots.txt`. _http(s) only._ (optional)
-- Support for every single directive ever existed, including drafts.
+- Support for every single directive ever existed, including drafts. [See the full list.](#directives-supported)
 - HTTP Status code handler, _according to [Google](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt) spec._
 - Features a dedicated `User-Agent` parser and group determiner library, for maximum accuracy.
 - Full support for _inline directives_, _according to [Yandex](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml) spec._
 - Provides additional data like _preferred host_, dynamic _URL parameters_, _Sitemap_ locations, etc.
-- ``FTP``, ``SFTP`` and ``FTP/S`` parsing support.
+- Supports: ``HTTP``, ``HTTPS``, ``FTP``, ``SFTP`` and ``FTP/S``.
 
 #### Requirements:
 - PHP [>=5.6](http://php.net/supported-versions.php)
@@ -82,7 +83,7 @@ $exportAll = $client->export(); // array
 $exportUA = $client->userAgent('MyBot')->export(); // array
 ```
 
-See our [Wiki](https://github.com/VIPnytt/RobotsTxtParser/wiki) for [Documentation](https://github.com/VIPnytt/RobotsTxtParser/tree/master/docs) and additional [Usage examples](https://github.com/VIPnytt/RobotsTxtParser/wiki).
+Visit the [Wiki](https://github.com/VIPnytt/RobotsTxtParser/wiki) and [Documentation](https://github.com/VIPnytt/RobotsTxtParser/tree/master/docs) for additional Usage examples.
 
 ## Specifications
 - [x] [Google's robots.txt specifications](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt)

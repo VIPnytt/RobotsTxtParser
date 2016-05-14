@@ -31,16 +31,16 @@ __References:__
 - [The Web Robots Pages, version 2.0 draft](http://www.conman.org/people/spc/robots2.html#format.directives.allow)
 
 ## Cache-delay
-The ``Cache-delay`` directive specifies the minimum interval (in seconds) for a robot to wait after caching one page, before starting to caching another.
+The ``Cache-delay`` directive specifies the minimum interval (in seconds) for a robot to wait after caching one page, before starting to cache another.
 
 __robots.txt:__
 ````
 cache-delay: [seconds]
 ````
 
-__Note:__ _This is an unofficial directive, but still used by many web-pages._
+__Note:__ _This is an unofficial directive._
 
-__Parser specific:__ If the value is requested, but isn't defined, the value of ``Crawl-delay`` is returned to maintain compatibility.
+__Parser specific:__ When the value is requested but not found, the value of ``Crawl-delay`` is returned, to maintain compatibility.
 
 __See also:__
 - [Crawl-delay](#crawl-delay)
@@ -76,7 +76,7 @@ __robots.txt:__
 crawl-delay: [seconds]
 ````
 
-__Parser specific:__ If the value is requested, but isn't defined, the value of ``Request-rate`` is returned to maintain backwards compatibility.
+__Parser specific:__ When the value is requested but not found, the value of ``Request-rate`` is returned, to maintain backwards compatibility.
 
 __See also:__
 - [Request-rate](#request-rate)
@@ -135,7 +135,7 @@ request-rate: [rate]
 request-rate: [rate] [time]-[time]
 ````
 
-__Note:__ _This directive has been replaced by ``Crawl-delay``, and is only found in drafts. Usage should be avoided._
+__Note:__ _This directive does only exist in drafts, and should be avoided. Please use ``Crawl-delay`` instead._
 
 __See also:__
 - [Cache-delay](#cache-delay)
@@ -147,7 +147,7 @@ __References:__
 
 ## Robot-version
 Witch _Robot exclusion standard_ version to use for parsing.
-- [Version 1.0](http://www.robotstxt.org/robotstxt.html) (default)
+- [Version 1.0](http://www.robotstxt.org/robotstxt.html)
 - [Version 2.0 draft](http://www.conman.org/people/spc/robots2.html)
 
 __robots.txt:__

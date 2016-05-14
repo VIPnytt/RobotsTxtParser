@@ -110,6 +110,7 @@ trait UrlParser
                 'https',
                 'ftp',
                 'sftp',
+                'ftps',
             ]
         );
     }

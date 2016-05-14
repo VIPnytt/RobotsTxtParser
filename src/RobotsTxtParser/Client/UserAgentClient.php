@@ -154,16 +154,34 @@ class UserAgentClient implements RobotsTxtInterface
     }
 
     /**
-     * Get Request-rate
+     * Get Request-rate for current timestamp
      *
      * @param int|null $timestamp
      * @return float|int
      */
     protected function getRequestRate($timestamp = null)
     {
-        if ($timestamp === null) {
+        if (!is_int($timestamp)) {
             $timestamp = time();
         }
+        $values = $this->determineRequestRates($timestamp);
+        if (
+            count($values) > 0 &&
+            ($rate = min($values)) > 0
+        ) {
+            return $rate;
+        }
+        return 0;
+    }
+
+    /**
+     * Determine Request rates
+     *
+     * @param $timestamp
+     * @return array
+     */
+    protected function determineRequestRates($timestamp)
+    {
         $rates = $this->getRequestRates();
         $values = [];
         foreach ($rates as $array) {
@@ -185,14 +203,8 @@ class UserAgentClient implements RobotsTxtInterface
             ) {
                 $values[] = $array['rate'];
             }
-        };
-        if (
-            count($values) > 0 &&
-            ($rate = min($values)) > 0
-        ) {
-            return $rate;
         }
-        return 0;
+        return $values;
     }
 
     /**
