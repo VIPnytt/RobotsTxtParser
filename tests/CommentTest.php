@@ -15,7 +15,7 @@ class CommentTest extends \PHPUnit_Framework_TestCase
      * @param string $robotsTxtContent
      * @param array $result
      */
-    public function testCommentFeedback($robotsTxtContent, $result)
+    public function testComment($robotsTxtContent, $result)
     {
         $parser = new Client('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
@@ -23,12 +23,10 @@ class CommentTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($parser->userAgent('*')->isDisallowed("/"));
         $this->assertFalse($parser->userAgent('*')->isAllowed("/"));
 
-        $this->expectException('Exception');
+        // Comments not exported, and is therefore thrown as E_USER_NOTICE.
+        $this->expectException(\PHPUnit_Framework_Error_Notice::class);
         $parser = null;
 
-        /**
-         * Test 2
-         */
         $parser = new Client('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
 

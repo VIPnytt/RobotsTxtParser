@@ -50,6 +50,6 @@ class RobotVersion implements DirectiveInterface, RobotsTxtInterface
      */
     public function export()
     {
-        return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
+        return empty($this->value) ? [] : [self::DIRECTIVE => $this->value];
     }
 }

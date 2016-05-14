@@ -47,6 +47,6 @@ class Comment implements DirectiveInterface, RobotsTxtInterface
      */
     public function export()
     {
-        return empty($this->value) ? [] : [self::DIRECTIVE => $this->value];
+        return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
     }
 }

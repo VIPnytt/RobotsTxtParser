@@ -37,6 +37,12 @@ class Client extends Parser
     protected $statusCode;
 
     /**
+     * UserAgentClient class cache
+     * @var UserAgentClient[]
+     */
+    protected $userAgentClients = [];
+
+    /**
      * Parser constructor.
      *
      * @param string $baseUri
@@ -105,6 +111,9 @@ class Client extends Parser
      */
     public function userAgent($string = self::USER_AGENT)
     {
+        if (isset($this->userAgentClients[$string])) {
+            return $this->userAgentClients[$string];
+        }
         $userAgentParser = new UserAgentParser(mb_strtolower($string));
         if (($userAgent = $userAgentParser->match($this->userAgent->userAgents)) === false) {
             $userAgent = self::USER_AGENT;
@@ -119,6 +128,7 @@ class Client extends Parser
             self::DIRECTIVE_ROBOT_VERSION => $this->userAgent->robotVersion[$userAgent],
             self::DIRECTIVE_VISIT_TIME => $this->userAgent->visitTime[$userAgent],
         ];
-        return new UserAgentClient($rules, $userAgent, $this->baseUri, $this->statusCode);
+        $this->userAgentClients[$string] = new UserAgentClient($rules, $userAgent, $this->baseUri, $this->statusCode);
+        return $this->userAgentClients[$string];
     }
 }

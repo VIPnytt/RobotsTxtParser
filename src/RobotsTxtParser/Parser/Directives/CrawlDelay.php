@@ -50,13 +50,17 @@ class CrawlDelay implements DirectiveInterface, RobotsTxtInterface
     public function add($line)
     {
         if (
-            empty($float = floatval($line)) ||
-            isset($this->value) &&
-            $this->value > 0
+            !is_numeric($line) ||
+            (
+                isset($this->value) &&
+                $this->value > 0
+            )
         ) {
             return false;
         }
-        $this->value = $float;
+        // PHP hack to convert numeric string to float or int
+        // http://stackoverflow.com/questions/16606364/php-cast-string-to-either-int-or-float
+        $this->value = $line + 0;
         return true;
     }
 
