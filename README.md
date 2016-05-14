@@ -18,7 +18,7 @@ An easy to use, extensible PHP library to parse `robots.txt` according to [_Goog
 - Dynamic URL parameter detection
 
 #### Advantages _(compared to most other robots.txt parsers)_
-- Optional: Automatic download of the the correct `robots.txt` if it isn't provided. _http(s) only._
+- Automatic download of the the _correct_ `robots.txt`. _http(s) only._ (optional)
 - Support for every single directive ever existed, including drafts.
 - HTTP Status code handler, _according to [Google](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt) spec._
 - Features a dedicated `User-Agent` parser and group determiner library, for maximum accuracy.

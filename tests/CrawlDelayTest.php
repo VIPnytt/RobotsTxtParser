@@ -23,6 +23,7 @@ class CrawlDelayTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, $parser->userAgent('*')->getCrawlDelay());
         $this->assertEquals(0.8, $parser->userAgent('GoogleBot')->getCrawlDelay());
         $this->assertEquals(2.5, $parser->userAgent('BingBot')->getCrawlDelay());
+        $this->assertEquals(864, $parser->userAgent('Legacy')->getCrawlDelay());
     }
 
     /**
@@ -40,6 +41,9 @@ Crawl-delay: 0.8
 
 User-Agent: BingBot
 Crawl-delay: 2.5
+
+User-Agent: Legacy
+Request-rate: 100/24h
 ROBOTS
             ]
         ];

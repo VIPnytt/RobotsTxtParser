@@ -174,14 +174,14 @@ class UserAgentClient implements RobotsTxtInterface
                 $values[] = $array['rate'];
                 continue;
             }
-            $from = gmmktime(mb_substr($array['from'], 0, mb_strlen($array['from']) - 2), mb_substr($array['from'], -2, 2), 0);
-            $to = gmmktime(mb_substr($array['to'], 0, mb_strlen($array['to']) - 2), mb_substr($array['to'], -2, 2), 59);
-            if ($from > $to) {
-                $to = gmmktime(mb_substr($array['to'] + 24, 0, mb_strlen($array['to']) - 2), mb_substr($array['to'], -2, 2), 59);
+            $fromTime = gmmktime(mb_substr($array['from'], 0, mb_strlen($array['from']) - 2), mb_substr($array['from'], -2, 2), 0);
+            $toTime = gmmktime(mb_substr($array['to'], 0, mb_strlen($array['to']) - 2), mb_substr($array['to'], -2, 2), 59);
+            if ($fromTime > $toTime) {
+                $toTime = gmmktime(mb_substr($array['to'] + 24, 0, mb_strlen($array['to']) - 2), mb_substr($array['to'], -2, 2), 59);
             }
             if (
-                $timestamp >= $from &&
-                $timestamp <= $to
+                $timestamp >= $fromTime &&
+                $timestamp <= $toTime
             ) {
                 $values[] = $array['rate'];
             }

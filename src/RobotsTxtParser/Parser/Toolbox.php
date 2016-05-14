@@ -133,7 +133,7 @@ trait Toolbox
         }
         $num = intval(preg_replace('/[^0-9]/', '', $parts[0]));
         $sec = intval(preg_replace('/[^0-9]/', '', $parts[1])) * $multiplier;
-        $rate = $num / $sec;
+        $rate = $sec / $num;
         return $rate > 0 ? $rate : false;
     }
 
@@ -149,14 +149,14 @@ trait Toolbox
         $array = preg_replace('/[^0-9]/', '', mb_split('-', $string));
         if (
             count($array) != 2 ||
-            ($from = date_create_from_format('Hi', $array[0], new DateTimeZone('UTC'))) === false ||
-            ($to = date_create_from_format('Hi', $array[1], new DateTimeZone('UTC'))) === false
+            ($fromTime = date_create_from_format('Hi', $array[0], new DateTimeZone('UTC'))) === false ||
+            ($toTime = date_create_from_format('Hi', $array[1], new DateTimeZone('UTC'))) === false
         ) {
             return false;
         }
         return [
-            'from' => date_format($from, 'Hi'),
-            'to' => date_format($to, 'Hi'),
+            'from' => date_format($fromTime, 'Hi'),
+            'to' => date_format($toTime, 'Hi'),
         ];
     }
 }

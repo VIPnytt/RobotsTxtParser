@@ -37,6 +37,7 @@ User-agent: *
 Visit-time: 0715-1100
 Visit-time: 12.00-17.00
 Visit-time: 18:00-20:45
+Visit-time: 11-12 # invalid
 ROBOTS
                 ,
                 [

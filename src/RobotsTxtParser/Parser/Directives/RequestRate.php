@@ -51,7 +51,6 @@ class RequestRate implements DirectiveInterface, RobotsTxtInterface
         ) {
             $result = array_merge($result, $times);
         }
-        var_dump($result);
         $this->array[] = $result;
         return true;
     }

@@ -21,6 +21,13 @@ class RequestRateTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
 
         $this->assertEquals($result, $parser->userAgent('*')->getRequestRates());
+
+        $validRates = [];
+        foreach ($result as $value) {
+            $validRates[] = $value['rate'];
+        }
+        $this->assertTrue(in_array($parser->userAgent('Legacy')->getCrawlDelay(), $validRates));
+        $this->assertTrue(in_array($parser->userAgent('Legacy')->getCacheDelay(), $validRates));
     }
 
     /**
@@ -37,7 +44,8 @@ User-agent: *
 Request-rate: 1/1s 2200-0600
 Request-rate: 25/2m 07:00-21:00
 Request-rate: 650/3h 09.00-15.00
-Request-rate: 15750/4d
+Request-rate: 15750/4d 07-21 # invalid time
+Request-rate: 5 # invalid rate
 ROBOTS
                 ,
                 [
@@ -47,17 +55,17 @@ ROBOTS
                         'to' => '0600',
                     ],
                     [
-                        'rate' => 0.20833333333333334,
+                        'rate' => 4.7999999999999998,
                         'from' => '0700',
                         'to' => '2100',
                     ],
                     [
-                        'rate' => 0.060185185185185182,
+                        'rate' => 16.615384615384617,
                         'from' => '0900',
                         'to' => '1500',
                     ],
                     [
-                        'rate' => 0.045572916666666664,
+                        'rate' => 21.942857142857143,
                     ],
                 ]
             ]
