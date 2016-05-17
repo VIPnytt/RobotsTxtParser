@@ -135,7 +135,7 @@ request-rate: [rate]
 request-rate: [rate] [time]-[time]
 ````
 
-__Note:__ _This directive does only exist in drafts, and should be avoided. Please use ``Crawl-delay`` instead._
+__Note:__ _This directive does exist in drafts only, and should therefore be avoided. Please use ``Crawl-delay`` instead._
 
 __See also:__
 - [Cache-delay](#cache-delay)
@@ -147,8 +147,8 @@ __References:__
 
 ## Robot-version
 Witch _Robot exclusion standard_ version to use for parsing.
-- [Version 1.0](http://www.robotstxt.org/robotstxt.html)
-- [Version 2.0 draft](http://www.conman.org/people/spc/robots2.html)
+- [1.0](http://www.robotstxt.org/robotstxt.html)
+- [2.0](http://www.conman.org/people/spc/robots2.html) (draft)
 
 __robots.txt:__
 ````

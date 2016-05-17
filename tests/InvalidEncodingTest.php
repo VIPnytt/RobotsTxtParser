@@ -2,7 +2,6 @@
 namespace vipnytt\RobotsTxtParser\Tests;
 
 use vipnytt\RobotsTxtParser\Client;
-use vipnytt\RobotsTxtParser\Exceptions\EncodingException;
 
 /**
  * Class InvalidEncodingTest
@@ -17,7 +16,7 @@ class InvalidEncodingTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidEncoding($encoding)
     {
-        $this->expectException(EncodingException::class);
+        // Invalid encodings are ignored, and the default encoding is used, without warning.
         new Client('http://example.com', 200, '', $encoding);
     }
 

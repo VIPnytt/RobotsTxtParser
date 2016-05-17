@@ -17,9 +17,16 @@ interface DirectiveInterface
     public function add($line);
 
     /**
-     * Export
+     * Export rules
      *
-     * @return mixed
+     * @return array
      */
     public function export();
+
+    /**
+     * Render
+     *
+     * @return string[]
+     */
+    public function render();
 }

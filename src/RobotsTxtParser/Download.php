@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser;
 
+use DateTime;
 use GuzzleHttp;
 use vipnytt\RobotsTxtParser\Client;
 use vipnytt\RobotsTxtParser\Parser\RobotsTxtInterface;
@@ -19,6 +20,18 @@ class Download implements RobotsTxtInterface
     protected $baseUri;
 
     /**
+     * Download time
+     * @var int
+     */
+    protected $time;
+
+    /**
+     * Robots.txt max-age
+     * @var int|null
+     */
+    protected $maxAge = null;
+
+    /**
      * HTTP Status code
      * @var int
      */
@@ -35,6 +48,12 @@ class Download implements RobotsTxtInterface
      * @var string
      */
     protected $encoding;
+
+    /**
+     * Parser client class
+     * @var Client
+     */
+    protected $parserClient;
 
     /**
      * Download constructor.
@@ -70,6 +89,7 @@ class Download implements RobotsTxtInterface
                 )
             );
             $response = $client->request('GET', '/robots.txt');
+            $this->time = time();
             $this->statusCode = $response->getStatusCode();
             $this->contents = $response->getBody()->getContents();
             $this->encoding = $this->headerEncoding($response->getHeader('content-type'));
@@ -133,7 +153,13 @@ class Download implements RobotsTxtInterface
      */
     public function parserClient($byteLimit = self::BYTE_LIMIT)
     {
-        return new Client($this->baseUri, $this->getStatusCode(), $this->getContents(), $this->getEncoding(), $byteLimit);
+        if (!is_a($this->parserClient, 'Client')) {
+            $this->parserClient = new Client($this->baseUri, $this->getStatusCode(), $this->getContents(), $this->getEncoding(), $byteLimit);
+        }
+        if (!is_a($this->parserClient, 'Client')) {
+            exit;
+        }
+        return $this->parserClient;
     }
 
     /**
@@ -154,5 +180,29 @@ class Download implements RobotsTxtInterface
     public function getEncoding()
     {
         return $this->encoding;
+    }
+
+    /**
+     * Next update timestamp
+     *
+     * @return \DateTime|false
+     */
+    public function nextUpdate()
+    {
+        $dateTime = new DateTime;
+        $dateTime->setTimestamp($this->time + self::CACHE_TIME);
+        return $dateTime;
+    }
+
+    /**
+     * Valid until timestamp
+     *
+     * @return \DateTime|false
+     */
+    public function validUntil()
+    {
+        $dateTime = new DateTime;
+        $dateTime->setTimestamp($this->time + max(self::CACHE_TIME, is_int($this->maxAge) ? $this->maxAge : 0));
+        return $dateTime;
     }
 }

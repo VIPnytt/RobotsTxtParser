@@ -38,6 +38,7 @@
   },
   "require": {
     "php": ">=5.6.0",
+    "ext-iconv": "*",
     "ext-mbstring": "*",
     "guzzlehttp/guzzle": "6.*",
     "vipnytt/useragentparser": "~0.2"

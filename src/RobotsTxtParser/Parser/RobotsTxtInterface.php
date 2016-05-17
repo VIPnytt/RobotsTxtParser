@@ -9,6 +9,11 @@ namespace vipnytt\RobotsTxtParser\Parser;
 interface RobotsTxtInterface
 {
     /**
+     * Cache time
+     */
+    const CACHE_TIME = 86400;
+
+    /**
      * Max redirects
      */
     const MAX_REDIRECTS = 5;

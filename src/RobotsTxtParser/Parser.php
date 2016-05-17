@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser;
 
-use vipnytt\RobotsTxtParser\Exceptions\EncodingException;
+use vipnytt\RobotsTxtParser\Parser\CharacterEncodingConvert;
 use vipnytt\RobotsTxtParser\Parser\Directives\CleanParam;
 use vipnytt\RobotsTxtParser\Parser\Directives\Host;
 use vipnytt\RobotsTxtParser\Parser\Directives\Sitemap;
@@ -70,25 +70,38 @@ abstract class Parser implements RobotsTxtInterface
      * @param string $content - file content
      * @param string $encoding - character encoding
      * @param int|null $byteLimit - maximum of bytes to parse
-     * @throws EncodingException
      */
     public function __construct($content, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT)
     {
-        try {
-            if (!mb_internal_encoding($encoding)) {
-                throw new EncodingException('Unable to set internal character encoding to ' . $encoding);
-            }
-        } catch (\Exception $e) {
-            throw new EncodingException($e);
-        }
         $this->cleanParam = new CleanParam();
         $this->host = new Host();
         $this->sitemap = new Sitemap();
         $this->userAgent = new UserAgent();
+        $content = $this->convertEncoding($encoding, $content);
         if (is_int($byteLimit) && $byteLimit > 0) {
             $content = mb_strcut($content, 0, $byteLimit);
         }
         $this->parseTxt($content);
+    }
+
+    /**
+     * Convert character encoding
+     *
+     * @param string $encoding
+     * @param string $content
+     * @return string
+     */
+    protected function convertEncoding($encoding, $content)
+    {
+        mb_internal_encoding(self::ENCODING);
+        if ($encoding == self::ENCODING) {
+            return $content;
+        }
+        $convert = new CharacterEncodingConvert($content, $encoding, self::ENCODING);
+        if (($result = $convert->auto()) !== false) {
+            return $result;
+        }
+        return $content;
     }
 
     /**
@@ -142,15 +155,32 @@ abstract class Parser implements RobotsTxtInterface
     }
 
     /**
-     * Export
+     * Render
+     *
+     * @return string
+     */
+    public function render()
+    {
+        return implode("\r\n", array_merge(
+            $this->cleanParam->render(),
+            $this->host->render(),
+            $this->sitemap->render(),
+            $this->userAgent->render()
+        ));
+    }
+
+    /**
+     * Export rules
      *
      * @return array
      */
     public function export()
     {
-        return $this->cleanParam->export()
-        + $this->host->export()
-        + $this->sitemap->export()
-        + $this->userAgent->export();
+        return array_merge(
+            $this->cleanParam->export(),
+            $this->host->export(),
+            $this->sitemap->export(),
+            $this->userAgent->export()
+        );
     }
 }

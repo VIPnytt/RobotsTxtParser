@@ -167,7 +167,7 @@ class UserAgent implements DirectiveInterface, RobotsTxtInterface
     }
 
     /**
-     * Export
+     * Export rules
      *
      * @return array
      */
@@ -175,18 +175,47 @@ class UserAgent implements DirectiveInterface, RobotsTxtInterface
     {
         $result = [];
         foreach ($this->userAgents as $userAgent) {
-            $current = $this->allow[$userAgent]->export()
-                + $this->cacheDelay[$userAgent]->export()
-                + $this->comment[$userAgent]->export()
-                + $this->crawlDelay[$userAgent]->export()
-                + $this->disallow[$userAgent]->export()
-                + $this->requestRate[$userAgent]->export()
-                + $this->robotVersion[$userAgent]->export()
-                + $this->visitTime[$userAgent]->export();
+            $current = array_merge(
+                $this->allow[$userAgent]->export(),
+                $this->comment[$userAgent]->export(),
+                $this->cacheDelay[$userAgent]->export(),
+                $this->crawlDelay[$userAgent]->export(),
+                $this->disallow[$userAgent]->export(),
+                $this->requestRate[$userAgent]->export(),
+                $this->robotVersion[$userAgent]->export(),
+                $this->visitTime[$userAgent]->export()
+            );
             if (!empty($current)) {
                 $result[$userAgent] = $current;
             }
         }
         return empty($result) ? [] : [self::DIRECTIVE => $result];
+    }
+
+    /**
+     * Render
+     *
+     * @return string[]
+     */
+    public function render()
+    {
+        $result = [];
+        sort($this->userAgents);
+        foreach ($this->userAgents as $userAgent) {
+            $current = array_merge(
+                $this->allow[$userAgent]->render(),
+                $this->comment[$userAgent]->render(),
+                $this->cacheDelay[$userAgent]->render(),
+                $this->crawlDelay[$userAgent]->render(),
+                $this->disallow[$userAgent]->render(),
+                $this->requestRate[$userAgent]->render(),
+                $this->robotVersion[$userAgent]->render(),
+                $this->visitTime[$userAgent]->render()
+            );
+            if (!empty($current)) {
+                $result = array_merge($result, [self::DIRECTIVE . ': ' . $userAgent], $current);
+            }
+        }
+        return $result;
     }
 }

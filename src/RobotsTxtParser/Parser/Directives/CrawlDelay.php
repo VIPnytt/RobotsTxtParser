@@ -65,12 +65,25 @@ class CrawlDelay implements DirectiveInterface, RobotsTxtInterface
     }
 
     /**
-     * Export
+     * Export rules
      *
-     * @return array
+     * @return float[]|int[]|string[]
      */
     public function export()
     {
         return empty($this->value) ? [] : [$this->directive => $this->value];
+    }
+
+    /**
+     * Render
+     *
+     * @return string[]
+     */
+    public function render()
+    {
+        if (!empty($this->value)) {
+            return [$this->directive . ': ' . $this->value];
+        }
+        return [];
     }
 }

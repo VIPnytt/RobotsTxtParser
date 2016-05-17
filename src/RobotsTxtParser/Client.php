@@ -2,7 +2,7 @@
 namespace vipnytt\RobotsTxtParser;
 
 use vipnytt\RobotsTxtParser\Client\UserAgentClient;
-use vipnytt\RobotsTxtParser\Parser\StatusCodeParser;
+use vipnytt\RobotsTxtParser\Parser\UrlParser;
 use vipnytt\UserAgentParser;
 
 /**
@@ -18,11 +18,7 @@ use vipnytt\UserAgentParser;
  */
 class Client extends Parser
 {
-    /**
-     * HTTP status code parser
-     * @var StatusCodeParser
-     */
-    protected $statusCodeParser;
+    use UrlParser;
 
     /**
      * Robots.txt base uri
@@ -53,7 +49,7 @@ class Client extends Parser
      */
     public function __construct($baseUri, $statusCode = null, $content = null, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT)
     {
-        $this->baseUri = $baseUri;
+        $this->baseUri = $this->urlBase($this->urlEncode($baseUri));
         $this->statusCode = $statusCode;
         if ($content === null) {
             $client = new Download($this->baseUri);

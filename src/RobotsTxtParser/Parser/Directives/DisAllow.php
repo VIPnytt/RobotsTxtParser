@@ -34,6 +34,7 @@ class DisAllow implements DirectiveInterface, RobotsTxtInterface
 
     /**
      * Directive
+     * @var string
      */
     protected $directive;
 
@@ -141,15 +142,42 @@ class DisAllow implements DirectiveInterface, RobotsTxtInterface
     }
 
     /**
-     * Export
+     * Export rules
      *
      * @return array
      */
     public function export()
     {
-        $result = $this->array
-            + $this->cleanParam->export()
-            + $this->host->export();
+        $result = array_merge(
+            $this->array,
+            $this->cleanParam->export(),
+            $this->host->export()
+        );
         return empty($result) ? [] : [$this->directive => $result];
+    }
+
+    /**
+     * Render
+     *
+     * @return string[]
+     */
+    public function render()
+    {
+        $result = [];
+        $render = array_merge(
+            $this->array,
+            $this->cleanParam->render(),
+            $this->host->render()
+        );
+        foreach ($render as $value) {
+            if (is_array($value)) {
+                foreach ($value as $path) {
+                    $result[] = $this->directive . ':' . $path;
+                }
+                continue;
+            }
+            $result[] = $this->directive . ': ' . $value;
+        }
+        return $result;
     }
 }

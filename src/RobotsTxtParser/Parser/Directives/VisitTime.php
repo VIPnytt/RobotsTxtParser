@@ -48,12 +48,26 @@ class VisitTime implements DirectiveInterface, RobotsTxtInterface
     }
 
     /**
-     * Export
+     * Export rules
      *
-     * @return array
+     * @return string[][]
      */
     public function export()
     {
         return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
+    }
+
+    /**
+     * Render
+     *
+     * @return string[]
+     */
+    public function render()
+    {
+        $result = [];
+        foreach ($this->array as $value) {
+            $result[] = self::DIRECTIVE . ': ' . $value;
+        }
+        return $result;
     }
 }
