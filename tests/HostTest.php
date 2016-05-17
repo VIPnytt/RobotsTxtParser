@@ -28,7 +28,7 @@ class HostTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('myhost.com', $parser->getHost());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertSame($rendered, $parser->render());
             $this->testHost($rendered, false);
         }
     }

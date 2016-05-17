@@ -26,7 +26,7 @@ class CacheDelayTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(9.2, $parser->userAgent('BingBot')->getCacheDelay());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertSame($rendered, $parser->render());
             $this->testCacheDelay($rendered, false);
         }
     }

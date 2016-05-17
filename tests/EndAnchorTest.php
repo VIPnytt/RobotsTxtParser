@@ -33,7 +33,7 @@ class EndAnchorTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent('DenyMe')->isAllowed('http://example.com/deny_all/'));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertSame($rendered, $parser->render());
             $this->testEndAnchor($rendered, false);
         }
     }

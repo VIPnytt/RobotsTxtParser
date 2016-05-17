@@ -30,7 +30,7 @@ class CleanParamTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $parser->getCleanParam());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertSame($rendered, $parser->render());
             $this->testCleanParam($rendered, $result, false);
         }
     }

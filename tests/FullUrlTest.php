@@ -34,7 +34,7 @@ class FullUrlTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($parser->userAgent('badbot')->isDisallowed("http://example.com/"));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertSame($rendered, $parser->render());
             $this->testFullUrl($rendered, false);
         }
     }

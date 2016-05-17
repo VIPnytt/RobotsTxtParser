@@ -24,7 +24,7 @@ class ExportTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $parser->export());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertSame($rendered, $parser->render());
             $this->testExport($rendered, $result, false);
         }
     }

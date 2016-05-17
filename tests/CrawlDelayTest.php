@@ -27,7 +27,7 @@ class CrawlDelayTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(864, $parser->userAgent('Legacy')->getCrawlDelay());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertSame($rendered, $parser->render());
             $this->testCrawlDelay($rendered, false);
         }
     }

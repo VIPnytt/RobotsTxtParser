@@ -24,7 +24,7 @@ class SitemapTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $parser->getSitemaps());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertSame($rendered, $parser->render());
             $this->testSitemap($rendered, $result, false);
         }
     }

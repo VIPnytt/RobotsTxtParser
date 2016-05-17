@@ -24,7 +24,7 @@ class UserAgentExportTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $parser->userAgent('googlebot')->export());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertSame($rendered, $parser->render());
             $this->testUserAgentExport($rendered, $result, false);
         }
     }
