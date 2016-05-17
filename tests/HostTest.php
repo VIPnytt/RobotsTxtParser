@@ -13,8 +13,9 @@ class HostTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
+     * @param string|false $rendered
      */
-    public function testHost($robotsTxtContent)
+    public function testHost($robotsTxtContent, $rendered)
     {
         $parser = new Client('http://www.myhost.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
@@ -25,6 +26,11 @@ class HostTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent()->isAllowed('/'));
 
         $this->assertEquals('myhost.com', $parser->getHost());
+
+        if ($rendered !== false) {
+            $this->assertEquals($rendered, $parser->render());
+            $this->testHost($rendered, false);
+        }
     }
 
     /**
@@ -63,6 +69,16 @@ Host: www.firsthost.com www.secondhost.com
 Host: myhost.com # uses this one
 Host: www.myhost.com # is not used
 ROBOTS
+                ,
+                <<<RENDERED
+host:myhost.com
+host:www.myhost.com
+user-agent:*
+disallow:/cgi-bin
+disallow:host:www.myhost.com
+user-agent:yandex
+disallow:/cgi-bin
+RENDERED
             ]
         ];
     }

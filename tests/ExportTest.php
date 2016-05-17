@@ -14,13 +14,19 @@ class ExportTest extends \PHPUnit_Framework_TestCase
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
      * @param array $result
+     * @param string|false $rendered
      */
-    public function testExport($robotsTxtContent, $result)
+    public function testExport($robotsTxtContent, $result, $rendered)
     {
         $parser = new Client('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
 
         $this->assertEquals($result, $parser->export());
+
+        if ($rendered !== false) {
+            $this->assertEquals($rendered, $parser->render());
+            $this->testExport($rendered, $result, false);
+        }
     }
 
     /**
@@ -88,7 +94,18 @@ ROBOTS
                                         ],
                                 ],
                         ],
-                ]
+                ],
+                <<<RENDERED
+host:example.com
+sitemap:http://example.com/sitemap.xml
+sitemap:http://example.com/sitemap.xml.gz
+user-agent:*
+allow:/public/
+crawl-delay:5
+disallow:/admin/
+user-agent:googlebot
+disallow:/
+RENDERED
             ]
         ];
     }

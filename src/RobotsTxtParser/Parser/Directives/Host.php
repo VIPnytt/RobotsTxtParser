@@ -114,7 +114,7 @@ class Host implements DirectiveInterface, RobotsTxtInterface
     {
         $result = [];
         foreach ($this->array as $value) {
-            $result[] = self::DIRECTIVE . ': ' . $value;
+            $result[] = self::DIRECTIVE . ':' . $value;
         }
         return $result;
     }

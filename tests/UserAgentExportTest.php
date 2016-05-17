@@ -14,13 +14,19 @@ class UserAgentExportTest extends \PHPUnit_Framework_TestCase
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
      * @param array $result
+     * @param string|false $rendered
      */
-    public function testUserAgentExport($robotsTxtContent, $result)
+    public function testUserAgentExport($robotsTxtContent, $result, $rendered)
     {
         $parser = new Client('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
 
         $this->assertEquals($result, $parser->userAgent('googlebot')->export());
+
+        if ($rendered !== false) {
+            $this->assertEquals($rendered, $parser->render());
+            $this->testUserAgentExport($rendered, $result, false);
+        }
     }
 
     /**
@@ -61,7 +67,15 @@ ROBOTS
                                     '/admin/',
                                 ],
                         ],
-                ]
+                ],
+                <<<RENDERED
+user-agent:bingbot
+disallow:/
+user-agent:googlebot
+allow:/public/
+crawl-delay:5
+disallow:/admin/
+RENDERED
             ],
         ];
     }

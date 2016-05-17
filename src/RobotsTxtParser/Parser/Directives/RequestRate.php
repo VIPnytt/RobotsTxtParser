@@ -73,8 +73,15 @@ class RequestRate implements DirectiveInterface, RobotsTxtInterface
     public function render()
     {
         $result = [];
-        foreach ($this->array as $value) {
-            $result[] = self::DIRECTIVE . ': ' . $value;
+        foreach ($this->array as $array) {
+            $suffix = 's';
+            if (
+                isset($array['from']) &&
+                isset($array['to'])
+            ) {
+                $suffix .= ' ' . $array['from'] . '-' . $array['to'];
+            }
+            $result[] = self::DIRECTIVE . ':1/' . $array['rate'] . $suffix;
         }
         return $result;
     }

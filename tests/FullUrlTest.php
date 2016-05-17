@@ -13,8 +13,9 @@ class FullUrlTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
+     * @param string|false $rendered
      */
-    public function testFullUrl($robotsTxtContent)
+    public function testFullUrl($robotsTxtContent, $rendered)
     {
         $parser = new Client('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
@@ -31,6 +32,11 @@ class FullUrlTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($parser->userAgent('badbot')->isAllowed("http://example.com/"));
         $this->assertTrue($parser->userAgent('badbot')->isDisallowed("http://example.com/"));
+
+        if ($rendered !== false) {
+            $this->assertEquals($rendered, $parser->render());
+            $this->testFullUrl($rendered, false);
+        }
     }
 
     /**
@@ -49,6 +55,13 @@ Disallow: /admin/
 User-agent: BadBot
 Disallow: /
 ROBOTS
+                ,
+                <<<RENDERED
+user-agent:*
+disallow:/admin/
+user-agent:badbot
+disallow:/
+RENDERED
             ]
         ];
     }

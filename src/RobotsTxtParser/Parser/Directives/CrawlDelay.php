@@ -82,7 +82,7 @@ class CrawlDelay implements DirectiveInterface, RobotsTxtInterface
     public function render()
     {
         if (!empty($this->value)) {
-            return [$this->directive . ': ' . $this->value];
+            return [$this->directive . ':' . $this->value];
         }
         return [];
     }

@@ -213,7 +213,7 @@ class UserAgent implements DirectiveInterface, RobotsTxtInterface
                 $this->visitTime[$userAgent]->render()
             );
             if (!empty($current)) {
-                $result = array_merge($result, [self::DIRECTIVE . ': ' . $userAgent], $current);
+                $result = array_merge($result, [self::DIRECTIVE . ':' . $userAgent], $current);
             }
         }
         return $result;

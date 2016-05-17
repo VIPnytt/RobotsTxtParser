@@ -13,8 +13,9 @@ class EscapingTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
+     * @param string|false $rendered
      */
-    public function testEscaping($robotsTxtContent)
+    public function testEscaping($robotsTxtContent, $rendered)
     {
         $parser = new Client('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
@@ -27,6 +28,11 @@ class EscapingTest extends \PHPUnit_Framework_TestCase
          */
         //$this->assertTrue($parser->userAgent()->isDisallowed("/("));
         //$this->assertFalse($parser->userAgent()->isAllowed("/("));
+
+        if ($rendered !== false) {
+            $this->assertEquals($rendered, $parser->render());
+            $this->testEscaping($rendered, false);
+        }
     }
 
     /**
@@ -44,6 +50,13 @@ Disallow: /(
 Disallow: /)
 Disallow: /.
 ROBOTS
+                ,
+                <<<RENDERED
+user-agent:*
+disallow:/(
+disallow:/)
+disallow:/.
+RENDERED
             ]
         ];
     }

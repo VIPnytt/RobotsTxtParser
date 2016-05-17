@@ -13,8 +13,9 @@ class CaseSensitiveTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
+     * @param string|false $rendered
      */
-    public function testCaseSensitive($robotsTxtContent)
+    public function testCaseSensitive($robotsTxtContent, $rendered)
     {
         $parser = new Client('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
@@ -63,6 +64,11 @@ class CaseSensitiveTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent('*')->isDisallowed("/"));
         $this->assertTrue($parser->userAgent()->isAllowed("/"));
         $this->assertFalse($parser->userAgent()->isDisallowed("/"));
+
+        if ($rendered !== false) {
+            $this->assertEquals($rendered, $parser->render());
+            $this->testCaseSensitive($rendered, false);
+        }
     }
 
     /**
@@ -83,6 +89,15 @@ User-agent: lowercase
 Disallow: /
 Allow: /iNfO/
 ROBOTS
+                ,
+                <<<RENDERED
+user-agent:lowercase
+allow:/iNfO/
+disallow:/
+user-agent:uppercase
+allow:/InFo/
+disallow:/
+RENDERED
             ]
         ];
     }

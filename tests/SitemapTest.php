@@ -13,14 +13,20 @@ class SitemapTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
-     * @param array $sitemapArray
+     * @param array $result
+     * @param string|false $rendered
      */
-    public function testSitemap($robotsTxtContent, $sitemapArray)
+    public function testSitemap($robotsTxtContent, $result, $rendered)
     {
         $parser = new Client('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
 
-        $this->assertEquals($sitemapArray, $parser->getSitemaps());
+        $this->assertEquals($result, $parser->getSitemaps());
+
+        if ($rendered !== false) {
+            $this->assertEquals($rendered, $parser->render());
+            $this->testSitemap($rendered, $result, false);
+        }
     }
 
     /**
@@ -56,7 +62,17 @@ ROBOTS
                     'http://example.com/sitemap.xml.gz',
                     'http://worldwideweb.com/sitemap.xml',
                     'http://example.com/sitemap.xml?year=2014',
-                ]
+                ],
+                <<<RENDERED
+sitemap:http://example.com/sitemap.xml?year=2015
+sitemap:http://somesite.com/sitemap.xml
+sitemap:http://internet.com/sitemap.xml
+sitemap:http://example.com/sitemap.xml.gz
+sitemap:http://worldwideweb.com/sitemap.xml
+sitemap:http://example.com/sitemap.xml?year=2014
+user-agent:*
+disallow:/admin/
+RENDERED
             ]
         ];
     }

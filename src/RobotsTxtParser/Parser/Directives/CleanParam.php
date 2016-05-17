@@ -94,7 +94,7 @@ class CleanParam implements DirectiveInterface, RobotsTxtInterface
         $result = [];
         foreach ($this->array as $param => $paths) {
             foreach ($paths as $path) {
-                $result[] = self::DIRECTIVE . ': ' . $param . ' ' . $path;
+                $result[] = self::DIRECTIVE . ':' . $param . ' ' . $path;
             }
         }
         return $result;

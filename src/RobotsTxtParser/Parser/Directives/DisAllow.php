@@ -176,7 +176,7 @@ class DisAllow implements DirectiveInterface, RobotsTxtInterface
                 }
                 continue;
             }
-            $result[] = $this->directive . ': ' . $value;
+            $result[] = $this->directive . ':' . $value;
         }
         return $result;
     }

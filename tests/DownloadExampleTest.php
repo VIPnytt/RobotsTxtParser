@@ -30,6 +30,9 @@ class DownloadExampleTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($parser->getHost());
 
         $this->assertNull($parser->getCleanParam());
+
+        $this->assertEquals([], $parser->export());
+        $this->assertEquals('', $parser->render());
     }
 
     /**

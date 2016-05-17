@@ -13,8 +13,9 @@ class WhitespaceTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
+     * @param string|false $rendered
      */
-    public function testWhitespace($robotsTxtContent)
+    public function testWhitespace($robotsTxtContent, $rendered)
     {
         $parser = new Client('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
@@ -28,6 +29,11 @@ class WhitespaceTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent('*')->isDisallowed('/admin/front'));
         $this->assertTrue($parser->userAgent()->isAllowed('/admin/front'));
         $this->assertFalse($parser->userAgent()->isDisallowed('/admin/front'));
+
+        if ($rendered !== false) {
+            $this->assertEquals($rendered, $parser->render());
+            $this->testWhitespace($rendered, false);
+        }
     }
 
     /**
@@ -44,6 +50,12 @@ User-agent      :*
 Disallow : /admin
 Allow    :   /admin/front
 ROBOTS
+                ,
+                <<<RENDERED
+user-agent:*
+allow:/admin/front
+disallow:/admin
+RENDERED
             ]
         ];
     }

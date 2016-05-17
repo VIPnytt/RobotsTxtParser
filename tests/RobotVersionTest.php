@@ -14,13 +14,19 @@ class RobotVersionTest extends \PHPUnit_Framework_TestCase
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
      * @param array $result
+     * @param string|false $rendered
      */
-    public function testRobotVersion($robotsTxtContent, $result)
+    public function testRobotVersion($robotsTxtContent, $result, $rendered)
     {
         $parser = new Client('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
 
         $this->assertEquals($result, $parser->export());
+
+        if ($rendered !== false) {
+            $this->assertEquals($rendered, $parser->render());
+            $this->testRobotVersion($rendered, $result, false);
+        }
     }
 
     /**
@@ -54,7 +60,13 @@ ROBOTS
                                     'robot-version' => '1.0',
                                 ],
                         ],
-                ]
+                ],
+                <<<RENDERED
+user-agent:*
+robot-version:2.0
+user-agent:googlebot
+robot-version:1.0
+RENDERED
             ]
         ];
     }

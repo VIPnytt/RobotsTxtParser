@@ -14,13 +14,19 @@ class VisitTimeTest extends \PHPUnit_Framework_TestCase
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
      * @param array $result
+     * @param string|false $rendered
      */
-    public function testVisitTime($robotsTxtContent, $result)
+    public function testVisitTime($robotsTxtContent, $result, $rendered)
     {
         $parser = new Client('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
 
         $this->assertEquals($result, $parser->userAgent('*')->getVisitTime());
+
+        if ($rendered !== false) {
+            $this->assertEquals($rendered, $parser->render());
+            $this->testVisitTime($rendered, $result, false);
+        }
     }
 
     /**
@@ -53,7 +59,13 @@ ROBOTS
                         'from' => '1800',
                         'to' => '2045',
                     ],
-                ]
+                ],
+                <<<RENDERED
+user-agent:*
+visit-time:0715-1100
+visit-time:1200-1700
+visit-time:1800-2045
+RENDERED
             ]
         ];
     }

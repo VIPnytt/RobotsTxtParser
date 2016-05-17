@@ -153,11 +153,8 @@ class Download implements RobotsTxtInterface
      */
     public function parserClient($byteLimit = self::BYTE_LIMIT)
     {
-        if (!is_a($this->parserClient, 'Client')) {
+        if (!is_object($this->parserClient)) {
             $this->parserClient = new Client($this->baseUri, $this->getStatusCode(), $this->getContents(), $this->getEncoding(), $byteLimit);
-        }
-        if (!is_a($this->parserClient, 'Client')) {
-            exit;
         }
         return $this->parserClient;
     }

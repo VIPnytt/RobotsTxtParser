@@ -65,8 +65,8 @@ class VisitTime implements DirectiveInterface, RobotsTxtInterface
     public function render()
     {
         $result = [];
-        foreach ($this->array as $value) {
-            $result[] = self::DIRECTIVE . ': ' . $value;
+        foreach ($this->array as $array) {
+            $result[] = self::DIRECTIVE . ':' . $array['from'] . '-' . $array['to'];
         }
         return $result;
     }

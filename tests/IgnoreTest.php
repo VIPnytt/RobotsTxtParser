@@ -13,8 +13,9 @@ class IgnoreTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
+     * @param string|false $rendered
      */
-    public function testIgnore($robotsTxtContent)
+    public function testIgnore($robotsTxtContent, $rendered = '')
     {
         $parser = new Client('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
@@ -23,6 +24,11 @@ class IgnoreTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent('*')->isDisallowed('/tech'));
         $this->assertTrue($parser->userAgent()->isAllowed('/tech'));
         $this->assertFalse($parser->userAgent()->isDisallowed('/tech'));
+
+        if ($rendered !== false) {
+            $this->assertEquals($rendered, $parser->render());
+            $this->testIgnore($rendered, false);
+        }
     }
 
     /**

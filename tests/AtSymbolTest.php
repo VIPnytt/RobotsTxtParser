@@ -13,8 +13,9 @@ class AtSymbolTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
+     * @param string|false $rendered
      */
-    public function testAtSymbol($robotsTxtContent)
+    public function testAtSymbol($robotsTxtContent, $rendered)
     {
         $parser = new Client('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
@@ -24,6 +25,11 @@ class AtSymbolTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($parser->userAgent()->isDisallowed("/url_containing_@_symbol"));
         $this->assertFalse($parser->userAgent()->isAllowed("/url_containing_@_symbol"));
+
+        if ($rendered !== false) {
+            $this->assertEquals($rendered, $parser->render());
+            $this->testAtSymbol($rendered, false);
+        }
     }
 
     /**
@@ -40,6 +46,12 @@ User-Agent: *
 Disallow: /url_containing_@_symbol
 Allow: /peanuts
 ROBOTS
+                ,
+                <<<RENDERED
+user-agent:*
+allow:/peanuts
+disallow:/url_containing_@_symbol
+RENDERED
             ]
         ];
     }

@@ -61,7 +61,7 @@ class RobotVersion implements DirectiveInterface, RobotsTxtInterface
     public function render()
     {
         if (!empty($this->value)) {
-            return [self::DIRECTIVE . ': ' . $this->value];
+            return [self::DIRECTIVE . ':' . $this->value];
         }
         return [];
     }

@@ -13,8 +13,9 @@ class DisAllowTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
+     * @param string|false $rendered
      */
-    public function testDisAllowTest($robotsTxtContent)
+    public function testDisAllowTest($robotsTxtContent, $rendered)
     {
         $parser = new Client('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
@@ -69,6 +70,11 @@ class DisAllowTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent('crawlerZ')->isDisallowed("/"));
         $this->assertFalse($parser->userAgent('crawlerZ')->isAllowed("/forum"));
         $this->assertFalse($parser->userAgent('crawlerZ')->isAllowed("/public"));
+
+        if ($rendered !== false) {
+            $this->assertEquals($rendered, $parser->render());
+            $this->testDisAllowTest($rendered, false);
+        }
     }
 
     /**
@@ -108,6 +114,30 @@ Disallow:
 Disallow: /
 Allow: /$
 ROBOTS
+                ,
+                <<<RENDERED
+user-agent:*
+disallow:/admin
+disallow:/temp
+disallow:/forum
+user-agent:agentv
+allow:/bar
+disallow:/foo
+user-agent:agentw
+allow:/bar
+disallow:/foo
+user-agent:boty
+allow:/forum/$
+allow:/article
+disallow:/
+disallow:&&/1@|
+user-agent:crawlerz
+allow:/$
+disallow:/
+user-agent:spiderx
+disallow:/admin
+disallow:/assets
+RENDERED
             ]
         ];
     }
