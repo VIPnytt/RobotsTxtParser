@@ -131,7 +131,7 @@ trait Toolbox
                 $multiplier = 86400;
                 break;
         }
-        $num = floatval(preg_replace('/[^0-9.]/', '', $parts[0]));
+        $num = floatval(preg_replace('/[^0-9]/', '', $parts[0]));
         $sec = floatval(preg_replace('/[^0-9.]/', '', $parts[1])) * $multiplier;
         $rate = $sec / $num;
         return $rate > 0 ? $rate : false;
