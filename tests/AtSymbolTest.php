@@ -27,7 +27,7 @@ class AtSymbolTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent()->isAllowed("/url_containing_@_symbol"));
 
         if ($rendered !== false) {
-            $this->assertSame($rendered, $parser->render());
+            $this->assertEquals(preg_replace('/\r\n|\r|\n/', "\r\n", $rendered), $parser->render());
             $this->testAtSymbol($rendered, false);
         }
     }

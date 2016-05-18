@@ -24,7 +24,7 @@ class VisitTimeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $parser->userAgent('*')->getVisitTime());
 
         if ($rendered !== false) {
-            $this->assertSame($rendered, $parser->render());
+            $this->assertEquals(preg_replace('/\r\n|\r|\n/', "\r\n", $rendered), $parser->render());
             $this->testVisitTime($rendered, $result, false);
         }
     }

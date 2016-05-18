@@ -24,7 +24,7 @@ class RobotVersionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $parser->export());
 
         if ($rendered !== false) {
-            $this->assertSame($rendered, $parser->render());
+            $this->assertEquals(preg_replace('/\r\n|\r|\n/', "\r\n", $rendered), $parser->render());
             $this->testRobotVersion($rendered, $result, false);
         }
     }

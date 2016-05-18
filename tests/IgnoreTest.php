@@ -26,7 +26,7 @@ class IgnoreTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent()->isDisallowed('/tech'));
 
         if ($rendered !== false) {
-            $this->assertSame($rendered, $parser->render());
+            $this->assertEquals(preg_replace('/\r\n|\r|\n/', "\r\n", $rendered), $parser->render());
             $this->testIgnore($rendered, false);
         }
     }
