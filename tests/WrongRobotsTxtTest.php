@@ -39,7 +39,7 @@ class WrongRobotsTxtTest extends \PHPUnit_Framework_TestCase
                 'http://www.example.net'
             ],
             [
-                'http://subdomain.example.comh'
+                'http://subdomain.example.com'
             ],
             [
                 'http://ww.example.com'
