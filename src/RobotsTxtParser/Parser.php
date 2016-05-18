@@ -161,7 +161,7 @@ abstract class Parser implements RobotsTxtInterface
      */
     public function render()
     {
-        return implode("\r\n", array_merge(
+        return implode("\n", array_merge(
             $this->cleanParam->render(),
             $this->host->render(),
             $this->sitemap->render(),

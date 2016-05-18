@@ -30,7 +30,7 @@ class CleanParamTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $parser->getCleanParam());
 
         if ($rendered !== false) {
-            $this->assertEquals(preg_replace('/\r\n|\r|\n/', "\r\n", $rendered), $parser->render());
+            $this->assertEquals($rendered, $parser->render());
             $this->testCleanParam($rendered, $result, false);
         }
     }

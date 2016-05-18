@@ -30,7 +30,7 @@ class EscapingTest extends \PHPUnit_Framework_TestCase
         //$this->assertFalse($parser->userAgent()->isAllowed("/("));
 
         if ($rendered !== false) {
-            $this->assertEquals(preg_replace('/\r\n|\r|\n/', "\r\n", $rendered), $parser->render());
+            $this->assertEquals($rendered, $parser->render());
             $this->testEscaping($rendered, false);
         }
     }

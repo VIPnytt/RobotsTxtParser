@@ -31,7 +31,7 @@ class RequestRateTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(in_array($parser->userAgent('Legacy')->getCacheDelay(), $validRates));
 
         if ($rendered !== false) {
-            $this->assertEquals(preg_replace('/\r\n|\r|\n/', "\r\n", $rendered), $parser->render());
+            $this->assertEquals($rendered, $parser->render());
             $this->testRequestRate($rendered, $result, false);
         }
     }
