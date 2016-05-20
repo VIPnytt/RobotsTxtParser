@@ -94,9 +94,6 @@ abstract class Parser implements RobotsTxtInterface
     protected function convertEncoding($encoding, $content)
     {
         mb_internal_encoding(self::ENCODING);
-        if ($encoding == self::ENCODING) {
-            return $content;
-        }
         $convert = new CharacterEncodingConvert($content, $encoding, self::ENCODING);
         if (($result = $convert->auto()) !== false) {
             return $result;

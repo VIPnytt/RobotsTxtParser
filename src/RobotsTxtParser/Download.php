@@ -93,15 +93,17 @@ class Download implements RobotsTxtInterface
             $this->statusCode = $response->getStatusCode();
             $this->contents = $response->getBody()->getContents();
             $this->encoding = $this->headerEncoding($response->getHeader('content-type'));
+            $this->maxAge = $this->headerMaxAge($response->getHeader('cache-control'));
         } catch (GuzzleHttp\Exception\TransferException $e) {
             $this->statusCode = 523;
             $this->contents = '';
             $this->encoding = self::ENCODING;
+            $this->maxAge = 0;
         }
     }
 
     /**
-     * HTTP header encoding
+     * Content-Type encoding HTTP header
      *
      * @param array $headers
      * @return string
@@ -143,6 +145,26 @@ class Download implements RobotsTxtInterface
     public function getContents()
     {
         return $this->contents;
+    }
+
+    /**
+     * Cache-Control max-age HTTP header
+     *
+     * @param array $headers
+     * @return integer
+     */
+    protected function headerMaxAge(array $headers)
+    {
+        foreach ($headers as $header) {
+            $split = array_map('trim', mb_split(',', $header));
+            foreach ($split as $string) {
+                if (mb_stripos($string, 'max-age=') === 0) {
+                    $maxAge = mb_split('=', $string, 2)[1];
+                    return intval($maxAge);
+                }
+            }
+        }
+        return 0;
     }
 
     /**

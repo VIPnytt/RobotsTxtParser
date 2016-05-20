@@ -71,6 +71,7 @@ class CharacterEncodingConvert implements RobotsTxtInterface
         } catch (\Exception $msg) {
             return false;
         }
+        mb_internal_encoding($this->destination);
         return $converted;
     }
 
@@ -82,15 +83,12 @@ class CharacterEncodingConvert implements RobotsTxtInterface
      */
     public function mbstring($fromOverride = null)
     {
-        $from = $this->source;
-        if ($fromOverride !== null) {
-            $from = $fromOverride;
-        }
         try {
-            $converted = mb_convert_encoding($this->string, $this->destination, $from);
+            $converted = mb_convert_encoding($this->string, $this->destination, $fromOverride === null ? $this->source : $fromOverride);
         } catch (\Exception $msg) {
             return false;
         }
+        mb_internal_encoding($this->destination);
         return $converted;
     }
 

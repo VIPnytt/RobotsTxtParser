@@ -93,7 +93,7 @@ Visit the [Wiki](https://github.com/VIPnytt/RobotsTxtParser/wiki) and [Documenta
 - [x] [W3C Recommendation](https://www.w3.org/TR/html4/appendix/notes.html#h-B.4.1.2)
 - [x] [The Web Robots Pages, version 2.0 draft](http://www.conman.org/people/spc/robots2.html)
 
-### Directives supported
+### Directives
 - [x] [`User-agent`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#user-agent)
   - [x] [`Allow`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#allow)
     - [x] _inline_ [`Clean-param`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#clean-param)
