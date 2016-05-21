@@ -22,11 +22,11 @@ class StatusCodeParser implements RobotsTxtInterface
      * Status code
      * @var int
      */
-    protected $code = 200;
+    protected $code;
 
     /**
      * Scheme
-     * @var string|false|null
+     * @var string|false
      */
     protected $scheme;
 
@@ -50,7 +50,7 @@ class StatusCodeParser implements RobotsTxtInterface
      * Constructor
      *
      * @param int|null $code - HTTP status code
-     * @param string|false|null $scheme
+     * @param string|false $scheme
      * @throws StatusCodeException
      */
     public function __construct($code, $scheme)

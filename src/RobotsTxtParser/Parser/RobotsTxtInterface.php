@@ -10,31 +10,44 @@ interface RobotsTxtInterface
 {
     /**
      * Cache time
+     *
+     * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#handling-http-result-codes
      */
     const CACHE_TIME = 86400;
 
     /**
      * Max redirects
+     *
+     * @link http://www.ietf.org/rfc/rfc1945.txt
      */
     const MAX_REDIRECTS = 5;
 
     /**
      * Expected encoding
+     *
+     * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#file-format
      */
     const ENCODING = 'UTF-8';
 
     /**
      * Robots.txt max length in bytes
+     *
+     * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#file-format
+     * @link https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#additional-info
      */
-    const BYTE_LIMIT = 500000;
+    const BYTE_LIMIT = 64000;
 
     /**
      * Max rule length
+     *
+     * @link https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#clean-param
      */
     const MAX_LENGTH_RULE = 500;
 
     /**
      * Default User-Agent
+     *
+     * @link https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#user-agent
      */
     const USER_AGENT = '*';
 

@@ -105,7 +105,7 @@ trait UrlParser
      */
     protected static function urlValidateScheme($scheme)
     {
-        return in_array($scheme, [
+        return in_array(mb_strtolower($scheme), [
                 'http',
                 'https',
                 'ftp',

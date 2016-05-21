@@ -20,16 +20,16 @@ class Download implements RobotsTxtInterface
     protected $baseUri;
 
     /**
-     * Download time
+     * Download timestamp
      * @var int
      */
     protected $time;
 
     /**
-     * Robots.txt max-age
-     * @var int|null
+     * Cache-Control max-age
+     * @var int
      */
-    protected $maxAge = null;
+    protected $maxAge;
 
     /**
      * HTTP Status code
@@ -72,9 +72,9 @@ class Download implements RobotsTxtInterface
                             'max' => self::MAX_REDIRECTS,
                             'referer' => true,
                             'strict' => true,
-                            'track_redirects' => true,
                         ],
                         'base_uri' => $baseUri,
+                        'decode_content' => true,
                         'headers' => [
                             'Accept' => 'text/plain;q=1.0, text/*;q=0.8, */*;q=0.1',
                             'Accept-Charset' => 'utf-8;q=1.0, *;q=0.1',
@@ -114,44 +114,18 @@ class Download implements RobotsTxtInterface
             $split = array_map('trim', mb_split(';', $header));
             foreach ($split as $string) {
                 if (mb_stripos($string, 'charset=') === 0) {
-                    $encoding = mb_split('=', $string, 2)[1];
-                    if (in_array(mb_strtolower($encoding), array_map('mb_strtolower', mb_list_encodings()))) {
-                        return $encoding;
-                    }
+                    return mb_split('=', $string, 2)[1];
                 }
             }
         }
-        return $this->detectEncoding();
-    }
-
-    /**
-     * Manually detect encoding
-     *
-     * @return string
-     */
-    protected function detectEncoding()
-    {
-        if (($encoding = mb_detect_encoding($this->getContents())) !== false) {
-            return $encoding;
-        }
         return self::ENCODING;
-    }
-
-    /**
-     * URL content
-     *
-     * @return string
-     */
-    public function getContents()
-    {
-        return $this->contents;
     }
 
     /**
      * Cache-Control max-age HTTP header
      *
      * @param array $headers
-     * @return integer
+     * @return int
      */
     protected function headerMaxAge(array $headers)
     {
@@ -159,8 +133,7 @@ class Download implements RobotsTxtInterface
             $split = array_map('trim', mb_split(',', $header));
             foreach ($split as $string) {
                 if (mb_stripos($string, 'max-age=') === 0) {
-                    $maxAge = mb_split('=', $string, 2)[1];
-                    return intval($maxAge);
+                    return intval(mb_split('=', $string, 2)[1]);
                 }
             }
         }
@@ -189,6 +162,16 @@ class Download implements RobotsTxtInterface
     public function getStatusCode()
     {
         return $this->statusCode;
+    }
+
+    /**
+     * URL content
+     *
+     * @return string
+     */
+    public function getContents()
+    {
+        return $this->contents;
     }
 
     /**
@@ -221,7 +204,7 @@ class Download implements RobotsTxtInterface
     public function validUntil()
     {
         $dateTime = new DateTime;
-        $dateTime->setTimestamp($this->time + max(self::CACHE_TIME, is_int($this->maxAge) ? $this->maxAge : 0));
+        $dateTime->setTimestamp($this->time + max(self::CACHE_TIME, $this->maxAge));
         return $dateTime;
     }
 }

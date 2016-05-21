@@ -67,8 +67,9 @@ class Client extends Parser
      */
     public function getSitemaps()
     {
-        if (isset($this->sitemap->export()[self::DIRECTIVE_SITEMAP])) {
-            return $this->sitemap->export()[self::DIRECTIVE_SITEMAP];
+        $export = $this->sitemap->export();
+        if (isset($export[self::DIRECTIVE_SITEMAP])) {
+            return $export[self::DIRECTIVE_SITEMAP];
         }
         return [];
     }
@@ -80,8 +81,9 @@ class Client extends Parser
      */
     public function getHost()
     {
-        if (isset($this->host->export()[self::DIRECTIVE_HOST])) {
-            return $this->host->export()[self::DIRECTIVE_HOST][0];
+        $export = $this->host->export();
+        if (isset($export[self::DIRECTIVE_HOST][0])) {
+            return $export[self::DIRECTIVE_HOST][0];
         }
         return null;
     }
@@ -93,10 +95,11 @@ class Client extends Parser
      */
     public function getCleanParam()
     {
-        if (isset($this->cleanParam->export()[self::DIRECTIVE_CLEAN_PARAM])) {
-            return $this->cleanParam->export()[self::DIRECTIVE_CLEAN_PARAM];
+        $export = $this->cleanParam->export();
+        if (isset($export[self::DIRECTIVE_CLEAN_PARAM])) {
+            return $export[self::DIRECTIVE_CLEAN_PARAM];
         }
-        return null;
+        return [];
     }
 
     /**

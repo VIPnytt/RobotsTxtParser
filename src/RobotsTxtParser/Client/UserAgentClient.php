@@ -161,10 +161,7 @@ class UserAgentClient implements RobotsTxtInterface
      */
     protected function getRequestRate($timestamp = null)
     {
-        if (!is_int($timestamp)) {
-            $timestamp = time();
-        }
-        $values = $this->determineRequestRates($timestamp);
+        $values = $this->determineRequestRates(is_int($timestamp) ? $timestamp : time());
         if (
             count($values) > 0 &&
             ($rate = min($values)) > 0
