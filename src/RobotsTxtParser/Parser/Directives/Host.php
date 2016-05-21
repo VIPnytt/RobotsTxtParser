@@ -39,6 +39,26 @@ class Host implements DirectiveInterface, RobotsTxtInterface
      */
     public function add($line)
     {
+        $host = $this->parse($line);
+        if (
+            $host === false ||
+            $line !== $host ||
+            in_array($host, $this->array)
+        ) {
+            return false;
+        }
+        $this->array[] = $line;
+        return true;
+    }
+
+    /**
+     * Parse
+     *
+     * @param string $line
+     * @return string|false
+     */
+    protected function parse($line)
+    {
         if (($parsed = parse_url(($line = $this->urlEncode(mb_strtolower($line))))) === false) {
             return false;
         }
@@ -54,16 +74,7 @@ class Host implements DirectiveInterface, RobotsTxtInterface
         }
         $scheme = isset($parsed['scheme']) ? $parsed['scheme'] . '://' : '';
         $port = isset($parsed['port']) ? ':' . $parsed['port'] : '';
-
-        $host = $scheme . $line . $port;
-        if (
-            $line !== $host ||
-            in_array($host, $this->array)
-        ) {
-            return false;
-        }
-        $this->array[] = $line;
-        return true;
+        return $scheme . $line . $port;
     }
 
     /**

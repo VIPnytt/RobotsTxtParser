@@ -133,37 +133,37 @@ class UserAgent implements DirectiveInterface, RobotsTxtInterface
      */
     public function add($line)
     {
-        $result = false;
+        $result = [];
         $pair = $this->generateRulePair($line, self::SUB_DIRECTIVES);
         foreach ($this->userAgent as $userAgent) {
             switch ($pair['directive']) {
                 case self::DIRECTIVE_ALLOW:
-                    $result = $this->allow[$userAgent]->add($pair['value']);
+                    $result[] = $this->allow[$userAgent]->add($pair['value']);
                     break;
                 case self::DIRECTIVE_CACHE_DELAY:
-                    $result = $this->cacheDelay[$userAgent]->add($pair['value']);
+                    $result[] = $this->cacheDelay[$userAgent]->add($pair['value']);
                     break;
                 case self::DIRECTIVE_COMMENT:
-                    $result = $this->comment[$userAgent]->add($pair['value']);
+                    $result[] = $this->comment[$userAgent]->add($pair['value']);
                     break;
                 case self::DIRECTIVE_CRAWL_DELAY:
-                    $result = $this->crawlDelay[$userAgent]->add($pair['value']);
+                    $result[] = $this->crawlDelay[$userAgent]->add($pair['value']);
                     break;
                 case self::DIRECTIVE_DISALLOW:
-                    $result = $this->disallow[$userAgent]->add($pair['value']);
+                    $result[] = $this->disallow[$userAgent]->add($pair['value']);
                     break;
                 case self::DIRECTIVE_REQUEST_RATE:
-                    $result = $this->requestRate[$userAgent]->add($pair['value']);
+                    $result[] = $this->requestRate[$userAgent]->add($pair['value']);
                     break;
                 case self::DIRECTIVE_ROBOT_VERSION:
-                    $result = $this->robotVersion[$userAgent]->add($pair['value']);
+                    $result[] = $this->robotVersion[$userAgent]->add($pair['value']);
                     break;
                 case self::DIRECTIVE_VISIT_TIME:
-                    $result = $this->visitTime[$userAgent]->add($pair['value']);
+                    $result[] = $this->visitTime[$userAgent]->add($pair['value']);
                     break;
             }
         }
-        return isset($result) ? $result : false;
+        return in_array(true, $result, true);
     }
 
     /**
