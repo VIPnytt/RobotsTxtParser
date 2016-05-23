@@ -1,12 +1,12 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Parser\Directives;
+namespace vipnytt\RobotsTxtParser\Core\Directives;
 
-use vipnytt\RobotsTxtParser\Parser\RobotsTxtInterface;
+use vipnytt\RobotsTxtParser\Core\RobotsTxtInterface;
 
 /**
  * Class RobotVersion
  *
- * @package vipnytt\RobotsTxtParser\Parser\Directives
+ * @package vipnytt\RobotsTxtParser\Core\Directives
  */
 class RobotVersion implements DirectiveInterface, RobotsTxtInterface
 {

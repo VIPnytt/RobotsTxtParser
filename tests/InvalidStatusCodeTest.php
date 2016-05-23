@@ -20,7 +20,7 @@ class InvalidStatusCodeTest extends \PHPUnit_Framework_TestCase
     public function testInvalidStatusCode($base, $statusCode, $isValid)
     {
         $parser = new Client($base, $statusCode, '');
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client', $parser);
 
         if (!$isValid) {
             $this->expectException(StatusCodeException::class);

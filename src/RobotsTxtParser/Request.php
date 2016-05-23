@@ -4,23 +4,34 @@ namespace vipnytt\RobotsTxtParser;
 use DateTime;
 use GuzzleHttp;
 use vipnytt\RobotsTxtParser\Client;
-use vipnytt\RobotsTxtParser\Parser\RobotsTxtInterface;
 
 /**
- * Class Download
+ * Class Request
  *
  * @package vipnytt\RobotsTxtParser
  */
-class Download implements RobotsTxtInterface
+class Request extends Client
 {
-    /**
-     * Base uri
-     * @var string
-     */
-    protected $baseUri;
+    const GUZZLE_HTTP_CONFIG = [
+        'allow_redirects' => [
+            'max' => self::MAX_REDIRECTS,
+            'referer' => true,
+            'strict' => true,
+        ],
+        'decode_content' => true,
+        'headers' => [
+            'Accept' => 'text/plain;q=1.0, text/*;q=0.8, */*;q=0.1',
+            'Accept-Charset' => 'utf-8;q=1.0, *;q=0.1',
+            'Accept-Encoding' => 'identity;q=1.0, *;q=0.1',
+            'User-Agent' => 'RobotsTxtParser-VIPnytt/2.0 (+https://github.com/VIPnytt/RobotsTxtParser/blob/master/README.md)',
+        ],
+        'http_errors' => false,
+        'timeout' => 60,
+        'verify' => true,
+    ];
 
     /**
-     * Download timestamp
+     * Request timestamp
      * @var int
      */
     protected $time;
@@ -50,45 +61,26 @@ class Download implements RobotsTxtInterface
     protected $encoding;
 
     /**
-     * Parser client class
-     * @var Client
-     */
-    protected $parserClient;
-
-    /**
-     * Download constructor.
+     * Request constructor.
      *
      * @param string $baseUri
      * @param array $guzzleConfig
+     * @param int|null $byteLimit
      */
-    public function __construct($baseUri, array $guzzleConfig = [])
+    public function __construct($baseUri, array $guzzleConfig = [], $byteLimit = self::BYTE_LIMIT)
     {
-        $this->baseUri = $baseUri;
+        $baseUri = $this->urlBase($this->urlEncode($baseUri));
         try {
             $client = new GuzzleHttp\Client(
                 array_merge_recursive(
+                    self::GUZZLE_HTTP_CONFIG,
+                    $guzzleConfig,
                     [
-                        'allow_redirects' => [
-                            'max' => self::MAX_REDIRECTS,
-                            'referer' => true,
-                            'strict' => true,
-                        ],
                         'base_uri' => $baseUri,
-                        'decode_content' => true,
-                        'headers' => [
-                            'Accept' => 'text/plain;q=1.0, text/*;q=0.8, */*;q=0.1',
-                            'Accept-Charset' => 'utf-8;q=1.0, *;q=0.1',
-                            'Accept-Encoding' => 'identity;q=1.0, *;q=0.1',
-                            'User-Agent' => 'RobotsTxtParser-VIPnytt/1.0 (+https://github.com/VIPnytt/RobotsTxtParser/blob/master/README.md)',
-                        ],
-                        'http_errors' => false,
-                        'timeout' => 60,
-                        'verify' => true,
-                    ],
-                    $guzzleConfig
+                    ]
                 )
             );
-            $response = $client->request('GET', '/robots.txt');
+            $response = $client->request('GET', self::PATH);
             $this->time = time();
             $this->statusCode = $response->getStatusCode();
             $this->contents = $response->getBody()->getContents();
@@ -100,6 +92,7 @@ class Download implements RobotsTxtInterface
             $this->encoding = self::ENCODING;
             $this->maxAge = 0;
         }
+        parent::__construct($baseUri, $this->statusCode, $this->contents, $this->encoding, $byteLimit);
     }
 
     /**
@@ -110,15 +103,31 @@ class Download implements RobotsTxtInterface
      */
     protected function headerEncoding(array $headers)
     {
+        if (($value = $this->parseHeader($headers, 'charset', ';')) !== false) {
+            return $value;
+        }
+        return self::ENCODING;
+    }
+
+    /**
+     * Client header
+     *
+     * @param array $headers
+     * @param string $part
+     * @param string $delimiter
+     * @return string|false
+     */
+    protected function parseHeader(array $headers, $part, $delimiter = ";")
+    {
         foreach ($headers as $header) {
-            $split = array_map('trim', mb_split(';', $header));
+            $split = array_map('trim', mb_split($delimiter, $header));
             foreach ($split as $string) {
-                if (mb_stripos($string, 'charset=') === 0) {
+                if (mb_stripos($string, $part . '=') === 0) {
                     return mb_split('=', $string, 2)[1];
                 }
             }
         }
-        return self::ENCODING;
+        return false;
     }
 
     /**
@@ -129,29 +138,20 @@ class Download implements RobotsTxtInterface
      */
     protected function headerMaxAge(array $headers)
     {
-        foreach ($headers as $header) {
-            $split = array_map('trim', mb_split(',', $header));
-            foreach ($split as $string) {
-                if (mb_stripos($string, 'max-age=') === 0) {
-                    return intval(mb_split('=', $string, 2)[1]);
-                }
-            }
+        if (($value = $this->parseHeader($headers, 'max-age', ',')) !== false) {
+            return intval($value);
         }
         return 0;
     }
 
     /**
-     * Parser client
+     * Base URI
      *
-     * @param int|null $byteLimit
-     * @return Client
+     * @return string
      */
-    public function parserClient($byteLimit = self::BYTE_LIMIT)
+    public function getBaseUri()
     {
-        if (!is_object($this->parserClient)) {
-            $this->parserClient = new Client($this->baseUri, $this->getStatusCode(), $this->getContents(), $this->getEncoding(), $byteLimit);
-        }
-        return $this->parserClient;
+        return $this->base;
     }
 
     /**
@@ -187,13 +187,11 @@ class Download implements RobotsTxtInterface
     /**
      * Next update timestamp
      *
-     * @return \DateTime|false
+     * @return int
      */
     public function nextUpdate()
     {
-        $dateTime = new DateTime;
-        $dateTime->setTimestamp($this->time + self::CACHE_TIME);
-        return $dateTime;
+        return $this->time + self::CACHE_TIME;
     }
 
     /**
@@ -203,8 +201,6 @@ class Download implements RobotsTxtInterface
      */
     public function validUntil()
     {
-        $dateTime = new DateTime;
-        $dateTime->setTimestamp($this->time + max(self::CACHE_TIME, $this->maxAge));
-        return $dateTime;
+        return $this->time + max(self::CACHE_TIME, $this->maxAge);
     }
 }

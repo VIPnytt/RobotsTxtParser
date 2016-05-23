@@ -18,7 +18,7 @@ class WrongRobotsTxtTest extends \PHPUnit_Framework_TestCase
     public function testWrongRobotsTxt($url)
     {
         $parser = new Client('http://www.example.com', 200, '');
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client', $parser);
 
         $this->expectException(ClientException::class);
         $parser->userAgent()->isAllowed($url);

@@ -1,12 +1,12 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Parser;
+namespace vipnytt\RobotsTxtParser\Core;
 
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 
 /**
  * Trait UrlParser
  *
- * @package vipnytt\RobotsTxtParser\Parser
+ * @package vipnytt\RobotsTxtParser\Core
  */
 trait UrlParser
 {

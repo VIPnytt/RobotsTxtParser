@@ -18,7 +18,7 @@ class UnlistedTest extends \PHPUnit_Framework_TestCase
     public function testUnlisted($robotsTxtContent, $rendered)
     {
         $parser = new Client('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client', $parser);
 
         $this->assertTrue($parser->userAgent('*')->isAllowed('/path/'));
         $this->assertFalse($parser->userAgent('*')->isDisallowed('/path/'));

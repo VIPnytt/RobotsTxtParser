@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser\Request;
 
 /**
  * Class DownloadMicrosoftTest
@@ -16,8 +16,8 @@ class DownloadMicrosoftTest extends \PHPUnit_Framework_TestCase
      */
     public function testDownloadMicrosoft($base)
     {
-        $parser = new Client($base);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $parser = new Request($base);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Request', $parser);
 
         $this->assertTrue($parser->userAgent()->isAllowed('/'));
         $this->assertFalse($parser->userAgent()->isDisallowed('/'));

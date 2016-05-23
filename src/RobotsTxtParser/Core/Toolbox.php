@@ -1,5 +1,5 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Parser;
+namespace vipnytt\RobotsTxtParser\Core;
 
 use DateTimeZone;
 use vipnytt\RobotsTxtParser\Exceptions\ParserException;
@@ -7,7 +7,7 @@ use vipnytt\RobotsTxtParser\Exceptions\ParserException;
 /**
  * Trait Toolbox
  *
- * @package vipnytt\RobotsTxtParser\Parser
+ * @package vipnytt\RobotsTxtParser\Core
  */
 trait Toolbox
 {
@@ -29,7 +29,7 @@ trait Toolbox
              * Warning: preg_match need to be replaced
              *
              * Bug report
-             * @link https://github.com/t1gor/Robots.txt-Parser-Class/issues/62
+             * @link https://github.com/t1gor/Robots.txt-Core-Class/issues/62
              *
              * An robots.txt parser, where a bug-fix is planned
              * @link https://github.com/diggin/Diggin_RobotRules
@@ -106,7 +106,7 @@ trait Toolbox
     }
 
     /**
-     * Parse rate as specified in the `Robot exclusion standard` version 2.0 draft
+     * Client rate as specified in the `Robot exclusion standard` version 2.0 draft
      * rate = numDocuments / timeUnit
      * @link http://www.conman.org/people/spc/robots2.html#format.directives.request-rate
      *
@@ -138,7 +138,7 @@ trait Toolbox
     }
 
     /**
-     * Parse timestamp range as specified in the `Robot exclusion standard` version 2.0 draft
+     * Client timestamp range as specified in the `Robot exclusion standard` version 2.0 draft
      * @link http://www.conman.org/people/spc/robots2.html#format.directives.visit-time
      *
      * @param $string

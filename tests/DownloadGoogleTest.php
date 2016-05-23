@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser\Request;
 
 /**
  * Class DownloadGoogleTest
@@ -16,8 +16,8 @@ class DownloadGoogleTest extends \PHPUnit_Framework_TestCase
      */
     public function testDownloadGoogle($base)
     {
-        $parser = new Client($base);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $parser = new Request($base);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Request', $parser);
 
         $this->assertTrue($parser->userAgent()->isDisallowed('/search'));
         $this->assertFalse($parser->userAgent()->isAllowed('/search'));

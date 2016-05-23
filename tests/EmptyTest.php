@@ -16,7 +16,7 @@ class EmptyTest extends \PHPUnit_Framework_TestCase
     public function testEmpty()
     {
         $parser = new Client('http://example.com', 200, '');
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client', $parser);
 
         $this->assertTrue($parser->userAgent()->isAllowed("/"));
         $this->assertFalse($parser->userAgent()->isDisallowed("/"));

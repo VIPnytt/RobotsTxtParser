@@ -1,13 +1,13 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Parser\Directives;
+namespace vipnytt\RobotsTxtParser\Core\Directives;
 
-use vipnytt\RobotsTxtParser\Parser\RobotsTxtInterface;
-use vipnytt\RobotsTxtParser\Parser\Toolbox;
+use vipnytt\RobotsTxtParser\Core\RobotsTxtInterface;
+use vipnytt\RobotsTxtParser\Core\Toolbox;
 
 /**
  * Class VisitTime
  *
- * @package vipnytt\RobotsTxtParser\Parser\Directives
+ * @package vipnytt\RobotsTxtParser\Core\Directives
  */
 class VisitTime implements DirectiveInterface, RobotsTxtInterface
 {

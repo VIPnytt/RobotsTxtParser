@@ -1,12 +1,12 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Parser;
+namespace vipnytt\RobotsTxtParser\Core;
 
 use vipnytt\RobotsTxtParser\Exceptions\StatusCodeException;
 
 /**
  * Class StatusCodeParser
  *
- * @package vipnytt\RobotsTxtParser\Parser
+ * @package vipnytt\RobotsTxtParser\Core
  */
 class StatusCodeParser implements RobotsTxtInterface
 {
