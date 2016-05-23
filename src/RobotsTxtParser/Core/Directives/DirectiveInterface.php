@@ -1,10 +1,10 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Parser\Directives;
+namespace vipnytt\RobotsTxtParser\Core\Directives;
 
 /**
  * Interface DirectiveInterface
  *
- * @package vipnytt\RobotsTxtParser\Parser\Directives
+ * @package vipnytt\RobotsTxtParser\Core\Directives
  */
 interface DirectiveInterface
 {

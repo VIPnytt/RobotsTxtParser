@@ -17,7 +17,8 @@ class InvalidEncodingTest extends \PHPUnit_Framework_TestCase
     public function testInvalidEncoding($encoding)
     {
         // Invalid encodings are ignored, and the default encoding is used, without warning.
-        new Client('http://example.com', 200, '', $encoding);
+        $parser = new Client('http://example.com', 200, '', $encoding);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client', $parser);
     }
 
     /**

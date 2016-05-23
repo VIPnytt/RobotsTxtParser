@@ -2,11 +2,12 @@
 namespace vipnytt\RobotsTxtParser;
 
 use vipnytt\RobotsTxtParser\Client\UserAgentClient;
-use vipnytt\RobotsTxtParser\Parser\UrlParser;
-use vipnytt\UserAgentParser;
+use vipnytt\RobotsTxtParser\Core\CharacterEncodingConvert;
+use vipnytt\RobotsTxtParser\Core\UrlParser;
+use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 
 /**
- * Class Parser
+ * Class Core
  *
  * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt
  * @link https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml
@@ -16,15 +17,15 @@ use vipnytt\UserAgentParser;
  *
  * @package vipnytt\RobotsTxtParser
  */
-class Client extends Parser
+class Client extends Core
 {
     use UrlParser;
 
     /**
-     * Robots.txt base uri
+     * Base uri
      * @var string
      */
-    protected $baseUri;
+    protected $base;
 
     /**
      * Status code
@@ -33,31 +34,65 @@ class Client extends Parser
     protected $statusCode;
 
     /**
+     * Robots.txt content
+     * @var string
+     */
+    protected $content;
+
+    /**
      * UserAgentClient class cache
      * @var UserAgentClient[]
      */
     protected $userAgentClients = [];
 
     /**
-     * Parser constructor.
+     * Core constructor.
      *
      * @param string $baseUri
-     * @param int|null $statusCode
+     * @param int $statusCode
      * @param string|null $content
      * @param string $encoding
      * @param int|null $byteLimit
      */
-    public function __construct($baseUri, $statusCode = null, $content = null, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT)
+    public function __construct($baseUri, $statusCode, $content, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT)
     {
-        $this->baseUri = $this->urlBase($this->urlEncode($baseUri));
+        $this->base = $this->urlBase($this->urlEncode($baseUri));
         $this->statusCode = $statusCode;
-        if ($content === null) {
-            $client = new Download($this->baseUri);
-            $this->statusCode = $client->getStatusCode();
-            $content = $client->getContents();
-            $encoding = $client->getEncoding();
+        $this->content = $content;
+        $this->convertEncoding($encoding);
+        $this->limitBytes($byteLimit);
+        parent::__construct($this->content);
+    }
+
+    /**
+     * Convert character encoding
+     *
+     * @param string $encoding
+     * @return string
+     */
+    protected function convertEncoding($encoding)
+    {
+        mb_internal_encoding(self::ENCODING);
+        $convert = new CharacterEncodingConvert($this->content, $encoding);
+        if (($result = $convert->auto()) !== false) {
+            return $this->content = $result;
         }
-        parent::__construct($content, $encoding, $byteLimit);
+        return $this->content;
+    }
+
+    /**
+     * Byte limit
+     *
+     * @param $bytes
+     * @return string
+     * @throws ClientException
+     */
+    protected function limitBytes($bytes)
+    {
+        if (is_numeric($bytes) && $bytes < 5000) {
+            throw new ClientException('Byte limit is set far too low');
+        }
+        return $this->content = mb_strcut($this->content, 0, $bytes);
     }
 
     /**
@@ -103,7 +138,17 @@ class Client extends Parser
     }
 
     /**
-     * Return an User-agent instance, for future usage
+     * Get User-agent list
+     *
+     * @return array
+     */
+    public function getUserAgents()
+    {
+        return $this->userAgent->userAgents;
+    }
+
+    /**
+     * Client User-agent specific rules
      *
      * @param string $string
      * @return UserAgentClient
@@ -113,21 +158,7 @@ class Client extends Parser
         if (isset($this->userAgentClients[$string])) {
             return $this->userAgentClients[$string];
         }
-        $userAgentParser = new UserAgentParser(mb_strtolower($string));
-        if (($userAgent = $userAgentParser->match($this->userAgent->userAgents)) === false) {
-            $userAgent = self::USER_AGENT;
-        }
-        $rules = [
-            self::DIRECTIVE_ALLOW => $this->userAgent->allow[$userAgent],
-            self::DIRECTIVE_CACHE_DELAY => $this->userAgent->cacheDelay[$userAgent],
-            self::DIRECTIVE_COMMENT => $this->userAgent->comment[$userAgent],
-            self::DIRECTIVE_CRAWL_DELAY => $this->userAgent->crawlDelay[$userAgent],
-            self::DIRECTIVE_DISALLOW => $this->userAgent->disallow[$userAgent],
-            self::DIRECTIVE_REQUEST_RATE => $this->userAgent->requestRate[$userAgent],
-            self::DIRECTIVE_ROBOT_VERSION => $this->userAgent->robotVersion[$userAgent],
-            self::DIRECTIVE_VISIT_TIME => $this->userAgent->visitTime[$userAgent],
-        ];
-        $this->userAgentClients[$string] = new UserAgentClient($rules, $userAgent, $this->baseUri, $this->statusCode);
+        $this->userAgentClients[$string] = new UserAgentClient($string, $this->userAgent, $this->base, $this->statusCode);
         return $this->userAgentClients[$string];
     }
 }

@@ -18,7 +18,7 @@ class CaseSensitiveTest extends \PHPUnit_Framework_TestCase
     public function testCaseSensitive($robotsTxtContent, $rendered)
     {
         $parser = new Client('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client', $parser);
 
         $this->assertTrue($parser->userAgent('uppercase')->isDisallowed("/"));
         $this->assertFalse($parser->userAgent('uppercase')->isAllowed("/"));

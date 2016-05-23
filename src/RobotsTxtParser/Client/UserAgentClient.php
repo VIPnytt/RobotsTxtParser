@@ -1,10 +1,12 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Client;
 
+use vipnytt\RobotsTxtParser\Core\Directives\UserAgent;
+use vipnytt\RobotsTxtParser\Core\RobotsTxtInterface;
+use vipnytt\RobotsTxtParser\Core\StatusCodeParser;
+use vipnytt\RobotsTxtParser\Core\UrlParser;
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
-use vipnytt\RobotsTxtParser\Parser\RobotsTxtInterface;
-use vipnytt\RobotsTxtParser\Parser\StatusCodeParser;
-use vipnytt\RobotsTxtParser\Parser\UrlParser;
+use vipnytt\UserAgentParser;
 
 /**
  * Class UserAgentClient
@@ -48,17 +50,20 @@ class UserAgentClient implements RobotsTxtInterface
     /**
      * UserAgentClient constructor.
      *
-     * @param array $rules
      * @param string $userAgent
-     * @param string $baseUrl
+     * @param UserAgent $rules
+     * @param string $baseUri
      * @param int|null $statusCode
      */
-    public function __construct(array $rules, $userAgent, $baseUrl, $statusCode)
+    public function __construct($userAgent, UserAgent $rules, $baseUri, $statusCode)
     {
-        $this->statusCodeParser = new StatusCodeParser($statusCode, parse_url($baseUrl, PHP_URL_SCHEME));
-        $this->userAgent = $userAgent;
+        $this->statusCodeParser = new StatusCodeParser($statusCode, parse_url($baseUri, PHP_URL_SCHEME));
         $this->rules = $rules;
-        $this->base = $baseUrl;
+        $this->base = $baseUri;
+        $userAgentParser = new UserAgentParser(mb_strtolower($userAgent));
+        if (($this->userAgent = $userAgentParser->match($rules->userAgents)) === false) {
+            $this->userAgent = self::USER_AGENT;
+        }
     }
 
     /**
@@ -91,8 +96,13 @@ class UserAgentClient implements RobotsTxtInterface
             return $directive === $result;
         }
         $result = self::DIRECTIVE_ALLOW;
-        foreach ([self::DIRECTIVE_DISALLOW, self::DIRECTIVE_ALLOW] as $currentDirective) {
-            if ($this->rules[$currentDirective]->check($url)) {
+        foreach (
+            [
+                self::DIRECTIVE_DISALLOW => $this->rules->disallow[$this->userAgent],
+                self::DIRECTIVE_ALLOW => $this->rules->allow[$this->userAgent]
+            ] as $currentDirective => $currentRules
+        ) {
+            if ($currentRules->check($url)) {
                 $result = $currentDirective;
             }
         }
@@ -138,7 +148,7 @@ class UserAgentClient implements RobotsTxtInterface
      */
     public function getCacheDelay()
     {
-        $delay = $this->rules[self::DIRECTIVE_CACHE_DELAY]->export();
+        $delay = $this->rules->cacheDelay[$this->userAgent]->export();
         return isset($delay[self::DIRECTIVE_CACHE_DELAY]) ? $delay[self::DIRECTIVE_CACHE_DELAY] : $this->getCrawlDelay();
     }
 
@@ -149,7 +159,7 @@ class UserAgentClient implements RobotsTxtInterface
      */
     public function getCrawlDelay()
     {
-        $delay = $this->rules[self::DIRECTIVE_CRAWL_DELAY]->export();
+        $delay = $this->rules->crawlDelay[$this->userAgent]->export();
         return isset($delay[self::DIRECTIVE_CRAWL_DELAY]) ? $delay[self::DIRECTIVE_CRAWL_DELAY] : $this->getRequestRate();
     }
 
@@ -211,7 +221,7 @@ class UserAgentClient implements RobotsTxtInterface
      */
     public function getRequestRates()
     {
-        $array = $this->rules[self::DIRECTIVE_REQUEST_RATE]->export();
+        $array = $this->rules->requestRate[$this->userAgent]->export();
         return isset($array[self::DIRECTIVE_REQUEST_RATE]) ? $array[self::DIRECTIVE_REQUEST_RATE] : [];
     }
 
@@ -222,13 +232,16 @@ class UserAgentClient implements RobotsTxtInterface
      */
     public function export()
     {
-        $result = [];
-        foreach ($this->rules as $directive => $object) {
-            if (!empty($export = $object->export())) {
-                $result[$directive] = $export[$directive];
-            }
-        }
-        return $result;
+        return array_merge(
+            $this->rules->allow[$this->userAgent]->export(),
+            $this->rules->comment[$this->userAgent]->export(),
+            $this->rules->cacheDelay[$this->userAgent]->export(),
+            $this->rules->crawlDelay[$this->userAgent]->export(),
+            $this->rules->disallow[$this->userAgent]->export(),
+            $this->rules->requestRate[$this->userAgent]->export(),
+            $this->rules->robotVersion[$this->userAgent]->export(),
+            $this->rules->visitTime[$this->userAgent]->export()
+        );
     }
 
     /**
@@ -237,7 +250,7 @@ class UserAgentClient implements RobotsTxtInterface
     public function __destruct()
     {
         if (!$this->commentsExported) {
-            // Comment from the `Comments` directive exists, but has not been exported.
+            // Comment from the `Comments` directive exists, but has not been read.
             foreach ($this->getComments() as $message) {
                 trigger_error('Comment for `' . $this->userAgent . '` at `' . $this->base . '/robots.txt`: ' . $message, E_USER_NOTICE);
             }
@@ -252,7 +265,7 @@ class UserAgentClient implements RobotsTxtInterface
     public function getComments()
     {
         $this->commentsExported = true;
-        $comments = $this->rules[self::DIRECTIVE_COMMENT]->export();
+        $comments = $this->rules->comment[$this->userAgent]->export();
         return isset($comments[self::DIRECTIVE_COMMENT]) ? $comments[self::DIRECTIVE_COMMENT] : [];
     }
 
@@ -263,7 +276,7 @@ class UserAgentClient implements RobotsTxtInterface
      */
     public function getVisitTime()
     {
-        $times = $this->rules[self::DIRECTIVE_VISIT_TIME]->export();
+        $times = $this->rules->visitTime[$this->userAgent]->export();
         return isset($times[self::DIRECTIVE_VISIT_TIME]) ? $times[self::DIRECTIVE_VISIT_TIME] : [];
     }
 }

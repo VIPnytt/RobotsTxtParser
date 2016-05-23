@@ -24,7 +24,7 @@ Disallow: /
 Allow: /public/
 ROBOTS;
         $parser = new Client($base, $statusCode, $robots);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client', $parser);
 
         switch ($expectedResult) {
             case 'conditional':

@@ -1,20 +1,19 @@
 <?php
 namespace vipnytt\RobotsTxtParser;
 
-use vipnytt\RobotsTxtParser\Parser\CharacterEncodingConvert;
-use vipnytt\RobotsTxtParser\Parser\Directives\CleanParam;
-use vipnytt\RobotsTxtParser\Parser\Directives\Host;
-use vipnytt\RobotsTxtParser\Parser\Directives\Sitemap;
-use vipnytt\RobotsTxtParser\Parser\Directives\UserAgent;
-use vipnytt\RobotsTxtParser\Parser\RobotsTxtInterface;
-use vipnytt\RobotsTxtParser\Parser\Toolbox;
+use vipnytt\RobotsTxtParser\Core\Directives\CleanParam;
+use vipnytt\RobotsTxtParser\Core\Directives\Host;
+use vipnytt\RobotsTxtParser\Core\Directives\Sitemap;
+use vipnytt\RobotsTxtParser\Core\Directives\UserAgent;
+use vipnytt\RobotsTxtParser\Core\RobotsTxtInterface;
+use vipnytt\RobotsTxtParser\Core\Toolbox;
 
 /**
- * Class Parser
+ * Class Core
  *
  * @package vipnytt\RobotsTxtParser
  */
-abstract class Parser implements RobotsTxtInterface
+class Core implements RobotsTxtInterface
 {
     use Toolbox;
 
@@ -68,41 +67,19 @@ abstract class Parser implements RobotsTxtInterface
      * Core constructor.
      *
      * @param string $content - file content
-     * @param string $encoding - character encoding
-     * @param int|null $byteLimit - maximum of bytes to parse
      */
-    public function __construct($content, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT)
+    public function __construct($content)
     {
+        mb_internal_encoding(self::ENCODING);
         $this->cleanParam = new CleanParam();
         $this->host = new Host();
         $this->sitemap = new Sitemap();
         $this->userAgent = new UserAgent();
-        $content = $this->convertEncoding($encoding, $content);
-        if (is_int($byteLimit) && $byteLimit > 0) {
-            $content = mb_strcut($content, 0, $byteLimit);
-        }
         $this->parseTxt($content);
     }
 
     /**
-     * Convert character encoding
-     *
-     * @param string $encoding
-     * @param string $content
-     * @return string
-     */
-    protected function convertEncoding($encoding, $content)
-    {
-        mb_internal_encoding(self::ENCODING);
-        $convert = new CharacterEncodingConvert($content, $encoding, self::ENCODING);
-        if (($result = $convert->auto()) !== false) {
-            return $result;
-        }
-        return $content;
-    }
-
-    /**
-     * Parse robots.txt
+     * Client robots.txt
      *
      * @param string $txt
      * @return void
@@ -110,13 +87,13 @@ abstract class Parser implements RobotsTxtInterface
     private function parseTxt($txt)
     {
         $lines = array_filter(array_map('trim', mb_split('\r\n|\n|\r', $txt)));
-        // Parse each line individually
+        // Client each line individually
         foreach ($lines as $line) {
             // Limit rule length
             $line = mb_substr($line, 0, self::MAX_LENGTH_RULE);
             // Remove comments
             $line = mb_split('#', $line, 2)[0];
-            // Parse line
+            // Client line
             $this->add($line);
         }
     }
@@ -154,11 +131,12 @@ abstract class Parser implements RobotsTxtInterface
     /**
      * Render
      *
+     * @param string $lineSeparator
      * @return string
      */
-    public function render()
+    public function render($lineSeparator = "\n")
     {
-        return implode("\n", array_merge(
+        return implode($lineSeparator, array_merge(
             $this->cleanParam->render(),
             $this->host->render(),
             $this->sitemap->render(),

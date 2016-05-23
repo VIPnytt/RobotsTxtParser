@@ -18,7 +18,7 @@ class CrawlDelayTest extends \PHPUnit_Framework_TestCase
     public function testCrawlDelay($robotsTxtContent, $rendered)
     {
         $parser = new Client('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client', $parser);
 
         $this->assertEquals(0, $parser->userAgent()->getCrawlDelay());
         $this->assertEquals(0, $parser->userAgent('*')->getCrawlDelay());

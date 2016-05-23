@@ -1,13 +1,20 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Parser;
+namespace vipnytt\RobotsTxtParser\Core;
 
 /**
  * Interface RobotsTxtInterface
  *
- * @package vipnytt\RobotsTxtParser\Parser
+ * @package vipnytt\RobotsTxtParser\Core
  */
 interface RobotsTxtInterface
 {
+    /**
+     * Robots.txt path
+     *
+     * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#file-location--range-of-validity
+     */
+    const PATH = '/robots.txt';
+
     /**
      * Cache time
      *

@@ -1,13 +1,13 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Parser\Directives;
+namespace vipnytt\RobotsTxtParser\Core\Directives;
 
-use vipnytt\RobotsTxtParser\Parser\RobotsTxtInterface;
-use vipnytt\RobotsTxtParser\Parser\UrlParser;
+use vipnytt\RobotsTxtParser\Core\RobotsTxtInterface;
+use vipnytt\RobotsTxtParser\Core\UrlParser;
 
 /**
  * Class Host
  *
- * @package vipnytt\RobotsTxtParser\Parser\Directives
+ * @package vipnytt\RobotsTxtParser\Core\Directives
  */
 class Host implements DirectiveInterface, RobotsTxtInterface
 {
@@ -52,7 +52,7 @@ class Host implements DirectiveInterface, RobotsTxtInterface
     }
 
     /**
-     * Parse
+     * Client
      *
      * @param string $line
      * @return string|false

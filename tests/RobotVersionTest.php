@@ -19,7 +19,7 @@ class RobotVersionTest extends \PHPUnit_Framework_TestCase
     public function testRobotVersion($robotsTxtContent, $result, $rendered)
     {
         $parser = new Client('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client', $parser);
 
         $this->assertEquals($result, $parser->export());
 

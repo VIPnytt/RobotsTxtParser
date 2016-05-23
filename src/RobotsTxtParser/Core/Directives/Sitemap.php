@@ -1,28 +1,31 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Parser\Directives;
+namespace vipnytt\RobotsTxtParser\Core\Directives;
 
-use vipnytt\RobotsTxtParser\Parser\RobotsTxtInterface;
+use vipnytt\RobotsTxtParser\Core\RobotsTxtInterface;
+use vipnytt\RobotsTxtParser\Core\UrlParser;
 
 /**
- * Class Comment
+ * Class Sitemap
  *
- * @package vipnytt\RobotsTxtParser\Parser\Directives
+ * @package vipnytt\RobotsTxtParser\Core\Directives
  */
-class Comment implements DirectiveInterface, RobotsTxtInterface
+class Sitemap implements DirectiveInterface, RobotsTxtInterface
 {
+    use UrlParser;
+
     /**
      * Directive
      */
-    const DIRECTIVE = self::DIRECTIVE_COMMENT;
+    const DIRECTIVE = self::DIRECTIVE_SITEMAP;
 
     /**
-     * Comment array
+     * Sitemap array
      * @var string[]
      */
     protected $array = [];
 
     /**
-     * Comment constructor.
+     * Sitemap constructor.
      */
     public function __construct()
     {
@@ -36,7 +39,13 @@ class Comment implements DirectiveInterface, RobotsTxtInterface
      */
     public function add($line)
     {
-        $this->array[] = $line;
+        if (
+            !$this->urlValidate(($url = $this->urlEncode($line))) ||
+            in_array($url, $this->array)
+        ) {
+            return false;
+        }
+        $this->array[] = $url;
         return true;
     }
 

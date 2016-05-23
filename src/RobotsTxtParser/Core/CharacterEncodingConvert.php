@@ -1,10 +1,10 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Parser;
+namespace vipnytt\RobotsTxtParser\Core;
 
 /**
  * Class CharacterEncodingConvert
  *
- * @package vipnytt\RobotsTxtParser\Parser
+ * @package vipnytt\RobotsTxtParser\Core
  */
 class CharacterEncodingConvert implements RobotsTxtInterface
 {
@@ -21,23 +21,15 @@ class CharacterEncodingConvert implements RobotsTxtInterface
     protected $source;
 
     /**
-     * Destination encoding
-     * @var string
-     */
-    protected $destination;
-
-    /**
      * CharacterEncodingConvert constructor.
      *
      * @param string $string
      * @param string $source
-     * @param string $destination
      */
-    public function __construct($string, $source, $destination = self::ENCODING)
+    public function __construct($string, $source)
     {
         $this->string = $string;
         $this->source = $source;
-        $this->destination = $destination;
     }
 
     /**
@@ -47,14 +39,13 @@ class CharacterEncodingConvert implements RobotsTxtInterface
      */
     public function auto()
     {
-        if ($this->source == $this->destination) {
+        if ($this->source == self::ENCODING) {
             return $this->string;
         } elseif (($iconv = $this->iconv()) !== false) {
             return $iconv;
         } elseif (($mbstring = $this->mbstring()) !== false) {
             return $mbstring;
         }
-        $this->fallback();
         return false;
     }
 
@@ -67,16 +58,16 @@ class CharacterEncodingConvert implements RobotsTxtInterface
     public function iconv($outSuffix = '//TRANSLIT//IGNORE')
     {
         try {
-            $converted = iconv($this->source, $this->destination . $outSuffix, $this->string);
+            $converted = iconv($this->source, self::ENCODING . $outSuffix, $this->string);
         } catch (\Exception $msg) {
             return false;
         }
-        mb_internal_encoding($this->destination);
+        mb_internal_encoding(self::ENCODING);
         return $converted;
     }
 
     /**
-     * mb_convert_encoding
+     * mbstring
      *
      * @param array|string|null $fromOverride
      * @return string|false
@@ -84,27 +75,11 @@ class CharacterEncodingConvert implements RobotsTxtInterface
     public function mbstring($fromOverride = null)
     {
         try {
-            $converted = mb_convert_encoding($this->string, $this->destination, $fromOverride === null ? $this->source : $fromOverride);
+            $converted = mb_convert_encoding($this->string, self::ENCODING, $fromOverride === null ? $this->source : $fromOverride);
         } catch (\Exception $msg) {
             return false;
         }
-        mb_internal_encoding($this->destination);
+        mb_internal_encoding(self::ENCODING);
         return $converted;
-    }
-
-    /**
-     * mb_internal_encoding
-     *
-     * @return bool
-     */
-    protected function fallback()
-    {
-        try {
-            mb_internal_encoding($this->destination);
-        } catch (\Exception $msg) {
-            mb_internal_encoding($this->source);
-            return false;
-        }
-        return true;
     }
 }
