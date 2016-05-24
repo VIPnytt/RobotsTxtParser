@@ -1,7 +1,6 @@
 <?php
 namespace vipnytt\RobotsTxtParser;
 
-use DateTime;
 use GuzzleHttp;
 use vipnytt\RobotsTxtParser\Client;
 
@@ -197,7 +196,7 @@ class Request extends Client
     /**
      * Valid until timestamp
      *
-     * @return \DateTime|false
+     * @return int
      */
     public function validUntil()
     {
