@@ -62,23 +62,23 @@ class Cache implements RobotsTxtInterface
      */
     public function cron($workerID = null)
     {
-        $workerID = $this->setWorkerID($workerID);
+        $worker = $this->setWorkerID($workerID);
         $result = true;
         while ($result) {
             $query = $this->pdo->prepare(<<<SQL
 UPDATE robotstxt__cache0
-SET workerID = :workerID
-WHERE workerID IS NULL AND nextUpdate <= NOW()
+SET worker = :workerID
+WHERE worker IS NULL AND nextUpdate <= UNIX_TIMESTAMP()
 ORDER BY nextUpdate ASC
 LIMIT 1;
 SELECT
   base,
   validUntil
 FROM robotstxt__cache0
-WHERE workerID = :workerID;
+WHERE worker = :worker;
 SQL
             );
-            $query->bindParam(':workerID', $workerID, PDO::PARAM_INT);
+            $query->bindParam(':workerID', $worker, PDO::PARAM_INT);
             $query->execute();
             if ($query->rowCount() > 0) {
                 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -133,7 +133,7 @@ SQL
             $nextUpdate = min($existingValidUntil, $nextUpdate);
             $query = $this->pdo->prepare(<<<SQL
 UPDATE robotstxt__cache0
-SET nextUpdate = :nextUpdate, workerID = NULL
+SET nextUpdate = :nextUpdate, worker = NULL
 WHERE base = :base;
 SQL
             );
@@ -146,7 +146,7 @@ SQL
         $query = $this->pdo->prepare(<<<SQL
 INSERT INTO robotstxt__cache0 (base, content, statusCode, validUntil, nextUpdate)
 VALUES (:base, :content, :statusCode, :validUntil, :nextUpdate)
-ON DUPLICATE KEY UPDATE content = :content, statusCode = :statusCode, validUntil = :validUntil, nextUpdate = :nextUpdate, workerID = 0;
+ON DUPLICATE KEY UPDATE content = :content, statusCode = :statusCode, validUntil = :validUntil, nextUpdate = :nextUpdate, worker = 0;
 SQL
         );
         $query->bindParam(':base', $base, PDO::PARAM_STR);
@@ -167,7 +167,7 @@ SQL
     {
         $base = $this->urlBase($this->urlEncode($baseUri));
         $query = $this->pdo->prepare(<<<SQL
-SELECT content,statusCode,nextUpdate,workerID
+SELECT content,statusCode,nextUpdate,worker
 FROM robotstxt__cache0
 WHERE base = :base;
 SQL
@@ -177,7 +177,7 @@ SQL
         if ($query->rowCount() > 0) {
             $row = $query->fetch(PDO::FETCH_ASSOC);
             if ($row['nextUpdate'] >= (time() - $this->clientNextUpdateMargin)) {
-                $this->markAsActive($base, $row['workerID']);
+                $this->markAsActive($base, $row['worker']);
                 return new Client($base, $row['code'], $row['content'], self::ENCODING, $this->byteLimit);
             }
         }
@@ -199,7 +199,7 @@ SQL
         if ($workerID == 0) {
             $query = $this->pdo->prepare(<<<SQL
 UPDATE robotstxt__cache0
-SET workerID = NULL
+SET worker = NULL
 WHERE base = :base;
 SQL
             );
@@ -210,99 +210,15 @@ SQL
     }
 
     /**
-     * Database maintenance
+     * Delay
      *
-     * @return bool
-     */
-    public function cleanup()
-    {
-        $nextUpdate = time() - self::CACHE_TIME;
-        $microTime = microtime(true) * 1000000;
-        $query = $this->pdo->prepare(<<<SQL
-DELETE FROM robotstxt__cache0
-WHERE workerID = 0 AND nextUpdate < :nextUpdate;
-DELETE FROM robotstxt__delay0
-WHERE microTime < :microTime;
-SQL
-        );
-        $query->bindParam(':nextUpdate', $nextUpdate, PDO::PARAM_INT);
-        $query->bindParam(':microTime', $microTime, PDO::PARAM_INT);
-        return $query->execute();
-    }
-
-    /**
-     * Honor the Crawl-delay rules
-     *
-     * @param int|float $delay
+     * @param float|int $delay
      * @param string $baseUri
      * @param string $userAgent
-     * @return true
+     * @return Delay
      */
-    public function delaySleep($delay, $baseUri, $userAgent = self::USER_AGENT)
+    public function delay($delay, $baseUri, $userAgent)
     {
-        $until = $this->delayUntil($delay, $baseUri, $userAgent);
-        if (microtime(true) > $until) {
-            return true;
-        }
-        try {
-            time_sleep_until($until);
-        } catch (\Exception $warning) {
-            // Timestamp already in the past
-        }
-        return true;
-    }
-
-    /**
-     * @param int|float $delay
-     * @param string $baseUri
-     * @param string $userAgent
-     * @return int|float|false
-     */
-    public function delayUntil($delay, $baseUri, $userAgent = self::USER_AGENT)
-    {
-        if ($delay <= 0) {
-            return false;
-        }
-        $base = $this->urlBase($this->urlEncode($baseUri));
-        $query = $this->pdo->prepare(<<<SQL
-SELECT microTime
-FROM robotstxt__delay0
-WHERE base = :base AND userAgent = :userAgent;
-SQL
-        );
-        $query->bindParam(':base', $base, PDO::PARAM_STR);
-        $query->bindParam(':userAgent', $userAgent, PDO::PARAM_STR);
-        $query->execute();
-        $this->setDelay($delay, $base, $userAgent);
-        if ($query->rowCount() > 0) {
-            $row = $query->fetch(PDO::FETCH_ASSOC);
-            return $row['microTime'] / 1000000;
-        }
-        return 0;
-    }
-
-    /**
-     * Set new delayUntil timestamp
-     *
-     * @param int|float $delay
-     * @param string $baseUri
-     * @param string $userAgent
-     * @return bool
-     */
-    protected function setDelay($delay, $baseUri, $userAgent = self::USER_AGENT)
-    {
-        $delay = $delay * 1000000;
-        $microTime = (microtime(true) * 1000000) + $delay;
-        $query = $this->pdo->prepare(<<<SQL
-INSERT INTO robotstxt__delay0 (base, userAgent, microTime)
-VALUES (:base, :userAgent, :microTime)
-ON DUPLICATE KEY UPDATE microTime = GREATEST(:microTime, microTime + :delay);
-SQL
-        );
-        $query->bindParam(':base', $baseUri, PDO::PARAM_STR);
-        $query->bindParam(':userAgent', $userAgent, PDO::PARAM_STR);
-        $query->bindParam(':microTime', $microTime, PDO::PARAM_INT);
-        $query->bindParam(':delay', $delay, PDO::PARAM_INT);
-        return $query->execute();
+        return new Delay($this->pdo, $delay, $baseUri, $userAgent);
     }
 }
