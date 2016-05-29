@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class EmptyTest
@@ -15,8 +15,8 @@ class EmptyTest extends \PHPUnit_Framework_TestCase
      */
     public function testEmpty()
     {
-        $parser = new Client('http://example.com', 200, '');
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client', $parser);
+        $parser = new RobotsTxtParser\Input('http://example.com', 200, '');
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Input', $parser);
 
         $this->assertTrue($parser->userAgent()->isAllowed("/"));
         $this->assertFalse($parser->userAgent()->isDisallowed("/"));
@@ -24,9 +24,9 @@ class EmptyTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($parser->userAgent('*')->isAllowed("/"));
         $this->assertFalse($parser->userAgent('*')->isDisallowed("/"));
 
-        $this->assertEquals([], $parser->getSitemaps());
+        $this->assertEquals([], $parser->sitemap()->export());
 
-        $this->assertNull($parser->getHost());
+        $this->assertNull($parser->host()->export());
 
         $this->assertEquals([], $parser->getCleanParam());
 

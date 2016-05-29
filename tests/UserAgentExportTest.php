@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class UserAgentExportTest
@@ -18,8 +18,8 @@ class UserAgentExportTest extends \PHPUnit_Framework_TestCase
      */
     public function testUserAgentExport($robotsTxtContent, $result, $rendered)
     {
-        $parser = new Client('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client', $parser);
+        $parser = new RobotsTxtParser\Input('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Input', $parser);
 
         $this->assertEquals($result, $parser->userAgent('googlebot')->export());
 

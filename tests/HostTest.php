@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class HostTest
@@ -17,15 +17,15 @@ class HostTest extends \PHPUnit_Framework_TestCase
      */
     public function testHost($robotsTxtContent, $rendered)
     {
-        $parser = new Client('http://www.myhost.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client', $parser);
+        $parser = new RobotsTxtParser\Input('http://www.myhost.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Input', $parser);
 
         $this->assertTrue($parser->userAgent()->isDisallowed('http://www.myhost.com/'));
         $this->assertFalse($parser->userAgent()->isAllowed('http://www.myhost.com/'));
         $this->assertTrue($parser->userAgent()->isDisallowed('/'));
         $this->assertFalse($parser->userAgent()->isAllowed('/'));
 
-        $this->assertEquals('myhost.com', $parser->getHost());
+        $this->assertEquals('myhost.com', $parser->host()->export());
 
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render());

@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class RequestRateTest
@@ -18,17 +18,17 @@ class RequestRateTest extends \PHPUnit_Framework_TestCase
      */
     public function testRequestRate($robotsTxtContent, $result, $rendered)
     {
-        $parser = new Client('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client', $parser);
+        $parser = new RobotsTxtParser\Input('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Input', $parser);
 
-        $this->assertEquals($result, $parser->userAgent('*')->getRequestRates());
+        $this->assertEquals($result, $parser->userAgent('*')->requestRate()->export());
 
         $validRates = [];
         foreach ($result as $value) {
             $validRates[] = $value['rate'];
         }
-        $this->assertTrue(in_array($parser->userAgent('Legacy')->getCrawlDelay(), $validRates));
-        $this->assertTrue(in_array($parser->userAgent('Legacy')->getCacheDelay(), $validRates));
+        $this->assertTrue(in_array($parser->userAgent('Legacy')->crawlDelay()->get(), $validRates));
+        $this->assertTrue(in_array($parser->userAgent('Legacy')->crawlDelay()->get(), $validRates));
 
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render());

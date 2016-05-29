@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class InvalidEncodingTest
@@ -17,8 +17,8 @@ class InvalidEncodingTest extends \PHPUnit_Framework_TestCase
     public function testInvalidEncoding($encoding)
     {
         // Invalid encodings are ignored, and the default encoding is used, without warning.
-        $parser = new Client('http://example.com', 200, '', $encoding);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client', $parser);
+        $parser = new RobotsTxtParser\Input('http://example.com', 200, '', $encoding);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Input', $parser);
     }
 
     /**

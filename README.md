@@ -17,12 +17,16 @@ An easy to use, extensible PHP library to parse `robots.txt` according to [_Goog
 - Host preference detection
 - Dynamic URL parameter detection
 
+### Optional features
+- Automatic download, _http(s) only_
+- Caching system
+- Delay handler
+
 #### Advantages
 _(compared to most other robots.txt parsers)_
-- Automatic download of the the _correct_ `robots.txt`. _http(s) only._ (optional)
-- Support for every single directive ever existed, including drafts. [See the full list.](#directives-supported)
+- Full support for [every single directive](#directives-supported), from [every specification](#specifications).
 - HTTP Status code handler, _according to [Google](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt) spec._
-- Features a dedicated `User-Agent` parser and group determiner library, for maximum accuracy.
+- Dedicated `User-Agent` parser and group determiner library, for maximum accuracy.
 - Full support for _inline directives_, _according to [Yandex](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml) spec._
 - Provides additional data like _preferred host_, dynamic _URL parameters_, _Sitemap_ locations, etc.
 - Supports ``HTTP``, ``HTTPS``, ``FTP``, ``SFTP`` and ``FTP/S``.
@@ -39,7 +43,7 @@ The recommended way to install the robots.txt parser is through [Composer](http:
 ```json
 {
     "require": {
-        "vipnytt/robotstxtparser": "~1.0"
+        "vipnytt/robotstxtparser": "~2.0"
     }
 }
 ```
@@ -101,8 +105,8 @@ Visit the [Wiki](https://github.com/VIPnytt/RobotsTxtParser/wiki) and [Documenta
   - [x] [`Disallow`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#disallow)
     - [x] _inline_ [`Clean-param`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#clean-param)
     - [x] _inline_ [`Host`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#host)
-  - [x] [`Crawl-delay`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#crawl-delay)
-  - [x] [`Cache-delay`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#cache-delay)
+  - [x] [`Crawl-delay`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#crawl-value)
+  - [x] [`Cache-delay`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#cache-value)
   - [x] [`Request-rate`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#request-rate)
   - [x] [`Visit-time`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#visit-time)
   - [x] [`Robot-version`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#robot-version)
