@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Request;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class DownloadExampleTest
@@ -16,8 +16,8 @@ class DownloadExampleTest extends \PHPUnit_Framework_TestCase
      */
     public function testDownloadExample($base)
     {
-        $parser = new Request($base);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Request', $parser);
+        $parser = new RobotsTxtParser\URI($base);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\URI', $parser);
 
         $this->assertTrue($parser->userAgent()->isAllowed("/"));
         $this->assertFalse($parser->userAgent()->isDisallowed("/"));
@@ -25,9 +25,9 @@ class DownloadExampleTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($parser->userAgent('*')->isAllowed("/"));
         $this->assertFalse($parser->userAgent('*')->isDisallowed("/"));
 
-        $this->assertEquals([], $parser->getSitemaps());
+        $this->assertEquals([], $parser->sitemap()->export());
 
-        $this->assertNull($parser->getHost());
+        $this->assertNull($parser->host()->export());
 
         $this->assertEquals([], $parser->getCleanParam());
 

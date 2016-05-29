@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class StatusCodeTest
@@ -23,8 +23,8 @@ User-agent: *
 Disallow: /
 Allow: /public/
 ROBOTS;
-        $parser = new Client($base, $statusCode, $robots);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client', $parser);
+        $parser = new RobotsTxtParser\Input($base, $statusCode, $robots);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Input', $parser);
 
         switch ($expectedResult) {
             case 'conditional':

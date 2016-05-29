@@ -52,7 +52,7 @@
   },
   "autoload": {
     "psr-4": {
-      "vipnytt\\": "src/"
+      "vipnytt\\RobotsTxtParser\\": "src/"
     }
   },
   "autoload-dev": {

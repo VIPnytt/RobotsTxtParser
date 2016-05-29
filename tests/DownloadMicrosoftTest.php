@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Request;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class DownloadMicrosoftTest
@@ -16,8 +16,8 @@ class DownloadMicrosoftTest extends \PHPUnit_Framework_TestCase
      */
     public function testDownloadMicrosoft($base)
     {
-        $parser = new Request($base);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Request', $parser);
+        $parser = new RobotsTxtParser\URI($base);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\URI', $parser);
 
         $this->assertTrue($parser->userAgent()->isAllowed('/'));
         $this->assertFalse($parser->userAgent()->isDisallowed('/'));
@@ -25,7 +25,7 @@ class DownloadMicrosoftTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($parser->userAgent()->isDisallowed('/blacklisted'));
         $this->assertFalse($parser->userAgent()->isAllowed('/blacklisted'));
 
-        $this->assertTrue(count($parser->getSitemaps()) > 0);
+        $this->assertTrue(count($parser->sitemap()->export()) > 0);
     }
 
     /**

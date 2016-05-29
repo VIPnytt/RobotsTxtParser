@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class ExportTest
@@ -18,8 +18,8 @@ class ExportTest extends \PHPUnit_Framework_TestCase
      */
     public function testExport($robotsTxtContent, $result, $rendered)
     {
-        $parser = new Client('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client', $parser);
+        $parser = new RobotsTxtParser\Input('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Input', $parser);
 
         $this->assertEquals($result, $parser->export());
 

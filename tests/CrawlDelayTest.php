@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class CrawlDelayTest
@@ -17,14 +17,14 @@ class CrawlDelayTest extends \PHPUnit_Framework_TestCase
      */
     public function testCrawlDelay($robotsTxtContent, $rendered)
     {
-        $parser = new Client('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client', $parser);
+        $parser = new RobotsTxtParser\Input('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Input', $parser);
 
-        $this->assertEquals(0, $parser->userAgent()->getCrawlDelay());
-        $this->assertEquals(0, $parser->userAgent('*')->getCrawlDelay());
-        $this->assertEquals(0.8, $parser->userAgent('GoogleBot')->getCrawlDelay());
-        $this->assertEquals(2.5, $parser->userAgent('BingBot')->getCrawlDelay());
-        $this->assertEquals(864, $parser->userAgent('Legacy')->getCrawlDelay());
+        $this->assertEquals(0, $parser->userAgent()->crawlDelay()->get());
+        $this->assertEquals(0, $parser->userAgent('*')->crawlDelay()->get());
+        $this->assertEquals(0.8, $parser->userAgent('GoogleBot')->crawlDelay()->get());
+        $this->assertEquals(2.5, $parser->userAgent('BingBot')->crawlDelay()->get());
+        $this->assertEquals(864, $parser->userAgent('Legacy')->crawlDelay()->get());
 
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render());

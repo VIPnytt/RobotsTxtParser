@@ -1,10 +1,10 @@
 # Directives
 
 - [Allow](#allow)
-- [Cache-delay](#cache-delay)
+- [Cache-delay](#cache-value)
 - [Clean-param](#clean-param)
 - [Comment](#comment)
-- [Crawl-delay](#crawl-delay)
+- [Crawl-delay](#crawl-value)
 - [Disallow](#disallow)
 - [Host](#host)
 - [Request-rate](#request-rate)
@@ -43,7 +43,7 @@ __Note:__ _This is an unofficial directive._
 __Parser specific:__ When the value is requested but not found, the value of ``Crawl-delay`` is returned, to maintain compatibility.
 
 __See also:__
-- [Crawl-delay](#crawl-delay)
+- [Crawl-delay](#crawl-value)
 - [Request-rate](#request-rate)
 
 ## Clean-param
@@ -80,7 +80,7 @@ __Parser specific:__ When the value is requested but not found, the value of ``R
 
 __See also:__
 - [Request-rate](#request-rate)
-- [Cache-delay](#cache-delay)
+- [Cache-delay](#cache-value)
 
 __References:__
 - [Yandex robots.txt specifications](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#crawl-delay)
@@ -138,8 +138,8 @@ request-rate: [rate] [time]-[time]
 __Note:__ _This directive does exist in drafts only, and should therefore be avoided. Please use ``Crawl-delay`` instead._
 
 __See also:__
-- [Cache-delay](#cache-delay)
-- [Crawl-delay](#crawl-delay)
+- [Cache-delay](#cache-value)
+- [Crawl-delay](#crawl-value)
 - [Visit-time](#visit-time)
 
 __References:__
