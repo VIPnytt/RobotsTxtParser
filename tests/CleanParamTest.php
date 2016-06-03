@@ -18,8 +18,8 @@ class CleanParamTest extends \PHPUnit_Framework_TestCase
      */
     public function testCleanParam($robotsTxtContent, $result, $rendered)
     {
-        $parser = new RobotsTxtParser\Input('http://www.site1.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Input', $parser);
+        $parser = new RobotsTxtParser\Core('http://www.site1.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Core', $parser);
 
         $this->assertTrue($parser->userAgent()->isDisallowed('http://www.site1.com/forums/showthread.php?s=681498b9648949605&ref=parent'));
         $this->assertFalse($parser->userAgent()->isAllowed('http://www.site1.com/forums/showthread.php?s=681498b9648949605&ref=parent'));
@@ -27,7 +27,7 @@ class CleanParamTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($parser->userAgent()->isDisallowed('http://www.site1.com/page.php?ref=ads&uid=123456'));
         $this->assertFalse($parser->userAgent()->isAllowed('http://www.site1.com/page.php?ref=ads&uid=123456'));
 
-        $this->assertEquals($result, $parser->getCleanParam());
+        $this->assertEquals($result, $parser->cleanParam()->export());
 
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render());

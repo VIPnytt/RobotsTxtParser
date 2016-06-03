@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
+use vipnytt\RobotsTxtParser\Client\Directives\HostClient;
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
@@ -107,11 +108,21 @@ class HostParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Export rules
+     * Client
+     *
+     * @return HostClient
+     */
+    public function client()
+    {
+        return new HostClient(isset($this->array[0]) ? $this->array[0] : null);
+    }
+
+    /**
+     * Rule array
      *
      * @return string[][]
      */
-    public function export()
+    public function getRules()
     {
         return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
     }

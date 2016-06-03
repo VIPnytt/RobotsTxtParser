@@ -17,8 +17,8 @@ class InvalidPathTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidPathAllowed($robotsTxtContent)
     {
-        $parser = new RobotsTxtParser\Input('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Input', $parser);
+        $parser = new RobotsTxtParser\Core('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Core', $parser);
 
         $this->expectException(ClientException::class);
         $this->assertFalse($parser->userAgent()->isAllowed('+£€@@1¤'));
@@ -30,8 +30,8 @@ class InvalidPathTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidPathDisallowed($robotsTxtContent)
     {
-        $parser = new RobotsTxtParser\Input('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Input', $parser);
+        $parser = new RobotsTxtParser\Core('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Core', $parser);
 
         $this->expectException(ClientException::class);
         $this->assertTrue($parser->userAgent()->isDisallowed('&&/1@|'));

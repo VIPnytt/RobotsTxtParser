@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
+use vipnytt\RobotsTxtParser\Client\Directives\VisitTimeClient;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -47,11 +48,21 @@ class VisitTimeParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Export rules
+     * Client
+     *
+     * @return VisitTimeClient
+     */
+    public function client()
+    {
+        return new VisitTimeClient($this->array);
+    }
+
+    /**
+     * Rule array
      *
      * @return string[][]
      */
-    public function export()
+    public function getRules()
     {
         return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
     }

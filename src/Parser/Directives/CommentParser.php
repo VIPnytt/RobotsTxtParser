@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
+use vipnytt\RobotsTxtParser\Client\Directives\CommentClient;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -16,16 +17,39 @@ class CommentParser implements ParserInterface, RobotsTxtInterface
     const DIRECTIVE = self::DIRECTIVE_COMMENT;
 
     /**
+     * User-agent
+     * @var string
+     */
+    private $userAgent;
+
+    /**
+     * Base Uri
+     * @var string
+     */
+    private $base;
+
+    /**
      * Comment array
      * @var string[]
      */
     private $array = [];
 
     /**
-     * Comment constructor.
+     * Client cache
+     * @var CommentClient
      */
-    public function __construct()
+    private $client;
+
+    /**
+     * Comment constructor.
+     *
+     * @param string $base
+     * @param string $userAgent
+     */
+    public function __construct($base, $userAgent)
     {
+        $this->base = $base;
+        $this->userAgent = $userAgent;
     }
 
     /**
@@ -41,11 +65,24 @@ class CommentParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Export rules
+     * Client
+     *
+     * @return CommentClient
+     */
+    public function client()
+    {
+        if (isset($this->client)) {
+            return $this->client;
+        }
+        return $this->client = new CommentClient($this->base, $this->userAgent, $this->array);
+    }
+
+    /**
+     * Rule array
      *
      * @return string[][]
      */
-    public function export()
+    public function getRules()
     {
         return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
     }

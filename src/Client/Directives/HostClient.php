@@ -10,14 +10,14 @@ class HostClient
 {
     /**
      * Host
-     * @var string|null
+     * @var string
      */
     private $host;
 
     /**
      * HostClient constructor.
      *
-     * @param string|null $host
+     * @param array $host
      */
     public function __construct($host)
     {

@@ -17,11 +17,11 @@ interface ParserInterface
     public function add($line);
 
     /**
-     * Export rules
+     * Rule array
      *
      * @return array
      */
-    public function export();
+    public function getRules();
 
     /**
      * Render

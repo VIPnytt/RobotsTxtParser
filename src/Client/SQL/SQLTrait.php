@@ -20,6 +20,8 @@ trait SQLTrait
     private function pdoInitialize(PDO $pdo)
     {
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        $pdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
+        $pdo->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_NATURAL);
         return $pdo;
     }
 
@@ -38,7 +40,7 @@ trait SQLTrait
         }
         try {
             $pdo->query($query);
-        } catch (PDOException $Exception) {
+        } catch (PDOException $e) {
             return FALSE;
         }
         return $this->tableExists($pdo, $table);
@@ -55,7 +57,7 @@ trait SQLTrait
     {
         try {
             $result = $pdo->query("SELECT 1 FROM $table LIMIT 1;");
-        } catch (PDOException $Exception) {
+        } catch (PDOException $e) {
             return FALSE;
         }
         return $result !== FALSE;

@@ -1,11 +1,8 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Parser;
 
-use vipnytt\RobotsTxtParser\Parser\Directives\CleanParamParser;
 use vipnytt\RobotsTxtParser\Parser\Directives\DirectiveParserCommons;
-use vipnytt\RobotsTxtParser\Parser\Directives\HostParser;
-use vipnytt\RobotsTxtParser\Parser\Directives\SitemapParser;
-use vipnytt\RobotsTxtParser\Parser\Directives\UserAgentParser;
+use vipnytt\RobotsTxtParser\Parser\Directives\RootDirectiveHandler;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -16,6 +13,7 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 class RobotsTxtParser implements RobotsTxtInterface
 {
     use DirectiveParserCommons;
+    use UrlParser;
 
     /**
      * Directive white list
@@ -26,31 +24,19 @@ class RobotsTxtParser implements RobotsTxtInterface
         self::DIRECTIVE_SITEMAP,
         self::DIRECTIVE_USER_AGENT,
     ];
+
+    /**
+     * Root directive handler
+     * @var RootDirectiveHandler
+     */
+    protected $handler;
+
     /**
      * Current user-agent(s)
      * @var array
      */
-    protected $userAgentValues;
-    /**
-     * Clean-param class
-     * @var CleanParamParser
-     */
-    protected $cleanParam;
-    /**
-     * Host class
-     * @var HostParser
-     */
-    protected $host;
-    /**
-     * Sitemap class
-     * @var SitemapParser
-     */
-    protected $sitemap;
-    /**
-     * User-agent class
-     * @var UserAgentParser
-     */
-    protected $userAgent;
+    private $userAgents;
+
     /**
      * Previous directive
      * @var string
@@ -60,15 +46,13 @@ class RobotsTxtParser implements RobotsTxtInterface
     /**
      * Core constructor.
      *
-     * @param string $content - file content
+     * @param string $baseUri
+     * @param string $content
      */
-    public function __construct($content)
+    public function __construct($baseUri, $content)
     {
         mb_internal_encoding(self::ENCODING);
-        $this->cleanParam = new CleanParamParser();
-        $this->host = new HostParser();
-        $this->sitemap = new SitemapParser();
-        $this->userAgent = new UserAgentParser();
+        $this->handler = new RootDirectiveHandler($this->urlBase($this->urlEncode($baseUri)));
         $this->parseTxt($content);
     }
 
@@ -104,22 +88,22 @@ class RobotsTxtParser implements RobotsTxtInterface
         $pair = $this->generateRulePair($line, self::TOP_LEVEL_DIRECTIVES);
         if ($pair['directive'] === self::DIRECTIVE_USER_AGENT) {
             if ($previousDirective !== self::DIRECTIVE_USER_AGENT) {
-                $this->userAgentValues = [];
+                $this->userAgents = [];
             }
-            $this->userAgentValues[] = $pair['value'];
+            $this->userAgents[] = $pair['value'];
         }
         $this->previousDirective = $pair['directive'];
         switch ($pair['directive']) {
             case self::DIRECTIVE_CLEAN_PARAM:
-                return $this->cleanParam->add($pair['value']);
+                return $this->handler->cleanParam()->add($pair['value']);
             case self::DIRECTIVE_HOST:
-                return $this->host->add($pair['value']);
+                return $this->handler->host()->add($pair['value']);
             case self::DIRECTIVE_SITEMAP:
-                return $this->sitemap->add($pair['value']);
+                return $this->handler->sitemap()->add($pair['value']);
             case self::DIRECTIVE_USER_AGENT:
-                return $this->userAgent->set($this->userAgentValues);
+                return $this->handler->userAgent()->set($this->userAgents);
         }
-        return $this->userAgent->add($line);
+        return $this->handler->userAgent()->add($line);
     }
 
     /**
@@ -131,10 +115,10 @@ class RobotsTxtParser implements RobotsTxtInterface
     public function render($lineSeparator = "\n")
     {
         return implode($lineSeparator, array_merge(
-            $this->cleanParam->render(),
-            $this->host->render(),
-            $this->sitemap->render(),
-            $this->userAgent->render()
+            $this->handler->host()->render(),
+            $this->handler->cleanParam()->render(),
+            $this->handler->sitemap()->render(),
+            $this->handler->userAgent()->render()
         ));
     }
 
@@ -146,10 +130,10 @@ class RobotsTxtParser implements RobotsTxtInterface
     public function export()
     {
         return array_merge(
-            $this->cleanParam->export(),
-            $this->host->export(),
-            $this->sitemap->export(),
-            $this->userAgent->export()
+            $this->handler->host()->getRules(),
+            $this->handler->cleanParam()->getRules(),
+            $this->handler->sitemap()->getRules(),
+            $this->handler->userAgent()->getRules()
         );
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
+use vipnytt\RobotsTxtParser\Client\Directives\DelayClient;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -26,6 +27,18 @@ class CrawlDelayParser implements ParserInterface, RobotsTxtInterface
     private $directive = self::DIRECTIVE_CRAWL_DELAY;
 
     /**
+     * Base Uri
+     * @var string
+     */
+    private $base;
+
+    /**
+     * User-agent
+     * @var string
+     */
+    private $userAgent;
+
+    /**
      * Delay
      * @var float|int
      */
@@ -33,10 +46,15 @@ class CrawlDelayParser implements ParserInterface, RobotsTxtInterface
 
     /**
      * CrawlDelay constructor.
+     *
+     * @param string $base
+     * @param string $userAgent
      * @param string $directive
      */
-    public function __construct($directive = self::DIRECTIVE_CRAWL_DELAY)
+    public function __construct($base, $userAgent, $directive = self::DIRECTIVE_CRAWL_DELAY)
     {
+        $this->base = $base;
+        $this->userAgent = $userAgent;
         $this->directive = $this->validateDirective($directive, self::DIRECTIVE);
     }
 
@@ -64,11 +82,22 @@ class CrawlDelayParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Export rules
+     * Client
+     *
+     * @param float|int $fallbackValue
+     * @return DelayClient
+     */
+    public function client($fallbackValue = 0)
+    {
+        return new DelayClient($this->base, $this->userAgent, $this->value, $fallbackValue);
+    }
+
+    /**
+     * Rule array
      *
      * @return float[]|int[]|string[]
      */
-    public function export()
+    public function getRules()
     {
         return empty($this->value) ? [] : [$this->directive => $this->value];
     }

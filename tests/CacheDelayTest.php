@@ -17,8 +17,8 @@ class CacheDelayTest extends \PHPUnit_Framework_TestCase
      */
     public function testCacheDelay($robotsTxtContent, $rendered)
     {
-        $parser = new RobotsTxtParser\Input('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Input', $parser);
+        $parser = new RobotsTxtParser\Core('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Core', $parser);
 
         $this->assertEquals(0.5, $parser->userAgent()->cacheDelay()->get());
         $this->assertEquals(0.5, $parser->userAgent('*')->cacheDelay()->get());
@@ -60,8 +60,8 @@ crawl-delay:0.5
 user-agent:bingbot
 cache-delay:9.2
 user-agent:googlebot
-cache-delay:8
 crawl-delay:3.7
+cache-delay:8
 RENDERED
             ]
         ];
