@@ -18,14 +18,14 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
      * Sub directives white list
      */
     const SUB_DIRECTIVES = [
-        self::DIRECTIVE_ALLOW,
-        self::DIRECTIVE_CACHE_DELAY,
-        self::DIRECTIVE_COMMENT,
-        self::DIRECTIVE_CRAWL_DELAY,
-        self::DIRECTIVE_DISALLOW,
-        self::DIRECTIVE_REQUEST_RATE,
-        self::DIRECTIVE_ROBOT_VERSION,
-        self::DIRECTIVE_VISIT_TIME,
+        self::DIRECTIVE_ALLOW => 'allow',
+        self::DIRECTIVE_CACHE_DELAY => 'cacheDelay',
+        self::DIRECTIVE_COMMENT => 'comment',
+        self::DIRECTIVE_CRAWL_DELAY => 'crawlDelay',
+        self::DIRECTIVE_DISALLOW => 'disallow',
+        self::DIRECTIVE_REQUEST_RATE => 'requestRate',
+        self::DIRECTIVE_ROBOT_VERSION => 'robotVersion',
+        self::DIRECTIVE_VISIT_TIME => 'visitTime',
     ];
 
     /**
@@ -94,34 +94,11 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     public function add($line)
     {
         $result = [];
-        $pair = $this->generateRulePair($line, self::SUB_DIRECTIVES);
+        if (($pair = $this->generateRulePair($line, array_keys(self::SUB_DIRECTIVES))) === false) {
+            return false;
+        }
         foreach ($this->userAgent as $userAgent) {
-            switch ($pair['directive']) {
-                case self::DIRECTIVE_ALLOW:
-                    $result[] = $this->handler[$userAgent]->allow()->add($pair['value']);
-                    break;
-                case self::DIRECTIVE_CACHE_DELAY:
-                    $result[] = $this->handler[$userAgent]->cacheDelay()->add($pair['value']);
-                    break;
-                case self::DIRECTIVE_COMMENT:
-                    $result[] = $this->handler[$userAgent]->comment()->add($pair['value']);
-                    break;
-                case self::DIRECTIVE_CRAWL_DELAY:
-                    $result[] = $this->handler[$userAgent]->crawlDelay()->add($pair['value']);
-                    break;
-                case self::DIRECTIVE_DISALLOW:
-                    $result[] = $this->handler[$userAgent]->disallow()->add($pair['value']);
-                    break;
-                case self::DIRECTIVE_REQUEST_RATE:
-                    $result[] = $this->handler[$userAgent]->requestRate()->add($pair['value']);
-                    break;
-                case self::DIRECTIVE_ROBOT_VERSION:
-                    $result[] = $this->handler[$userAgent]->robotVersion()->add($pair['value']);
-                    break;
-                case self::DIRECTIVE_VISIT_TIME:
-                    $result[] = $this->handler[$userAgent]->visitTime()->add($pair['value']);
-                    break;
-            }
+            $result[] = $this->handler[$userAgent]->{self::SUB_DIRECTIVES[$pair['directive']]}()->add($pair['value']);
         }
         return in_array(true, $result, true);
     }
