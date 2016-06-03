@@ -19,10 +19,10 @@ class RobotsTxtParser implements RobotsTxtInterface
      * Directive white list
      */
     const TOP_LEVEL_DIRECTIVES = [
-        self::DIRECTIVE_CLEAN_PARAM,
-        self::DIRECTIVE_HOST,
-        self::DIRECTIVE_SITEMAP,
-        self::DIRECTIVE_USER_AGENT,
+        self::DIRECTIVE_CLEAN_PARAM => 'cleanParam',
+        self::DIRECTIVE_HOST => 'host',
+        self::DIRECTIVE_SITEMAP => 'sitemap',
+        self::DIRECTIVE_USER_AGENT => 'userAgent',
     ];
 
     /**
@@ -85,25 +85,20 @@ class RobotsTxtParser implements RobotsTxtInterface
     public function add($line)
     {
         $previousDirective = $this->previousDirective;
-        $pair = $this->generateRulePair($line, self::TOP_LEVEL_DIRECTIVES);
-        if ($pair['directive'] === self::DIRECTIVE_USER_AGENT) {
+        $pair = $this->generateRulePair($line, array_keys(self::TOP_LEVEL_DIRECTIVES));
+        if ($pair === false) {
+            $this->previousDirective = $line;
+            return $this->handler->userAgent()->add($line);
+        } elseif ($pair['directive'] === self::DIRECTIVE_USER_AGENT) {
             if ($previousDirective !== self::DIRECTIVE_USER_AGENT) {
                 $this->userAgents = [];
             }
             $this->userAgents[] = $pair['value'];
+            $this->previousDirective = $pair['directive'];
+            return $this->handler->userAgent()->set($this->userAgents);
         }
         $this->previousDirective = $pair['directive'];
-        switch ($pair['directive']) {
-            case self::DIRECTIVE_CLEAN_PARAM:
-                return $this->handler->cleanParam()->add($pair['value']);
-            case self::DIRECTIVE_HOST:
-                return $this->handler->host()->add($pair['value']);
-            case self::DIRECTIVE_SITEMAP:
-                return $this->handler->sitemap()->add($pair['value']);
-            case self::DIRECTIVE_USER_AGENT:
-                return $this->handler->userAgent()->set($this->userAgents);
-        }
-        return $this->handler->userAgent()->add($line);
+        return $this->handler->{self::TOP_LEVEL_DIRECTIVES[$pair['directive']]}()->add($pair['value']);
     }
 
     /**
