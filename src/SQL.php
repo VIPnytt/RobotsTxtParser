@@ -58,7 +58,7 @@ class SQL implements RobotsTxtInterface, SQLInterface
         $this->pdo = $this->pdoInitialize($pdo);
         $this->driver = $this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
         if ($this->driver != 'mysql') {
-            trigger_error('Unsupported database. Currently only MySQL are officially supported. ' . self::README_SQL_CACHE, E_USER_WARNING);
+            trigger_error('Unsupported database. Currently supports MySQL only. ' . self::README_SQL_CACHE, E_USER_WARNING);
         }
         $this->guzzleConfig = $guzzleConfig;
         $this->byteLimit = $byteLimit;

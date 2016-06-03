@@ -3,6 +3,7 @@ namespace vipnytt\RobotsTxtParser\Client\SQL\Delay;
 
 use PDO;
 use vipnytt\RobotsTxtParser\Client\SQL\SQLInterface;
+use vipnytt\RobotsTxtParser\Client\SQL\SQLMaintenanceInterface;
 use vipnytt\RobotsTxtParser\Client\SQL\SQLTrait;
 use vipnytt\RobotsTxtParser\Exceptions\SQLException;
 
@@ -11,7 +12,7 @@ use vipnytt\RobotsTxtParser\Exceptions\SQLException;
  *
  * @package vipnytt\RobotsTxtParser\Client\SQL\Delay
  */
-class DelayMaintenanceSQL implements SQLInterface
+class DelayMaintenanceSQL implements SQLInterface, SQLMaintenanceInterface
 {
     use SQLTrait;
 
