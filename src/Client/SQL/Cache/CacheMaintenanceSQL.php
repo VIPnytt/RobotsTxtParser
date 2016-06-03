@@ -3,6 +3,7 @@ namespace vipnytt\RobotsTxtParser\Client\SQL\Cache;
 
 use PDO;
 use vipnytt\RobotsTxtParser\Client\SQL\SQLInterface;
+use vipnytt\RobotsTxtParser\Client\SQL\SQLMaintenanceInterface;
 use vipnytt\RobotsTxtParser\Client\SQL\SQLTrait;
 use vipnytt\RobotsTxtParser\Exceptions\SQLException;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
@@ -12,7 +13,7 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  *
  * @package vipnytt\RobotsTxtParser\Client\SQL\Cache
  */
-class CacheMaintenanceSQL implements RobotsTxtInterface, SQLInterface
+class CacheMaintenanceSQL implements RobotsTxtInterface, SQLInterface, SQLMaintenanceInterface
 {
     use SQLTrait;
 
