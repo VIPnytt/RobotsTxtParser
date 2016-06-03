@@ -6,9 +6,9 @@ use GuzzleHttp;
 /**
  * Class ClientURI
  *
- * @package vipnytt\RobotsTxtParser\Client
+ * @package vipnytt\RobotsTxtParser
  */
-class URI extends Input
+class URI extends Core
 {
     const GUZZLE_HTTP_CONFIG = [
         'allow_redirects' => [
@@ -27,15 +27,10 @@ class URI extends Input
         'verify' => true,
     ];
     /**
-     * HTTP Status code
+     * Status code
      * @var int
      */
     protected $statusCode;
-    /**
-     * Parent Client class
-     * @var Input
-     */
-    private $client;
     /**
      * RequestClient timestamp
      * @var int
@@ -90,13 +85,13 @@ class URI extends Input
             $this->encoding = self::ENCODING;
             $this->maxAge = 0;
         }
-        $this->client = parent::__construct($baseUri, $this->statusCode, $this->contents, $this->encoding, $byteLimit);
+        parent::__construct($baseUri, $this->statusCode, $this->contents, $this->encoding, $byteLimit);
     }
 
     /**
      * Content-Type encoding HTTP header
      *
-     * @param array $headers
+     * @param string[] $headers
      * @return string
      */
     private function headerEncoding(array $headers)
@@ -110,7 +105,7 @@ class URI extends Input
     /**
      * Client header
      *
-     * @param array $headers
+     * @param string[] $headers
      * @param string $part
      * @param string $delimiter
      * @return string|false
@@ -131,7 +126,7 @@ class URI extends Input
     /**
      * Cache-Control max-age HTTP header
      *
-     * @param array $headers
+     * @param string[] $headers
      * @return int
      */
     private function headerMaxAge(array $headers)
@@ -200,15 +195,5 @@ class URI extends Input
     public function validUntil()
     {
         return $this->time + max(self::CACHE_TIME, $this->maxAge);
-    }
-
-    /**
-     * Client class
-     *
-     * @return Input
-     */
-    public function getClientClass()
-    {
-        return $this->client;
     }
 }

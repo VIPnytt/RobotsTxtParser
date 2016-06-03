@@ -9,7 +9,7 @@ use vipnytt\RobotsTxtParser\Parser\UrlParser;
 /**
  * Class SQL
  *
- * @package vipnytt\RobotsTxtParser\Client
+ * @package vipnytt\RobotsTxtParser
  */
 class SQL implements RobotsTxtInterface, SQLInterface
 {
@@ -180,7 +180,7 @@ SQL
      * Parser client
      *
      * @param string $baseUri
-     * @return Input
+     * @return Core
      */
     public function client($baseUri)
     {
@@ -201,13 +201,13 @@ SQL
             $row = $query->fetch(PDO::FETCH_ASSOC);
             if ($row['nextUpdate'] >= (time() - $this->clientUpdateMargin)) {
                 $this->markAsActive($base, $row['worker']);
-                return new Input($base, $row['code'], $row['content'], self::ENCODING, $this->byteLimit);
+                return new Core($base, $row['code'], $row['content'], self::ENCODING, $this->byteLimit);
             }
         }
         $request = new URI($base, $this->guzzleConfig, $this->byteLimit);
         $this->push($request);
         $this->markAsActive($base);
-        return $request->getClientClass();
+        return new Core($base, $request->getStatusCode(), $request->getContents(), self::ENCODING, $this->byteLimit);
     }
 
     /**

@@ -40,10 +40,7 @@ class VisitTimeClient
                 return true;
             }
         }
-        if (empty($this->times)) {
-            return true;
-        }
-        return false;
+        return empty($this->times);
     }
 
     /**

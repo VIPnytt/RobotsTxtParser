@@ -27,7 +27,9 @@ trait DirectiveClientCommons
         $dtRef = $dateTime->createFromFormat('U', $timestamp, $timezone);
         $dtFrom = $dateTime->createFromFormat($format, $fromTime, $timezone);
         $dtTo = $dateTime->createFromFormat($format, $toTime, $timezone);
-        if ($dtFrom > $dtTo) $dtTo->modify('+1 day');
+        if ($dtFrom > $dtTo) {
+            $dtTo->modify('+1 day');
+        }
         return (
             $dtFrom <= $dtRef &&
             $dtRef <= $dtTo

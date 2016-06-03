@@ -38,6 +38,18 @@ class DisAllowParser implements ParserInterface, RobotsTxtInterface
     private $directive;
 
     /**
+     * Base Uri
+     * @var string
+     */
+    private $base;
+
+    /**
+     * User-agent
+     * @var string
+     */
+    private $userAgent;
+
+    /**
      * Rule array
      * @var array
      */
@@ -58,10 +70,14 @@ class DisAllowParser implements ParserInterface, RobotsTxtInterface
     /**
      * DisAllow constructor
      *
+     * @param string $base
+     * @param string $userAgent
      * @param string $directive
      */
-    public function __construct($directive)
+    public function __construct($base, $userAgent, $directive)
     {
+        $this->base = $base;
+        $this->userAgent = $userAgent;
         $this->directive = $this->validateDirective($directive, self::DIRECTIVE);
         $this->cleanParam = new CleanParamParser();
         $this->host = new HostParser();
@@ -141,16 +157,16 @@ class DisAllowParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Export rules
+     * Rule array
      *
      * @return array
      */
-    public function export()
+    public function getRules()
     {
         $result = array_merge(
             $this->array,
-            $this->cleanParam->export(),
-            $this->host->export()
+            $this->cleanParam->getRules(),
+            $this->host->getRules()
         );
         return empty($result) ? [] : [$this->directive => $result];
     }

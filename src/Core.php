@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser;
 
+use vipnytt\RobotsTxtParser\Client\Directives\CleanParamClient;
 use vipnytt\RobotsTxtParser\Client\Directives\HostClient;
 use vipnytt\RobotsTxtParser\Client\Directives\SitemapClient;
 use vipnytt\RobotsTxtParser\Client\Directives\UserAgentClient;
@@ -9,7 +10,7 @@ use vipnytt\RobotsTxtParser\Parser\RobotsTxtParser;
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
 
 /**
- * Class Input
+ * Class Core
  *
  * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt
  * @link https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml
@@ -17,9 +18,9 @@ use vipnytt\RobotsTxtParser\Parser\UrlParser;
  * @link https://www.w3.org/TR/html4/appendix/notes.html#h-B.4.1.1
  * @link http://www.conman.org/people/spc/robots2.html
  *
- * @package vipnytt\RobotsTxtParser\Client
+ * @package vipnytt\RobotsTxtParser
  */
-class Input extends RobotsTxtParser
+class Core extends RobotsTxtParser
 {
     use UrlParser;
 
@@ -42,12 +43,6 @@ class Input extends RobotsTxtParser
     protected $content;
 
     /**
-     * UserAgentClient class cache
-     * @var UserAgentClient[]
-     */
-    private $userAgentClients = [];
-
-    /**
      * Core constructor.
      *
      * @param string $baseUri
@@ -63,7 +58,7 @@ class Input extends RobotsTxtParser
         $this->content = $content;
         $this->convertEncoding($encoding);
         $this->limitBytes($byteLimit);
-        parent::__construct($this->content);
+        parent::__construct($this->base, $this->content);
     }
 
     /**
@@ -99,14 +94,13 @@ class Input extends RobotsTxtParser
     }
 
     /**
-     * Sitemaps
+     * Clean-param
      *
-     * @return SitemapClient
+     * @return CleanParamClient
      */
-    public function sitemap()
+    public function cleanParam()
     {
-        $export = $this->sitemap->export();
-        return new SitemapClient(isset($export[self::DIRECTIVE_SITEMAP]) ? $export[self::DIRECTIVE_SITEMAP] : []);
+        return $this->handler->cleanParam()->client();
     }
 
     /**
@@ -116,32 +110,27 @@ class Input extends RobotsTxtParser
      */
     public function host()
     {
-        $export = $this->host->export();
-        return new HostClient(isset($export[self::DIRECTIVE_HOST][0]) ? $export[self::DIRECTIVE_HOST][0] : null);
+        return $this->handler->host()->client();
     }
 
     /**
-     * Get Clean-param
+     * Sitemaps
      *
-     * @return array
+     * @return SitemapClient
      */
-    public function getCleanParam()
+    public function sitemap()
     {
-        $export = $this->cleanParam->export();
-        if (isset($export[self::DIRECTIVE_CLEAN_PARAM])) {
-            return $export[self::DIRECTIVE_CLEAN_PARAM];
-        }
-        return [];
+        return $this->handler->sitemap()->client();
     }
 
     /**
      * Get User-agent list
      *
-     * @return array
+     * @return string[]
      */
     public function getUserAgents()
     {
-        return $this->userAgent->userAgents;
+        return $this->handler->userAgent()->getUserAgents();
     }
 
     /**
@@ -152,10 +141,6 @@ class Input extends RobotsTxtParser
      */
     public function userAgent($string = self::USER_AGENT)
     {
-        if (isset($this->userAgentClients[$string])) {
-            return $this->userAgentClients[$string];
-        }
-        $this->userAgentClients[$string] = new UserAgentClient($string, $this->userAgent, $this->base, $this->statusCode);
-        return $this->userAgentClients[$string];
+        return $this->handler->userAgent()->client($string, $this->statusCode);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
+use vipnytt\RobotsTxtParser\Client\Directives\RequestRateClient;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -18,6 +19,18 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
     const DIRECTIVE = self::DIRECTIVE_REQUEST_RATE;
 
     /**
+     * Base Uri
+     * @var string
+     */
+    private $base;
+
+    /**
+     * User-agent
+     * @var string
+     */
+    private $userAgent;
+
+    /**
      * RequestRate array
      * @var array
      */
@@ -25,9 +38,14 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
 
     /**
      * RequestRate constructor.
+     *
+     * @param string $base
+     * @param string $userAgent
      */
-    public function __construct()
+    public function __construct($base, $userAgent)
     {
+        $this->base = $base;
+        $this->userAgent = $userAgent;
     }
 
     /**
@@ -55,11 +73,21 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Export rules
+     * Client
+     *
+     * @return RequestRateClient
+     */
+    public function client()
+    {
+        return new RequestRateClient($this->base, $this->userAgent, $this->array);
+    }
+
+    /**
+     * Rule array
      *
      * @return string[][]
      */
-    public function export()
+    public function getRules()
     {
         return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
     }

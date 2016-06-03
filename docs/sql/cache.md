@@ -40,4 +40,4 @@ CREATE TABLE IF NOT EXISTS `robotstxt__cache0` (
 ALTER TABLE `robotstxt__cache0`
 ADD PRIMARY KEY (`base`), ADD KEY `worker` (`worker`, `nextUpdate`);
 ```
-Source: [/src/RobotsTxtParser/Client/SQL/Cache/cache.sql](https://github.com/VIPnytt/RobotsTxtParser/tree/master/src/RobotsTxtParser/Client/SQL/Cache/cache.sql)
+Source: [/src/Client/SQL/Cache/cache.sql](https://github.com/VIPnytt/RobotsTxtParser/tree/master/src/Client/SQL/Cache/cache.sql)

@@ -156,7 +156,7 @@ trait DirectiveParserCommons
     private function validateDirective($directive, array $directives)
     {
         if (!in_array($directive, $directives, true)) {
-            throw new ParserException('Directive is not allowed here');
+            throw new ParserException('Directive not supported by this class');
         }
         return mb_strtolower($directive);
     }

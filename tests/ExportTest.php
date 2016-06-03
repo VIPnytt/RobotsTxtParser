@@ -18,8 +18,8 @@ class ExportTest extends \PHPUnit_Framework_TestCase
      */
     public function testExport($robotsTxtContent, $result, $rendered)
     {
-        $parser = new RobotsTxtParser\Input('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Input', $parser);
+        $parser = new RobotsTxtParser\Core('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Core', $parser);
 
         $this->assertEquals($result, $parser->export());
 
@@ -67,6 +67,13 @@ ROBOTS
                         [
                             '*' =>
                                 [
+                                    'disallow' =>
+                                        [
+                                            'path' =>
+                                                [
+                                                    '/admin/',
+                                                ],
+                                        ],
                                     'allow' =>
                                         [
                                             'path' =>
@@ -75,13 +82,6 @@ ROBOTS
                                                 ],
                                         ],
                                     'crawl-delay' => 5,
-                                    'disallow' =>
-                                        [
-                                            'path' =>
-                                                [
-                                                    '/admin/',
-                                                ],
-                                        ],
                                 ],
                             'googlebot' =>
                                 [
@@ -100,9 +100,9 @@ host:example.com
 sitemap:http://example.com/sitemap.xml
 sitemap:http://example.com/sitemap.xml.gz
 user-agent:*
+disallow:/admin/
 allow:/public/
 crawl-delay:5
-disallow:/admin/
 user-agent:googlebot
 disallow:/
 RENDERED

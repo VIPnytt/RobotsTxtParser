@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
+use vipnytt\RobotsTxtParser\Client\Directives\CleanParamClient;
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
@@ -74,11 +75,21 @@ class CleanParamParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Export rules
+     * Client
+     *
+     * @return CleanParamClient
+     */
+    public function client()
+    {
+        return new CleanParamClient($this->array);
+    }
+
+    /**
+     * Rule array
      *
      * @return string[][][]
      */
-    public function export()
+    public function getRules()
     {
         return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
     }

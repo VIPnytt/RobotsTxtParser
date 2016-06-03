@@ -43,4 +43,4 @@ CREATE TABLE IF NOT EXISTS `robotstxt__delay0` (
 ALTER TABLE `robotstxt__delay0`
 ADD PRIMARY KEY (`base`, `userAgent`);
 ```
-Source: [/src/RobotsTxtParser/Client/SQL/Delay/delay.sql](https://github.com/VIPnytt/RobotsTxtParser/tree/master/src/RobotsTxtParser/Client/SQL/Delay/delay.sql)
+Source: [/src/Client/SQL/Delay/delay.sql](https://github.com/VIPnytt/RobotsTxtParser/tree/master/src/Client/SQL/Delay/delay.sql)

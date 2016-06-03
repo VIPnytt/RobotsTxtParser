@@ -2,11 +2,10 @@
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
-use vipnytt\RobotsTxtParser\Parser\Directives\UserAgentParser;
+use vipnytt\RobotsTxtParser\Parser\Directives\SubDirectiveHandler;
 use vipnytt\RobotsTxtParser\Parser\StatusCodeParser;
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
-use vipnytt\UserAgentParser as UAStringParser;
 
 /**
  * Class UserAgentClient
@@ -19,58 +18,52 @@ class UserAgentClient implements RobotsTxtInterface
 
     /**
      * Rules
-     * @var array
+     * @var SubDirectiveHandler
      */
-    private $rules;
+    private $handler;
 
     /**
-     * User-agent
-     * @var string
-     */
-    private $userAgent;
-
-    /**
-     * Origin user-agent
-     * @var string
-     */
-    private $userAgentOrigin;
-
-    /**
-     * Robots.txt base URL
+     * Base Uri
      * @var string
      */
     private $base;
 
     /**
-     * Status code parser
-     * @var StatusCodeParser
+     * Status code
+     * @var int|null
      */
-    private $statusCodeParser;
-
-    /**
-     * Comment export status
-     * @var bool
-     */
-    private $commentsExported = false;
+    private $statusCode;
 
     /**
      * UserAgentClient constructor.
      *
-     * @param string $userAgent
-     * @param UserAgentParser $rules
+     * @param SubDirectiveHandler $handler
      * @param string $baseUri
      * @param int|null $statusCode
      */
-    public function __construct($userAgent, UserAgentParser $rules, $baseUri, $statusCode)
+    public function __construct(SubDirectiveHandler $handler, $baseUri, $statusCode)
     {
-        $this->statusCodeParser = new StatusCodeParser($statusCode, parse_url($baseUri, PHP_URL_SCHEME));
-        $this->rules = $rules;
+        $this->handler = $handler;
         $this->base = $baseUri;
-        $this->userAgentOrigin = mb_strtolower($userAgent);
-        $userAgentParser = new UAStringParser($this->userAgentOrigin);
-        if (($this->userAgent = $userAgentParser->match($rules->userAgents)) === false) {
-            $this->userAgent = self::USER_AGENT;
-        }
+        $this->statusCode = $statusCode;
+    }
+
+    /**
+     * UserAgentClient destructor.
+     */
+    public function __destruct()
+    {
+        $this->comment();
+    }
+
+    /**
+     * Comment
+     *
+     * @return CommentClient
+     */
+    public function comment()
+    {
+        return $this->handler->comment()->client();
     }
 
     /**
@@ -98,15 +91,16 @@ class UserAgentClient implements RobotsTxtInterface
         if (!$this->isUrlApplicable([$url, $this->base])) {
             throw new ClientException('URL belongs to a different robots.txt');
         }
-        $this->statusCodeParser->replaceUnofficial();
-        if (($result = $this->statusCodeParser->check()) !== null) {
+        $statusCodeParser = new StatusCodeParser($this->statusCode, parse_url($this->base, PHP_URL_SCHEME));
+        $statusCodeParser->replaceUnofficial();
+        if (($result = $statusCodeParser->check()) !== null) {
             return $directive === $result;
         }
         $result = self::DIRECTIVE_ALLOW;
         foreach (
             [
-                self::DIRECTIVE_DISALLOW => $this->rules->disallow[$this->userAgent],
-                self::DIRECTIVE_ALLOW => $this->rules->allow[$this->userAgent]
+                self::DIRECTIVE_DISALLOW => $this->handler->disallow(),
+                self::DIRECTIVE_ALLOW => $this->handler->allow()
             ] as $currentDirective => $currentRules
         ) {
             if ($currentRules->check($url)) {
@@ -119,7 +113,7 @@ class UserAgentClient implements RobotsTxtInterface
     /**
      * Check if the URL belongs to current robots.txt
      *
-     * @param $urls
+     * @param string[] $urls
      * @return bool
      */
     private function isUrlApplicable($urls)
@@ -155,9 +149,7 @@ class UserAgentClient implements RobotsTxtInterface
      */
     public function cacheDelay()
     {
-        $export = $this->rules->cacheDelay[$this->userAgent]->export();
-        $delay = isset($export[self::DIRECTIVE_CACHE_DELAY]) ? $export[self::DIRECTIVE_CACHE_DELAY] : 0;
-        return new DelayClient($this->base, $this->userAgent, $delay, $this->crawlDelay()->get());
+        return $this->handler->cacheDelay()->client($this->crawlDelay()->get());
     }
 
     /**
@@ -167,9 +159,7 @@ class UserAgentClient implements RobotsTxtInterface
      */
     public function crawlDelay()
     {
-        $export = $this->rules->crawlDelay[$this->userAgent]->export();
-        $delay = isset($export[self::DIRECTIVE_CRAWL_DELAY]) ? $export[self::DIRECTIVE_CRAWL_DELAY] : 0;
-        return new DelayClient($this->base, $this->userAgent, $delay, $this->requestRate()->get());
+        return $this->handler->crawlDelay()->client($this->requestRate()->get());
     }
 
     /**
@@ -179,9 +169,7 @@ class UserAgentClient implements RobotsTxtInterface
      */
     public function requestRate()
     {
-        $array = $this->rules->requestRate[$this->userAgent]->export();
-        $rates = isset($array[self::DIRECTIVE_REQUEST_RATE]) ? $array[self::DIRECTIVE_REQUEST_RATE] : [];
-        return new RequestRateClient($this->base, $this->userAgent, $rates);
+        return $this->handler->requestRate()->client();
     }
 
     /**
@@ -191,8 +179,7 @@ class UserAgentClient implements RobotsTxtInterface
      */
     public function robotVersion()
     {
-        $export = $this->rules->robotVersion[$this->userAgent]->export();
-        return new RobotVersionClient(isset($export[self::DIRECTIVE_ROBOT_VERSION]) ? $export[self::DIRECTIVE_ROBOT_VERSION] : null);
+        return $this->handler->robotVersion()->client();
     }
 
     /**
@@ -200,17 +187,17 @@ class UserAgentClient implements RobotsTxtInterface
      *
      * @return array
      */
-    public function export()
+    public function getRules()
     {
         return array_merge(
-            $this->rules->allow[$this->userAgent]->export(),
-            $this->rules->comment[$this->userAgent]->export(),
-            $this->rules->cacheDelay[$this->userAgent]->export(),
-            $this->rules->crawlDelay[$this->userAgent]->export(),
-            $this->rules->disallow[$this->userAgent]->export(),
-            $this->rules->requestRate[$this->userAgent]->export(),
-            $this->rules->robotVersion[$this->userAgent]->export(),
-            $this->rules->visitTime[$this->userAgent]->export()
+            $this->handler->allow()->getRules(),
+            $this->handler->comment()->getRules(),
+            $this->handler->cacheDelay()->getRules(),
+            $this->handler->crawlDelay()->getRules(),
+            $this->handler->disallow()->getRules(),
+            $this->handler->requestRate()->getRules(),
+            $this->handler->robotVersion()->getRules(),
+            $this->handler->visitTime()->getRules()
         );
     }
 
@@ -221,34 +208,6 @@ class UserAgentClient implements RobotsTxtInterface
      */
     public function visitTime()
     {
-        $export = $this->rules->visitTime[$this->userAgent]->export();
-        $times = isset($export[self::DIRECTIVE_VISIT_TIME]) ? $export[self::DIRECTIVE_VISIT_TIME] : [];
-        return new VisitTimeClient($times);
-    }
-
-    /**
-     * UserAgentClient destructor.
-     */
-    public function __destruct()
-    {
-        if (!$this->commentsExported && $this->userAgent != self::USER_AGENT) {
-            // Comment from the `Comments` directive exists, but has not been read.
-            foreach ($this->comment()->export() as $message) {
-                trigger_error($this->userAgent . ' @ ' . $this->base . self::PATH . ': ' . $message, E_USER_NOTICE);
-            }
-        }
-    }
-
-    /**
-     * Comment
-     *
-     * @return CommentClient
-     */
-    public function comment()
-    {
-        $this->commentsExported = true;
-        $export = $this->rules->comment[$this->userAgent]->export();
-        $comments = isset($export[self::DIRECTIVE_COMMENT]) ? $export[self::DIRECTIVE_COMMENT] : [];
-        return new CommentClient($comments);
+        return $this->handler->visitTime()->client();
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
+use vipnytt\RobotsTxtParser\Client\Directives\SitemapClient;
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
@@ -50,11 +51,21 @@ class SitemapParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Export rules
+     * Client
+     *
+     * @return SitemapClient
+     */
+    public function client()
+    {
+        return new SitemapClient($this->array);
+    }
+
+    /**
+     * Rule array
      *
      * @return string[][]
      */
-    public function export()
+    public function getRules()
     {
         return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
     }

@@ -7,9 +7,9 @@
 ## Robots.txt Cache
 Caching the `robots.txt` files to the SQL server, greatly improves performance, avoids spamming of the remote host and any unnecessary network lag or timeouts is avoided.
 
-[Read more](cache.md)
+[Read more](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/sql/cache.md)
 
 ## Delay handler
 Some hosts requires you to control the request flow, and not send the requests too frequent.
 
-[Read more](delay.md)
+[Read more](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/sql/delay.md)

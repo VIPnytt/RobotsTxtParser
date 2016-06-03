@@ -17,8 +17,8 @@ class WhitespaceTest extends \PHPUnit_Framework_TestCase
      */
     public function testWhitespace($robotsTxtContent, $rendered)
     {
-        $parser = new RobotsTxtParser\Input('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Input', $parser);
+        $parser = new RobotsTxtParser\Core('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Core', $parser);
 
         $this->assertTrue($parser->userAgent('*')->isDisallowed('/admin'));
         $this->assertFalse($parser->userAgent('*')->isAllowed('/admin'));
@@ -53,8 +53,8 @@ ROBOTS
                 ,
                 <<<RENDERED
 user-agent:*
-allow:/admin/front
 disallow:/admin
+allow:/admin/front
 RENDERED
             ]
         ];

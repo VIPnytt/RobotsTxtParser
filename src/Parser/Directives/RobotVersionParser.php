@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
+use vipnytt\RobotsTxtParser\Client\Directives\RobotVersionClient;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -44,11 +45,21 @@ class RobotVersionParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Export rules
+     * Client
+     *
+     * @return RobotVersionClient
+     */
+    public function client()
+    {
+        return new RobotVersionClient($this->value);
+    }
+
+    /**
+     * Rule array
      *
      * @return float[][]|int[][]|string[][]
      */
-    public function export()
+    public function getRules()
     {
         return empty($this->value) ? [] : [self::DIRECTIVE => $this->value];
     }

@@ -1,7 +1,9 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
+use vipnytt\RobotsTxtParser\Client\Directives\UserAgentClient;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
+use vipnytt\UserAgentParser as UAStringParser;
 
 /**
  * Class UserAgentParser
@@ -32,70 +34,37 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     const DIRECTIVE = self::DIRECTIVE_USER_AGENT;
 
     /**
-     * All User-agents declared
-     * @var array
+     * Base Uri
+     * @var string
      */
-    public $userAgents = [];
+    private $base;
 
     /**
-     * Sub-directive Allow
-     * @var DisAllowParser[]
+     * User-agent handler
+     * @var SubDirectiveHandler[]
      */
-    public $allow = [];
+    private $handler = [];
 
     /**
-     * Sub-directive Cache-delay
-     * @var CrawlDelayParser[]
+     * User-agent(s)
+     * @var string[]
      */
-    public $cacheDelay = [];
+    private $userAgent = [self::USER_AGENT];
 
     /**
-     * Sub-directive Comment
-     * @var CommentParser[]
+     * User-agent client cache
+     * @var UserAgentClient
      */
-    public $comment = [];
-
-    /**
-     * Sub-directive Crawl-delay
-     * @var CrawlDelayParser[]
-     */
-    public $crawlDelay = [];
-
-    /**
-     * Sub-directive Disallow
-     * @var DisAllowParser[]
-     */
-    public $disallow = [];
-
-    /**
-     * Sub-directive RequestClient-rate
-     * @var RequestRateParser[]
-     */
-    public $requestRate = [];
-
-    /**
-     * Sub-directive Robot-version
-     * @var RobotVersionParser[]
-     */
-    public $robotVersion = [];
-
-    /**
-     * Sub-directive Visit-time
-     * @var VisitTimeParser[]
-     */
-    public $visitTime = [];
-
-    /**
-     * Current User-agent(s)
-     * @var array
-     */
-    protected $userAgent = [];
+    private $client;
 
     /**
      * UserAgent constructor.
+     *
+     * @param string $base
      */
-    public function __construct()
+    public function __construct($base)
     {
+        $this->base = $base;
         $this->set();
     }
 
@@ -109,16 +78,8 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     {
         $this->userAgent = array_map('mb_strtolower', $array);
         foreach ($this->userAgent as $userAgent) {
-            if (!in_array($userAgent, $this->userAgents)) {
-                $this->allow[$userAgent] = new DisAllowParser(self::DIRECTIVE_ALLOW);
-                $this->cacheDelay[$userAgent] = new CrawlDelayParser(self::DIRECTIVE_CACHE_DELAY);
-                $this->comment[$userAgent] = new CommentParser();
-                $this->crawlDelay[$userAgent] = new CrawlDelayParser(self::DIRECTIVE_CRAWL_DELAY);
-                $this->disallow[$userAgent] = new DisAllowParser(self::DIRECTIVE_DISALLOW);
-                $this->requestRate[$userAgent] = new RequestRateParser();
-                $this->robotVersion[$userAgent] = new RobotVersionParser();
-                $this->visitTime[$userAgent] = new VisitTimeParser();
-                $this->userAgents[] = $userAgent;
+            if (!in_array($userAgent, array_keys($this->handler))) {
+                $this->handler[$userAgent] = new SubDirectiveHandler($this->base, $userAgent);
             }
         }
         return true;
@@ -137,28 +98,28 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
         foreach ($this->userAgent as $userAgent) {
             switch ($pair['directive']) {
                 case self::DIRECTIVE_ALLOW:
-                    $result[] = $this->allow[$userAgent]->add($pair['value']);
+                    $result[] = $this->handler[$userAgent]->allow()->add($pair['value']);
                     break;
                 case self::DIRECTIVE_CACHE_DELAY:
-                    $result[] = $this->cacheDelay[$userAgent]->add($pair['value']);
+                    $result[] = $this->handler[$userAgent]->cacheDelay()->add($pair['value']);
                     break;
                 case self::DIRECTIVE_COMMENT:
-                    $result[] = $this->comment[$userAgent]->add($pair['value']);
+                    $result[] = $this->handler[$userAgent]->comment()->add($pair['value']);
                     break;
                 case self::DIRECTIVE_CRAWL_DELAY:
-                    $result[] = $this->crawlDelay[$userAgent]->add($pair['value']);
+                    $result[] = $this->handler[$userAgent]->crawlDelay()->add($pair['value']);
                     break;
                 case self::DIRECTIVE_DISALLOW:
-                    $result[] = $this->disallow[$userAgent]->add($pair['value']);
+                    $result[] = $this->handler[$userAgent]->disallow()->add($pair['value']);
                     break;
                 case self::DIRECTIVE_REQUEST_RATE:
-                    $result[] = $this->requestRate[$userAgent]->add($pair['value']);
+                    $result[] = $this->handler[$userAgent]->requestRate()->add($pair['value']);
                     break;
                 case self::DIRECTIVE_ROBOT_VERSION:
-                    $result[] = $this->robotVersion[$userAgent]->add($pair['value']);
+                    $result[] = $this->handler[$userAgent]->robotVersion()->add($pair['value']);
                     break;
                 case self::DIRECTIVE_VISIT_TIME:
-                    $result[] = $this->visitTime[$userAgent]->add($pair['value']);
+                    $result[] = $this->handler[$userAgent]->visitTime()->add($pair['value']);
                     break;
             }
         }
@@ -166,23 +127,53 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Export rules
+     * Client
+     *
+     * @param string $userAgent
+     * @param int|null $statusCode
+     * @return UserAgentClient
+     */
+    public function client($userAgent = self::USER_AGENT, $statusCode = null)
+    {
+        if (isset($this->client[$userAgent])) {
+            return $this->client[$userAgent];
+        }
+        $userAgent = mb_strtolower($userAgent);
+        $userAgentParser = new UAStringParser($userAgent);
+        if (($userAgentMatch = $userAgentParser->match($this->getUserAgents())) === false) {
+            $userAgentMatch = self::USER_AGENT;
+        }
+        return $this->client[$userAgent] = new UserAgentClient($this->handler[$userAgentMatch], $this->base, $statusCode);
+    }
+
+    /**
+     * User-agent list
+     *
+     * @return string[]
+     */
+    public function getUserAgents()
+    {
+        return array_keys($this->handler);
+    }
+
+    /**
+     * Rule array
      *
      * @return array
      */
-    public function export()
+    public function getRules()
     {
         $result = [];
-        foreach ($this->userAgents as $userAgent) {
+        foreach ($this->getUserAgents() as $userAgent) {
             $current = array_merge(
-                $this->allow[$userAgent]->export(),
-                $this->comment[$userAgent]->export(),
-                $this->cacheDelay[$userAgent]->export(),
-                $this->crawlDelay[$userAgent]->export(),
-                $this->disallow[$userAgent]->export(),
-                $this->requestRate[$userAgent]->export(),
-                $this->robotVersion[$userAgent]->export(),
-                $this->visitTime[$userAgent]->export()
+                $this->handler[$userAgent]->robotVersion()->getRules(),
+                $this->handler[$userAgent]->visitTime()->getRules(),
+                $this->handler[$userAgent]->disallow()->getRules(),
+                $this->handler[$userAgent]->allow()->getRules(),
+                $this->handler[$userAgent]->crawlDelay()->getRules(),
+                $this->handler[$userAgent]->cacheDelay()->getRules(),
+                $this->handler[$userAgent]->requestRate()->getRules(),
+                $this->handler[$userAgent]->comment()->getRules()
             );
             if (!empty($current)) {
                 $result[$userAgent] = $current;
@@ -198,18 +189,19 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
      */
     public function render()
     {
+        $userAgents = $this->getUserAgents();
+        sort($userAgents);
         $result = [];
-        sort($this->userAgents);
-        foreach ($this->userAgents as $userAgent) {
+        foreach ($userAgents as $userAgent) {
             $current = array_merge(
-                $this->allow[$userAgent]->render(),
-                $this->comment[$userAgent]->render(),
-                $this->cacheDelay[$userAgent]->render(),
-                $this->crawlDelay[$userAgent]->render(),
-                $this->disallow[$userAgent]->render(),
-                $this->requestRate[$userAgent]->render(),
-                $this->robotVersion[$userAgent]->render(),
-                $this->visitTime[$userAgent]->render()
+                $this->handler[$userAgent]->robotVersion()->render(),
+                $this->handler[$userAgent]->visitTime()->render(),
+                $this->handler[$userAgent]->disallow()->render(),
+                $this->handler[$userAgent]->allow()->render(),
+                $this->handler[$userAgent]->crawlDelay()->render(),
+                $this->handler[$userAgent]->cacheDelay()->render(),
+                $this->handler[$userAgent]->requestRate()->render(),
+                $this->handler[$userAgent]->comment()->render()
             );
             if (!empty($current)) {
                 $result = array_merge($result, [self::DIRECTIVE . ':' . $userAgent], $current);
