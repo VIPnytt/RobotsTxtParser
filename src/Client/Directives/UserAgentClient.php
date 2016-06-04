@@ -1,38 +1,20 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
-use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 use vipnytt\RobotsTxtParser\Parser\Directives\SubDirectiveHandler;
-use vipnytt\RobotsTxtParser\Parser\StatusCodeParser;
-use vipnytt\RobotsTxtParser\Parser\UrlParser;
-use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
  * Class UserAgentClient
  *
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
-class UserAgentClient implements RobotsTxtInterface
+class UserAgentClient extends Checks
 {
-    use UrlParser;
-
     /**
      * Rules
      * @var SubDirectiveHandler
      */
     private $handler;
-
-    /**
-     * Base Uri
-     * @var string
-     */
-    private $base;
-
-    /**
-     * Status code
-     * @var int|null
-     */
-    private $statusCode;
 
     /**
      * UserAgentClient constructor.
@@ -44,8 +26,7 @@ class UserAgentClient implements RobotsTxtInterface
     public function __construct(SubDirectiveHandler $handler, $baseUri, $statusCode)
     {
         $this->handler = $handler;
-        $this->base = $baseUri;
-        $this->statusCode = $statusCode;
+        parent::__construct($baseUri, $statusCode, $this->handler);
     }
 
     /**
@@ -67,79 +48,13 @@ class UserAgentClient implements RobotsTxtInterface
     }
 
     /**
-     * Check if URL is allowed to crawl
+     * Allow
      *
-     * @param string $url
-     * @return bool
+     * @return DisAllowClient
      */
-    public function isAllowed($url)
+    public function allow()
     {
-        return $this->check(self::DIRECTIVE_ALLOW, $url);
-    }
-
-    /**
-     * Check
-     *
-     * @param string $directive
-     * @param string $url - URL to check
-     * @return bool
-     * @throws ClientException
-     */
-    private function check($directive, $url)
-    {
-        $url = $this->urlConvertToFull($url, $this->base);
-        if (!$this->isUrlApplicable([$url, $this->base])) {
-            throw new ClientException('URL belongs to a different robots.txt');
-        }
-        $statusCodeParser = new StatusCodeParser($this->statusCode, parse_url($this->base, PHP_URL_SCHEME));
-        $statusCodeParser->replaceUnofficial();
-        if (($result = $statusCodeParser->check()) !== null) {
-            return $directive === $result;
-        }
-        $result = self::DIRECTIVE_ALLOW;
-        foreach (
-            [
-                self::DIRECTIVE_DISALLOW => $this->handler->disallow(),
-                self::DIRECTIVE_ALLOW => $this->handler->allow()
-            ] as $currentDirective => $currentRules
-        ) {
-            if ($currentRules->check($url)) {
-                $result = $currentDirective;
-            }
-        }
-        return $directive === $result;
-    }
-
-    /**
-     * Check if the URL belongs to current robots.txt
-     *
-     * @param string[] $urls
-     * @return bool
-     */
-    private function isUrlApplicable($urls)
-    {
-        foreach ($urls as $url) {
-            $parsed = parse_url($url);
-            $parsed['port'] = is_int($port = parse_url($url, PHP_URL_PORT)) ? $port : getservbyname($parsed['scheme'], 'tcp');
-            $assembled = $parsed['scheme'] . '://' . $parsed['host'] . ':' . $parsed['port'];
-            if (!isset($result)) {
-                $result = $assembled;
-            } elseif ($result !== $assembled) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Check if URL is disallowed to crawl
-     *
-     * @param string $url
-     * @return bool
-     */
-    public function isDisallowed($url)
-    {
-        return $this->check(self::DIRECTIVE_DISALLOW, $url);
+        return $this->handler->allow()->client();
     }
 
     /**
@@ -170,6 +85,16 @@ class UserAgentClient implements RobotsTxtInterface
     public function requestRate()
     {
         return $this->handler->requestRate()->client();
+    }
+
+    /**
+     * Disallow
+     *
+     * @return DisAllowClient
+     */
+    public function disallow()
+    {
+        return $this->handler->disallow()->client();
     }
 
     /**

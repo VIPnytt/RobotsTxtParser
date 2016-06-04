@@ -42,7 +42,7 @@ class RootDirectiveHandler implements RobotsTxtInterface
     public function __construct($base)
     {
         $this->cleanParam = new CleanParamParser();
-        $this->host = new HostParser();
+        $this->host = new HostParser($base);
         $this->sitemap = new SitemapParser();
         $this->userAgent = new UserAgentParser($base);
     }
