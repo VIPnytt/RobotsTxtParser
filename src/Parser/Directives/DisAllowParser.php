@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
+use vipnytt\RobotsTxtParser\Client\Directives\DisAllowClient;
 use vipnytt\RobotsTxtParser\Exceptions;
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
@@ -44,12 +45,6 @@ class DisAllowParser implements ParserInterface, RobotsTxtInterface
     private $base;
 
     /**
-     * User-agent
-     * @var string
-     */
-    private $userAgent;
-
-    /**
      * Rule array
      * @var array
      */
@@ -71,16 +66,14 @@ class DisAllowParser implements ParserInterface, RobotsTxtInterface
      * DisAllow constructor
      *
      * @param string $base
-     * @param string $userAgent
      * @param string $directive
      */
-    public function __construct($base, $userAgent, $directive)
+    public function __construct($base, $directive)
     {
         $this->base = $base;
-        $this->userAgent = $userAgent;
         $this->directive = $this->validateDirective($directive, self::DIRECTIVE);
         $this->cleanParam = new CleanParamParser();
-        $this->host = new HostParser();
+        $this->host = new HostParser($this->base);
     }
 
     /**
@@ -107,53 +100,13 @@ class DisAllowParser implements ParserInterface, RobotsTxtInterface
      * @param string $rule
      * @return bool
      */
-    protected function addPath($rule)
+    private function addPath($rule)
     {
         if (isset($this->array['path']) && in_array($rule, $this->array['path'])) {
             return false;
         }
         $this->array['path'][] = $rule;
         return true;
-    }
-
-    /**
-     * Check
-     *
-     * @param  string $url
-     * @return bool
-     */
-    public function check($url)
-    {
-        $path = $this->getPath($url);
-        return ($path === false) ? false : (
-            $this->checkPath($path, isset($this->array['path']) ? $this->array['path'] : []) ||
-            $this->cleanParam->check($path) ||
-            $this->host->check($url)
-        );
-    }
-
-    /**
-     * Get path and query
-     *
-     * @param string $url
-     * @return string
-     * @throws Exceptions\ClientException
-     */
-    protected function getPath($url)
-    {
-        // Encode
-        $url = $this->urlEncode($url);
-        if (mb_stripos($url, '/') === 0) {
-            // Strip fragments
-            $url = mb_split('#', $url)[0];
-            return $url;
-        }
-        if (!$this->urlValidate($url)) {
-            throw new Exceptions\ClientException('Invalid URL');
-        }
-        $path = (($path = parse_url($url, PHP_URL_PATH)) === null) ? '/' : $path;
-        $query = (($query = parse_url($url, PHP_URL_QUERY)) === null) ? '' : '?' . $query;
-        return $path . $query;
     }
 
     /**
@@ -194,5 +147,15 @@ class DisAllowParser implements ParserInterface, RobotsTxtInterface
             $result[] = $this->directive . ':' . $value;
         }
         return $result;
+    }
+
+    /**
+     * Client
+     *
+     * @return DisAllowClient
+     */
+    public function client()
+    {
+        return new DisAllowClient($this->array, $this->cleanParam->client(), $this->host->client());
     }
 }

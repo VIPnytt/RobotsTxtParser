@@ -20,6 +20,12 @@ class HostParser implements ParserInterface, RobotsTxtInterface
     const DIRECTIVE = self::DIRECTIVE_HOST;
 
     /**
+     * Base Uri
+     * @var string
+     */
+    private $base;
+
+    /**
      * Host array
      * @var string[]
      */
@@ -27,9 +33,12 @@ class HostParser implements ParserInterface, RobotsTxtInterface
 
     /**
      * Host constructor.
+     *
+     * @param string $base
      */
-    public function __construct()
+    public function __construct($base)
     {
+        $this->base = $base;
     }
 
     /**
@@ -79,42 +88,13 @@ class HostParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Check
-     *
-     * @param string $url
-     * @return bool
-     */
-    public function check($url)
-    {
-        if (empty($this->array)) {
-            return false;
-        }
-        $url = mb_strtolower($this->urlEncode($url));
-        $parts = [
-            'scheme' => parse_url($url, PHP_URL_SCHEME),
-            'host' => parse_url($url, PHP_URL_HOST),
-        ];
-        $parts['port'] = is_int($port = parse_url($url, PHP_URL_PORT)) ? $port : getservbyname($parts['scheme'], 'tcp');
-        $cases = [
-            $parts['host'],
-            $parts['host'] . ':' . $parts['port'],
-            $parts['scheme'] . '://' . $parts['host'],
-            $parts['scheme'] . '://' . $parts['host'] . ':' . $parts['port']
-        ];
-        if (in_array($this->array[0], $cases)) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Client
      *
      * @return HostClient
      */
     public function client()
     {
-        return new HostClient(isset($this->array[0]) ? $this->array[0] : null);
+        return new HostClient($this->base, $this->array);
     }
 
     /**

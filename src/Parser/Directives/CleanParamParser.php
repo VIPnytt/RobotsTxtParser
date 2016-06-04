@@ -53,28 +53,6 @@ class CleanParamParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Check
-     *
-     * @param  string $path
-     * @return bool
-     */
-    public function check($path)
-    {
-        foreach ($this->array as $param => $paths) {
-            if (
-                (
-                    mb_stripos($path, "?$param=") ||
-                    mb_stripos($path, "&$param=")
-                ) &&
-                $this->checkPath($path, $paths)
-            ) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Client
      *
      * @return CleanParamClient
