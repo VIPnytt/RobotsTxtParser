@@ -23,8 +23,8 @@ User-agent: *
 Disallow: /
 Allow: /public/
 ROBOTS;
-        $parser = new RobotsTxtParser\Core($base, $statusCode, $robots);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Core', $parser);
+        $parser = new RobotsTxtParser\Basic($base, $statusCode, $robots);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         switch ($expectedResult) {
             case 'conditional':

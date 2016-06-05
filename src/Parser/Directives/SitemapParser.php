@@ -15,11 +15,6 @@ class SitemapParser implements ParserInterface, RobotsTxtInterface
     use UrlParser;
 
     /**
-     * Directive
-     */
-    const DIRECTIVE = self::DIRECTIVE_SITEMAP;
-
-    /**
      * Sitemap array
      * @var string[]
      */
@@ -61,16 +56,6 @@ class SitemapParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Rule array
-     *
-     * @return string[][]
-     */
-    public function getRules()
-    {
-        return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
-    }
-
-    /**
      * Render
      *
      * @return string[]
@@ -79,8 +64,9 @@ class SitemapParser implements ParserInterface, RobotsTxtInterface
     {
         $result = [];
         foreach ($this->array as $value) {
-            $result[] = self::DIRECTIVE . ':' . $value;
+            $result[] = self::DIRECTIVE_SITEMAP . ':' . $value;
         }
+        sort($result);
         return $result;
     }
 }

@@ -29,11 +29,6 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     ];
 
     /**
-     * Directive
-     */
-    const DIRECTIVE = self::DIRECTIVE_USER_AGENT;
-
-    /**
      * Base Uri
      * @var string
      */
@@ -49,7 +44,7 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
      * User-agent(s)
      * @var string[]
      */
-    private $userAgent = [self::USER_AGENT];
+    private $userAgent;
 
     /**
      * User-agent client cache
@@ -65,7 +60,7 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     public function __construct($base)
     {
         $this->base = $base;
-        $this->set();
+        $this->set([self::USER_AGENT]);
     }
 
     /**
@@ -74,7 +69,7 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
      * @param array $array
      * @return bool
      */
-    public function set(array $array = [self::USER_AGENT])
+    public function set(array $array)
     {
         $this->userAgent = array_map('mb_strtolower', $array);
         foreach ($this->userAgent as $userAgent) {
@@ -104,6 +99,59 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
+     * Render
+     *
+     * @return string[]
+     */
+    public function render()
+    {
+        $userAgents = $this->getUserAgents();
+        $result = [];
+        foreach ($userAgents as $userAgent) {
+            $current = array_merge(
+                $this->handler[$userAgent]->robotVersion()->render(),
+                $this->handler[$userAgent]->visitTime()->render(),
+                $this->handler[$userAgent]->disallow()->render(),
+                $this->handler[$userAgent]->allow()->render(),
+                $this->handler[$userAgent]->crawlDelay()->render(),
+                $this->handler[$userAgent]->cacheDelay()->render(),
+                $this->handler[$userAgent]->requestRate()->render(),
+                $this->handler[$userAgent]->comment()->render()
+            );
+            if (!empty($current)) {
+                $result = array_merge($result, [self::DIRECTIVE_USER_AGENT . ':' . $userAgent], $current);
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * User-agent list
+     *
+     * @return string[]
+     */
+    public function getUserAgents()
+    {
+        $list = array_keys($this->handler);
+        sort($list);
+        return $list;
+    }
+
+    /**
+     * Export
+     *
+     * @return array
+     */
+    public function export()
+    {
+        $array = [];
+        foreach ($this->getUserAgents() as $userAgent) {
+            $array[$userAgent] = $this->client($userAgent)->export();
+        }
+        return $array;
+    }
+
+    /**
      * Client
      *
      * @param string $userAgent
@@ -121,69 +169,5 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
             $userAgentMatch = self::USER_AGENT;
         }
         return $this->client[$userAgent] = new UserAgentClient($this->handler[$userAgentMatch], $this->base, $statusCode);
-    }
-
-    /**
-     * User-agent list
-     *
-     * @return string[]
-     */
-    public function getUserAgents()
-    {
-        return array_keys($this->handler);
-    }
-
-    /**
-     * Rule array
-     *
-     * @return array
-     */
-    public function getRules()
-    {
-        $result = [];
-        foreach ($this->getUserAgents() as $userAgent) {
-            $current = array_merge(
-                $this->handler[$userAgent]->robotVersion()->getRules(),
-                $this->handler[$userAgent]->visitTime()->getRules(),
-                $this->handler[$userAgent]->disallow()->getRules(),
-                $this->handler[$userAgent]->allow()->getRules(),
-                $this->handler[$userAgent]->crawlDelay()->getRules(),
-                $this->handler[$userAgent]->cacheDelay()->getRules(),
-                $this->handler[$userAgent]->requestRate()->getRules(),
-                $this->handler[$userAgent]->comment()->getRules()
-            );
-            if (!empty($current)) {
-                $result[$userAgent] = $current;
-            }
-        }
-        return empty($result) ? [] : [self::DIRECTIVE => $result];
-    }
-
-    /**
-     * Render
-     *
-     * @return string[]
-     */
-    public function render()
-    {
-        $userAgents = $this->getUserAgents();
-        sort($userAgents);
-        $result = [];
-        foreach ($userAgents as $userAgent) {
-            $current = array_merge(
-                $this->handler[$userAgent]->robotVersion()->render(),
-                $this->handler[$userAgent]->visitTime()->render(),
-                $this->handler[$userAgent]->disallow()->render(),
-                $this->handler[$userAgent]->allow()->render(),
-                $this->handler[$userAgent]->crawlDelay()->render(),
-                $this->handler[$userAgent]->cacheDelay()->render(),
-                $this->handler[$userAgent]->requestRate()->render(),
-                $this->handler[$userAgent]->comment()->render()
-            );
-            if (!empty($current)) {
-                $result = array_merge($result, [self::DIRECTIVE . ':' . $userAgent], $current);
-            }
-        }
-        return $result;
     }
 }

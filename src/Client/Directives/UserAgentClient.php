@@ -8,14 +8,8 @@ use vipnytt\RobotsTxtParser\Parser\Directives\SubDirectiveHandler;
  *
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
-class UserAgentClient extends Checks
+class UserAgentClient extends UserAgentTools
 {
-    /**
-     * Rules
-     * @var SubDirectiveHandler
-     */
-    private $handler;
-
     /**
      * UserAgentClient constructor.
      *
@@ -25,26 +19,7 @@ class UserAgentClient extends Checks
      */
     public function __construct(SubDirectiveHandler $handler, $baseUri, $statusCode)
     {
-        $this->handler = $handler;
-        parent::__construct($baseUri, $statusCode, $this->handler);
-    }
-
-    /**
-     * UserAgentClient destructor.
-     */
-    public function __destruct()
-    {
-        $this->comment();
-    }
-
-    /**
-     * Comment
-     *
-     * @return CommentClient
-     */
-    public function comment()
-    {
-        return $this->handler->comment()->client();
+        parent::__construct($handler, $baseUri, $statusCode);
     }
 
     /**
@@ -88,6 +63,16 @@ class UserAgentClient extends Checks
     }
 
     /**
+     * Comment
+     *
+     * @return CommentClient
+     */
+    public function comment()
+    {
+        return $this->handler->comment()->client();
+    }
+
+    /**
      * Disallow
      *
      * @return DisAllowClient
@@ -105,25 +90,6 @@ class UserAgentClient extends Checks
     public function robotVersion()
     {
         return $this->handler->robotVersion()->client();
-    }
-
-    /**
-     * Rule export
-     *
-     * @return array
-     */
-    public function getRules()
-    {
-        return array_merge(
-            $this->handler->allow()->getRules(),
-            $this->handler->comment()->getRules(),
-            $this->handler->cacheDelay()->getRules(),
-            $this->handler->crawlDelay()->getRules(),
-            $this->handler->disallow()->getRules(),
-            $this->handler->requestRate()->getRules(),
-            $this->handler->robotVersion()->getRules(),
-            $this->handler->visitTime()->getRules()
-        );
     }
 
     /**

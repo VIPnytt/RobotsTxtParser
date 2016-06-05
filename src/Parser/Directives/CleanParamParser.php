@@ -16,9 +16,10 @@ class CleanParamParser implements ParserInterface, RobotsTxtInterface
     use UrlParser;
 
     /**
-     * Directive
+     * Parent directive
+     * @var string|null
      */
-    const DIRECTIVE = self::DIRECTIVE_CLEAN_PARAM;
+    private $parent;
 
     /**
      * Clean-param array
@@ -28,9 +29,12 @@ class CleanParamParser implements ParserInterface, RobotsTxtInterface
 
     /**
      * CleanParam constructor.
+     *
+     * @param string|null $parentDirective
      */
-    public function __construct()
+    public function __construct($parentDirective = null)
     {
+        $this->parent = $parentDirective;
     }
 
     /**
@@ -59,17 +63,7 @@ class CleanParamParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        return new CleanParamClient($this->array);
-    }
-
-    /**
-     * Rule array
-     *
-     * @return string[][][]
-     */
-    public function getRules()
-    {
-        return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
+        return new CleanParamClient($this->array, $this->parent);
     }
 
     /**
@@ -82,9 +76,10 @@ class CleanParamParser implements ParserInterface, RobotsTxtInterface
         $result = [];
         foreach ($this->array as $param => $paths) {
             foreach ($paths as $path) {
-                $result[] = self::DIRECTIVE . ':' . $param . ' ' . $path;
+                $result[] = self::DIRECTIVE_CLEAN_PARAM . ':' . $param . ' ' . $path;
             }
         }
+        sort($result);
         return $result;
     }
 }

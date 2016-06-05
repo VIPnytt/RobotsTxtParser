@@ -8,13 +8,13 @@ use vipnytt\RobotsTxtParser\Parser\Directives\DirectiveParserCommons;
  *
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
-class CleanParamClient
+class CleanParamClient implements ClientInterface
 {
     use DirectiveParserCommons;
 
     /**
      * Clean-param
-     * @var string[]
+     * @var string[][]
      */
     private $cleanParam = [];
 
@@ -31,18 +31,18 @@ class CleanParamClient
     /**
      * Check
      *
-     * @param  string $path
+     * @param  string $url
      * @return bool
      */
-    public function check($path)
+    public function isListed($url)
     {
         foreach ($this->cleanParam as $param => $paths) {
             if (
                 (
-                    mb_stripos($path, "?$param=") ||
-                    mb_stripos($path, "&$param=")
+                    mb_stripos($url, "?$param=") ||
+                    mb_stripos($url, "&$param=")
                 ) &&
-                $this->checkPath($path, $paths)
+                $this->checkPath($url, $paths)
             ) {
                 return true;
             }
@@ -53,7 +53,7 @@ class CleanParamClient
     /**
      * Export
      *
-     * @return string[]
+     * @return string[][]
      */
     public function export()
     {

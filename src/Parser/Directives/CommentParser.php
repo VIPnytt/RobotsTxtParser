@@ -12,11 +12,6 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 class CommentParser implements ParserInterface, RobotsTxtInterface
 {
     /**
-     * Directive
-     */
-    const DIRECTIVE = self::DIRECTIVE_COMMENT;
-
-    /**
      * User-agent
      * @var string
      */
@@ -78,16 +73,6 @@ class CommentParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Rule array
-     *
-     * @return string[][]
-     */
-    public function getRules()
-    {
-        return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
-    }
-
-    /**
      * Render
      *
      * @return string[]
@@ -96,7 +81,7 @@ class CommentParser implements ParserInterface, RobotsTxtInterface
     {
         $result = [];
         foreach ($this->array as $value) {
-            $result[] = self::DIRECTIVE . ':' . $value;
+            $result[] = self::DIRECTIVE_COMMENT . ':' . $value;
         }
         return $result;
     }

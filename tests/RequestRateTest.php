@@ -18,10 +18,8 @@ class RequestRateTest extends \PHPUnit_Framework_TestCase
      */
     public function testRequestRate($robotsTxtContent, $result, $rendered)
     {
-        $parser = new RobotsTxtParser\Core('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Core', $parser);
-
-        $this->assertEquals($result, $parser->userAgent('*')->requestRate()->export());
+        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $validRates = [];
         foreach ($result as $value) {
@@ -32,6 +30,7 @@ class RequestRateTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(in_array($parser->userAgent('Legacy')->cacheDelay()->get(), $validRates));
 
         if ($rendered !== false) {
+            $this->assertEquals($result, $parser->userAgent('*')->requestRate()->export());
             $this->assertEquals($rendered, $parser->render());
             $this->testRequestRate($rendered, $result, false);
         }
@@ -77,10 +76,10 @@ ROBOTS
                 ],
                 <<<RENDERED
 user-agent:*
-request-rate:1/1s 2200-0600
 request-rate:1/15s 0700-2100
-request-rate:1/9s 0900-1500
+request-rate:1/1s 2200-0600
 request-rate:1/37.5s
+request-rate:1/9s 0900-1500
 RENDERED
             ]
         ];

@@ -5,26 +5,19 @@ use vipnytt\RobotsTxtParser\Client\Directives\DelayClient;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
- * Class CrawlDelayParser
+ * Class DelayParser
  *
  * @package vipnytt\RobotsTxtParser\Parser\Directives
  */
-class CrawlDelayParser implements ParserInterface, RobotsTxtInterface
+class DelayParser implements ParserInterface, RobotsTxtInterface
 {
     use DirectiveParserCommons;
 
     /**
-     * Directive alternatives
-     */
-    const DIRECTIVE = [
-        self::DIRECTIVE_CACHE_DELAY,
-        self::DIRECTIVE_CRAWL_DELAY,
-    ];
-
-    /**
      * Directive
+     * @var string
      */
-    private $directive = self::DIRECTIVE_CRAWL_DELAY;
+    private $directive;
 
     /**
      * Base Uri
@@ -45,17 +38,17 @@ class CrawlDelayParser implements ParserInterface, RobotsTxtInterface
     private $value;
 
     /**
-     * CrawlDelay constructor.
+     * DelayParser constructor.
      *
      * @param string $base
      * @param string $userAgent
      * @param string $directive
      */
-    public function __construct($base, $userAgent, $directive = self::DIRECTIVE_CRAWL_DELAY)
+    public function __construct($base, $userAgent, $directive)
     {
         $this->base = $base;
         $this->userAgent = $userAgent;
-        $this->directive = $this->validateDirective($directive, self::DIRECTIVE);
+        $this->directive = $this->validateDirective($directive, [self::DIRECTIVE_CRAWL_DELAY, self::DIRECTIVE_CACHE_DELAY]);
     }
 
     /**
@@ -93,25 +86,12 @@ class CrawlDelayParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Rule array
-     *
-     * @return float[]|int[]|string[]
-     */
-    public function getRules()
-    {
-        return empty($this->value) ? [] : [$this->directive => $this->value];
-    }
-
-    /**
      * Render
      *
      * @return string[]
      */
     public function render()
     {
-        if (!empty($this->value)) {
-            return [$this->directive . ':' . $this->value];
-        }
-        return [];
+        return empty($this->value) ? [] : [$this->directive . ':' . $this->value];
     }
 }

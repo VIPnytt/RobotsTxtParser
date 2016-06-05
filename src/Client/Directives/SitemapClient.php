@@ -6,7 +6,7 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
  *
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
-class SitemapClient
+class SitemapClient implements ClientInterface
 {
     /**
      * Sitemaps

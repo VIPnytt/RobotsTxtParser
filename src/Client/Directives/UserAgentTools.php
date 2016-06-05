@@ -1,7 +1,6 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
-
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 use vipnytt\RobotsTxtParser\Parser\Directives\DirectiveParserCommons;
 use vipnytt\RobotsTxtParser\Parser\Directives\SubDirectiveHandler;
@@ -9,10 +8,16 @@ use vipnytt\RobotsTxtParser\Parser\StatusCodeParser;
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
-class Checks implements RobotsTxtInterface
+class UserAgentTools implements RobotsTxtInterface
 {
     use UrlParser;
     use DirectiveParserCommons;
+
+    /**
+     * Rules
+     * @var SubDirectiveHandler
+     */
+    protected $handler;
 
     /**
      * Base Uri
@@ -27,23 +32,25 @@ class Checks implements RobotsTxtInterface
     private $statusCode;
 
     /**
-     * Rules
-     * @var SubDirectiveHandler
-     */
-    private $handler;
-
-    /**
      * DisAllowClient constructor.
      *
      * @param string $base
      * @param int|null $statusCode
      * @param SubDirectiveHandler $handler
      */
-    public function __construct($base, $statusCode, SubDirectiveHandler $handler)
+    public function __construct(SubDirectiveHandler $handler, $base, $statusCode)
     {
+        $this->handler = $handler;
         $this->base = $base;
         $this->statusCode = $statusCode;
-        $this->handler = $handler;
+    }
+
+    /**
+     * UserAgentClient destructor.
+     */
+    public function __destruct()
+    {
+        $this->handler->comment()->client();
     }
 
     /**
@@ -61,7 +68,7 @@ class Checks implements RobotsTxtInterface
      * Check
      *
      * @param string $directive
-     * @param string $url - URL to check
+     * @param string $url
      * @return bool
      * @throws ClientException
      */
@@ -73,8 +80,8 @@ class Checks implements RobotsTxtInterface
             throw new ClientException('URL belongs to a different robots.txt');
         }
         $statusCodeParser = new StatusCodeParser($this->statusCode, parse_url($this->base, PHP_URL_SCHEME));
-        $statusCodeParser->replaceUnofficial();
-        if (($result = $statusCodeParser->check()) !== null) {
+        $statusCodeParser->codeOverride();
+        if (($result = $statusCodeParser->accessOverrideCheck()) !== null) {
             return $directive === $result;
         }
         if ($this->handler->visitTime()->client()->isVisitTime() === false) {
@@ -83,11 +90,11 @@ class Checks implements RobotsTxtInterface
         $result = self::DIRECTIVE_ALLOW;
         foreach (
             [
-                self::DIRECTIVE_DISALLOW => $this->handler->disallow()->client(),
-                self::DIRECTIVE_ALLOW => $this->handler->allow()->client(),
+                self::DIRECTIVE_DISALLOW => $this->handler->disallow(),
+                self::DIRECTIVE_ALLOW => $this->handler->allow(),
             ] as $currentDirective => $ruleClient
         ) {
-            if ($ruleClient->affected($url)) {
+            if ($ruleClient->client()->isListed($url)) {
                 $result = $currentDirective;
             }
         }
@@ -124,5 +131,24 @@ class Checks implements RobotsTxtInterface
     public function isDisallowed($url)
     {
         return $this->check(self::DIRECTIVE_DISALLOW, $url);
+    }
+
+    /**
+     * Rule export
+     *
+     * @return array
+     */
+    public function export()
+    {
+        return [
+            self::DIRECTIVE_ROBOT_VERSION => $this->handler->robotVersion()->client()->export(),
+            self::DIRECTIVE_VISIT_TIME => $this->handler->visitTime()->client()->export(),
+            self::DIRECTIVE_DISALLOW => $this->handler->disallow()->client()->export(),
+            self::DIRECTIVE_ALLOW => $this->handler->allow()->client()->export(),
+            self::DIRECTIVE_CRAWL_DELAY => $this->handler->crawlDelay()->client()->export(),
+            self::DIRECTIVE_CACHE_DELAY => $this->handler->cacheDelay()->client()->export(),
+            self::DIRECTIVE_REQUEST_RATE => $this->handler->requestRate()->client()->export(),
+            self::DIRECTIVE_COMMENT => $this->handler->comment()->client()->export(),
+        ];
     }
 }

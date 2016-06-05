@@ -8,7 +8,7 @@ use GuzzleHttp;
  *
  * @package vipnytt\RobotsTxtParser
  */
-class URI extends Core
+class URI extends Basic
 {
     const GUZZLE_HTTP_CONFIG = [
         'allow_redirects' => [
@@ -26,21 +26,25 @@ class URI extends Core
         'http_errors' => false,
         'verify' => true,
     ];
+
     /**
      * Status code
      * @var int
      */
     protected $statusCode;
+
     /**
      * RequestClient timestamp
      * @var int
      */
     private $time;
+
     /**
      * Cache-Control max-age
      * @var int
      */
     private $maxAge;
+
     /**
      * Robots.txt contents
      * @var string
@@ -113,8 +117,7 @@ class URI extends Core
     private function parseHeader(array $headers, $part, $delimiter = ";")
     {
         foreach ($headers as $header) {
-            $split = array_map('trim', mb_split($delimiter, $header));
-            foreach ($split as $string) {
+            foreach (array_map('trim', mb_split($delimiter, $header)) as $string) {
                 if (mb_stripos($string, $part . '=') === 0) {
                     return mb_split('=', $string, 2)[1];
                 }

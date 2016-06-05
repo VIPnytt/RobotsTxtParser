@@ -14,11 +14,6 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
     use DirectiveParserCommons;
 
     /**
-     * Directive
-     */
-    const DIRECTIVE = self::DIRECTIVE_REQUEST_RATE;
-
-    /**
      * Base Uri
      * @var string
      */
@@ -83,16 +78,6 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Rule array
-     *
-     * @return string[][]
-     */
-    public function getRules()
-    {
-        return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
-    }
-
-    /**
      * Render
      *
      * @return string[]
@@ -108,8 +93,9 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
             ) {
                 $suffix .= ' ' . $array['from'] . '-' . $array['to'];
             }
-            $result[] = self::DIRECTIVE . ':1/' . $array['rate'] . $suffix;
+            $result[] = self::DIRECTIVE_REQUEST_RATE . ':1/' . $array['rate'] . $suffix;
         }
+        sort($result);
         return $result;
     }
 }

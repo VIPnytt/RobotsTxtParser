@@ -17,8 +17,8 @@ class DisAllowTest extends \PHPUnit_Framework_TestCase
      */
     public function testDisAllowTest($robotsTxtContent, $rendered)
     {
-        $parser = new RobotsTxtParser\Core('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Core', $parser);
+        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $this->assertTrue($parser->userAgent()->isAllowed("/"));
         $this->assertTrue($parser->userAgent()->isAllowed("/article"));
@@ -118,8 +118,8 @@ ROBOTS
                 <<<RENDERED
 user-agent:*
 disallow:/admin
-disallow:/temp
 disallow:/forum
+disallow:/temp
 user-agent:agentv
 disallow:/foo
 allow:/bar
@@ -127,10 +127,10 @@ user-agent:agentw
 disallow:/foo
 allow:/bar
 user-agent:boty
-disallow:/
 disallow:&&/1@|
-allow:/forum/$
+disallow:/
 allow:/article
+allow:/forum/$
 user-agent:crawlerz
 disallow:/
 allow:/$

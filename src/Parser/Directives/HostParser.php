@@ -15,15 +15,16 @@ class HostParser implements ParserInterface, RobotsTxtInterface
     use UrlParser;
 
     /**
-     * Directive
-     */
-    const DIRECTIVE = self::DIRECTIVE_HOST;
-
-    /**
      * Base Uri
      * @var string
      */
     private $base;
+
+    /**
+     * Parent directive
+     * @var string|null
+     */
+    private $parent;
 
     /**
      * Host array
@@ -35,10 +36,12 @@ class HostParser implements ParserInterface, RobotsTxtInterface
      * Host constructor.
      *
      * @param string $base
+     * @param string|null $parentDirective
      */
-    public function __construct($base)
+    public function __construct($base, $parentDirective = null)
     {
         $this->base = $base;
+        $this->parent = $parentDirective;
     }
 
     /**
@@ -94,17 +97,7 @@ class HostParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        return new HostClient($this->base, $this->array);
-    }
-
-    /**
-     * Rule array
-     *
-     * @return string[][]
-     */
-    public function getRules()
-    {
-        return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
+        return new HostClient($this->base, $this->array, $this->parent);
     }
 
     /**
@@ -116,8 +109,9 @@ class HostParser implements ParserInterface, RobotsTxtInterface
     {
         $result = [];
         foreach ($this->array as $value) {
-            $result[] = self::DIRECTIVE . ':' . $value;
+            $result[] = self::DIRECTIVE_HOST . ':' . $value;
         }
+        sort($result);
         return $result;
     }
 }

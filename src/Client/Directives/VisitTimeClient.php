@@ -6,7 +6,7 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
  *
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
-class VisitTimeClient
+class VisitTimeClient implements ClientInterface
 {
     use DirectiveClientCommons;
 

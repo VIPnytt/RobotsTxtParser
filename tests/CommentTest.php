@@ -18,8 +18,8 @@ class CommentTest extends \PHPUnit_Framework_TestCase
      */
     public function testComment($robotsTxtContent, $result, $rendered)
     {
-        $parser = new RobotsTxtParser\Core('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Core', $parser);
+        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $this->assertEquals($parser->userAgent('receiver')->comment()->export(), $result);
         //$this->assertTrue($parser->userAgent('receiver')->isDisallowed("/"));
@@ -37,8 +37,8 @@ class CommentTest extends \PHPUnit_Framework_TestCase
      */
     public function testCommentException($robotsTxtContent)
     {
-        $parser = new RobotsTxtParser\Core('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Core', $parser);
+        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $this->assertTrue($parser->userAgent('receiver')->isDisallowed("/"));
         $this->assertFalse($parser->userAgent('receiver')->isAllowed("/"));

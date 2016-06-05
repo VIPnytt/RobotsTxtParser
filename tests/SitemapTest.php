@@ -18,13 +18,14 @@ class SitemapTest extends \PHPUnit_Framework_TestCase
      */
     public function testSitemap($robotsTxtContent, $result, $rendered)
     {
-        $parser = new RobotsTxtParser\Core('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Core', $parser);
+        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $this->assertEquals($result, $parser->sitemap()->export());
 
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render());
+            sort($result);
             $this->testSitemap($rendered, $result, false);
         }
     }
@@ -64,12 +65,12 @@ ROBOTS
                     'http://example.com/sitemap.xml?year=2014',
                 ],
                 <<<RENDERED
-sitemap:http://example.com/sitemap.xml?year=2015
-sitemap:http://somesite.com/sitemap.xml
-sitemap:http://internet.com/sitemap.xml
 sitemap:http://example.com/sitemap.xml.gz
-sitemap:http://worldwideweb.com/sitemap.xml
 sitemap:http://example.com/sitemap.xml?year=2014
+sitemap:http://example.com/sitemap.xml?year=2015
+sitemap:http://internet.com/sitemap.xml
+sitemap:http://somesite.com/sitemap.xml
+sitemap:http://worldwideweb.com/sitemap.xml
 user-agent:*
 disallow:/admin/
 RENDERED
