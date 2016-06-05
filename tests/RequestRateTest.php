@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class RequestRateTest
@@ -18,19 +18,19 @@ class RequestRateTest extends \PHPUnit_Framework_TestCase
      */
     public function testRequestRate($robotsTxtContent, $result, $rendered)
     {
-        $parser = new Client('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
-
-        $this->assertEquals($result, $parser->userAgent('*')->getRequestRates());
+        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $validRates = [];
         foreach ($result as $value) {
             $validRates[] = $value['rate'];
         }
-        $this->assertTrue(in_array($parser->userAgent('Legacy')->getCrawlDelay(), $validRates));
-        $this->assertTrue(in_array($parser->userAgent('Legacy')->getCacheDelay(), $validRates));
+        $this->assertTrue(in_array($parser->userAgent('Legacy')->requestRate()->get(), $validRates));
+        $this->assertTrue(in_array($parser->userAgent('Legacy')->crawlDelay()->get(), $validRates));
+        $this->assertTrue(in_array($parser->userAgent('Legacy')->cacheDelay()->get(), $validRates));
 
         if ($rendered !== false) {
+            $this->assertEquals($result, $parser->userAgent('*')->requestRate()->export());
             $this->assertEquals($rendered, $parser->render());
             $this->testRequestRate($rendered, $result, false);
         }
@@ -48,9 +48,9 @@ class RequestRateTest extends \PHPUnit_Framework_TestCase
                 <<<ROBOTS
 User-agent: *
 Request-rate: 1/1s 2200-0600
-Request-rate: 25/2m 07:00-21:00
-Request-rate: 650/3h 09.00-15.00
-Request-rate: 15750/4d 07-21 # invalid time
+Request-rate: 8/2m 07:00-21:00
+Request-rate: 1200/3h 09.00-15.00
+Request-rate: 9216/4d 07-21 # invalid time
 Request-rate: 5 # invalid rate
 ROBOTS
                 ,
@@ -61,25 +61,25 @@ ROBOTS
                         'to' => '0600',
                     ],
                     [
-                        'rate' => 4.7999999999999998,
+                        'rate' => 15,
                         'from' => '0700',
                         'to' => '2100',
                     ],
                     [
-                        'rate' => 16.615384615384617,
+                        'rate' => 9,
                         'from' => '0900',
                         'to' => '1500',
                     ],
                     [
-                        'rate' => 21.942857142857143,
+                        'rate' => 37.5,
                     ],
                 ],
                 <<<RENDERED
 user-agent:*
+request-rate:1/15s 0700-2100
 request-rate:1/1s 2200-0600
-request-rate:1/4.8s 0700-2100
-request-rate:1/16.615384615385s 0900-1500
-request-rate:1/21.942857142857s
+request-rate:1/37.5s
+request-rate:1/9s 0900-1500
 RENDERED
             ]
         ];

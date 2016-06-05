@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class DownloadExampleTest
@@ -13,11 +13,12 @@ class DownloadExampleTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider generateDataForTest
      * @param string $base
+     * @param array $result
      */
-    public function testDownloadExample($base)
+    public function testDownloadExample($base, $result)
     {
-        $parser = new Client($base);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $parser = new RobotsTxtParser\URI($base);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\URI', $parser);
 
         $this->assertTrue($parser->userAgent()->isAllowed("/"));
         $this->assertFalse($parser->userAgent()->isDisallowed("/"));
@@ -25,13 +26,13 @@ class DownloadExampleTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($parser->userAgent('*')->isAllowed("/"));
         $this->assertFalse($parser->userAgent('*')->isDisallowed("/"));
 
-        $this->assertEquals([], $parser->getSitemaps());
+        $this->assertEquals([], $parser->sitemap()->export());
 
-        $this->assertNull($parser->getHost());
+        $this->assertNull($parser->host()->get());
 
-        $this->assertEquals([], $parser->getCleanParam());
+        $this->assertEquals([], $parser->cleanParam()->export());
 
-        $this->assertEquals([], $parser->export());
+        $this->assertEquals($result, $parser->export());
         $this->assertEquals('', $parser->render());
     }
 
@@ -42,18 +43,51 @@ class DownloadExampleTest extends \PHPUnit_Framework_TestCase
      */
     public function generateDataForTest()
     {
+        $array = [
+            'host' => null,
+            'clean-param' => [],
+            'sitemap' => [],
+            'user-agent' =>
+                [
+                    '*' =>
+                        [
+                            'robot-version' => null,
+                            'visit-time' => [],
+                            'disallow' =>
+                                [
+                                    'host' => [],
+                                    'path' => [],
+                                    'clean-param' => [],
+                                ],
+                            'allow' =>
+                                [
+                                    'host' => [],
+                                    'path' => [],
+                                    'clean-param' => [],
+                                ],
+                            'crawl-delay' => null,
+                            'cache-delay' => null,
+                            'request-rate' => [],
+                            'comment' => [],
+                        ],
+                ],
+        ];
         return [
             [
-                'http://example.com'
+                'http://example.com',
+                $array
             ],
             [
-                'http://www.example.com'
+                'http://www.example.com',
+                $array
             ],
             [
-                'https://example.com'
+                'https://example.com',
+                $array
             ],
             [
-                'https://www.example.com'
+                'https://www.example.com',
+                $array
             ]
         ];
     }

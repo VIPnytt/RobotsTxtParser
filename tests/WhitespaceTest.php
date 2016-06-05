@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class WhitespaceTest
@@ -17,8 +17,8 @@ class WhitespaceTest extends \PHPUnit_Framework_TestCase
      */
     public function testWhitespace($robotsTxtContent, $rendered)
     {
-        $parser = new Client('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $this->assertTrue($parser->userAgent('*')->isDisallowed('/admin'));
         $this->assertFalse($parser->userAgent('*')->isAllowed('/admin'));
@@ -53,8 +53,8 @@ ROBOTS
                 ,
                 <<<RENDERED
 user-agent:*
-allow:/admin/front
 disallow:/admin
+allow:/admin/front
 RENDERED
             ]
         ];

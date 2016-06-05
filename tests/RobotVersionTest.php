@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class RobotVersionTest
@@ -18,8 +18,8 @@ class RobotVersionTest extends \PHPUnit_Framework_TestCase
      */
     public function testRobotVersion($robotsTxtContent, $result, $rendered)
     {
-        $parser = new Client('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $this->assertEquals($result, $parser->export());
 
@@ -49,15 +49,48 @@ Robot-version: 1.0
 ROBOTS
                 ,
                 [
+                    'host' => null,
+                    'clean-param' => [],
+                    'sitemap' => [],
                     'user-agent' =>
                         [
                             '*' =>
                                 [
                                     'robot-version' => '2.0',
+                                    'visit-time' => [],
+                                    'disallow' => [
+                                        'host' => [],
+                                        'path' => [],
+                                        'clean-param' => [],
+                                    ],
+                                    'allow' => [
+                                        'host' => [],
+                                        'path' => [],
+                                        'clean-param' => [],
+                                    ],
+                                    'crawl-delay' => null,
+                                    'cache-delay' => null,
+                                    'request-rate' => [],
+                                    'comment' => [],
                                 ],
                             'googlebot' =>
                                 [
                                     'robot-version' => '1.0',
+                                    'visit-time' => [],
+                                    'disallow' => [
+                                        'host' => [],
+                                        'path' => [],
+                                        'clean-param' => [],
+                                    ],
+                                    'allow' => [
+                                        'host' => [],
+                                        'path' => [],
+                                        'clean-param' => [],
+                                    ],
+                                    'crawl-delay' => null,
+                                    'cache-delay' => null,
+                                    'request-rate' => [],
+                                    'comment' => [],
                                 ],
                         ],
                 ],

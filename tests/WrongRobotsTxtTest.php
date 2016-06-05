@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 
 /**
@@ -17,8 +17,8 @@ class WrongRobotsTxtTest extends \PHPUnit_Framework_TestCase
      */
     public function testWrongRobotsTxt($url)
     {
-        $parser = new Client('http://www.example.com', 200, '');
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $parser = new RobotsTxtParser\Basic('http://www.example.com', 200, '');
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $this->expectException(ClientException::class);
         $parser->userAgent()->isAllowed($url);

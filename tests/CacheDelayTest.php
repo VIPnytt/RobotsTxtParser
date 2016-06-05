@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class CacheDelayTest
@@ -17,13 +17,13 @@ class CacheDelayTest extends \PHPUnit_Framework_TestCase
      */
     public function testCacheDelay($robotsTxtContent, $rendered)
     {
-        $parser = new Client('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
-        $this->assertEquals(0.5, $parser->userAgent()->getCacheDelay());
-        $this->assertEquals(0.5, $parser->userAgent('*')->getCacheDelay());
-        $this->assertEquals(8, $parser->userAgent('GoogleBot')->getCacheDelay());
-        $this->assertEquals(9.2, $parser->userAgent('BingBot')->getCacheDelay());
+        $this->assertEquals(0.5, $parser->userAgent()->cacheDelay()->get());
+        $this->assertEquals(0.5, $parser->userAgent('*')->cacheDelay()->get());
+        $this->assertEquals(8, $parser->userAgent('GoogleBot')->cacheDelay()->get());
+        $this->assertEquals(9.2, $parser->userAgent('BingBot')->cacheDelay()->get());
 
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render());
@@ -60,8 +60,8 @@ crawl-delay:0.5
 user-agent:bingbot
 cache-delay:9.2
 user-agent:googlebot
-cache-delay:8
 crawl-delay:3.7
+cache-delay:8
 RENDERED
             ]
         ];

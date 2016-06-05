@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class EndAnchorTest
@@ -17,8 +17,8 @@ class EndAnchorTest extends \PHPUnit_Framework_TestCase
      */
     public function testEndAnchor($robotsTxtContent, $rendered)
     {
-        $parser = new Client('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $this->assertTrue($parser->userAgent()->isAllowed('/'));
         $this->assertFalse($parser->userAgent()->isDisallowed('/'));
@@ -60,11 +60,11 @@ ROBOTS
                 ,
                 <<<RENDERED
 user-agent:*
-allow:/$
 disallow:/*
+allow:/$
 user-agent:denyme
-disallow:/deny_all/$
 disallow:*deny_all/$
+disallow:/deny_all/$
 disallow:deny_all/$
 RENDERED
             ]

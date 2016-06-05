@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class EscapingTest
@@ -17,8 +17,8 @@ class EscapingTest extends \PHPUnit_Framework_TestCase
      */
     public function testEscaping($robotsTxtContent, $rendered)
     {
-        $parser = new Client('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $this->assertTrue($parser->userAgent()->isAllowed("/%5C."));
         $this->assertFalse($parser->userAgent()->isDisallowed("/%5C."));

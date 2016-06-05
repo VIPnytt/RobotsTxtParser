@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class DisAllowTest
@@ -17,8 +17,8 @@ class DisAllowTest extends \PHPUnit_Framework_TestCase
      */
     public function testDisAllowTest($robotsTxtContent, $rendered)
     {
-        $parser = new Client('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $this->assertTrue($parser->userAgent()->isAllowed("/"));
         $this->assertTrue($parser->userAgent()->isAllowed("/article"));
@@ -118,22 +118,22 @@ ROBOTS
                 <<<RENDERED
 user-agent:*
 disallow:/admin
-disallow:/temp
 disallow:/forum
+disallow:/temp
 user-agent:agentv
-allow:/bar
 disallow:/foo
+allow:/bar
 user-agent:agentw
-allow:/bar
 disallow:/foo
+allow:/bar
 user-agent:boty
-allow:/forum/$
-allow:/article
-disallow:/
 disallow:&&/1@|
-user-agent:crawlerz
-allow:/$
 disallow:/
+allow:/article
+allow:/forum/$
+user-agent:crawlerz
+disallow:/
+allow:/$
 user-agent:spiderx
 disallow:/admin
 disallow:/assets

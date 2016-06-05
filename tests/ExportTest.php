@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class ExportTest
@@ -18,8 +18,8 @@ class ExportTest extends \PHPUnit_Framework_TestCase
      */
     public function testExport($robotsTxtContent, $result, $rendered)
     {
-        $parser = new Client('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $this->assertEquals($result, $parser->export());
 
@@ -54,10 +54,8 @@ Sitemap: http://example.com/sitemap.xml.gz
 ROBOTS
                 ,
                 [
-                    'host' =>
-                        [
-                            'example.com',
-                        ],
+                    'host' => 'example.com',
+                    'clean-param' => [],
                     'sitemap' =>
                         [
                             'http://example.com/sitemap.xml',
@@ -67,31 +65,53 @@ ROBOTS
                         [
                             '*' =>
                                 [
-                                    'allow' =>
-                                        [
-                                            'path' =>
-                                                [
-                                                    '/public/',
-                                                ],
-                                        ],
-                                    'crawl-delay' => 5,
+                                    'robot-version' => null,
+                                    'visit-time' => [],
                                     'disallow' =>
                                         [
+                                            'host' => [],
                                             'path' =>
                                                 [
                                                     '/admin/',
                                                 ],
+                                            'clean-param' => [],
                                         ],
+                                    'allow' =>
+                                        [
+                                            'host' => [],
+                                            'path' =>
+                                                [
+                                                    '/public/',
+                                                ],
+                                            'clean-param' => [],
+                                        ],
+                                    'crawl-delay' => 5,
+                                    'cache-delay' => null,
+                                    'request-rate' => [],
+                                    'comment' => [],
                                 ],
                             'googlebot' =>
                                 [
+                                    'robot-version' => null,
+                                    'visit-time' => [],
                                     'disallow' =>
                                         [
+                                            'host' => [],
                                             'path' =>
                                                 [
                                                     '/',
                                                 ],
+                                            'clean-param' => [],
                                         ],
+                                    'allow' => [
+                                        'host' => [],
+                                        'path' => [],
+                                        'clean-param' => [],
+                                    ],
+                                    'crawl-delay' => null,
+                                    'cache-delay' => null,
+                                    'request-rate' => [],
+                                    'comment' => [],
                                 ],
                         ],
                 ],
@@ -100,9 +120,9 @@ host:example.com
 sitemap:http://example.com/sitemap.xml
 sitemap:http://example.com/sitemap.xml.gz
 user-agent:*
+disallow:/admin/
 allow:/public/
 crawl-delay:5
-disallow:/admin/
 user-agent:googlebot
 disallow:/
 RENDERED

@@ -12,17 +12,22 @@ An easy to use, extensible PHP library to parse `robots.txt` according to [_Goog
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/6fb47427-166b-45d0-bd41-40f7a63c2b0c/big.png)](https://insight.sensiolabs.com/projects/6fb47427-166b-45d0-bd41-40f7a63c2b0c)
 
 #### Usage cases:
-- Permission checks
+- Permission check for URL crawling
 - XML Sitemap detection
 - Host preference detection
 - Dynamic URL parameter detection
+- `robots.txt` rendering
+
+### Optional features
+- Automatic download, _http(s) only_
+- Caching system
+- Delay handler
 
 #### Advantages
-_(compared to most other robots.txt parsers)_
-- Automatic download of the the _correct_ `robots.txt`. _http(s) only._ (optional)
-- Support for every single directive ever existed, including drafts. [See the full list.](#directives-supported)
+_(compared to most other robots.txt libraries)_
+- Full support for [every single directive](#directives-supported), from [every specification](#specifications).
 - HTTP Status code handler, _according to [Google](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt) spec._
-- Features a dedicated `User-Agent` parser and group determiner library, for maximum accuracy.
+- Dedicated `User-Agent` parser and group determiner library, for maximum accuracy.
 - Full support for _inline directives_, _according to [Yandex](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml) spec._
 - Provides additional data like _preferred host_, dynamic _URL parameters_, _Sitemap_ locations, etc.
 - Supports ``HTTP``, ``HTTPS``, ``FTP``, ``SFTP`` and ``FTP/S``.
@@ -39,7 +44,7 @@ The recommended way to install the robots.txt parser is through [Composer](http:
 ```json
 {
     "require": {
-        "vipnytt/robotstxtparser": "~1.0"
+        "vipnytt/robotstxtparser": "~2.0"
     }
 }
 ```
@@ -48,7 +53,7 @@ Then run: ```php composer.phar update```
 ## Getting started
 ### Basic usage example
 ```php
-$client = new vipnytt\RobotsTxtParser\Client('http://example.com');
+$client = new vipnytt\RobotsTxtParser\URI('http://example.com');
 
 if ($client->userAgent('MyBot')->isAllowed('http://example.com/somepage.html')) {
     // Access is granted
@@ -57,34 +62,31 @@ if ($client->userAgent('MyBot')->isDisallowed('http://example.com/admin')) {
     // Access is denied
 }
 ```
-### Methods
+### Some more methods
 ```php
 // Syntax: $baseUri, [$statusCode:int|null], [$robotsTxtContent:string|null], [$encoding:string], [$byteLimit:int]
-$client = new vipnytt\RobotsTxtParser\Client('http://example.com', 200, $robotsTxtContent);
+$client = new vipnytt\RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
 
 // Permission checks
 $allowed = $client->userAgent('MyBot')->isAllowed('http://example.com/somepage.html'); // bool
 $denied = $client->userAgent('MyBot')->isDisallowed('http://example.com/admin'); // bool
 
 // Crawl delay rules
-$crawlDelay = $client->userAgent('MyBot')->getCrawlDelay(); // int | float
-$cacheDelay = $client->userAgent('MyBot')->getCacheDelay(); // int | float
+$crawlDelay = $client->userAgent('MyBot')->crawlDelay()->get(); // float | int
 
 // Dynamic URL parameters
-$cleanParam = $client->getCleanParam(); // array
+$cleanParam = $client->cleanParam()->export(); // array
+$cleanParam = $client->cleanParam()->isListed('param'); // bool
 
 // Preferred host
-$host = $client->getHost(); // string | null
+$host = $client->host()->get(); // string | null
+$host = $client->host()->isPreferred(); // bool
 
 // XML Sitemap locations
-$host = $client->getSitemaps(); // array
-
-// Export
-$exportAll = $client->export(); // array
-$exportUA = $client->userAgent('MyBot')->export(); // array
+$host = $client->sitemap()->export(); // array
 ```
 
-Visit the [Wiki](https://github.com/VIPnytt/RobotsTxtParser/wiki) and [Documentation](https://github.com/VIPnytt/RobotsTxtParser/tree/master/docs) for additional Usage examples.
+Visit the [Documentation](https://github.com/VIPnytt/RobotsTxtParser/tree/master/docs) for even more methods, possibilities and additional usage examples.
 
 ## Specifications
 - [x] [Google's robots.txt specifications](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt)
@@ -101,8 +103,8 @@ Visit the [Wiki](https://github.com/VIPnytt/RobotsTxtParser/wiki) and [Documenta
   - [x] [`Disallow`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#disallow)
     - [x] _inline_ [`Clean-param`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#clean-param)
     - [x] _inline_ [`Host`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#host)
-  - [x] [`Crawl-delay`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#crawl-delay)
-  - [x] [`Cache-delay`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#cache-delay)
+  - [x] [`Crawl-delay`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#crawl-value)
+  - [x] [`Cache-delay`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#cache-value)
   - [x] [`Request-rate`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#request-rate)
   - [x] [`Visit-time`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#visit-time)
   - [x] [`Robot-version`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#robot-version)

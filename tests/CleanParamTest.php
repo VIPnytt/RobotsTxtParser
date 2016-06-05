@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class CleanParamTest
@@ -18,8 +18,8 @@ class CleanParamTest extends \PHPUnit_Framework_TestCase
      */
     public function testCleanParam($robotsTxtContent, $result, $rendered)
     {
-        $parser = new Client('http://www.site1.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $parser = new RobotsTxtParser\Basic('http://www.site1.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $this->assertTrue($parser->userAgent()->isDisallowed('http://www.site1.com/forums/showthread.php?s=681498b9648949605&ref=parent'));
         $this->assertFalse($parser->userAgent()->isAllowed('http://www.site1.com/forums/showthread.php?s=681498b9648949605&ref=parent'));
@@ -27,7 +27,7 @@ class CleanParamTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($parser->userAgent()->isDisallowed('http://www.site1.com/page.php?ref=ads&uid=123456'));
         $this->assertFalse($parser->userAgent()->isAllowed('http://www.site1.com/page.php?ref=ads&uid=123456'));
 
-        $this->assertEquals($result, $parser->getCleanParam());
+        $this->assertEquals($result, $parser->cleanParam()->export());
 
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render());
@@ -73,13 +73,13 @@ ROBOTS
                 ],
                 <<<RENDERED
 clean-param:abc /forum/showthread.php
-clean-param:sid /forum/*.php
-clean-param:sort /forum/*.php
-clean-param:someTrash /
 clean-param:otherTrash /
+clean-param:sid /forum/*.php
+clean-param:someTrash /
+clean-param:sort /forum/*.php
 user-agent:*
-disallow:clean-param:s /forum*/sh*wthread.php
 disallow:clean-param:ref /forum*/sh*wthread.php
+disallow:clean-param:s /forum*/sh*wthread.php
 disallow:clean-param:uid /
 RENDERED
             ]

@@ -79,8 +79,8 @@ crawl-delay: [seconds]
 __Parser specific:__ When the value is requested but not found, the value of ``Request-rate`` is returned, to maintain backwards compatibility.
 
 __See also:__
-- [Request-rate](#request-rate)
 - [Cache-delay](#cache-delay)
+- [Request-rate](#request-rate)
 
 __References:__
 - [Yandex robots.txt specifications](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#crawl-delay)

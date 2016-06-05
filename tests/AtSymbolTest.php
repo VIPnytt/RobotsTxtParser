@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use vipnytt\RobotsTxtParser\Client;
+use vipnytt\RobotsTxtParser;
 
 /**
  * Class AtSymbolTest
@@ -17,8 +17,8 @@ class AtSymbolTest extends \PHPUnit_Framework_TestCase
      */
     public function testAtSymbol($robotsTxtContent, $rendered)
     {
-        $parser = new Client('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Parser', $parser);
+        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $this->assertTrue($parser->userAgent()->isAllowed("/peanuts"));
         $this->assertFalse($parser->userAgent()->isDisallowed("/peanuts"));
@@ -49,8 +49,8 @@ ROBOTS
                 ,
                 <<<RENDERED
 user-agent:*
-allow:/peanuts
 disallow:/url_containing_@_symbol
+allow:/peanuts
 RENDERED
             ]
         ];
