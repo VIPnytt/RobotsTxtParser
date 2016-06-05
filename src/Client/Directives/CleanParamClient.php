@@ -21,7 +21,7 @@ class CleanParamClient implements ClientInterface
     /**
      * CleanParamClient constructor.
      *
-     * @param string[] $cleanParam
+     * @param string[][] $cleanParam
      */
     public function __construct(array $cleanParam)
     {
@@ -42,7 +42,7 @@ class CleanParamClient implements ClientInterface
                     mb_stripos($url, "?$param=") ||
                     mb_stripos($url, "&$param=")
                 ) &&
-                $this->checkPath($url, $paths)
+                $this->checkPaths($url, $paths)
             ) {
                 return true;
             }

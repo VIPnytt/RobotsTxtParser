@@ -72,22 +72,32 @@ class HostParser implements ParserInterface, RobotsTxtInterface
      */
     private function parse($line)
     {
-        if (($parsed = parse_url(($line = $this->urlEncode(mb_strtolower($line))))) === false) {
-            return false;
-        }
-        $line = isset($parsed['host']) ? $parsed['host'] : $parsed['path'];
         if (
-            !$this->urlValidateHost($line) ||
+            !($parts = $this->getParts($line)) ||
+            !$this->urlValidateHost($parts['host']) ||
             (
-                isset($parsed['scheme']) &&
-                !$this->urlValidateScheme($parsed['scheme'])
+                !empty($parts['scheme']) &&
+                !$this->urlValidateScheme($parts['scheme'])
             )
         ) {
             return false;
         }
-        $scheme = isset($parsed['scheme']) ? $parsed['scheme'] . '://' : '';
-        $port = isset($parsed['port']) ? ':' . $parsed['port'] : '';
-        return $scheme . $line . $port;
+        return $parts['scheme'] . $parts['host'] . $parts['port'];
+    }
+
+    /**
+     * Get URL parts
+     *
+     * @param string $url
+     * @return string[]|false
+     */
+    private function getParts($url)
+    {
+        return ($parsed = parse_url(($line = $this->urlEncode(mb_strtolower($url))))) === false ? false : [
+            'scheme' => isset($parsed['scheme']) ? $parsed['scheme'] . '://' : '',
+            'host' => isset($parsed['host']) ? $parsed['host'] : $parsed['path'],
+            'port' => isset($parsed['port']) ? ':' . $parsed['port'] : '',
+        ];
     }
 
     /**
