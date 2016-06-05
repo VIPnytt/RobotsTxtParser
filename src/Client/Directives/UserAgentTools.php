@@ -78,7 +78,7 @@ class UserAgentTools implements RobotsTxtInterface
     private function check($directive, $url)
     {
         $url = $this->urlConvertToFull($url, $this->base);
-        if (!$this->isUrlApplicable([$url, $this->base])) {
+        if ($this->base !== $this->urlBase($url)) {
             throw new ClientException('URL belongs to a different robots.txt');
         }
         $statusCodeParser = new StatusCodeParser($this->statusCode, parse_url($this->base, PHP_URL_SCHEME));
@@ -90,27 +90,6 @@ class UserAgentTools implements RobotsTxtInterface
             return $result === self::DIRECTIVE_DISALLOW;
         }
         return $this->checkPath($directive, $url);
-    }
-
-    /**
-     * Check if the URL belongs to current robots.txt
-     *
-     * @param string[] $urls
-     * @return bool
-     */
-    private function isUrlApplicable($urls)
-    {
-        foreach ($urls as $url) {
-            $parsed = parse_url($url);
-            $parsed['port'] = is_int($port = parse_url($url, PHP_URL_PORT)) ? $port : getservbyname($parsed['scheme'], 'tcp');
-            $assembled = $parsed['scheme'] . '://' . $parsed['host'] . ':' . $parsed['port'];
-            if (!isset($result)) {
-                $result = $assembled;
-            } elseif ($result !== $assembled) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**

@@ -19,7 +19,7 @@ class CleanParamParser implements ParserInterface, RobotsTxtInterface
      * Clean-param array
      * @var string[][]
      */
-    private $array = [];
+    private $cleanParam = [];
 
     /**
      * CleanParam constructor.
@@ -42,7 +42,7 @@ class CleanParamParser implements ParserInterface, RobotsTxtInterface
         $path = isset($array[1]) ? $this->urlEncode(preg_replace('/[^A-Za-z0-9\.-\/\*\_]/', '', $array[1])) : "/";
         $param = array_map('trim', mb_split('&', $array[0]));
         foreach ($param as $key) {
-            $this->array[$key][] = $path;
+            $this->cleanParam[$key][] = $path;
         }
         return true;
     }
@@ -54,7 +54,7 @@ class CleanParamParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        return new CleanParamClient($this->array);
+        return new CleanParamClient($this->cleanParam);
     }
 
     /**
@@ -65,7 +65,7 @@ class CleanParamParser implements ParserInterface, RobotsTxtInterface
     public function render()
     {
         $result = [];
-        foreach ($this->array as $param => $paths) {
+        foreach ($this->cleanParam as $param => $paths) {
             foreach ($paths as $path) {
                 $result[] = self::DIRECTIVE_CLEAN_PARAM . ':' . $param . ' ' . $path;
             }

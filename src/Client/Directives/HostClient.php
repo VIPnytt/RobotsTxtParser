@@ -34,7 +34,7 @@ class HostClient implements ClientInterface
      * HostClient constructor.
      *
      * @param string $base
-     * @param array $host
+     * @param string[] $host
      * @param string|null $parentDirective
      */
     public function __construct($base, array $host, $parentDirective = null)

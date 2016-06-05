@@ -15,7 +15,7 @@ class RobotVersionParser implements ParserInterface, RobotsTxtInterface
      * RobotVersion value
      * @var float|int|string
      */
-    private $value;
+    private $robotVersion;
 
     /**
      * RobotVersionParser constructor.
@@ -32,10 +32,10 @@ class RobotVersionParser implements ParserInterface, RobotsTxtInterface
      */
     public function add($line)
     {
-        if (!empty($this->value)) {
+        if (!empty($this->robotVersion)) {
             return false;
         }
-        $this->value = $line;
+        $this->robotVersion = $line;
         return true;
     }
 
@@ -46,7 +46,7 @@ class RobotVersionParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        return new RobotVersionClient($this->value);
+        return new RobotVersionClient($this->robotVersion);
     }
 
     /**
@@ -56,6 +56,6 @@ class RobotVersionParser implements ParserInterface, RobotsTxtInterface
      */
     public function render()
     {
-        return empty($this->value) ? [] : [self::DIRECTIVE_ROBOT_VERSION . ':' . $this->value];
+        return empty($this->robotVersion) ? [] : [self::DIRECTIVE_ROBOT_VERSION . ':' . $this->robotVersion];
     }
 }

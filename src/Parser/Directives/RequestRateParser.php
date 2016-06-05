@@ -29,7 +29,7 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
      * RequestRate array
      * @var array
      */
-    private $array = [];
+    private $requestRates = [];
 
     /**
      * RequestRate constructor.
@@ -63,7 +63,7 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
         ) {
             $result = array_merge($result, $times);
         }
-        $this->array[] = $result;
+        $this->requestRates[] = $result;
         return true;
     }
 
@@ -74,7 +74,7 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        return new RequestRateClient($this->base, $this->userAgent, $this->array);
+        return new RequestRateClient($this->base, $this->userAgent, $this->requestRates);
     }
 
     /**
@@ -85,7 +85,7 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
     public function render()
     {
         $result = [];
-        foreach ($this->array as $array) {
+        foreach ($this->requestRates as $array) {
             $suffix = 's';
             if (
                 isset($array['from']) &&

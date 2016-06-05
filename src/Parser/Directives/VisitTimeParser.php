@@ -17,7 +17,7 @@ class VisitTimeParser implements ParserInterface, RobotsTxtInterface
      * VisitTime array
      * @var array
      */
-    private $array = [];
+    private $visitTimes = [];
 
     /**
      * VisitTime constructor.
@@ -36,7 +36,7 @@ class VisitTimeParser implements ParserInterface, RobotsTxtInterface
     {
         $array = $this->draftParseTime($line);
         if ($array !== false) {
-            $this->array[] = $array;
+            $this->visitTimes[] = $array;
             return true;
         }
         return false;
@@ -49,7 +49,7 @@ class VisitTimeParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        return new VisitTimeClient($this->array);
+        return new VisitTimeClient($this->visitTimes);
     }
 
     /**
@@ -60,7 +60,7 @@ class VisitTimeParser implements ParserInterface, RobotsTxtInterface
     public function render()
     {
         $result = [];
-        foreach ($this->array as $array) {
+        foreach ($this->visitTimes as $array) {
             $result[] = self::DIRECTIVE_VISIT_TIME . ':' . $array['from'] . '-' . $array['to'];
         }
         sort($result);

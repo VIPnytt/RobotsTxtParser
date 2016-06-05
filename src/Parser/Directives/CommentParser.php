@@ -27,7 +27,7 @@ class CommentParser implements ParserInterface, RobotsTxtInterface
      * Comment array
      * @var string[]
      */
-    private $array = [];
+    private $comments = [];
 
     /**
      * Client cache
@@ -55,7 +55,7 @@ class CommentParser implements ParserInterface, RobotsTxtInterface
      */
     public function add($line)
     {
-        $this->array[] = $line;
+        $this->comments[] = $line;
         return true;
     }
 
@@ -69,7 +69,7 @@ class CommentParser implements ParserInterface, RobotsTxtInterface
         if (isset($this->client)) {
             return $this->client;
         }
-        return $this->client = new CommentClient($this->base, $this->userAgent, $this->array);
+        return $this->client = new CommentClient($this->base, $this->userAgent, $this->comments);
     }
 
     /**
@@ -80,8 +80,8 @@ class CommentParser implements ParserInterface, RobotsTxtInterface
     public function render()
     {
         $result = [];
-        foreach ($this->array as $value) {
-            $result[] = self::DIRECTIVE_COMMENT . ':' . $value;
+        foreach ($this->comments as $comment) {
+            $result[] = self::DIRECTIVE_COMMENT . ':' . $comment;
         }
         return $result;
     }

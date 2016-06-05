@@ -30,7 +30,7 @@ class HostParser implements ParserInterface, RobotsTxtInterface
      * Host array
      * @var string[]
      */
-    private $array = [];
+    private $host = [];
 
     /**
      * Host constructor.
@@ -56,11 +56,11 @@ class HostParser implements ParserInterface, RobotsTxtInterface
         if (
             $host === false ||
             $line !== $host ||
-            in_array($host, $this->array)
+            in_array($host, $this->host)
         ) {
             return false;
         }
-        $this->array[] = $line;
+        $this->host[] = $line;
         return true;
     }
 
@@ -93,7 +93,7 @@ class HostParser implements ParserInterface, RobotsTxtInterface
      */
     private function getParts($url)
     {
-        return ($parsed = parse_url(($line = $this->urlEncode(mb_strtolower($url))))) === false ? false : [
+        return ($parsed = parse_url($this->urlEncode(mb_strtolower($url)))) === false ? false : [
             'scheme' => isset($parsed['scheme']) ? $parsed['scheme'] . '://' : '',
             'host' => isset($parsed['host']) ? $parsed['host'] : $parsed['path'],
             'port' => isset($parsed['port']) ? ':' . $parsed['port'] : '',
@@ -107,7 +107,7 @@ class HostParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        return new HostClient($this->base, $this->array, $this->parent);
+        return new HostClient($this->base, $this->host, $this->parent);
     }
 
     /**
@@ -118,7 +118,7 @@ class HostParser implements ParserInterface, RobotsTxtInterface
     public function render()
     {
         $result = [];
-        foreach ($this->array as $value) {
+        foreach ($this->host as $value) {
             $result[] = self::DIRECTIVE_HOST . ':' . $value;
         }
         sort($result);

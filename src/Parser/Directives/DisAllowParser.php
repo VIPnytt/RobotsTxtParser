@@ -107,12 +107,12 @@ class DisAllowParser implements ParserInterface, RobotsTxtInterface
     public function render()
     {
         $result = [];
-        $render = array_merge(
+        $values = array_merge(
             $this->path,
             $this->cleanParam->render(),
             $this->host->render()
         );
-        foreach ($render as $value) {
+        foreach ($values as $value) {
             $result[] = $this->directive . ':' . $value;
         }
         sort($result);
