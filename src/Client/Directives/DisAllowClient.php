@@ -53,7 +53,7 @@ class DisAllowClient implements ClientInterface, RobotsTxtInterface
     {
         $path = $this->getPath($url);
         return (
-            $this->checkPath($path, $this->paths) ||
+            $this->checkPaths($path, $this->paths) ||
             $this->cleanParam->isListed($path) ||
             $this->host->isListed($url)
         );

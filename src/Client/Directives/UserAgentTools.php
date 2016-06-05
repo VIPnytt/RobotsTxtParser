@@ -2,16 +2,19 @@
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
-use vipnytt\RobotsTxtParser\Parser\Directives\DirectiveParserCommons;
 use vipnytt\RobotsTxtParser\Parser\Directives\SubDirectiveHandler;
 use vipnytt\RobotsTxtParser\Parser\StatusCodeParser;
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
+/**
+ * Class UserAgentTools
+ *
+ * @package vipnytt\RobotsTxtParser\Client\Directives
+ */
 class UserAgentTools implements RobotsTxtInterface
 {
     use UrlParser;
-    use DirectiveParserCommons;
 
     /**
      * Rules
@@ -74,7 +77,6 @@ class UserAgentTools implements RobotsTxtInterface
      */
     private function check($directive, $url)
     {
-        $directive = $this->validateDirective($directive, [self::DIRECTIVE_DISALLOW, self::DIRECTIVE_ALLOW]);
         $url = $this->urlConvertToFull($url, $this->base);
         if (!$this->isUrlApplicable([$url, $this->base])) {
             throw new ClientException('URL belongs to a different robots.txt');
@@ -87,18 +89,7 @@ class UserAgentTools implements RobotsTxtInterface
         if ($this->handler->visitTime()->client()->isVisitTime() === false) {
             return $result === self::DIRECTIVE_DISALLOW;
         }
-        $result = self::DIRECTIVE_ALLOW;
-        foreach (
-            [
-                self::DIRECTIVE_DISALLOW => $this->handler->disallow(),
-                self::DIRECTIVE_ALLOW => $this->handler->allow(),
-            ] as $currentDirective => $ruleClient
-        ) {
-            if ($ruleClient->client()->isListed($url)) {
-                $result = $currentDirective;
-            }
-        }
-        return $directive === $result;
+        return $this->checkPath($directive, $url);
     }
 
     /**
@@ -120,6 +111,29 @@ class UserAgentTools implements RobotsTxtInterface
             }
         }
         return true;
+    }
+
+    /**
+     * Check path
+     *
+     * @param string $directive
+     * @param string $url
+     * @return bool
+     */
+    private function checkPath($directive, $url)
+    {
+        $result = self::DIRECTIVE_ALLOW;
+        foreach (
+            [
+                self::DIRECTIVE_DISALLOW => $this->handler->disallow(),
+                self::DIRECTIVE_ALLOW => $this->handler->allow(),
+            ] as $currentDirective => $ruleClient
+        ) {
+            if ($ruleClient->client()->isListed($url)) {
+                $result = $currentDirective;
+            }
+        }
+        return $directive === $result;
     }
 
     /**

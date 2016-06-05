@@ -12,63 +12,81 @@ use vipnytt\RobotsTxtParser\Exceptions\ParserException;
 trait DirectiveParserCommons
 {
     /**
-     * Check basic rule
+     * Check path rule
      *
      * @param string $path
      * @param string[] $paths
      * @return bool
      */
-    private function checkPath($path, array $paths)
+    private function checkPaths($path, array $paths)
     {
         foreach ($paths as $rule) {
-            $escape = ['?' => '\?', '.' => '\.', '*' => '.*'];
+            $escape = [
+                '?' => '\?',
+                '.' => '\.',
+                '*' => '.*',
+            ];
             foreach ($escape as $search => $replace) {
                 $rule = str_replace($search, $replace, $rule);
             }
-            /**
-             * Warning: preg_match need to be replaced
-             *
-             * Bug report
-             * @link https://github.com/t1gor/Robots.txt-Core-Class/issues/62
-             *
-             * An robots.txt parser, where a bug-fix is planned
-             * @link https://github.com/diggin/Diggin_RobotRules
-             *
-             * The solution?
-             * PHP PEG (parsing expression grammar)
-             * @link https://github.com/hafriedlander/php-peg
-             */
-            try {
-                if (!preg_match('#' . $rule . '#', $path)) {
-                    // Rule does not match
-                    continue;
-                } else if (mb_stripos($rule, '$') === false) {
-                    // No special parsing required
-                    return true;
-                } else if (($wildcardPos = mb_strrpos($rule, '*')) !== false) {
-                    // Rule contains both an end anchor ($) and wildcard (*)
-                    $afterWildcard = mb_substr($rule, $wildcardPos + 1, mb_strlen($rule) - $wildcardPos - 2);
-                    if ($afterWildcard == mb_substr($path, -mb_strlen($afterWildcard))) {
-                        return true;
-                    }
-                } else if (mb_substr($rule, 0, -1) == $path) {
-                    // Rule does contains an end anchor
-                    return true;
-                }
-            } catch (\Exception $e) {
-                // An preg_match bug has occurred
+            if ($this->checkPathsCallback($rule, $path)) {
+                return true;
             }
         }
         return false;
     }
 
+    /**
+     * Callback for CheckPath
+     *
+     * @param string $rule
+     * @param string $path
+     * @return bool
+     */
+    private function checkPathsCallback($rule, $path)
+    {
+        /**
+         * Warning: preg_match need to be replaced
+         *
+         * Bug report
+         * @link https://github.com/t1gor/Robots.txt-Core-Class/issues/62
+         *
+         * An robots.txt parser, where a bug-fix is planned
+         * @link https://github.com/diggin/Diggin_RobotRules
+         *
+         * The solution?
+         * PHP PEG (parsing expression grammar)
+         * @link https://github.com/hafriedlander/php-peg
+         */
+        try {
+            if (!preg_match('#' . $rule . '#', $path)) {
+                // Rule does not match
+                return false;
+            } else if (mb_stripos($rule, '$') === false) {
+                // No special parsing required
+                return true;
+            } elseif (($wildcardPos = mb_strrpos($rule, '*')) !== false) {
+                // Rule contains both an end anchor ($) and wildcard (*)
+                $afterWildcard = mb_substr($rule, $wildcardPos + 1, mb_strlen($rule) - $wildcardPos - 2);
+                if ($afterWildcard == mb_substr($path, -mb_strlen($afterWildcard))) {
+                    return true;
+                }
+            } elseif (mb_substr($rule, 0, -1) == $path) {
+                // Rule does contains an end anchor
+                return true;
+            }
+        } catch (\Exception $e) {
+            // An preg_match bug has occurred
+        }
+        return false;
+    }
 
     /**
      * Generate directive/rule pair
      *
      * @param string $line
-     * @param array $whiteList
-     * @return array|false
+     * @param string[] $whiteList
+     * @return string[]|false
      */
     private function generateRulePair($line, array $whiteList)
     {
@@ -127,15 +145,15 @@ trait DirectiveParserCommons
      * @link http://www.conman.org/people/spc/robots2.html#format.directives.visit-time
      *
      * @param $string
-     * @return array|bool
+     * @return string[]|false
      */
     private function draftParseTime($string)
     {
         $array = preg_replace('/[^0-9]/', '', mb_split('-', $string));
         if (
             count($array) != 2 ||
-            ($fromTime = date_create_from_format('Hi', $array[0], new DateTimeZone('UTC'))) === false ||
-            ($toTime = date_create_from_format('Hi', $array[1], new DateTimeZone('UTC'))) === false
+            ($fromTime = date_create_from_format('Hi', $array[0], $dtz = new DateTimeZone('UTC'))) === false ||
+            ($toTime = date_create_from_format('Hi', $array[1], $dtz)) === false
         ) {
             return false;
         }
@@ -149,7 +167,7 @@ trait DirectiveParserCommons
      * Validate directive
      *
      * @param string $directive
-     * @param array $directives
+     * @param string[] $directives
      * @return string
      * @throws ParserException
      */

@@ -16,25 +16,16 @@ class CleanParamParser implements ParserInterface, RobotsTxtInterface
     use UrlParser;
 
     /**
-     * Parent directive
-     * @var string|null
-     */
-    private $parent;
-
-    /**
      * Clean-param array
-     * @var array
+     * @var string[][]
      */
     private $array = [];
 
     /**
      * CleanParam constructor.
-     *
-     * @param string|null $parentDirective
      */
-    public function __construct($parentDirective = null)
+    public function __construct()
     {
-        $this->parent = $parentDirective;
     }
 
     /**
@@ -63,7 +54,7 @@ class CleanParamParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        return new CleanParamClient($this->array, $this->parent);
+        return new CleanParamClient($this->array);
     }
 
     /**

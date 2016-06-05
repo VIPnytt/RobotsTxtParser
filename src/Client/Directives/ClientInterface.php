@@ -11,7 +11,7 @@ interface ClientInterface
     /**
      * Export
      *
-     * @return array
+     * @return mixed
      */
     public function export();
 }

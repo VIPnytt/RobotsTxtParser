@@ -62,7 +62,7 @@ class DisAllowParser implements ParserInterface, RobotsTxtInterface
     {
         $this->base = $base;
         $this->directive = $this->validateDirective($directive, [self::DIRECTIVE_DISALLOW, self::DIRECTIVE_ALLOW]);
-        $this->cleanParam = new CleanParamParser($this->directive);
+        $this->cleanParam = new CleanParamParser();
         $this->host = new HostParser($this->base, $this->directive);
     }
 
