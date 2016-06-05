@@ -17,8 +17,8 @@ class EndAnchorTest extends \PHPUnit_Framework_TestCase
      */
     public function testEndAnchor($robotsTxtContent, $rendered)
     {
-        $parser = new RobotsTxtParser\Core('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Core', $parser);
+        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $this->assertTrue($parser->userAgent()->isAllowed('/'));
         $this->assertFalse($parser->userAgent()->isDisallowed('/'));
@@ -63,8 +63,8 @@ user-agent:*
 disallow:/*
 allow:/$
 user-agent:denyme
-disallow:/deny_all/$
 disallow:*deny_all/$
+disallow:/deny_all/$
 disallow:deny_all/$
 RENDERED
             ]

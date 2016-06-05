@@ -12,18 +12,13 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 class RobotVersionParser implements ParserInterface, RobotsTxtInterface
 {
     /**
-     * Directive
-     */
-    const DIRECTIVE = self::DIRECTIVE_ROBOT_VERSION;
-
-    /**
      * RobotVersion value
      * @var float|int|string
      */
     private $value;
 
     /**
-     * RobotVersion constructor.
+     * RobotVersionParser constructor.
      */
     public function __construct()
     {
@@ -55,25 +50,12 @@ class RobotVersionParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Rule array
-     *
-     * @return float[][]|int[][]|string[][]
-     */
-    public function getRules()
-    {
-        return empty($this->value) ? [] : [self::DIRECTIVE => $this->value];
-    }
-
-    /**
      * Render
      *
      * @return string[]
      */
     public function render()
     {
-        if (!empty($this->value)) {
-            return [self::DIRECTIVE . ':' . $this->value];
-        }
-        return [];
+        return empty($this->value) ? [] : [self::DIRECTIVE_ROBOT_VERSION . ':' . $this->value];
     }
 }

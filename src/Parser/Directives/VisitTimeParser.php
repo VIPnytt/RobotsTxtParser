@@ -14,11 +14,6 @@ class VisitTimeParser implements ParserInterface, RobotsTxtInterface
     use DirectiveParserCommons;
 
     /**
-     * Directive
-     */
-    const DIRECTIVE = self::DIRECTIVE_VISIT_TIME;
-
-    /**
      * VisitTime array
      * @var array
      */
@@ -58,16 +53,6 @@ class VisitTimeParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Rule array
-     *
-     * @return string[][]
-     */
-    public function getRules()
-    {
-        return empty($this->array) ? [] : [self::DIRECTIVE => $this->array];
-    }
-
-    /**
      * Render
      *
      * @return string[]
@@ -76,8 +61,9 @@ class VisitTimeParser implements ParserInterface, RobotsTxtInterface
     {
         $result = [];
         foreach ($this->array as $array) {
-            $result[] = self::DIRECTIVE . ':' . $array['from'] . '-' . $array['to'];
+            $result[] = self::DIRECTIVE_VISIT_TIME . ':' . $array['from'] . '-' . $array['to'];
         }
+        sort($result);
         return $result;
     }
 }

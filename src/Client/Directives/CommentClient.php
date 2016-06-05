@@ -8,7 +8,7 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  *
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
-class CommentClient implements RobotsTxtInterface
+class CommentClient implements ClientInterface, RobotsTxtInterface
 {
     /**
      * Base Uri

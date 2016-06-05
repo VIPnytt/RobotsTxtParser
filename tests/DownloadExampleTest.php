@@ -13,8 +13,9 @@ class DownloadExampleTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider generateDataForTest
      * @param string $base
+     * @param array $result
      */
-    public function testDownloadExample($base)
+    public function testDownloadExample($base, $result)
     {
         $parser = new RobotsTxtParser\URI($base);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\URI', $parser);
@@ -31,7 +32,7 @@ class DownloadExampleTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals([], $parser->cleanParam()->export());
 
-        $this->assertEquals([], $parser->export());
+        $this->assertEquals($result, $parser->export());
         $this->assertEquals('', $parser->render());
     }
 
@@ -42,18 +43,51 @@ class DownloadExampleTest extends \PHPUnit_Framework_TestCase
      */
     public function generateDataForTest()
     {
+        $array = [
+            'host' => null,
+            'clean-param' => [],
+            'sitemap' => [],
+            'user-agent' =>
+                [
+                    '*' =>
+                        [
+                            'robot-version' => null,
+                            'visit-time' => [],
+                            'disallow' =>
+                                [
+                                    'host' => [],
+                                    'path' => [],
+                                    'clean-param' => [],
+                                ],
+                            'allow' =>
+                                [
+                                    'host' => [],
+                                    'path' => [],
+                                    'clean-param' => [],
+                                ],
+                            'crawl-delay' => null,
+                            'cache-delay' => null,
+                            'request-rate' => [],
+                            'comment' => [],
+                        ],
+                ],
+        ];
         return [
             [
-                'http://example.com'
+                'http://example.com',
+                $array
             ],
             [
-                'http://www.example.com'
+                'http://www.example.com',
+                $array
             ],
             [
-                'https://example.com'
+                'https://example.com',
+                $array
             ],
             [
-                'https://www.example.com'
+                'https://www.example.com',
+                $array
             ]
         ];
     }

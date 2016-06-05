@@ -10,17 +10,11 @@ use vipnytt\RobotsTxtParser\Parser\RobotsTxtParser;
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
 
 /**
- * Class Core
- *
- * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt
- * @link https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml
- * @link http://www.robotstxt.org/robotstxt.html
- * @link https://www.w3.org/TR/html4/appendix/notes.html#h-B.4.1.1
- * @link http://www.conman.org/people/spc/robots2.html
+ * Class Basic
  *
  * @package vipnytt\RobotsTxtParser
  */
-class Core extends RobotsTxtParser
+class Basic extends RobotsTxtParser
 {
     use UrlParser;
 
@@ -43,7 +37,7 @@ class Core extends RobotsTxtParser
     protected $content;
 
     /**
-     * Core constructor.
+     * Basic constructor.
      *
      * @param string $baseUri
      * @param int $statusCode

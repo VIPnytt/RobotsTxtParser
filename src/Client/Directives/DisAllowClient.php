@@ -6,7 +6,7 @@ use vipnytt\RobotsTxtParser\Parser\Directives\DirectiveParserCommons;
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
-class DisAllowClient implements RobotsTxtInterface
+class DisAllowClient implements ClientInterface, RobotsTxtInterface
 {
     use DirectiveParserCommons;
     use UrlParser;
@@ -15,13 +15,7 @@ class DisAllowClient implements RobotsTxtInterface
      * Paths
      * @var array
      */
-    private $array;
-
-    /**
-     * Clean-param
-     * @var CleanParamClient
-     */
-    private $cleanParam;
+    private $paths;
 
     /**
      * Host
@@ -30,17 +24,23 @@ class DisAllowClient implements RobotsTxtInterface
     private $host;
 
     /**
+     * Clean-param
+     * @var CleanParamClient
+     */
+    private $cleanParam;
+
+    /**
      * DisAllowClient constructor.
      *
      * @param array $paths
-     * @param CleanParamClient $cleanParam
      * @param HostClient $host
+     * @param CleanParamClient $cleanParam
      */
-    public function __construct(array $paths, CleanParamClient $cleanParam, HostClient $host)
+    public function __construct(array $paths, HostClient $host, CleanParamClient $cleanParam)
     {
-        $this->array = $paths;
-        $this->cleanParam = $cleanParam;
+        $this->paths = $paths;
         $this->host = $host;
+        $this->cleanParam = $cleanParam;
     }
 
     /**
@@ -49,13 +49,13 @@ class DisAllowClient implements RobotsTxtInterface
      * @param  string $url
      * @return bool
      */
-    public function affected($url)
+    public function isListed($url)
     {
         $path = $this->getPath($url);
         return (
-            $this->checkPath($path, isset($this->array['path']) ? $this->array['path'] : []) ||
-            $this->cleanParam->check($path) ||
-            $this->host->check($url)
+            $this->checkPath($path, $this->paths) ||
+            $this->cleanParam->isListed($path) ||
+            $this->host->isListed($url)
         );
     }
 
@@ -69,10 +69,9 @@ class DisAllowClient implements RobotsTxtInterface
     private function getPath($url)
     {
         // Encode
-        $url = $this->urlEncode($url);
+        $url = mb_split('#', $this->urlEncode($url))[0];
         if (mb_stripos($url, '/') === 0) {
-            // Strip fragments
-            $url = mb_split('#', $url)[0];
+            // URL already an path
             return $url;
         }
         if (!$this->urlValidate($url)) {
@@ -81,5 +80,19 @@ class DisAllowClient implements RobotsTxtInterface
         $path = (($path = parse_url($url, PHP_URL_PATH)) === null) ? '/' : $path;
         $query = (($query = parse_url($url, PHP_URL_QUERY)) === null) ? '' : '?' . $query;
         return $path . $query;
+    }
+
+    /**
+     * Export
+     *
+     * @return array
+     */
+    public function export()
+    {
+        return [
+            'host' => $this->host->export(),
+            'path' => $this->paths,
+            'clean-param' => $this->cleanParam->export(),
+        ];
     }
 }

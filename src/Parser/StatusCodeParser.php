@@ -2,6 +2,7 @@
 namespace vipnytt\RobotsTxtParser\Parser;
 
 use vipnytt\RobotsTxtParser\Exceptions\StatusCodeException;
+use vipnytt\RobotsTxtParser\Parser\Directives\DirectiveParserCommons;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -11,6 +12,8 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  */
 class StatusCodeParser implements RobotsTxtInterface
 {
+    use DirectiveParserCommons;
+
     /**
      * Valid schemes
      */
@@ -18,6 +21,7 @@ class StatusCodeParser implements RobotsTxtInterface
         'http',
         'https',
     ];
+
     /**
      * Replacement coded
      * @var array
@@ -27,16 +31,19 @@ class StatusCodeParser implements RobotsTxtInterface
         523 => 404, // CloudFlare could not reach the origin server; for example, if the DNS records for the baseUrl server are incorrect.
         524 => 408, // CloudFlare was able to complete a TCP connection to the origin server, but did not receive a timely HTTP response.
     ];
+
     /**
      * Status code
      * @var int
      */
     private $code;
+
     /**
      * Scheme
      * @var string|false
      */
     private $scheme;
+
     /**
      * Applicable
      * @var bool
@@ -70,8 +77,7 @@ class StatusCodeParser implements RobotsTxtInterface
             $this->code === null
         ) {
             return false;
-        }
-        if (
+        } elseif (
             $this->code < 100 ||
             $this->code > 599
         ) {
@@ -81,25 +87,26 @@ class StatusCodeParser implements RobotsTxtInterface
     }
 
     /**
-     * Replace an unofficial code
+     * Replace unofficial code
      *
-     * @return int|false
+     * @param int[] $codePairs
+     * @return int
      */
-    public function replaceUnofficial()
+    public function codeOverride($codePairs = [])
     {
-        if (in_array($this->code, array_keys($this->unofficialCodes))) {
-            $this->code = $this->unofficialCodes[$this->code];
-            return $this->code;
+        $pairs = empty($codePairs) ? $this->unofficialCodes : $codePairs;
+        while (in_array($this->code, array_keys($pairs))) {
+            $this->code = $pairs[$this->code];
         }
-        return false;
+        return $this->code;
     }
 
     /**
-     * Determine the correct group
+     * Check
      *
      * @return string|null
      */
-    public function check()
+    public function accessOverrideCheck()
     {
         if (!$this->applicable) {
             return null;

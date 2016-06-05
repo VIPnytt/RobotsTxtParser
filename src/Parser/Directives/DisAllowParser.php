@@ -3,7 +3,6 @@ namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Client\Directives\DisAllowClient;
 use vipnytt\RobotsTxtParser\Exceptions;
-use vipnytt\RobotsTxtParser\Parser\UrlParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -14,15 +13,6 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 class DisAllowParser implements ParserInterface, RobotsTxtInterface
 {
     use DirectiveParserCommons;
-    use UrlParser;
-
-    /**
-     * Directive alternatives
-     */
-    const DIRECTIVE = [
-        self::DIRECTIVE_ALLOW,
-        self::DIRECTIVE_DISALLOW,
-    ];
 
     /**
      * Sub directives white list
@@ -45,10 +35,10 @@ class DisAllowParser implements ParserInterface, RobotsTxtInterface
     private $base;
 
     /**
-     * Rule array
+     * Path
      * @var array
      */
-    private $array = [];
+    private $path = [];
 
     /**
      * Sub-directive Clean-param
@@ -71,9 +61,9 @@ class DisAllowParser implements ParserInterface, RobotsTxtInterface
     public function __construct($base, $directive)
     {
         $this->base = $base;
-        $this->directive = $this->validateDirective($directive, self::DIRECTIVE);
-        $this->cleanParam = new CleanParamParser();
-        $this->host = new HostParser($this->base);
+        $this->directive = $this->validateDirective($directive, [self::DIRECTIVE_DISALLOW, self::DIRECTIVE_ALLOW]);
+        $this->cleanParam = new CleanParamParser($this->directive);
+        $this->host = new HostParser($this->base, $this->directive);
     }
 
     /**
@@ -97,31 +87,16 @@ class DisAllowParser implements ParserInterface, RobotsTxtInterface
     /**
      * Add plain path to allow/disallow
      *
-     * @param string $rule
+     * @param string $path
      * @return bool
      */
-    private function addPath($rule)
+    private function addPath($path)
     {
-        if (isset($this->array['path']) && in_array($rule, $this->array['path'])) {
+        if (in_array($path, $this->path)) {
             return false;
         }
-        $this->array['path'][] = $rule;
+        $this->path[] = $path;
         return true;
-    }
-
-    /**
-     * Rule array
-     *
-     * @return array
-     */
-    public function getRules()
-    {
-        $result = array_merge(
-            $this->array,
-            $this->cleanParam->getRules(),
-            $this->host->getRules()
-        );
-        return empty($result) ? [] : [$this->directive => $result];
     }
 
     /**
@@ -133,19 +108,14 @@ class DisAllowParser implements ParserInterface, RobotsTxtInterface
     {
         $result = [];
         $render = array_merge(
-            $this->array,
+            $this->path,
             $this->cleanParam->render(),
             $this->host->render()
         );
         foreach ($render as $value) {
-            if (is_array($value)) {
-                foreach ($value as $path) {
-                    $result[] = $this->directive . ':' . $path;
-                }
-                continue;
-            }
             $result[] = $this->directive . ':' . $value;
         }
+        sort($result);
         return $result;
     }
 
@@ -156,6 +126,6 @@ class DisAllowParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        return new DisAllowClient($this->array, $this->cleanParam->client(), $this->host->client());
+        return new DisAllowClient($this->path, $this->host->client(), $this->cleanParam->client());
     }
 }

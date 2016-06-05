@@ -2,7 +2,7 @@
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 /**
- * Interface DirectiveInterface
+ * Interface ParserInterface
  *
  * @package vipnytt\RobotsTxtParser\Parser\Directives
  */
@@ -17,11 +17,11 @@ interface ParserInterface
     public function add($line);
 
     /**
-     * Rule array
+     * Client
      *
-     * @return array
+     * @return object
      */
-    public function getRules();
+    public function client();
 
     /**
      * Render

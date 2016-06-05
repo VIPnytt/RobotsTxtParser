@@ -18,10 +18,10 @@ class UserAgentExportTest extends \PHPUnit_Framework_TestCase
      */
     public function testUserAgentExport($robotsTxtContent, $result, $rendered)
     {
-        $parser = new RobotsTxtParser\Core('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Core', $parser);
+        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
-        $this->assertEquals($result, $parser->userAgent('googlebot')->getRules());
+        $this->assertEquals($result, $parser->userAgent('googlebot')->export());
 
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render());
@@ -52,21 +52,30 @@ Disallow: /
 ROBOTS
                 ,
                 [
+                    'robot-version' => null,
+                    'visit-time' => [],
                     'disallow' =>
                         [
+                            'host' => [],
                             'path' =>
                                 [
                                     '/admin/',
                                 ],
+                            'clean-param' => [],
                         ],
                     'allow' =>
                         [
+                            'host' => [],
                             'path' =>
                                 [
                                     '/public/',
                                 ],
+                            'clean-param' => [],
                         ],
                     'crawl-delay' => 5,
+                    'cache-delay' => null,
+                    'request-rate' => [],
+                    'comment' => [],
                 ],
                 <<<RENDERED
 user-agent:bingbot

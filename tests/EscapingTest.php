@@ -17,8 +17,8 @@ class EscapingTest extends \PHPUnit_Framework_TestCase
      */
     public function testEscaping($robotsTxtContent, $rendered)
     {
-        $parser = new RobotsTxtParser\Core('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Core', $parser);
+        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $this->assertTrue($parser->userAgent()->isAllowed("/%5C."));
         $this->assertFalse($parser->userAgent()->isDisallowed("/%5C."));

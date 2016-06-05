@@ -1,5 +1,6 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Client\Directives;
+
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
 
 /**
@@ -7,7 +8,7 @@ use vipnytt\RobotsTxtParser\Parser\UrlParser;
  *
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
-class HostClient
+class HostClient implements ClientInterface
 {
     use UrlParser;
 
@@ -19,20 +20,28 @@ class HostClient
 
     /**
      * Host
-     * @var array
+     * @var string[]
      */
     private $host;
+
+    /**
+     * Parent directive
+     * @var string|null
+     */
+    private $parent;
 
     /**
      * HostClient constructor.
      *
      * @param string $base
      * @param array $host
+     * @param string|null $parentDirective
      */
-    public function __construct($base, array $host)
+    public function __construct($base, array $host, $parentDirective = null)
     {
         $this->base = $base;
         $this->host = $host;
+        $this->parent = $parentDirective;
     }
 
     /**
@@ -41,7 +50,7 @@ class HostClient
      * @param string $url
      * @return bool
      */
-    public function check($url)
+    public function isListed($url)
     {
         $url = mb_strtolower($this->urlEncode($url));
         $parts = [
@@ -55,10 +64,35 @@ class HostClient
             $parts['scheme'] . '://' . $parts['host'],
             $parts['scheme'] . '://' . $parts['host'] . ':' . $parts['port']
         ];
-        if (in_array($this->get(), $cases)) {
-            return true;
+        foreach ($this->export() as $host) {
+            if (in_array($host, $cases)) {
+                return true;
+            }
         }
         return false;
+    }
+
+    /**
+     * Export
+     *
+     * @return string[]|string|null
+     */
+    public function export()
+    {
+        if ($this->parent === null) {
+            return isset($this->host[0]) ? $this->host[0] : null;
+        }
+        return $this->host;
+    }
+
+    /**
+     * Preferred host
+     *
+     * @return bool
+     */
+    public function isPreferred()
+    {
+        return empty($this->host) ? true : mb_stripos($this->urlBase($this->urlEncode($this->base)), $this->get()) !== false;
     }
 
     /**
@@ -69,25 +103,5 @@ class HostClient
     public function get()
     {
         return isset($this->host[0]) ? $this->host[0] : null;
-    }
-
-    /**
-     * Preferred host
-     *
-     * @return bool
-     */
-    public function isMainHost()
-    {
-        return empty($this->host) ? true : mb_stripos($this->urlBase($this->urlEncode($this->base)), $this->get()) !== false;
-    }
-
-    /**
-     * Export
-     *
-     * @return array
-     */
-    public function export()
-    {
-        return $this->host;
     }
 }
