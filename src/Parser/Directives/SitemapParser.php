@@ -18,7 +18,7 @@ class SitemapParser implements ParserInterface, RobotsTxtInterface
      * Sitemap array
      * @var string[]
      */
-    private $array = [];
+    private $sitemaps = [];
 
     /**
      * Sitemap constructor.
@@ -37,11 +37,11 @@ class SitemapParser implements ParserInterface, RobotsTxtInterface
     {
         if (
             !$this->urlValidate(($url = $this->urlEncode($line))) ||
-            in_array($url, $this->array)
+            in_array($url, $this->sitemaps)
         ) {
             return false;
         }
-        $this->array[] = $url;
+        $this->sitemaps[] = $url;
         return true;
     }
 
@@ -52,7 +52,7 @@ class SitemapParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        return new SitemapClient($this->array);
+        return new SitemapClient($this->sitemaps);
     }
 
     /**
@@ -63,8 +63,8 @@ class SitemapParser implements ParserInterface, RobotsTxtInterface
     public function render()
     {
         $result = [];
-        foreach ($this->array as $value) {
-            $result[] = self::DIRECTIVE_SITEMAP . ':' . $value;
+        foreach ($this->sitemaps as $url) {
+            $result[] = self::DIRECTIVE_SITEMAP . ':' . $url;
         }
         sort($result);
         return $result;

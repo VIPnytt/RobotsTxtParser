@@ -35,7 +35,7 @@ class DelayParser implements ParserInterface, RobotsTxtInterface
      * Delay
      * @var float|int
      */
-    private $value;
+    private $delay;
 
     /**
      * DelayParser constructor.
@@ -62,15 +62,15 @@ class DelayParser implements ParserInterface, RobotsTxtInterface
         if (
             !is_numeric($line) ||
             (
-                isset($this->value) &&
-                $this->value > 0
+                isset($this->delay) &&
+                $this->delay > 0
             )
         ) {
             return false;
         }
         // PHP hack to convert numeric string to float or int
         // http://stackoverflow.com/questions/16606364/php-cast-string-to-either-int-or-float
-        $this->value = $line + 0;
+        $this->delay = $line + 0;
         return true;
     }
 
@@ -82,7 +82,7 @@ class DelayParser implements ParserInterface, RobotsTxtInterface
      */
     public function client($fallbackValue = 0)
     {
-        return new DelayClient($this->base, $this->userAgent, $this->value, $fallbackValue);
+        return new DelayClient($this->base, $this->userAgent, $this->delay, $fallbackValue);
     }
 
     /**
@@ -92,6 +92,6 @@ class DelayParser implements ParserInterface, RobotsTxtInterface
      */
     public function render()
     {
-        return empty($this->value) ? [] : [$this->directive . ':' . $this->value];
+        return empty($this->delay) ? [] : [$this->directive . ':' . $this->delay];
     }
 }
