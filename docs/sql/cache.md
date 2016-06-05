@@ -71,7 +71,7 @@ __Permissions:__
 - `SELECT`
 - `INSERT`
 - `UPDATE`
-- `DELETE` - for maintenance only
+- `DELETE` - needed for maintenance only
 
 __Tables:__
 - `robotstxt__cache0`
