@@ -64,25 +64,12 @@ class HostClient implements ClientInterface
             $parts['scheme'] . '://' . $parts['host'],
             $parts['scheme'] . '://' . $parts['host'] . ':' . $parts['port']
         ];
-        foreach ($this->export() as $host) {
+        foreach ($this->host as $host) {
             if (in_array($host, $cases)) {
                 return true;
             }
         }
         return false;
-    }
-
-    /**
-     * Export
-     *
-     * @return string[]|string|null
-     */
-    public function export()
-    {
-        if ($this->parent === null) {
-            return isset($this->host[0]) ? $this->host[0] : null;
-        }
-        return $this->host;
     }
 
     /**
@@ -103,5 +90,18 @@ class HostClient implements ClientInterface
     public function get()
     {
         return isset($this->host[0]) ? $this->host[0] : null;
+    }
+
+    /**
+     * Export
+     *
+     * @return string[]|string|null
+     */
+    public function export()
+    {
+        if ($this->parent === null) {
+            return isset($this->host[0]) ? $this->host[0] : null;
+        }
+        return $this->host;
     }
 }

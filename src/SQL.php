@@ -3,6 +3,7 @@ namespace vipnytt\RobotsTxtParser;
 
 use PDO;
 use vipnytt\RobotsTxtParser\Client\SQL\Cache\CacheCoreSQL;
+use vipnytt\RobotsTxtParser\Client\SQL\SQLMaintenance;
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
 
 /**
@@ -86,5 +87,15 @@ SQL
             return $query->execute();
         }
         return true;
+    }
+
+    /**
+     * Maintenance
+     *
+     * @return SQLMaintenance
+     */
+    public function maintenance()
+    {
+        return new SQLMaintenance($this->pdo);
     }
 }
