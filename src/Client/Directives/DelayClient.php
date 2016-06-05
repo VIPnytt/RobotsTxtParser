@@ -9,7 +9,7 @@ use vipnytt\RobotsTxtParser\Client\SQL\Delay\DelayHandlerSQL;
  *
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
-class DelayClient implements ClientInterface
+class DelayClient implements DelayInterface, ClientInterface
 {
     /**
      * Base Uri

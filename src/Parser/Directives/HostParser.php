@@ -118,8 +118,8 @@ class HostParser implements ParserInterface, RobotsTxtInterface
     public function render()
     {
         $result = [];
-        foreach ($this->host as $value) {
-            $result[] = self::DIRECTIVE_HOST . ':' . $value;
+        foreach ($this->host as $host) {
+            $result[] = self::DIRECTIVE_HOST . ':' . $host;
         }
         sort($result);
         return $result;

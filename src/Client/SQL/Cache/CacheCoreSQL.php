@@ -154,7 +154,7 @@ SQL
             }
         }
         $validUntil = $request->validUntil();
-        $content = $request->getContents();
+        $content = $request->render("\r\n");
         $query = $this->pdo->prepare(<<<SQL
 INSERT INTO robotstxt__cache0 (base, content, statusCode, validUntil, nextUpdate)
 VALUES (:base, :content, :statusCode, :validUntil, :nextUpdate)
