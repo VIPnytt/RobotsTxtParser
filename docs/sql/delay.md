@@ -2,8 +2,8 @@
 Some hosts requires you to control the request flow, and not send the requests too frequent.
 
 These directives are used to describe witch request delay to apply:
-- [`Crawl-delay`](../directives.md#crawl-value)
-- [`Cache-delay`](../directives.md#cache-value)
+- [`Crawl-delay`](../directives.md#crawl-delay)
+- [`Cache-delay`](../directives.md#cache-delay)
 - [`Request-rate`](../directives.md#request-rate)
 
 #### Shared-setup compatible
@@ -73,7 +73,7 @@ __Permissions:__
 - `SELECT`
 - `INSERT`
 - `UPDATE`
-- `DELETE` - for maintenance only
+- `DELETE` - needed for maintenance only
 
 __Tables:__
 - `robotstxt__delay0`
