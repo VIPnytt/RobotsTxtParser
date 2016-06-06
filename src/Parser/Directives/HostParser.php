@@ -56,7 +56,11 @@ class HostParser implements ParserInterface, RobotsTxtInterface
         if (
             $host === false ||
             $line !== $host ||
-            in_array($host, $this->host)
+            in_array($host, $this->host) ||
+            (
+                $this->parent === null &&
+                !empty($this->host)
+            )
         ) {
             return false;
         }
@@ -101,16 +105,6 @@ class HostParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Client
-     *
-     * @return HostClient
-     */
-    public function client()
-    {
-        return new HostClient($this->base, $this->host, $this->parent);
-    }
-
-    /**
      * Render
      *
      * @return string[]
@@ -123,5 +117,15 @@ class HostParser implements ParserInterface, RobotsTxtInterface
         }
         sort($result);
         return $result;
+    }
+
+    /**
+     * Client
+     *
+     * @return HostClient
+     */
+    public function client()
+    {
+        return new HostClient($this->base, $this->host, $this->parent);
     }
 }

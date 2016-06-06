@@ -1,8 +1,10 @@
 # Robots.txt Cache
 Caching the `robots.txt` files to the SQL server, greatly improves performance, avoids spamming of the remote host and any unnecessary network lag or timeouts is avoided.
 
+It's common practice to cache the `robots.txt` for up to 24 hours.
+
 #### Shared-setup compatible
-__Tip:__ Multiple crawlers may with benefits share the same database/host.
+Multiple crawlers may with benefits share the same database/host.
 
 ### Requirements:
 - MySQL

@@ -8,12 +8,6 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 /**
  * Class RobotsTxtParser
  *
- * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt
- * @link https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml
- * @link http://www.robotstxt.org/robotstxt.html
- * @link https://www.w3.org/TR/html4/appendix/notes.html#h-B.4.1.1
- * @link http://www.conman.org/people/spc/robots2.html
- *
  * @package vipnytt\RobotsTxtParser\Parser
  */
 class RobotsTxtParser implements RobotsTxtInterface

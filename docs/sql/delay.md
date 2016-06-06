@@ -1,13 +1,13 @@
 # Delay handler
-Some hosts requires you to control the request flow, and not send the requests too frequent.
+Some hosts requires you to control the request flow, and not send the requests too frequent. The reasons for this isn't always obvious, and may sometimes be complicated.
 
-These directives are used to describe witch request delay to apply:
-- [`Crawl-delay`](../directives.md#crawl-delay)
-- [`Cache-delay`](../directives.md#cache-delay)
-- [`Request-rate`](../directives.md#request-rate)
+Directives examples:
+- [`Crawl-delay: 5 #seconds`](../directives.md#crawl-delay)
+- [`Cache-delay: 10 #seconds`](../directives.md#cache-delay)
+- [`Request-rate: 500/1h # 7.2 seconds (500 requests / 1 hour)`](../directives.md#request-rate)
 
 #### Shared-setup compatible
-__Tip:__ Multiple user-agents / crawlers may share the same database/host. The delay is handled and stored individually for each User-agent, leaving no worries.
+Multiple user-agents / crawlers may share the same database/host. The delay is handled and stored individually for each User-agent, leaving no worries.
 
 ### Requirements
 - MySQL 5.6+
@@ -15,17 +15,24 @@ __Tip:__ Multiple user-agents / crawlers may share the same database/host. The d
 Support for additional databases is possible, just [submit an issue](https://github.com/VIPnytt/RobotsTxtParser/issues) and we'll see what we can do about it.
 
 ## Usage
+#### Automated
 Sleep until the timestamp is reached
 ```php
-$userAgent->crawlDelay()->sql($pdo)->sleep();
-// Put your crawling code here!
+if ($client->userAgent('MyBot')->isAllowed('http://example.com/path/to/file')) {
+    // Crawl allowed
+    $client->userAgent('MyBot')->crawlDelay()->sql($pdo)->sleep();
+    // Put your crawling code here!
+}
 ```
-
-Get the timestamp with micro seconds
+#### Semi-automated
+Get timestamp with micro seconds
 ```php
-$timestamp = $userAgent->crawlDelay()->sql($pdo)->getMicroTime();
-time_sleep_until($timestamp);
-// Put your crawling code here!
+if ($client->userAgent('MyBot')->isAllowed('http://example.com/path/to/file')) {
+    // Crawl allowed
+    $timestamp = $client->userAgent('MyBot')->crawlDelay()->sql($pdo)->getMicroTime();
+    time_sleep_until($timestamp);
+    // Put your crawling code here!
+}
 ```
 
 #### Table maintenance

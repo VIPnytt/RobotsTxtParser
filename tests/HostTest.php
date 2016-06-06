@@ -26,6 +26,7 @@ class HostTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent()->isAllowed('/'));
 
         $this->assertEquals('myhost.com', $parser->host()->get());
+        $this->assertFalse($parser->host()->isPreferred());
 
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render());
@@ -72,7 +73,6 @@ ROBOTS
                 ,
                 <<<RENDERED
 host:myhost.com
-host:www.myhost.com
 user-agent:*
 disallow:/cgi-bin
 disallow:host:www.myhost.com

@@ -25,10 +25,10 @@ __See also:__
 - [Disallow](#disallow)
 
 __References:__
-- [Google's robots.txt specifications](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#allow)
+- [Google robots.txt specifications](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#allow)
 - [Yandex robots.txt specifications](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#allow-disallow)
-- [The Web Robots Pages](http://www.robotstxt.org/robotstxt.html)
-- [The Web Robots Pages, version 2.0 draft](http://www.conman.org/people/spc/robots2.html#format.directives.allow)
+- [Sean Conner: _"An Extended Standard for Robot Exclusion"_](http://www.conman.org/people/spc/robots2.html#format.directives.allow)
+- [Martijn Koster: _"A Method for Web Robots Control"_](http://www.robotstxt.org/norobots-rfc.txt)
 
 ## Cache-delay
 The ``Cache-delay`` directive specifies the minimum interval (in seconds) for a robot to wait after caching one page, before starting to cache another.
@@ -51,7 +51,16 @@ If page addresses contain dynamic parameters that do not affect the content (e.g
 
 __robots.txt:__
 ````
-Clean-param: p0[&p1&p2&..&pn] [path]
+Clean-param: [parameter]
+````
+````
+Clean-param: [parameter] [path]
+````
+````
+Clean-param: [parameter1]&[parameter2]&[...]
+````
+````
+Clean-param: [parameter1]&[parameter2]&[...] [path]
 ````
 
 __References:__
@@ -66,7 +75,7 @@ comment: [text]
 ````
 
 __References:__
-- [The Web Robots Pages, version 2.0 draft](http://www.conman.org/people/spc/robots2.html#format.directives.comment)
+- [Sean Conner: _"An Extended Standard for Robot Exclusion"_](http://www.conman.org/people/spc/robots2.html#format.directives.comment)
 
 ## Crawl-delay
 The ``Crawl-delay`` directive specifies the minimum interval (in seconds) for a robot to wait after loading one page, before starting to load another.
@@ -97,11 +106,12 @@ __See also:__
 - [Allow](#allow)
 
 __References:__
-- [Google's robots.txt specifications](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#disallow)
+- [Google robots.txt specifications](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#disallow)
 - [Yandex robots.txt specifications](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#allow-disallow)
-- [The Web Robots Pages](http://www.robotstxt.org/robotstxt.html)
-- [W3C Recommendation](https://www.w3.org/TR/html4/appendix/notes.html#h-B.4.1.1)
-- [The Web Robots Pages, version 2.0 draft](http://www.conman.org/people/spc/robots2.html#format.directives.disallow)
+- [W3C Recommendation HTML 4.01 specification](https://www.w3.org/TR/html4/appendix/notes.html#h-B.4.1.1)
+- [Sean Conner: _"An Extended Standard for Robot Exclusion"_](http://www.conman.org/people/spc/robots2.html#format.directives.disallow)
+- [Martijn Koster: _"A Method for Web Robots Control"_](http://www.robotstxt.org/norobots-rfc.txt)
+- [Martijn Koster: _"A Standard for Robot Exclusion"_](http://www.robotstxt.org/orig.html)
 
 ## Host
 If a site has mirrors, the ``host`` directive is used to indicate which site is main one.
@@ -143,7 +153,7 @@ __See also:__
 - [Visit-time](#visit-time)
 
 __References:__
-- [The Web Robots Pages, version 2.0 draft](http://www.conman.org/people/spc/robots2.html#format.directives.request-rate)
+- [Sean Conner: _"An Extended Standard for Robot Exclusion"_](http://www.conman.org/people/spc/robots2.html#format.directives.request-rate)
 
 ## Robot-version
 Witch _Robot exclusion standard_ version to use for parsing.
@@ -158,19 +168,20 @@ robot-version: [version]
 __Note:__ Due to the different _interpretations_ and _robot-specific_ extensions of the _Robot exclusion standard_, it has been suggested that the version number present is more for documentation purposes than for content negotiation.
 
 __References:__
-- [The Web Robots Pages, version 2.0 draft](http://www.conman.org/people/spc/robots2.html#format.directives.robot-version)
+- [Sean Conner: _"An Extended Standard for Robot Exclusion"_](http://www.conman.org/people/spc/robots2.html#format.directives.robot-version)
 
 ## Sitemap
 The ``sitemap`` directive is used to list URL's witch describes the site structure.
 
 __robots.txt:__
 ````
-sitemap: [absoluteURL]
+sitemap: [url]
 ````
 
 __References:__
-- [Google's robots.txt specifications](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#sitemap)
+- [Google robots.txt specifications](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#sitemap)
 - [Yandex robots.txt specifications](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#sitemap)
+- [Sitemaps.org protocol](http://www.sitemaps.org/protocol.html#submit_robots)
 
 ## User-agent
 The ``user-agent`` directive is used as an _start-of-group_ record, and specifies witch User-agent(s) the following rules should be applied to.
@@ -180,15 +191,16 @@ __robots.txt:__
 user-agent: [name]
 ````
 ````
-user-agent: [name/version]
+user-agent: [name]/[version]
 ````
 
 __References:__
-- [Google's robots.txt specifications](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#order-of-precedence-for-user-agents)
+- [Google robots.txt specifications](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#order-of-precedence-for-user-agents)
 - [Yandex robots.txt specifications](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#user-agent)
-- [The Web Robots Pages](http://www.robotstxt.org/robotstxt.html)
-- [W3C Recommendation](https://www.w3.org/TR/html4/appendix/notes.html#h-B.4.1.1)
-- [The Web Robots Pages, version 2.0 draft](http://www.conman.org/people/spc/robots2.html#format.directives.user-agent)
+- [W3C Recommendation HTML 4.01 specification](https://www.w3.org/TR/html4/appendix/notes.html#h-B.4.1.1)
+- [Sean Conner: _"An Extended Standard for Robot Exclusion"_](http://www.conman.org/people/spc/robots2.html#format.directives.user-agent)
+- [Martijn Koster: _"A Method for Web Robots Control"_](http://www.robotstxt.org/norobots-rfc.txt)
+- [Martijn Koster: _"A Standard for Robot Exclusion"_](http://www.robotstxt.org/orig.html)
 
 ## Visit-time
 The robot is requested to only visit the site inside the given ``visit-time`` window.
@@ -202,4 +214,4 @@ __See also:__
 - [Request-rate](#request-rate)
 
 __References:__
-- [The Web Robots Pages, version 2.0 draft](http://www.conman.org/people/spc/robots2.html#format.directives.visit-time)
+- [Sean Conner: _"An Extended Standard for Robot Exclusion"_](http://www.conman.org/people/spc/robots2.html#format.directives.visit-time)

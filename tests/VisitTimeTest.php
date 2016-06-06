@@ -10,6 +10,24 @@ use vipnytt\RobotsTxtParser;
  */
 class VisitTimeTest extends \PHPUnit_Framework_TestCase
 {
+    public function testVisitTimeIsClosed()
+    {
+        $robotsMorning = <<<ROBOTS
+User-agent: *
+Visit-time: 0800-1000
+ROBOTS;
+        $robotsEvening = <<<ROBOTS
+User-agent: *
+Visit-time: 2000-2200
+ROBOTS;
+        $robotsTxtContent = (int)gmdate('H') >= 12 ? $robotsMorning : $robotsEvening;
+        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
+
+        $this->assertFalse($parser->userAgent()->visitTime()->isVisitTime());
+        $this->assertTrue($parser->userAgent()->isDisallowed('/'));
+    }
+
     /**
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent

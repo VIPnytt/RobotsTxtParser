@@ -26,7 +26,7 @@ trait UrlParser
         } elseif (mb_stripos($url, '/') === 0) {
             return $this->urlBase($base) . $url;
         }
-        throw new ClientException('Invalid URL');
+        throw new ClientException("Invalid URL `$url`");
     }
 
     /**
@@ -125,7 +125,7 @@ trait UrlParser
     protected function urlBase($url)
     {
         if ($this->urlValidate($url) === false) {
-            throw new ClientException('Invalid URL');
+            throw new ClientException("Invalid URL `$url`");
         }
         $parts = [
             'scheme' => parse_url($url, PHP_URL_SCHEME),

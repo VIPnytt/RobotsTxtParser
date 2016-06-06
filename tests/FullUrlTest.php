@@ -33,6 +33,8 @@ class FullUrlTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent('badbot')->isAllowed("http://example.com/"));
         $this->assertTrue($parser->userAgent('badbot')->isDisallowed("http://example.com/"));
 
+        $this->assertTrue($parser->host()->isPreferred());
+
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render());
             $this->testFullUrl($rendered, false);
@@ -54,9 +56,11 @@ Disallow: /admin/
 
 User-agent: BadBot
 Disallow: /
+Host: example.com
 ROBOTS
                 ,
                 <<<RENDERED
+host:example.com
 user-agent:*
 disallow:/admin/
 user-agent:badbot

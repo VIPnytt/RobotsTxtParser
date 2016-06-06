@@ -6,6 +6,7 @@ use vipnytt\RobotsTxtParser\Client\Directives\HostClient;
 use vipnytt\RobotsTxtParser\Client\Directives\SitemapClient;
 use vipnytt\RobotsTxtParser\Client\Directives\UserAgentClient;
 use vipnytt\RobotsTxtParser\Client\Encoding\EncodingConverter;
+use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 use vipnytt\RobotsTxtParser\Parser\RobotsTxtParser;
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
 
@@ -76,13 +77,14 @@ class Basic extends RobotsTxtParser
      *
      * @param int|null $bytes
      * @return string
+     * @throws ClientException
      */
     private function limitBytes($bytes)
     {
         if ($bytes === null) {
             return $this->content;
-        } elseif ($bytes < 5000) {
-            trigger_error('Byte limit is set dangerously low!', E_USER_WARNING);
+        } elseif ($bytes < (self::BYTE_LIMIT * 0.25)) {
+            throw new ClientException('Byte limit is set dangerously low! Recommended value=' . self::BYTE_LIMIT);
         }
         return $this->content = mb_strcut($this->content, 0, intval($bytes));
     }

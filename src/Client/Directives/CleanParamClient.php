@@ -1,8 +1,6 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
-use vipnytt\RobotsTxtParser\Parser\Directives\DirectiveParserCommons;
-
 /**
  * Class CleanParamClient
  *
@@ -10,7 +8,7 @@ use vipnytt\RobotsTxtParser\Parser\Directives\DirectiveParserCommons;
  */
 class CleanParamClient implements ClientInterface
 {
-    use DirectiveParserCommons;
+    use DirectiveClientCommons;
 
     /**
      * Clean-param

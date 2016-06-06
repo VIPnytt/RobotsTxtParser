@@ -22,6 +22,7 @@ class RobotVersionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $this->assertEquals($result, $parser->export());
+        $this->assertEquals($result['user-agent']['*']['robot-version'], $parser->userAgent()->robotVersion()->export());
 
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render());

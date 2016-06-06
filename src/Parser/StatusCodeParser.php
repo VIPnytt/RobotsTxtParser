@@ -104,12 +104,12 @@ class StatusCodeParser implements RobotsTxtInterface
     /**
      * Check
      *
-     * @return string|null
+     * @return string|false
      */
-    public function accessOverrideCheck()
+    public function accessOverride()
     {
         if (!$this->applicable) {
-            return null;
+            return false;
         }
         switch (floor($this->code / 100) * 100) {
             case 300:
@@ -118,6 +118,6 @@ class StatusCodeParser implements RobotsTxtInterface
             case 500:
                 return self::DIRECTIVE_DISALLOW;
         }
-        return null;
+        return false;
     }
 }

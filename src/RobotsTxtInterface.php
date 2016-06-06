@@ -43,7 +43,7 @@ interface RobotsTxtInterface
      * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#file-format
      * @link https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#additional-info
      */
-    const BYTE_LIMIT = 64000;
+    const BYTE_LIMIT = 64000; // 512000 bits
 
     /**
      * Max rule length
@@ -64,8 +64,8 @@ interface RobotsTxtInterface
      *
      * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#allow
      * @link https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#allow-disallow
-     * @link http://www.robotstxt.org/robotstxt.html
      * @link http://www.conman.org/people/spc/robots2.html#format.directives.allow
+     * @link http://www.robotstxt.org/norobots-rfc.txt
      */
     const DIRECTIVE_ALLOW = 'allow';
 
@@ -73,7 +73,7 @@ interface RobotsTxtInterface
      * Directive: Cache-delay
      *
      * Unofficial
-     * Some has implemented it as an crawl-delay alternative specially for caching, others as an alias for crawl-value.
+     * Some has implemented it as an crawl-delay alternative specially for caching, others as an alias for crawl-delay.
      */
     const DIRECTIVE_CACHE_DELAY = 'cache-delay';
 
@@ -103,9 +103,10 @@ interface RobotsTxtInterface
      *
      * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#disallow
      * @link https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#allow-disallow
-     * @link http://www.robotstxt.org/robotstxt.html
      * @link https://www.w3.org/TR/html4/appendix/notes.html#h-B.4.1.1
      * @link http://www.conman.org/people/spc/robots2.html#format.directives.disallow
+     * @link http://www.robotstxt.org/norobots-rfc.txt
+     * @link http://www.robotstxt.org/orig.html
      */
     const DIRECTIVE_DISALLOW = 'disallow';
 
@@ -135,6 +136,7 @@ interface RobotsTxtInterface
      *
      * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#sitemap
      * @link https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#sitemap
+     * @link http://www.sitemaps.org/protocol.html#submit_robots
      */
     const DIRECTIVE_SITEMAP = 'sitemap';
 
@@ -143,9 +145,10 @@ interface RobotsTxtInterface
      *
      * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#order-of-precedence-for-user-agents
      * @link https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#user-agent
-     * @link http://www.robotstxt.org/robotstxt.html
      * @link https://www.w3.org/TR/html4/appendix/notes.html#h-B.4.1.1
      * @link http://www.conman.org/people/spc/robots2.html#format.directives.user-agent
+     * @link http://www.robotstxt.org/norobots-rfc.txt
+     * @link http://www.robotstxt.org/orig.html
      */
     const DIRECTIVE_USER_AGENT = 'user-agent';
 

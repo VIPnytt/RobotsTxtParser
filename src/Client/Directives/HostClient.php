@@ -45,7 +45,36 @@ class HostClient implements ClientInterface
     }
 
     /**
-     * Check
+     * Preferred host
+     *
+     * @return bool
+     */
+    public function isPreferred()
+    {
+        if (($host = $this->get()) === null) {
+            return true;
+        }
+        $parsed = parse_url($host);
+        $new = [
+            'scheme' => isset($parsed['scheme']) ? $parsed['scheme'] : parse_url($this->base, PHP_URL_SCHEME),
+            'host' => isset($parsed['host']) ? $parsed['host'] : $parsed['path'],
+        ];
+        $new['port'] = isset($parsed['port']) ? $parsed['port'] : getservbyname($new['scheme'], 'tcp');
+        return $this->base == $this->urlBase($new['scheme'] . '://' . $new['host'] . ':' . $new['port']);
+    }
+
+    /**
+     * Get
+     *
+     * @return string|null
+     */
+    public function get()
+    {
+        return isset($this->host[0]) ? $this->host[0] : null;
+    }
+
+    /**
+     * Preferred host
      *
      * @param string $url
      * @return bool
@@ -70,26 +99,6 @@ class HostClient implements ClientInterface
             }
         }
         return false;
-    }
-
-    /**
-     * Preferred host
-     *
-     * @return bool
-     */
-    public function isPreferred()
-    {
-        return empty($this->host) ? true : mb_stripos($this->urlBase($this->urlEncode($this->base)), $this->get()) !== false;
-    }
-
-    /**
-     * Get
-     *
-     * @return string|null
-     */
-    public function get()
-    {
-        return isset($this->host[0]) ? $this->host[0] : null;
     }
 
     /**

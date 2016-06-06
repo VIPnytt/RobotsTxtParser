@@ -20,8 +20,8 @@ An easy to use, extensible PHP library to parse `robots.txt` according to [_Goog
 
 ### Optional features
 - Automatic download, _http(s) only_
-- Caching system
-- Delay handler
+- [Caching system](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/sql/cache.md)
+- [Delay handler](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/sql/delay.md)
 
 #### Advantages
 _(compared to most other robots.txt libraries)_
@@ -89,11 +89,14 @@ $host = $client->sitemap()->export(); // array
 Visit the [Documentation](https://github.com/VIPnytt/RobotsTxtParser/tree/master/docs) for even more methods, possibilities and additional usage examples.
 
 ## Specifications
-- [x] [Google's robots.txt specifications](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt)
+- [x] [Google robots.txt specifications](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt)
 - [x] [Yandex robots.txt specifications](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml)
-- [x] [The Web Robots Pages](http://www.robotstxt.org/)
-- [x] [W3C Recommendation](https://www.w3.org/TR/html4/appendix/notes.html#h-B.4.1.2)
-- [x] [The Web Robots Pages, version 2.0 draft](http://www.conman.org/people/spc/robots2.html)
+- [x] [W3C Recommendation HTML 4.01 specification](https://www.w3.org/TR/html4/appendix/notes.html#h-B.4.1.2)
+- [x] [Sitemaps.org protocol](http://www.sitemaps.org/protocol.html#submit_robots)
+- [x] [Sean Conner: _"An Extended Standard for Robot Exclusion"_](http://www.conman.org/people/spc/robots2.html)
+- [x] [Martijn Koster: _"A Method for Web Robots Control"_](http://www.robotstxt.org/norobots-rfc.txt)
+- [x] [Martijn Koster: _"A Standard for Robot Exclusion"_](http://www.robotstxt.org/orig.html)
+
 
 ### Directives
 - [x] [`User-agent`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#user-agent)
@@ -103,8 +106,8 @@ Visit the [Documentation](https://github.com/VIPnytt/RobotsTxtParser/tree/master
   - [x] [`Disallow`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#disallow)
     - [x] _inline_ [`Clean-param`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#clean-param)
     - [x] _inline_ [`Host`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#host)
-  - [x] [`Crawl-delay`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#crawl-value)
-  - [x] [`Cache-delay`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#cache-value)
+  - [x] [`Crawl-delay`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#crawl-delay)
+  - [x] [`Cache-delay`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#cache-delay)
   - [x] [`Request-rate`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#request-rate)
   - [x] [`Visit-time`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#visit-time)
   - [x] [`Robot-version`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#robot-version)

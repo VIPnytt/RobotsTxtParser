@@ -22,12 +22,12 @@ class CommentTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $this->assertEquals($parser->userAgent('receiver')->comment()->export(), $result);
-        //$this->assertTrue($parser->userAgent('receiver')->isDisallowed("/"));
-        //$this->assertFalse($parser->userAgent('receiver')->isAllowed("/"));
+        $this->assertTrue($parser->userAgent('receiver')->isDisallowed("/"));
+        $this->assertFalse($parser->userAgent('receiver')->isAllowed("/"));
 
         if ($rendered !== false) {
-            //$this->assertEquals($rendered, $parser->render());
-            //$this->testComment($rendered, $result, false);
+            $this->assertEquals($rendered, $parser->render());
+            $this->testComment($rendered, $result, false);
         }
     }
 
@@ -58,21 +58,25 @@ class CommentTest extends \PHPUnit_Framework_TestCase
         return [
             [
                 <<<ROBOTS
+User-agent: *
+Comment: This is a spam-like broadcast.
 User-agent: receiver
 Disallow: /
-Comment: This comment should be sent back to the author/user of the robot.
+Comment: This comment should be sent back to the author/user of the robot 'receiver'.
 Comment: Contact ceo@example.com for robot white listing.
 ROBOTS
                 ,
                 [
-                    'This comment should be sent back to the author/user of the robot.',
-                    'Contact ceo@example.com for robot white listing.'
+                    "This comment should be sent back to the author/user of the robot 'receiver'.",
+                    "Contact ceo@example.com for robot white listing."
                 ],
                 <<<RENDERED
+user-agent:*
+comment:This is a spam-like broadcast.
 user-agent:receiver
-comment:This comment should be sent back to the author/user of the robot.
-comment:Contact ceo@example.com for robot white listing.
 disallow:/
+comment:This comment should be sent back to the author/user of the robot 'receiver'.
+comment:Contact ceo@example.com for robot white listing.
 RENDERED
             ]
         ];

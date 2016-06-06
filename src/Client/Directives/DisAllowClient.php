@@ -2,13 +2,12 @@
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
-use vipnytt\RobotsTxtParser\Parser\Directives\DirectiveParserCommons;
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 class DisAllowClient implements ClientInterface, RobotsTxtInterface
 {
-    use DirectiveParserCommons;
+    use DirectiveClientCommons;
     use UrlParser;
 
     /**

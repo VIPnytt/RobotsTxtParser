@@ -15,7 +15,7 @@ class DisAllowTest extends \PHPUnit_Framework_TestCase
      * @param string $robotsTxtContent
      * @param string|false $rendered
      */
-    public function testDisAllowTest($robotsTxtContent, $rendered)
+    public function testDisAllow($robotsTxtContent, $rendered)
     {
         $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
@@ -73,8 +73,26 @@ class DisAllowTest extends \PHPUnit_Framework_TestCase
 
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render());
-            $this->testDisAllowTest($rendered, false);
+            $this->testDisAllow($rendered, false);
         }
+    }
+
+    /**
+     * @dataProvider generateDataForTest
+     * @param string $robotsTxtContent
+     * @param string|false $rendered
+     */
+    public function testDisAllowIsListed($robotsTxtContent, $rendered)
+    {
+        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
+        $this->assertEquals($rendered, $parser->render());
+
+        $this->assertTrue($parser->userAgent('*')->disallow()->isListed('/admin'));
+        $this->assertTrue($parser->userAgent('agentV')->allow()->isListed('/bar'));
+
+        $this->expectException(RobotsTxtParser\Exceptions\ClientException::class);
+        $parser->userAgent('*')->disallow()->isListed('http;//www.example.com/invalid');
     }
 
     /**

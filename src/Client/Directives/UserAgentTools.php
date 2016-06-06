@@ -83,11 +83,11 @@ class UserAgentTools implements RobotsTxtInterface
         }
         $statusCodeParser = new StatusCodeParser($this->statusCode, parse_url($this->base, PHP_URL_SCHEME));
         $statusCodeParser->codeOverride();
-        if (($result = $statusCodeParser->accessOverrideCheck()) !== null) {
+        if (($result = $statusCodeParser->accessOverride()) !== false) {
             return $directive === $result;
         }
         if ($this->handler->visitTime()->client()->isVisitTime() === false) {
-            return $result === self::DIRECTIVE_DISALLOW;
+            return $directive === self::DIRECTIVE_DISALLOW;
         }
         return $this->checkPath($directive, $url);
     }
