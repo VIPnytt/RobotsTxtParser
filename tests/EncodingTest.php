@@ -4,19 +4,20 @@ namespace vipnytt\RobotsTxtParser\Tests;
 use vipnytt\RobotsTxtParser;
 
 /**
- * Class InvalidEncodingTest
+ * Class EncodingTest
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class InvalidEncodingTest extends \PHPUnit_Framework_TestCase
+class EncodingTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider generateDataForTest
      * @param string $encoding
      */
-    public function testInvalidEncoding($encoding)
+    public function testEncoding($encoding)
     {
         // Invalid encodings are ignored, and the default encoding is used, without warning.
+        // This test covers both mbstring and iconv
         $parser = new RobotsTxtParser\Basic('http://example.com', 200, '', $encoding);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
     }
@@ -30,14 +31,20 @@ class InvalidEncodingTest extends \PHPUnit_Framework_TestCase
     {
         return [
             [
-                'UTF9'
+                'UTF9' //invalid
             ],
             [
-                'ASCI'
+                'ASCI' //invalid
             ],
             [
-                'ISO8859'
-            ]
+                'ISO8859' //invalid
+            ],
+            [
+                'OSF10020402' //iconv
+            ],
+            [
+                'UTF-16' //mbstring/iconv
+            ],
         ];
     }
 }

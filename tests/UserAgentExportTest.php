@@ -23,6 +23,7 @@ class UserAgentExportTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
         $this->assertEquals($rules, $parser->userAgent('googlebot')->export());
+        $this->assertEquals($userAgentList, $parser->getUserAgents());
 
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render());
@@ -80,6 +81,7 @@ ROBOTS
                 ],
                 [
                     '*',
+                    'bingbot',
                     'googlebot',
                 ],
                 <<<RENDERED

@@ -25,6 +25,8 @@ class UnlistedTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($parser->userAgent()->isAllowed('/path/'));
         $this->assertFalse($parser->userAgent()->isDisallowed('/path/'));
 
+        $this->assertTrue($parser->host()->isPreferred());
+
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render());
             $this->testUnlisted($rendered, false);

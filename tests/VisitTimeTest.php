@@ -39,6 +39,11 @@ ROBOTS;
         $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
 
+        $this->assertTrue($parser->userAgent()->visitTime()->isVisitTime(gmmktime(9, 0, 0)));
+        $this->assertTrue($parser->userAgent()->visitTime()->isVisitTime(gmmktime(14, 0, 0)));
+        $this->assertTrue($parser->userAgent()->visitTime()->isVisitTime(gmmktime(19, 0, 0)));
+        $this->assertFalse($parser->userAgent()->visitTime()->isVisitTime(gmmktime(11, 30, 0)));
+
         $this->assertEquals($result, $parser->userAgent('*')->visitTime()->export());
 
         if ($rendered !== false) {
