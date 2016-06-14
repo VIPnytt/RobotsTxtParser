@@ -33,10 +33,10 @@ interface DelayInterface
     public function getUserAgent();
 
     /**
-     * Client
+     * Handle delay
      *
      * @param PDO $pdo
      * @return DelayHandlerClient
      */
-    public function client(PDO $pdo);
+    public function handle(PDO $pdo);
 }

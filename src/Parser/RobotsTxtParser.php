@@ -82,7 +82,7 @@ class RobotsTxtParser implements RobotsTxtInterface
      * @param string $line
      * @return bool
      */
-    protected function add($line)
+    private function add($line)
     {
         $previousDirective = $this->previousDirective;
         $pair = $this->generateRulePair($line, array_keys(self::TOP_LEVEL_DIRECTIVES));

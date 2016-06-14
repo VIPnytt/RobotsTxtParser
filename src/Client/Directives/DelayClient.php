@@ -59,12 +59,12 @@ class DelayClient extends DelayCore implements ClientInterface
     }
 
     /**
-     * Client
+     * Handle delay
      *
      * @param PDO $pdo
      * @return DelayHandlerClient
      */
-    public function client(PDO $pdo)
+    public function handle(PDO $pdo)
     {
         return new DelayHandlerClient($pdo, $this->base, $this->userAgent, $this->value);
     }
