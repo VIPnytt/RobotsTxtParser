@@ -13,5 +13,7 @@ before_install:
   - composer selfupdate
 install:
   - composer install
+before_script:
+  - mysql -e 'create database test;'
 after_script:
   - CODECLIMATE_REPO_TOKEN=4e66a7998029f3206d05cc068c5f4cf721a961f400b8c30b86bc500eaa835212 ./vendor/bin/test-reporter
