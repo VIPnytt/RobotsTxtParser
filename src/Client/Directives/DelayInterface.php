@@ -2,7 +2,7 @@
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
 use PDO;
-use vipnytt\RobotsTxtParser\Client\SQL\Delay\DelayHandlerSQL;
+use vipnytt\RobotsTxtParser\Client\Delay\DelayHandlerClient;
 
 /**
  * Interface DelayInterface
@@ -12,17 +12,31 @@ use vipnytt\RobotsTxtParser\Client\SQL\Delay\DelayHandlerSQL;
 interface DelayInterface
 {
     /**
-     * Get
+     * Get value
      *
      * @return float|int
      */
-    public function get();
+    public function getValue();
 
     /**
-     * SQL back-end
+     * Get base uri
+     *
+     * @return string
+     */
+    public function getBaseUri();
+
+    /**
+     * Get User-agent string
+     *
+     * @return string
+     */
+    public function getUserAgent();
+
+    /**
+     * Client
      *
      * @param PDO $pdo
-     * @return DelayHandlerSQL
+     * @return DelayHandlerClient
      */
-    public function sql(PDO $pdo);
+    public function client(PDO $pdo);
 }

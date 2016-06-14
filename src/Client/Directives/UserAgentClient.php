@@ -11,14 +11,22 @@ use vipnytt\RobotsTxtParser\Parser\Directives\SubDirectiveHandler;
 class UserAgentClient extends UserAgentTools
 {
     /**
+     * User-agent
+     * @var string
+     */
+    private $userAgent;
+
+    /**
      * UserAgentClient constructor.
      *
      * @param SubDirectiveHandler $handler
      * @param string $baseUri
      * @param int|null $statusCode
+     * @param string $userAgent
      */
-    public function __construct(SubDirectiveHandler $handler, $baseUri, $statusCode)
+    public function __construct(SubDirectiveHandler $handler, $baseUri, $statusCode, $userAgent)
     {
+        $this->userAgent = $userAgent;
         parent::__construct($handler, $baseUri, $statusCode);
     }
 
@@ -39,7 +47,7 @@ class UserAgentClient extends UserAgentTools
      */
     public function cacheDelay()
     {
-        return $this->handler->cacheDelay()->client($this->crawlDelay()->get());
+        return $this->handler->cacheDelay()->client($this->crawlDelay()->getValue(), $this->userAgent);
     }
 
     /**
@@ -49,7 +57,7 @@ class UserAgentClient extends UserAgentTools
      */
     public function crawlDelay()
     {
-        return $this->handler->crawlDelay()->client($this->requestRate()->get());
+        return $this->handler->crawlDelay()->client($this->requestRate()->getValue(), $this->userAgent);
     }
 
     /**
@@ -59,7 +67,7 @@ class UserAgentClient extends UserAgentTools
      */
     public function requestRate()
     {
-        return $this->handler->requestRate()->client();
+        return $this->handler->requestRate()->client($this->userAgent);
     }
 
     /**

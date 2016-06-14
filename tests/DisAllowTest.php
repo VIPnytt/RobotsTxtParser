@@ -17,8 +17,8 @@ class DisAllowTest extends \PHPUnit_Framework_TestCase
      */
     public function testDisAllow($robotsTxtContent, $rendered)
     {
-        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
+        $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
 
         $this->assertTrue($parser->userAgent()->isAllowed("/"));
         $this->assertTrue($parser->userAgent()->isAllowed("/article"));
@@ -84,8 +84,8 @@ class DisAllowTest extends \PHPUnit_Framework_TestCase
      */
     public function testDisAllowIsListed($robotsTxtContent, $rendered)
     {
-        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
+        $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
         $this->assertEquals($rendered, $parser->render());
 
         $this->assertTrue($parser->userAgent('*')->disallow()->isListed('/admin'));

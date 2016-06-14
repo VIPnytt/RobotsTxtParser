@@ -2,28 +2,16 @@
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
 use PDO;
-use vipnytt\RobotsTxtParser\Client\SQL\Delay\DelayHandlerSQL;
+use vipnytt\RobotsTxtParser\Client\Delay\DelayHandlerClient;
 
 /**
  * Class RequestRateClient
  *
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
-class RequestRateClient implements DelayInterface, ClientInterface
+class RequestRateClient extends DelayCore implements ClientInterface, DelayInterface
 {
     use DirectiveClientCommons;
-
-    /**
-     * Base Uri
-     * @var string
-     */
-    private $base;
-
-    /**
-     * User-agent
-     * @var string
-     */
-    private $userAgent;
 
     /**
      * Rates
@@ -40,9 +28,8 @@ class RequestRateClient implements DelayInterface, ClientInterface
      */
     public function __construct($baseUri, $userAgent, array $rates)
     {
-        $this->base = $baseUri;
-        $this->userAgent = $userAgent;
         $this->rates = $rates;
+        parent::__construct($baseUri, $userAgent);
     }
 
     /**
@@ -56,23 +43,23 @@ class RequestRateClient implements DelayInterface, ClientInterface
     }
 
     /**
-     * SQL back-end
+     * Client
      *
      * @param PDO $pdo
-     * @return DelayHandlerSQL
+     * @return DelayHandlerClient
      */
-    public function sql(PDO $pdo)
+    public function client(PDO $pdo)
     {
-        return new DelayHandlerSQL($pdo, $this->base, $this->userAgent, $this->get());
+        return new DelayHandlerClient($pdo, $this->base, $this->userAgent, $this->getValue());
     }
 
     /**
-     * Get rate for current timestamp
+     * Get rate
      *
      * @param int|null $timestamp
      * @return float|int
      */
-    public function get($timestamp = null)
+    public function getValue($timestamp = null)
     {
         $values = $this->determine(is_int($timestamp) ? $timestamp : time());
         if (

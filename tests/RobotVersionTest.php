@@ -18,8 +18,8 @@ class RobotVersionTest extends \PHPUnit_Framework_TestCase
      */
     public function testRobotVersion($robotsTxtContent, $result, $rendered)
     {
-        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
+        $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
 
         $this->assertEquals($result, $parser->export());
         $this->assertEquals($result['user-agent']['*']['robot-version'], $parser->userAgent()->robotVersion()->export());

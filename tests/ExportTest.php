@@ -18,8 +18,8 @@ class ExportTest extends \PHPUnit_Framework_TestCase
      */
     public function testExport($robotsTxtContent, $result, $rendered)
     {
-        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
+        $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
 
         $this->assertEquals($result, $parser->export());
 

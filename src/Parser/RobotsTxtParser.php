@@ -44,7 +44,7 @@ class RobotsTxtParser implements RobotsTxtInterface
     private $previousDirective;
 
     /**
-     * Basic constructor.
+     * TxtClient constructor.
      *
      * @param string $baseUri
      * @param string $content
@@ -82,7 +82,7 @@ class RobotsTxtParser implements RobotsTxtInterface
      * @param string $line
      * @return bool
      */
-    public function add($line)
+    protected function add($line)
     {
         $previousDirective = $this->previousDirective;
         $pair = $this->generateRulePair($line, array_keys(self::TOP_LEVEL_DIRECTIVES));

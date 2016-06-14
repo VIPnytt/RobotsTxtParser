@@ -11,19 +11,13 @@ use vipnytt\RobotsTxtParser\Parser\RobotsTxtParser;
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
 
 /**
- * Class Basic
+ * Class TxtClient
  *
  * @package vipnytt\RobotsTxtParser
  */
-class Basic extends RobotsTxtParser
+class TxtClient extends RobotsTxtParser
 {
     use UrlParser;
-
-    /**
-     * Base uri
-     * @var string
-     */
-    protected $base;
 
     /**
      * Status code
@@ -35,10 +29,10 @@ class Basic extends RobotsTxtParser
      * Robots.txt content
      * @var string
      */
-    protected $content;
+    private $content;
 
     /**
-     * Basic constructor.
+     * TxtClient constructor.
      *
      * @param string $baseUri
      * @param int $statusCode
@@ -48,12 +42,11 @@ class Basic extends RobotsTxtParser
      */
     public function __construct($baseUri, $statusCode, $content, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT)
     {
-        $this->base = $this->urlBase($this->urlEncode($baseUri));
         $this->statusCode = $statusCode;
         $this->content = $content;
         $this->convertEncoding($encoding);
         $this->limitBytes($byteLimit);
-        parent::__construct($this->base, $this->content);
+        parent::__construct($baseUri, $this->content);
     }
 
     /**
@@ -84,7 +77,7 @@ class Basic extends RobotsTxtParser
         if ($bytes === null) {
             return $this->content;
         } elseif ($bytes < (self::BYTE_LIMIT * 0.25)) {
-            throw new ClientException('Byte limit is set dangerously low! Recommended value=' . self::BYTE_LIMIT);
+            throw new ClientException('Byte limit is set dangerously low! Default value=' . self::BYTE_LIMIT);
         }
         return $this->content = mb_strcut($this->content, 0, intval($bytes));
     }

@@ -17,14 +17,14 @@ class CrawlDelayTest extends \PHPUnit_Framework_TestCase
      */
     public function testCrawlDelay($robotsTxtContent, $rendered)
     {
-        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
+        $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
 
-        $this->assertEquals(0, $parser->userAgent()->crawlDelay()->get());
-        $this->assertEquals(0, $parser->userAgent('*')->crawlDelay()->get());
-        $this->assertEquals(0.8, $parser->userAgent('GoogleBot')->crawlDelay()->get());
-        $this->assertEquals(2.5, $parser->userAgent('BingBot')->crawlDelay()->get());
-        $this->assertEquals(864, $parser->userAgent('Legacy')->crawlDelay()->get());
+        $this->assertEquals(0, $parser->userAgent()->crawlDelay()->getValue());
+        $this->assertEquals(0, $parser->userAgent('*')->crawlDelay()->getValue());
+        $this->assertEquals(0.8, $parser->userAgent('GoogleBot')->crawlDelay()->getValue());
+        $this->assertEquals(2.5, $parser->userAgent('BingBot')->crawlDelay()->getValue());
+        $this->assertEquals(864, $parser->userAgent('Legacy')->crawlDelay()->getValue());
 
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render());

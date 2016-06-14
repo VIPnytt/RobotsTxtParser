@@ -66,14 +66,11 @@ ADD PRIMARY KEY (`base`), ADD KEY `worker` (`worker`, `nextUpdate`);
 ```
 Source: [/src/Client/SQL/Cache/cache.sql](https://github.com/VIPnytt/RobotsTxtParser/tree/master/src/Client/SQL/Cache/cache.sql)
 
-#### Permissions
-For the sake of security, it is recommended to use a dedicated user with a bare minimum of permissions.
+#### Security
+For the sake of security, it is recommended to use a dedicated user with a bare minimum of permissions:
 
-__Permissions:__
-- `SELECT`
-- `INSERT`
-- `UPDATE`
-- `DELETE` - needed for maintenance only
-
-__Tables:__
 - `robotstxt__cache0`
+  - `SELECT`
+  - `INSERT`
+  - `UPDATE`
+  - `DELETE` - (maintenance only)

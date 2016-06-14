@@ -17,8 +17,8 @@ class IgnoreTest extends \PHPUnit_Framework_TestCase
      */
     public function testIgnore($robotsTxtContent, $rendered = '')
     {
-        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
+        $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
 
         $this->assertTrue($parser->userAgent('*')->isAllowed('/tech'));
         $this->assertFalse($parser->userAgent('*')->isDisallowed('/tech'));

@@ -78,7 +78,7 @@ class EncodingConverter implements RobotsTxtInterface
     {
         try {
             $converted = mb_convert_encoding($this->string, self::ENCODING, $fromOverride === null ? $this->encoding : $fromOverride);
-        } catch (\Exception $msg) {
+        } catch (\Exception $e) {
             return false;
         }
         mb_internal_encoding(self::ENCODING);

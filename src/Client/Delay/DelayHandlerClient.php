@@ -1,22 +1,21 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Client\SQL\Delay;
+namespace vipnytt\RobotsTxtParser\Client\Delay;
 
 use PDO;
-use vipnytt\RobotsTxtParser\Client\SQL\SQLInterface;
-use vipnytt\RobotsTxtParser\Client\SQL\SQLTrait;
-use vipnytt\RobotsTxtParser\Parser\UrlParser;
+use vipnytt\RobotsTxtParser\SQL\SQLInterface;
+use vipnytt\RobotsTxtParser\SQL\SQLTrait;
 
 /**
- * Class DelayHandlerSQL
+ * Class DelayClient
  *
- * @package vipnytt\RobotsTxtParser\Delay\SQL
+ * @package vipnytt\RobotsTxtParser\Client\Delay
  */
-class DelayHandlerSQL implements SQLInterface
+class DelayHandlerClient implements SQLInterface
 {
     use SQLTrait;
-    use UrlParser;
 
     /**
+     * Database connection
      * @var PDO
      */
     private $pdo;
@@ -28,7 +27,7 @@ class DelayHandlerSQL implements SQLInterface
     private $driver;
 
     /**
-     * Base URI
+     * Base UriClient
      * @var string
      */
     private $base;
@@ -46,7 +45,7 @@ class DelayHandlerSQL implements SQLInterface
     private $delay;
 
     /**
-     * Delay constructor.
+     * DelayClient constructor.
      *
      * @param PDO $pdo
      * @param string $baseUri
@@ -60,9 +59,35 @@ class DelayHandlerSQL implements SQLInterface
         if ($this->driver != 'mysql') {
             trigger_error('Unsupported database. Currently only MySQL 5.6+ are officially supported. ' . self::README_SQL_DELAY, E_USER_WARNING);
         }
-        $this->base = $this->urlBase($this->urlEncode($baseUri));
+        $this->base = $baseUri;
         $this->userAgent = $userAgent;
-        $this->delay = $delay;
+        $this->delay = round($delay, 6, PHP_ROUND_HALF_UP);
+    }
+
+    /**
+     * Queue
+     *
+     * @return float|int
+     */
+    public function getQueue()
+    {
+        if ($this->delay == 0) {
+            return 0;
+        }
+        $query = $this->pdo->prepare(<<<SQL
+SELECT (microTime / 1000000) - UNIX_TIMESTAMP(CURTIME(6)) AS sec
+FROM robotstxt__delay0
+WHERE base = :base AND userAgent = :userAgent;
+SQL
+        );
+        $query->bindParam(':base', $this->base, PDO::PARAM_STR);
+        $query->bindParam(':userAgent', $this->userAgent, PDO::PARAM_STR);
+        $query->execute();
+        if ($query->rowCount() > 0) {
+            $row = $query->fetch(PDO::FETCH_ASSOC);
+            return max($row['sec'], 0);
+        }
+        return 0;
     }
 
     /**
@@ -73,7 +98,7 @@ class DelayHandlerSQL implements SQLInterface
     public function sleep()
     {
         $start = microtime(true);
-        $until = $this->getMicroTime();
+        $until = $this->getTimeSleepUntil();
         if (microtime(true) > $until) {
             return 0;
         }
@@ -88,11 +113,13 @@ class DelayHandlerSQL implements SQLInterface
     /**
      * Timestamp with milliseconds
      *
-     * @return float|int|false
+     * @return float|int
      */
-    public function getMicroTime()
+    public function getTimeSleepUntil()
     {
-        $this->increment();
+        if ($this->delay == 0) {
+            return 0;
+        }
         $query = $this->pdo->prepare(<<<SQL
 SELECT microTime
 FROM robotstxt__delay0
@@ -102,7 +129,7 @@ SQL
         $query->bindParam(':base', $this->base, PDO::PARAM_STR);
         $query->bindParam(':userAgent', $this->userAgent, PDO::PARAM_STR);
         $query->execute();
-
+        $this->increment();
         if ($query->rowCount() > 0) {
             $row = $query->fetch(PDO::FETCH_ASSOC);
             return $row['microTime'] / 1000000;
@@ -118,15 +145,16 @@ SQL
     private function increment()
     {
         $query = $this->pdo->prepare(<<<SQL
-INSERT INTO robotstxt__delay0 (base, userAgent, microTime)
-VALUES (:base, :userAgent, microTime + :delay)
+INSERT INTO robotstxt__delay0 (base, userAgent, microTime, lastDelay)
+VALUES (:base, :userAgent, (UNIX_TIMESTAMP(CURTIME(6)) + :delay) * 1000000, ROUND(:delay))
 ON DUPLICATE KEY UPDATE
-  microTime = GREATEST((UNIX_TIMESTAMP(CURTIME(6)) + :delay) * 1000000, microTime + (:delay * 1000000));
+  microTime = GREATEST((UNIX_TIMESTAMP(CURTIME(6)) + :delay) * 1000000, microTime + (:delay * 1000000)),
+  lastDelay = ROUND(:delay);
 SQL
         );
         $query->bindParam(':base', $this->base, PDO::PARAM_STR);
         $query->bindParam(':userAgent', $this->userAgent, PDO::PARAM_STR);
-        $query->bindParam(':delay', $this->delay, PDO::PARAM_INT);
+        $query->bindParam(':delay', $this->delay, is_int($this->delay) ? PDO::PARAM_INT : PDO::PARAM_STR);
         return $query->execute();
     }
 }

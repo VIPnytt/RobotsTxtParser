@@ -18,8 +18,8 @@ class EncodingTest extends \PHPUnit_Framework_TestCase
     {
         // Invalid encodings are ignored, and the default encoding is used, without warning.
         // This test covers both mbstring and iconv
-        $parser = new RobotsTxtParser\Basic('http://example.com', 200, '', $encoding);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
+        $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, '', $encoding);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
     }
 
     /**

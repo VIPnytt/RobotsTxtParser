@@ -4,11 +4,11 @@ namespace vipnytt\RobotsTxtParser;
 use GuzzleHttp;
 
 /**
- * Class ClientURI
+ * Class UriClient
  *
  * @package vipnytt\RobotsTxtParser
  */
-class URI extends Basic
+class UriClient extends TxtClient
 {
     const GUZZLE_HTTP_CONFIG = [
         'allow_redirects' => [
@@ -28,10 +28,10 @@ class URI extends Basic
     ];
 
     /**
-     * Status code
-     * @var int
+     * Base uri
+     * @var string
      */
-    protected $statusCode;
+    private $base;
 
     /**
      * RequestClient timestamp
@@ -66,14 +66,14 @@ class URI extends Basic
      */
     public function __construct($baseUri, array $guzzleConfig = [], $byteLimit = self::BYTE_LIMIT)
     {
-        $baseUri = $this->urlBase($this->urlEncode($baseUri));
+        $this->base = $this->urlBase($this->urlEncode($baseUri));
         try {
             $client = new GuzzleHttp\Client(
                 array_merge_recursive(
                     self::GUZZLE_HTTP_CONFIG,
                     $guzzleConfig,
                     [
-                        'base_uri' => $baseUri,
+                        'base_uri' => $this->base,
                     ]
                 )
             );
@@ -89,7 +89,7 @@ class URI extends Basic
             $this->encoding = self::ENCODING;
             $this->maxAge = 0;
         }
-        parent::__construct($baseUri, $this->statusCode, $this->contents, $this->encoding, $byteLimit);
+        parent::__construct($this->base, $this->statusCode, $this->contents, $this->encoding, $byteLimit);
     }
 
     /**
@@ -141,7 +141,7 @@ class URI extends Basic
     }
 
     /**
-     * Base URI
+     * Base UriClient
      *
      * @return string
      */

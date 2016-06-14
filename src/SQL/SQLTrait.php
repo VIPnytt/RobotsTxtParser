@@ -1,5 +1,5 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Client\SQL;
+namespace vipnytt\RobotsTxtParser\SQL;
 
 use PDO;
 use PDOException;
@@ -7,17 +7,17 @@ use PDOException;
 /**
  * Class SQLTrait
  *
- * @package vipnytt\RobotsTxtParser\Client\SQL
+ * @package vipnytt\RobotsTxtParser\SQL
  */
 trait SQLTrait
 {
     /**
      * Initialize PDO connection
      *
-     * @param PDO $pdo
+     * @param PDO $pdo |null
      * @return PDO
      */
-    private function pdoInitialize(PDO $pdo)
+    private function pdoInitialize(PDO $pdo = null)
     {
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
         $pdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
@@ -57,7 +57,7 @@ trait SQLTrait
     {
         try {
             $result = $pdo->query("SELECT 1 FROM $table LIMIT 1;");
-        } catch (PDOException $e) {
+        } catch (\Exception $e) {
             return FALSE;
         }
         return $result !== FALSE;

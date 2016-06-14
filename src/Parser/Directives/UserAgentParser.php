@@ -29,7 +29,7 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     ];
 
     /**
-     * Base Uri
+     * Base uri
      * @var string
      */
     private $base;
@@ -168,6 +168,6 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
         if (($userAgentMatch = $userAgentParser->match($this->getUserAgents())) === false) {
             $userAgentMatch = self::USER_AGENT;
         }
-        return $this->client[$userAgent] = new UserAgentClient($this->handler[$userAgentMatch], $this->base, $statusCode);
+        return $this->client[$userAgent] = new UserAgentClient($this->handler[$userAgentMatch], $this->base, $statusCode, $userAgent);
     }
 }

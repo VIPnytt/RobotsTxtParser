@@ -2,27 +2,15 @@
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
 use PDO;
-use vipnytt\RobotsTxtParser\Client\SQL\Delay\DelayHandlerSQL;
+use vipnytt\RobotsTxtParser\Client\Delay\DelayHandlerClient;
 
 /**
  * Class DelayClient
  *
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
-class DelayClient implements DelayInterface, ClientInterface
+class DelayClient extends DelayCore implements ClientInterface
 {
-    /**
-     * Base Uri
-     * @var string
-     */
-    private $base;
-
-    /**
-     * User-agent
-     * @var string
-     */
-    private $userAgent;
-
     /**
      * Value
      * @var float|int
@@ -45,18 +33,17 @@ class DelayClient implements DelayInterface, ClientInterface
      */
     public function __construct($baseUri, $userAgent, $value, $fallbackValue = 0)
     {
-        $this->base = $baseUri;
-        $this->userAgent = $userAgent;
         $this->exportValue = $value;
         $this->value = $value > 0 ? $value : $fallbackValue;
+        parent::__construct($baseUri, $userAgent);
     }
 
     /**
-     * Get
+     * Get value
      *
      * @return float|int
      */
-    public function get()
+    public function getValue()
     {
         return $this->value;
     }
@@ -72,13 +59,13 @@ class DelayClient implements DelayInterface, ClientInterface
     }
 
     /**
-     * SQL back-end
+     * Client
      *
      * @param PDO $pdo
-     * @return DelayHandlerSQL
+     * @return DelayHandlerClient
      */
-    public function sql(PDO $pdo)
+    public function client(PDO $pdo)
     {
-        return new DelayHandlerSQL($pdo, $this->base, $this->userAgent, $this->value);
+        return new DelayHandlerClient($pdo, $this->base, $this->userAgent, $this->value);
     }
 }

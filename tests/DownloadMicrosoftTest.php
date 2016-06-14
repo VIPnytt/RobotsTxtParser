@@ -16,8 +16,8 @@ class DownloadMicrosoftTest extends \PHPUnit_Framework_TestCase
      */
     public function testDownloadMicrosoft($base)
     {
-        $parser = new RobotsTxtParser\URI($base);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\URI', $parser);
+        $parser = new RobotsTxtParser\UriClient($base);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\UriClient', $parser);
 
         $this->assertTrue($parser->userAgent()->isAllowed('/'));
         $this->assertFalse($parser->userAgent()->isDisallowed('/'));

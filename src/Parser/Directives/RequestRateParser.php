@@ -20,12 +20,6 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
     private $base;
 
     /**
-     * User-agent
-     * @var string
-     */
-    private $userAgent;
-
-    /**
      * RequestRate array
      * @var array
      */
@@ -35,12 +29,10 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
      * RequestRate constructor.
      *
      * @param string $base
-     * @param string $userAgent
      */
-    public function __construct($base, $userAgent)
+    public function __construct($base)
     {
         $this->base = $base;
-        $this->userAgent = $userAgent;
     }
 
     /**
@@ -70,11 +62,12 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
     /**
      * Client
      *
+     * @param string $userAgent
      * @return RequestRateClient
      */
-    public function client()
+    public function client($userAgent = self::USER_AGENT)
     {
-        return new RequestRateClient($this->base, $this->userAgent, $this->requestRates);
+        return new RequestRateClient($this->base, $userAgent, $this->requestRates);
     }
 
     /**

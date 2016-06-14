@@ -18,16 +18,16 @@ class RequestRateTest extends \PHPUnit_Framework_TestCase
      */
     public function testRequestRate($robotsTxtContent, $result, $rendered)
     {
-        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
+        $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
 
         $validRates = [];
         foreach ($result as $value) {
             $validRates[] = $value['rate'];
         }
-        $this->assertTrue(in_array($parser->userAgent('Legacy')->requestRate()->get(), $validRates));
-        $this->assertTrue(in_array($parser->userAgent('Legacy')->crawlDelay()->get(), $validRates));
-        $this->assertTrue(in_array($parser->userAgent('Legacy')->cacheDelay()->get(), $validRates));
+        $this->assertTrue(in_array($parser->userAgent('Legacy')->requestRate()->getValue(), $validRates));
+        $this->assertTrue(in_array($parser->userAgent('Legacy')->crawlDelay()->getValue(), $validRates));
+        $this->assertTrue(in_array($parser->userAgent('Legacy')->cacheDelay()->getValue(), $validRates));
 
         if ($rendered !== false) {
             $this->assertEquals($result, $parser->userAgent('*')->requestRate()->export());

@@ -18,8 +18,8 @@ class SitemapTest extends \PHPUnit_Framework_TestCase
      */
     public function testSitemap($robotsTxtContent, $result, $rendered)
     {
-        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
+        $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
 
         $this->assertEquals($result, $parser->sitemap()->export());
 

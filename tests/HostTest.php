@@ -17,8 +17,8 @@ class HostTest extends \PHPUnit_Framework_TestCase
      */
     public function testHost($robotsTxtContent, $rendered)
     {
-        $parser = new RobotsTxtParser\Basic('http://www.myhost.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
+        $parser = new RobotsTxtParser\TxtClient('http://www.myhost.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
 
         $this->assertTrue($parser->userAgent()->isDisallowed('http://www.myhost.com/'));
         $this->assertFalse($parser->userAgent()->isAllowed('http://www.myhost.com/'));

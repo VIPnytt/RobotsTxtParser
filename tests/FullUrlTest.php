@@ -17,8 +17,8 @@ class FullUrlTest extends \PHPUnit_Framework_TestCase
      */
     public function testFullUrl($robotsTxtContent, $rendered)
     {
-        $parser = new RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Basic', $parser);
+        $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
 
         $this->assertTrue($parser->userAgent()->isDisallowed("http://example.com/admin/"));
         $this->assertFalse($parser->userAgent()->isAllowed("http://example.com/admin/"));

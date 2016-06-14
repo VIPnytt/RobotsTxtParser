@@ -26,12 +26,6 @@ class DelayParser implements ParserInterface, RobotsTxtInterface
     private $base;
 
     /**
-     * User-agent
-     * @var string
-     */
-    private $userAgent;
-
-    /**
      * Delay
      * @var float|int
      */
@@ -41,13 +35,11 @@ class DelayParser implements ParserInterface, RobotsTxtInterface
      * DelayParser constructor.
      *
      * @param string $base
-     * @param string $userAgent
      * @param string $directive
      */
-    public function __construct($base, $userAgent, $directive)
+    public function __construct($base, $directive)
     {
         $this->base = $base;
-        $this->userAgent = $userAgent;
         $this->directive = $this->validateDirective($directive, [self::DIRECTIVE_CRAWL_DELAY, self::DIRECTIVE_CACHE_DELAY]);
     }
 
@@ -78,11 +70,12 @@ class DelayParser implements ParserInterface, RobotsTxtInterface
      * Client
      *
      * @param float|int $fallbackValue
+     * @param string $userAgent
      * @return DelayClient
      */
-    public function client($fallbackValue = 0)
+    public function client($fallbackValue = 0, $userAgent = self::USER_AGENT)
     {
-        return new DelayClient($this->base, $this->userAgent, $this->delay, $fallbackValue);
+        return new DelayClient($this->base, $userAgent, $this->delay, $fallbackValue);
     }
 
     /**
