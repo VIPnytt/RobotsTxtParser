@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="./tests/bootstrap.php">
     <php>
-        <var name="DB_DSN" value="mysql:host=192.168.0.15;dbname=test"/>
+        <var name="DB_DSN" value="mysql:host=127.0.0.1;dbname=test"/>
         <var name="DB_USER" value="travis"/>
         <var name="DB_PASSWD" value=""/>
         <var name="DB_DBNAME" value="test"/>
