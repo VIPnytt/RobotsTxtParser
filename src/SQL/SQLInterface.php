@@ -9,12 +9,22 @@ namespace vipnytt\RobotsTxtParser\SQL;
 interface SQLInterface
 {
     /**
-     * Cache table
+     * MySQL driver name
+     */
+    const DRIVER_MYSQL = 'mysql';
+
+    /**
+     * Encoding
+     */
+    const SQL_ENCODING = 'utf8';
+
+    /**
+     * Cache table name
      */
     const TABLE_CACHE = 'robotstxt__cache0';
 
     /**
-     * Delay table
+     * Delay table name
      */
     const TABLE_DELAY = 'robotstxt__delay0';
 
@@ -24,7 +34,7 @@ interface SQLInterface
     const README_SQL = 'https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/sql/README.md';
 
     /**
-     * Cache readme
+     * Delay readme
      */
     const README_SQL_CACHE = 'https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/sql/cache.md';
 

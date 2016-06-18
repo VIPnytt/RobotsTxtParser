@@ -5,41 +5,47 @@ use PDO;
 use vipnytt\RobotsTxtParser\Exceptions\SQLException;
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
 use vipnytt\RobotsTxtParser\SQL\SQLInterface;
-use vipnytt\RobotsTxtParser\SQL\SQLTrait;
+use vipnytt\RobotsTxtParser\SQL\TableConstructor;
 
 /**
- * Class CacheHandler
+ * Class Cache
  *
  * @package vipnytt\RobotsTxtParser
  */
-class CacheHandler implements RobotsTxtInterface, SQLInterface
+class Cache implements RobotsTxtInterface, SQLInterface
 {
     use UrlParser;
-    use SQLTrait;
+
+    /**
+     * Supported database drivers
+     */
+    const SUPPORTED_DRIVERS = [
+        self::DRIVER_MYSQL,
+    ];
 
     /**
      * Database connection
      * @var PDO
      */
-    protected $pdo;
+    private $pdo;
 
     /**
      * GuzzleHTTP config
      * @var array
      */
-    protected $guzzleConfig = [];
+    private $guzzleConfig = [];
 
     /**
      * Byte limit
      * @var int|null
      */
-    protected $byteLimit = self::BYTE_LIMIT;
+    private $byteLimit = self::BYTE_LIMIT;
 
     /**
      * Client nextUpdate margin in seconds
      * @var int
      */
-    protected $clientUpdateMargin = 300;
+    private $clientUpdateMargin = 300;
 
     /**
      * PDO driver
@@ -48,7 +54,7 @@ class CacheHandler implements RobotsTxtInterface, SQLInterface
     private $driver;
 
     /**
-     * CacheHandler constructor.
+     * Cache constructor.
      *
      * @param PDO $pdo
      * @param array $guzzleConfig
@@ -57,12 +63,34 @@ class CacheHandler implements RobotsTxtInterface, SQLInterface
     public function __construct(PDO $pdo, array $guzzleConfig = [], $byteLimit = self::BYTE_LIMIT)
     {
         $this->pdo = $this->pdoInitialize($pdo);
-        $this->driver = $this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
-        if ($this->driver != 'mysql') {
-            trigger_error('Unsupported database. Currently supports MySQL only. ' . self::README_SQL_CACHE, E_USER_WARNING);
-        }
         $this->guzzleConfig = $guzzleConfig;
         $this->byteLimit = $byteLimit;
+    }
+
+    /**
+     * Initialize PDO connection
+     *
+     * @param PDO $pdo
+     * @return PDO
+     * @throws SQLException
+     */
+    private function pdoInitialize(PDO $pdo)
+    {
+        if ($pdo->getAttribute(PDO::ATTR_ERRMODE) === PDO::ERRMODE_SILENT) {
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        }
+        $pdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
+        $pdo->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_NATURAL);
+        $pdo->exec('SET NAMES ' . self::SQL_ENCODING);
+        $this->driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if (!in_array($this->driver, self::SUPPORTED_DRIVERS)) {
+            throw new SQLException('Unsupported database. ' . self::README_SQL_CACHE);
+        }
+        $tableConstructor = new TableConstructor($pdo, self::TABLE_CACHE);
+        if ($tableConstructor->exists() === false) {
+            $tableConstructor->create(file_get_contents(__DIR__ . '/SQL/cache.sql'), self::README_SQL_CACHE);
+        }
+        return $pdo;
     }
 
     /**
@@ -89,6 +117,7 @@ SQL
         $query->execute();
         if ($query->rowCount() > 0) {
             $row = $query->fetch(PDO::FETCH_ASSOC);
+            $this->clockSyncCheck($row['UNIX_TIMESTAMP()']);
             if ($row['nextUpdate'] > ($row['UNIX_TIMESTAMP()'] - $this->clientUpdateMargin)) {
                 $this->markAsActive($base, $row['worker']);
                 return new TxtClient($base, $row['statusCode'], $row['content'], self::ENCODING, $this->byteLimit);
@@ -98,6 +127,19 @@ SQL
         $this->push($request);
         $this->markAsActive($base);
         return new TxtClient($base, $request->getStatusCode(), $request->getContents(), self::ENCODING, $this->byteLimit);
+    }
+
+    /**
+     * Clock sync check
+     *
+     * @param int $time
+     * @throws SQLException
+     */
+    private function clockSyncCheck($time)
+    {
+        if (abs(time() - $time) > 10) {
+            throw new SQLException('`PHP server` and `SQL server` timestamps are out of sync. Please fix!');
+        }
     }
 
     /**
@@ -125,14 +167,14 @@ SQL
     /**
      * Update an robots.txt in the database
      *
-     * @param UriClient $request
+     * @param UriClient $client
      * @return bool
      */
-    public function push(UriClient $request)
+    private function push(UriClient $client)
     {
-        $base = $request->getBaseUri();
-        $statusCode = $request->getStatusCode();
-        $nextUpdate = $request->nextUpdate();
+        $base = $client->getBaseUri();
+        $statusCode = $client->getStatusCode();
+        $nextUpdate = $client->nextUpdate();
         if (
             $statusCode >= 500 &&
             $statusCode < 600 &&
@@ -141,8 +183,8 @@ SQL
         ) {
             return true;
         }
-        $validUntil = $request->validUntil();
-        $content = $request->render();
+        $validUntil = $client->validUntil();
+        $content = $client->render();
         $query = $this->pdo->prepare(<<<SQL
 INSERT INTO robotstxt__cache0 (base, content, statusCode, validUntil, nextUpdate)
 VALUES (:base, :content, :statusCode, :validUntil, :nextUpdate)
@@ -179,6 +221,7 @@ SQL
         $query->execute();
         if ($query->rowCount() > 0) {
             $row = $query->fetch(PDO::FETCH_ASSOC);
+            $this->clockSyncCheck($row['UNIX_TIMESTAMP()']);
             if ($row['validUntil'] > $row['UNIX_TIMESTAMP()']) {
                 $nextUpdate = min($row['validUntil'], $nextUpdate);
                 $query = $this->pdo->prepare(<<<SQL
@@ -266,19 +309,5 @@ SQL
         );
         $query->bindParam(':delay', $delay, PDO::PARAM_INT);
         return $query->execute();
-    }
-
-    /**
-     * Create SQL table
-     *
-     * @return bool
-     * @throws SQLException
-     */
-    public function setup()
-    {
-        if (!$this->createTable($this->pdo, self::TABLE_CACHE, file_get_contents(__DIR__ . '/SQL/cache.sql'))) {
-            throw new SQLException('Unable to create table! Please read instructions at ' . self::README_SQL_CACHE);
-        }
-        return true;
     }
 }

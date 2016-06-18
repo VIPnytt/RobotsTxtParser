@@ -1,15 +1,17 @@
-# SQL features
+# SQL feature overview
 
 #### Universal requirements:
 - [PHP Data Objects (PDO)](http://php.net/manual/en/book.pdo.php) extension
-- [PDO driver](http://php.net/manual/en/pdo.drivers.php) for your SQL database
+- [PDO driver](http://php.net/manual/en/pdo.drivers.php) to communicate with the SQL server
 
 ## Robots.txt Cache
-Caching the `robots.txt` files to the SQL server, greatly improves performance, avoids spamming of the remote host and any unnecessary network lag or timeouts is avoided.
+Every `robots.txt` parser needs some sort of a caching system.
 
-[Read more](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/sql/cache.md)
+By caching data to the SQL server, overall performance is increased, you'll limit the number of network lags and timeouts to a bare minimum, and last but not least, no more spamming of the remote host.
+
+[Enable the built-in caching system.](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/sql/cache.md)
 
 ## Delay handler
-Some hosts requires you to control the request flow, and not send the requests too frequent.
+Many hosts requires you to control the robot's request flow, using a minimum interval between each request.
 
-[Read more](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/sql/delay.md)
+[Learn how to honor the delay directives.](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/sql/delay.md)

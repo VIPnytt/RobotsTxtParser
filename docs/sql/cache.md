@@ -1,10 +1,10 @@
 # Robots.txt Cache
-Caching the `robots.txt` files to the SQL server, greatly improves performance, avoids spamming of the remote host and any unnecessary network lag or timeouts is avoided.
+By caching data to the SQL server, overall performance is increased, you'll limit the number of network lags and timeouts to a bare minimum, and last but not least, no more spamming of the remote host.
 
 It's common practice to cache the `robots.txt` for up to 24 hours.
 
 #### Shared-setup compatible
-Multiple crawlers may with benefits share the same database/host.
+Multiple crawlers may with benefits share the same database.
 
 ### Requirements:
 - MySQL
@@ -13,8 +13,8 @@ Support for additional databases is possible, just [submit an issue](https://git
 
 ## Usage
 ```php
-$sql = new RobotsTxtParser\SQL($pdo);
-$client = $sql->client('http://example.com');
+$cache = new RobotsTxtParser\Cache($pdo);
+$client = $cache->client('http://example.com');
 ```
 
 #### Cron job
@@ -22,49 +22,39 @@ Recommended, but not required.
 
 Automates the `robots.txt` cache update process, and makes sure the cache stays up to date. Faster client, less overhead.
 ```php
-$sql = new RobotsTxtParser\SQL($pdo);
-$cron = $sql->cron();
+$cache = new RobotsTxtParser\Cache($pdo);
+$cron = $cache->cron();
 ```
 
 #### Table maintenance
 Clean old data:
 ```php
-$sql = new RobotsTxtParser\SQL($pdo);
-$sql->maintenance()->cache()->clean();
+$cache = new RobotsTxtParser\Cache($pdo);
+$cache->clean();
 ```
 
 ## Issues
 In case of problems, please [submit an issue](https://github.com/VIPnytt/RobotsTxtParser/issues).
 
 ## Setup instructions
-All you need to do is create the SQL table in a database of your choice. You can do this two ways:
-
-#### Create the table using PHP
-
-```php
-$sql = new RobotsTxtParser\SQL($pdo);
-$sql->maintenance()->cache()->setup(); // bool
-```
-
-#### Create the table using an SQL script
+Run this `SQL` script:
 ```SQL
-CREATE TABLE IF NOT EXISTS `robotstxt__cache0` (
+CREATE TABLE `robotstxt__cache0` (
   `base`       VARCHAR(250)
                COLLATE utf8_unicode_ci      NOT NULL,
   `content`    TEXT COLLATE utf8_unicode_ci NOT NULL,
   `statusCode` SMALLINT(4) UNSIGNED         NOT NULL,
   `validUntil` INT(10) UNSIGNED             NOT NULL,
   `nextUpdate` INT(10) UNSIGNED             NOT NULL,
-  `worker`     TINYINT(3) UNSIGNED DEFAULT NULL
+  `worker`     TINYINT(3) UNSIGNED DEFAULT NULL,
+  PRIMARY KEY (`base`),
+  KEY `worker` (`worker`, `nextUpdate`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8
-  COLLATE = utf8_unicode_ci;
-
-ALTER TABLE `robotstxt__cache0`
-ADD PRIMARY KEY (`base`), ADD KEY `worker` (`worker`, `nextUpdate`);
+  COLLATE = utf8_unicode_ci
 ```
-Source: [/src/Client/SQL/Cache/cache.sql](https://github.com/VIPnytt/RobotsTxtParser/tree/master/src/Client/SQL/Cache/cache.sql)
+Source: [/src/SQL/cache.sql](https://github.com/VIPnytt/RobotsTxtParser/tree/master/src/SQL/cache.sql)
 
 #### Security
 For the sake of security, it is recommended to use a dedicated user with a bare minimum of permissions:
@@ -73,4 +63,4 @@ For the sake of security, it is recommended to use a dedicated user with a bare 
   - `SELECT`
   - `INSERT`
   - `UPDATE`
-  - `DELETE` - (maintenance only)
+  - `DELETE`

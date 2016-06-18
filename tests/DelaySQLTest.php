@@ -25,10 +25,9 @@ class DelaySQLTest extends \PHPUnit_Framework_TestCase
 
         $delayHandler = new RobotsTxtParser\DelayHandler($pdo);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\DelayHandler', $delayHandler);
-        $delayHandler->setup();
 
         $client = $delayHandler->client($parser->userAgent($userAgent)->crawlDelay());
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client\Delay\DelayHandlerClient', $client);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client\Directives\DelayHandlerClient', $client);
 
         $microTime = $client->getTimeSleepUntil();
 

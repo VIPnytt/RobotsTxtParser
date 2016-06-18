@@ -18,10 +18,10 @@ class UriClient extends TxtClient
         ],
         'decode_content' => true,
         'headers' => [
-            'Accept' => 'text/plain;q=1.0, text/*;q=0.8, */*;q=0.1',
-            'Accept-Charset' => 'utf-8;q=1.0, *;q=0.1',
-            'Accept-Encoding' => 'identity;q=1.0, *;q=0.1',
-            'User-Agent' => 'RobotsTxtParser-VIPnytt/2.0 (+https://github.com/VIPnytt/RobotsTxtParser/blob/master/README.md)',
+            'accept' => 'text/plain;q=1.0, text/*;q=0.8, */*;q=0.1',
+            'accept-charset' => 'utf-8;q=1.0, *;q=0.1',
+            'accept-encoding' => 'identity;q=1.0, *;q=0.1',
+            'user-agent' => 'RobotsTxtParser-VIPnytt/2.0 (+https://github.com/VIPnytt/RobotsTxtParser/blob/master/README.md)',
         ],
         'http_errors' => false,
         'verify' => true,
@@ -77,14 +77,14 @@ class UriClient extends TxtClient
                     ]
                 )
             );
-            $response = $client->request('GET', self::PATH);
             $this->time = time();
+            $response = $client->request('GET', self::PATH);
             $this->statusCode = $response->getStatusCode();
             $this->contents = $response->getBody()->getContents();
             $this->encoding = $this->headerEncoding($response->getHeader('content-type'));
             $this->maxAge = $this->headerMaxAge($response->getHeader('cache-control'));
         } catch (GuzzleHttp\Exception\TransferException $e) {
-            $this->statusCode = 523;
+            $this->statusCode = 404;
             $this->contents = '';
             $this->encoding = self::ENCODING;
             $this->maxAge = 0;

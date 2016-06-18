@@ -1,18 +1,25 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Client\Delay;
+namespace vipnytt\RobotsTxtParser\Client\Directives;
 
 use PDO;
+use vipnytt\RobotsTxtParser\Exceptions\SQLException;
 use vipnytt\RobotsTxtParser\SQL\SQLInterface;
-use vipnytt\RobotsTxtParser\SQL\SQLTrait;
+use vipnytt\RobotsTxtParser\SQL\TableConstructor;
+use vipnytt\UserAgentParser;
 
 /**
- * Class DelayClient
+ * Class DelayHandlerClient
  *
- * @package vipnytt\RobotsTxtParser\Client\Delay
+ * @package vipnytt\RobotsTxtParser\Client\Directives
  */
 class DelayHandlerClient implements SQLInterface
 {
-    use SQLTrait;
+    /**
+     * Supported database drivers
+     */
+    const SUPPORTED_DRIVERS = [
+        self::DRIVER_MYSQL,
+    ];
 
     /**
      * Database connection
@@ -51,17 +58,40 @@ class DelayHandlerClient implements SQLInterface
      * @param string $baseUri
      * @param string $userAgent
      * @param float|int $delay
+     * @throws SQLException
      */
     public function __construct(PDO $pdo, $baseUri, $userAgent, $delay)
     {
         $this->pdo = $this->pdoInitialize($pdo);
-        $this->driver = $this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
-        if ($this->driver != 'mysql') {
-            trigger_error('Unsupported database. Currently only MySQL 5.6+ are officially supported. ' . self::README_SQL_DELAY, E_USER_WARNING);
-        }
         $this->base = $baseUri;
-        $this->userAgent = $userAgent;
+        $uaStringParser = new UserAgentParser($userAgent);
+        $this->userAgent = $uaStringParser->stripVersion();
         $this->delay = round($delay, 6, PHP_ROUND_HALF_UP);
+    }
+
+    /**
+     * Initialize PDO connection
+     *
+     * @param PDO $pdo
+     * @return PDO
+     * @throws SQLException
+     */
+    private function pdoInitialize(PDO $pdo)
+    {
+        if ($pdo->getAttribute(PDO::ATTR_ERRMODE) === PDO::ERRMODE_SILENT) {
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        }
+        $pdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
+        $pdo->exec('SET NAMES ' . self::SQL_ENCODING);
+        $this->driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if (!in_array($this->driver, self::SUPPORTED_DRIVERS)) {
+            throw new SQLException('Unsupported database. ' . self::README_SQL_DELAY);
+        }
+        $tableConstructor = new TableConstructor($pdo, self::TABLE_DELAY);
+        if ($tableConstructor->exists() === false) {
+            $tableConstructor->create(file_get_contents(__DIR__ . '/../../SQL/delay.sql'), self::README_SQL_DELAY);
+        }
+        return $pdo;
     }
 
     /**
@@ -75,7 +105,7 @@ class DelayHandlerClient implements SQLInterface
             return 0;
         }
         $query = $this->pdo->prepare(<<<SQL
-SELECT (microTime / 1000000) - UNIX_TIMESTAMP(CURTIME(6)) AS sec
+SELECT GREATEST(0, (microTime / 1000000) - UNIX_TIMESTAMP(CURTIME(6))) AS sec
 FROM robotstxt__delay0
 WHERE base = :base AND userAgent = :userAgent;
 SQL
@@ -85,9 +115,26 @@ SQL
         $query->execute();
         if ($query->rowCount() > 0) {
             $row = $query->fetch(PDO::FETCH_ASSOC);
-            return max($row['sec'], 0);
+            return $row['sec'];
         }
         return 0;
+    }
+
+    /**
+     * Reset queue
+     *
+     * @return bool
+     */
+    public function reset()
+    {
+        $query = $this->pdo->prepare(<<<SQL
+DELETE FROM robotstxt__delay0
+WHERE base = :base AND userAgent = :useragent;
+SQL
+        );
+        $query->bindParam(':base', $this->base, PDO::PARAM_INT);
+        $query->bindParam(':useragent', $this->userAgent, PDO::PARAM_INT);
+        return $query->execute();
     }
 
     /**
@@ -114,6 +161,7 @@ SQL
      * Timestamp with milliseconds
      *
      * @return float|int
+     * @throws SQLException
      */
     public function getTimeSleepUntil()
     {
@@ -121,7 +169,9 @@ SQL
             return 0;
         }
         $query = $this->pdo->prepare(<<<SQL
-SELECT microTime
+SELECT
+  microTime,
+  UNIX_TIMESTAMP()
 FROM robotstxt__delay0
 WHERE base = :base AND userAgent = :userAgent;
 SQL
@@ -132,6 +182,9 @@ SQL
         $this->increment();
         if ($query->rowCount() > 0) {
             $row = $query->fetch(PDO::FETCH_ASSOC);
+            if (abs(time() - $row['UNIX_TIMESTAMP()']) > 10) {
+                throw new SQLException('`PHP server` and `SQL server` timestamps are out of sync. Please fix!');
+            }
             return $row['microTime'] / 1000000;
         }
         return 0;
