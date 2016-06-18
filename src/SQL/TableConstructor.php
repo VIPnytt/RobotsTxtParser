@@ -50,7 +50,7 @@ class TableConstructor
         }
         try {
             $this->pdo->query($sql);
-        } catch (\PDOException $exception) {
+        } catch (\Exception $exception) {
         }
         if ($this->exists()) {
             return true;
@@ -67,7 +67,7 @@ class TableConstructor
     {
         try {
             $result = $this->pdo->query("SELECT 1 FROM " . $this->table . " LIMIT 1;");
-        } catch (\PDOException $e) {
+        } catch (\Exception $e) {
             return false;
         }
         return $result !== false;
