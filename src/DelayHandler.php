@@ -102,7 +102,7 @@ SQL
      * @param int $min
      * @return array
      */
-    public function getTopWaitTime($limit = 100, $min = 0)
+    public function getTopWaitTimes($limit = 100, $min = 0)
     {
         $query = $this->pdo->prepare(<<<SQL
 SELECT

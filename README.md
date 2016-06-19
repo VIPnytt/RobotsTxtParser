@@ -53,7 +53,7 @@ Then run: ```php composer.phar update```
 ## Getting started
 ### Basic usage example
 ```php
-$client = new vipnytt\RobotsTxtParser\URI('http://example.com');
+$client = new vipnytt\RobotsTxtParser\UriClient('http://example.com');
 
 if ($client->userAgent('MyBot')->isAllowed('http://example.com/somepage.html')) {
     // Access is granted
@@ -64,8 +64,8 @@ if ($client->userAgent('MyBot')->isDisallowed('http://example.com/admin')) {
 ```
 ### Some more methods
 ```php
-// Syntax: $baseUri, [$statusCode:int|null], [$robotsTxtContent:string|null], [$encoding:string], [$byteLimit:int]
-$client = new vipnytt\RobotsTxtParser\Basic('http://example.com', 200, $robotsTxtContent);
+// Syntax: $baseUri, [$statusCode:int|null], [$robotsTxtContent:string], [$encoding:string], [$byteLimit:int|null]
+$client = new vipnytt\RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
 
 // Permission checks
 $allowed = $client->userAgent('MyBot')->isAllowed('http://example.com/somepage.html'); // bool

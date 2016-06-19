@@ -14,10 +14,9 @@ class DelaySQLTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider generateDataForTest
      * @param string $uri
-     * @param string $base
      * @param string $userAgent
      */
-    public function testDelaySQL($uri, $base, $userAgent)
+    public function testDelaySQL($uri, $userAgent)
     {
         $pdo = new PDO($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
 
@@ -26,25 +25,28 @@ class DelaySQLTest extends \PHPUnit_Framework_TestCase
         $delayHandler = new RobotsTxtParser\DelayHandler($pdo);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\DelayHandler', $delayHandler);
 
+        // Alternative A
+        $this->assertTrue(is_numeric($parser->userAgent($userAgent)->crawlDelay()->handle($pdo)->getTimeSleepUntil()));
+        // Alternative B
         $client = $delayHandler->client($parser->userAgent($userAgent)->crawlDelay());
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client\Directives\DelayHandlerClient', $client);
-
-        $microTime = $client->getTimeSleepUntil();
-
-        $query = $pdo->prepare(<<<SQL
-SELECT *
-FROM robotstxt__delay0
-WHERE base = :base AND userAgent = :userAgent;
-SQL
+        $this->assertTrue(is_numeric($client->getTimeSleepUntil()));
+        // Common code
+        $start = microtime(true);
+        $sleepTime = $client->sleep();
+        $stop = microtime(true);
+        $this->assertTrue(
+            $sleepTime >= ($stop - $start - 1) &&
+            $sleepTime <= ($stop - $start + 1)
         );
-        $query->bindParam(':base', $base);
-        $query->bindParam(':userAgent', $userAgent);
-        $query->execute();
-        $row = $query->fetch();
+        $this->assertTrue($client->getQueue() <= $sleepTime);
+        $client->reset();
+        $this->assertTrue($client->getTimeSleepUntil() === 0);
 
-        if ($microTime !== 0) {
-            $this->assertEquals($microTime * 1000000, $row['microTime']);
-        }
+        $this->assertTrue(is_array($delayHandler->getTopDelays()));
+        $this->assertTrue(is_array($delayHandler->getTopWaitTimes()));
+
+        $delayHandler->clean();
     }
 
     /**
@@ -57,17 +59,18 @@ SQL
         return [
             [
                 'http://google.com',
-                'http://google.com:80',
                 'Test'
             ],
             [
                 'http://microsoft.com/robots.txt',
-                'http://microsoft.com:80',
                 'Test'
             ],
             [
                 'http://example.com/',
-                'http://example.com:80',
+                'Test'
+            ],
+            [
+                'http://www.vg.no/',
                 'Test'
             ],
         ];

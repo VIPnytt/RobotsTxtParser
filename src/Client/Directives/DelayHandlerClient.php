@@ -4,7 +4,6 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
 use PDO;
 use vipnytt\RobotsTxtParser\Exceptions\SQLException;
 use vipnytt\RobotsTxtParser\SQL\SQLInterface;
-use vipnytt\RobotsTxtParser\SQL\TableConstructor;
 use vipnytt\UserAgentParser;
 
 /**
@@ -87,9 +86,14 @@ class DelayHandlerClient implements SQLInterface
         if (!in_array($this->driver, self::SUPPORTED_DRIVERS)) {
             throw new SQLException('Unsupported database. ' . self::README_SQL_DELAY);
         }
-        $tableConstructor = new TableConstructor($pdo, self::TABLE_DELAY);
-        if ($tableConstructor->exists() === false) {
-            $tableConstructor->create(file_get_contents(__DIR__ . '/../../SQL/delay.sql'), self::README_SQL_DELAY);
+        try {
+            $pdo->query("SELECT 1 FROM robotstxt__delay0 LIMIT 1;");
+        } catch (\Exception $exception1) {
+            try {
+                $pdo->query(file_get_contents(__DIR__ . '/../../SQL/delay.sql'));
+            } catch (\Exception $exception2) {
+                throw new SQLException('Missing table `' . self::TABLE_DELAY . '`. Setup instructions: ' . self::README_SQL_DELAY);
+            }
         }
         return $pdo;
     }
@@ -199,7 +203,7 @@ SQL
     {
         $query = $this->pdo->prepare(<<<SQL
 INSERT INTO robotstxt__delay0 (base, userAgent, delayUntil, lastDelay)
-VALUES (:base, :userAgent, (UNIX_TIMESTAMP(CURTIME(6)) + :delay) * 1000000, ROUND(:delay))
+VALUES (:base, :userAgent, (UNIX_TIMESTAMP(CURTIME(6)) + :delay) * 1000000, :delay * 1000000)
 ON DUPLICATE KEY UPDATE
   delayUntil = GREATEST((UNIX_TIMESTAMP(CURTIME(6)) + :delay) * 1000000, delayUntil + (:delay * 1000000)),
   lastDelay = :delay * 1000000;

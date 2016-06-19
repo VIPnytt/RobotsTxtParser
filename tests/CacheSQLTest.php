@@ -38,6 +38,7 @@ SQL
         $this->assertEquals($client->render(), $row['content']);
 
         $parser->cron();
+        $parser->clean();
     }
 
     /**
@@ -59,6 +60,10 @@ SQL
             [
                 'http://example.com/',
                 'http://example.com:80',
+            ],
+            [
+                'http://www.vg.no/',
+                'http://www.vg.no:80',
             ],
         ];
     }

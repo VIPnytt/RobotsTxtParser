@@ -36,7 +36,7 @@ class TxtClient extends RobotsTxtParser
      *
      * @param string $baseUri
      * @param int $statusCode
-     * @param string|null $content
+     * @param string $content
      * @param string $encoding
      * @param int|null $byteLimit
      */

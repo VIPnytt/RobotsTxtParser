@@ -5,7 +5,6 @@ use PDO;
 use vipnytt\RobotsTxtParser\Exceptions\SQLException;
 use vipnytt\RobotsTxtParser\Parser\UrlParser;
 use vipnytt\RobotsTxtParser\SQL\SQLInterface;
-use vipnytt\RobotsTxtParser\SQL\TableConstructor;
 
 /**
  * Class Cache
@@ -86,9 +85,14 @@ class Cache implements RobotsTxtInterface, SQLInterface
         if (!in_array($this->driver, self::SUPPORTED_DRIVERS)) {
             throw new SQLException('Unsupported database. ' . self::README_SQL_CACHE);
         }
-        $tableConstructor = new TableConstructor($pdo, self::TABLE_CACHE);
-        if ($tableConstructor->exists() === false) {
-            $tableConstructor->create(file_get_contents(__DIR__ . '/SQL/cache.sql'), self::README_SQL_CACHE);
+        try {
+            $pdo->query("SELECT 1 FROM robotstxt__cache0 LIMIT 1;");
+        } catch (\Exception $exception1) {
+            try {
+                $pdo->query(file_get_contents(__DIR__ . '/SQL/cache.sql'));
+            } catch (\Exception $exception2) {
+                throw new SQLException('Missing table `' . self::TABLE_CACHE . '`. Setup instructions: ' . self::README_SQL_CACHE);
+            }
         }
         return $pdo;
     }
@@ -308,6 +312,24 @@ WHERE worker = 0 AND nextUpdate < (UNIX_TIMESTAMP() - :delay);
 SQL
         );
         $query->bindParam(':delay', $delay, PDO::PARAM_INT);
+        return $query->execute();
+    }
+
+    /**
+     * Invalidate cache
+     *
+     * @param $baseUri
+     * @return bool
+     */
+    public function invalidate($baseUri)
+    {
+        $base = $this->urlBase($this->urlEncode($baseUri));
+        $query = $this->pdo->prepare(<<<SQL
+DELETE FROM robotstxt__cache0
+WHERE base = :base;
+SQL
+        );
+        $query->bindParam(':base', $base, PDO::PARAM_STR);
         return $query->execute();
     }
 }
