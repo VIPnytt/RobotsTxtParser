@@ -84,7 +84,7 @@ class UriClient extends TxtClient
             $this->encoding = $this->headerEncoding($response->getHeader('content-type'));
             $this->maxAge = $this->headerMaxAge($response->getHeader('cache-control'));
         } catch (GuzzleHttp\Exception\TransferException $e) {
-            $this->statusCode = 404;
+            $this->statusCode = null;
             $this->contents = '';
             $this->encoding = self::ENCODING;
             $this->maxAge = 0;
@@ -153,7 +153,7 @@ class UriClient extends TxtClient
     /**
      * Status code
      *
-     * @return int
+     * @return int|null
      */
     public function getStatusCode()
     {

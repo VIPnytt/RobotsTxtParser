@@ -75,17 +75,19 @@ class CacheDisplaceSQLTest extends \PHPUnit_Framework_TestCase
     private function check($base)
     {
         $pdo = new PDO($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+        $parser = new RobotsTxtParser\Cache($pdo);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Cache', $parser);
+
         // Insert fake data
+        $parser->invalidate($base);
         $query = $pdo->prepare(<<<SQL
-INSERT IGNORE INTO robotstxt__cache0 (base, content, statusCode, validUntil, nextUpdate)
-VALUES (:base, '', 555, UNIX_TIMESTAMP() + 604800, UNIX_TIMESTAMP() - 3600);
+INSERT INTO robotstxt__cache0 (base, content, statusCode, validUntil, nextUpdate)
+VALUES (:base, '', NULL, UNIX_TIMESTAMP() + 86400, UNIX_TIMESTAMP() - 3600);
 SQL
         );
         $query->bindParam(':base', $base, PDO::PARAM_STR);
         $query->execute();
 
-        $parser = new RobotsTxtParser\Cache($pdo);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Cache', $parser);
         $parser->client($base);
 
         $parser->cron();
@@ -94,19 +96,13 @@ SQL
         $query = $pdo->prepare(<<<SQL
 SELECT *
 FROM robotstxt__cache0
-WHERE base = :base AND validUntil > UNIX_TIMESTAMP() AND nextUpdate > UNIX_TIMESTAMP() AND statusCode >= 500;
+WHERE base = :base AND validUntil > UNIX_TIMESTAMP() AND nextUpdate > UNIX_TIMESTAMP() AND statusCode IS NULL;
 SQL
         );
         $query->bindParam(':base', $base, PDO::PARAM_STR);
         $query->execute();
         // Delete fake data
-        $cleanup = $pdo->prepare(<<<SQL
-DELETE FROM robotstxt__cache0
-WHERE base = :base;
-SQL
-        );
-        $cleanup->bindParam(':base', $base, PDO::PARAM_STR);
-        $cleanup->execute();
+        $parser->invalidate($base);
         if ($query->rowCount() > 0) {
             return true;
         }

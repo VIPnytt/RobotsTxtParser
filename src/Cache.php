@@ -180,9 +180,14 @@ SQL
         $statusCode = $client->getStatusCode();
         $nextUpdate = $client->nextUpdate();
         if (
-            $statusCode >= 500 &&
-            $statusCode < 600 &&
             mb_stripos($base, 'http') === 0 &&
+            (
+                $statusCode === null ||
+                (
+                    $statusCode >= 500 &&
+                    $statusCode < 600
+                )
+            ) &&
             $this->displacePush($base, $nextUpdate)
         ) {
             return true;
@@ -238,8 +243,27 @@ SQL
                 $query->bindParam(':nextUpdate', $nextUpdate, PDO::PARAM_INT);
                 return $query->execute();
             }
+            $this->invalidate($base);
         }
         return false;
+    }
+
+    /**
+     * Invalidate cache
+     *
+     * @param $baseUri
+     * @return bool
+     */
+    public function invalidate($baseUri)
+    {
+        $base = $this->urlBase($this->urlEncode($baseUri));
+        $query = $this->pdo->prepare(<<<SQL
+DELETE FROM robotstxt__cache0
+WHERE base = :base;
+SQL
+        );
+        $query->bindParam(':base', $base, PDO::PARAM_STR);
+        return $query->execute();
     }
 
     /**
@@ -312,24 +336,6 @@ WHERE worker = 0 AND nextUpdate < (UNIX_TIMESTAMP() - :delay);
 SQL
         );
         $query->bindParam(':delay', $delay, PDO::PARAM_INT);
-        return $query->execute();
-    }
-
-    /**
-     * Invalidate cache
-     *
-     * @param $baseUri
-     * @return bool
-     */
-    public function invalidate($baseUri)
-    {
-        $base = $this->urlBase($this->urlEncode($baseUri));
-        $query = $this->pdo->prepare(<<<SQL
-DELETE FROM robotstxt__cache0
-WHERE base = :base;
-SQL
-        );
-        $query->bindParam(':base', $base, PDO::PARAM_STR);
         return $query->execute();
     }
 }
