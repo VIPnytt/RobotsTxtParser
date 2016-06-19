@@ -105,7 +105,7 @@ class DelayHandlerClient implements SQLInterface
             return 0;
         }
         $query = $this->pdo->prepare(<<<SQL
-SELECT GREATEST(0, (microTime / 1000000) - UNIX_TIMESTAMP(CURTIME(6))) AS sec
+SELECT GREATEST(0, (delayUntil / 1000000) - UNIX_TIMESTAMP(CURTIME(6))) AS sec
 FROM robotstxt__delay0
 WHERE base = :base AND userAgent = :userAgent;
 SQL
@@ -170,7 +170,7 @@ SQL
         }
         $query = $this->pdo->prepare(<<<SQL
 SELECT
-  microTime,
+  delayUntil,
   UNIX_TIMESTAMP()
 FROM robotstxt__delay0
 WHERE base = :base AND userAgent = :userAgent;
@@ -185,7 +185,7 @@ SQL
             if (abs(time() - $row['UNIX_TIMESTAMP()']) > 10) {
                 throw new SQLException('`PHP server` and `SQL server` timestamps are out of sync. Please fix!');
             }
-            return $row['microTime'] / 1000000;
+            return $row['delayUntil'] / 1000000;
         }
         return 0;
     }
@@ -198,11 +198,11 @@ SQL
     private function increment()
     {
         $query = $this->pdo->prepare(<<<SQL
-INSERT INTO robotstxt__delay0 (base, userAgent, microTime, lastDelay)
+INSERT INTO robotstxt__delay0 (base, userAgent, delayUntil, lastDelay)
 VALUES (:base, :userAgent, (UNIX_TIMESTAMP(CURTIME(6)) + :delay) * 1000000, ROUND(:delay))
 ON DUPLICATE KEY UPDATE
-  microTime = GREATEST((UNIX_TIMESTAMP(CURTIME(6)) + :delay) * 1000000, microTime + (:delay * 1000000)),
-  lastDelay = ROUND(:delay);
+  delayUntil = GREATEST((UNIX_TIMESTAMP(CURTIME(6)) + :delay) * 1000000, delayUntil + (:delay * 1000000)),
+  lastDelay = :delay * 1000000;
 SQL
         );
         $query->bindParam(':base', $this->base, PDO::PARAM_STR);

@@ -2,7 +2,6 @@
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
 use PDO;
-use vipnytt\RobotsTxtParser\Client\Delay\DelayHandlerClient;
 
 /**
  * Class DelayClient

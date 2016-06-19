@@ -9,8 +9,16 @@ use vipnytt\RobotsTxtParser\Exceptions\SQLException;
  *
  * @package vipnytt\RobotsTxtParser\SQL
  */
-class TableConstructor
+class TableConstructor implements SQLInterface
 {
+    /**
+     * Table white list
+     */
+    const TABLE_WHITE_LIST = [
+        self::TABLE_CACHE,
+        self::TABLE_DELAY,
+    ];
+
     /**
      * Database connection
      * @var PDO
@@ -32,7 +40,7 @@ class TableConstructor
     public function __construct(PDO $pdo, $tableName)
     {
         $this->pdo = $pdo;
-        $this->table = $tableName;
+        $this->table = in_array($tableName, self::TABLE_WHITE_LIST, true) ? $tableName : '';
     }
 
     /**
@@ -50,12 +58,13 @@ class TableConstructor
         }
         try {
             $this->pdo->query($sql);
-        } catch (\PDOException $exception) {
+        } catch (\Exception $exception) {
+            // Query failed
         }
         if ($this->exists()) {
             return true;
         }
-        throw new SQLException('Automatic setup failed, please create table `' . $this->table . '` manually. Setup instructions: ' . $readme);
+        throw new SQLException('Missing table `' . $this->table . '`. Setup instructions: ' . $readme);
     }
 
     /**
@@ -67,7 +76,7 @@ class TableConstructor
     {
         try {
             $result = $this->pdo->query("SELECT 1 FROM " . $this->table . " LIMIT 1;");
-        } catch (\PDOException $e) {
+        } catch (\Exception $e) {
             return false;
         }
         return $result !== false;
