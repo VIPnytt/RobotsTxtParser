@@ -23,6 +23,8 @@ class CacheSQLTest extends \PHPUnit_Framework_TestCase
         $parser = new RobotsTxtParser\Cache($pdo);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Cache', $parser);
 
+        $parser->invalidate($base);
+
         $client = $parser->client($uri);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $client);
 

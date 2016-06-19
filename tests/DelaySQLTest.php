@@ -25,13 +25,15 @@ class DelaySQLTest extends \PHPUnit_Framework_TestCase
         $delayHandler = new RobotsTxtParser\DelayHandler($pdo);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\DelayHandler', $delayHandler);
 
-        // Alternative A
+        $this->assertTrue(is_numeric($parser->userAgent($userAgent)->crawlDelay()->handle($pdo)->getQueue()));
         $this->assertTrue(is_numeric($parser->userAgent($userAgent)->crawlDelay()->handle($pdo)->getTimeSleepUntil()));
-        // Alternative B
+        $this->assertTrue(is_numeric($parser->userAgent($userAgent)->crawlDelay()->handle($pdo)->sleep()));
+
         $client = $delayHandler->client($parser->userAgent($userAgent)->crawlDelay());
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client\Directives\DelayHandlerClient', $client);
         $this->assertTrue(is_numeric($client->getTimeSleepUntil()));
-        // Common code
+
+        $this->assertTrue(is_numeric($client->getQueue()));
         $start = microtime(true);
         $sleepTime = $client->sleep();
         $stop = microtime(true);
@@ -39,7 +41,6 @@ class DelaySQLTest extends \PHPUnit_Framework_TestCase
             $sleepTime >= ($stop - $start - 1) &&
             $sleepTime <= ($stop - $start + 1)
         );
-        $this->assertTrue($client->getQueue() <= $sleepTime);
         $client->reset();
         $this->assertTrue($client->getTimeSleepUntil() === 0);
 

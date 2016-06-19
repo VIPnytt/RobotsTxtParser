@@ -68,13 +68,17 @@ class CacheDisplaceSQLTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result);
     }
 
+    /**
+     * @param string $base
+     * @return bool
+     */
     private function check($base)
     {
         $pdo = new PDO($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
         // Insert fake data
         $query = $pdo->prepare(<<<SQL
 INSERT IGNORE INTO robotstxt__cache0 (base, content, statusCode, validUntil, nextUpdate)
-VALUES (:base, '', 555, UNIX_TIMESTAMP()+604800, UNIX_TIMESTAMP()-3600);
+VALUES (:base, '', 555, UNIX_TIMESTAMP() + 604800, UNIX_TIMESTAMP() - 3600);
 SQL
         );
         $query->bindParam(':base', $base, PDO::PARAM_STR);
@@ -83,6 +87,8 @@ SQL
         $parser = new RobotsTxtParser\Cache($pdo);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Cache', $parser);
         $parser->client($base);
+
+        $parser->cron();
 
         // Check if update has been displaced
         $query = $pdo->prepare(<<<SQL
@@ -93,6 +99,7 @@ SQL
         );
         $query->bindParam(':base', $base, PDO::PARAM_STR);
         $query->execute();
+        // Delete fake data
         $cleanup = $pdo->prepare(<<<SQL
 DELETE FROM robotstxt__cache0
 WHERE base = :base;
