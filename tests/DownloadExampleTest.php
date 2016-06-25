@@ -47,30 +47,7 @@ class DownloadExampleTest extends \PHPUnit_Framework_TestCase
             'host' => null,
             'clean-param' => [],
             'sitemap' => [],
-            'user-agent' =>
-                [
-                    '*' =>
-                        [
-                            'robot-version' => null,
-                            'visit-time' => [],
-                            'disallow' =>
-                                [
-                                    'host' => [],
-                                    'path' => [],
-                                    'clean-param' => [],
-                                ],
-                            'allow' =>
-                                [
-                                    'host' => [],
-                                    'path' => [],
-                                    'clean-param' => [],
-                                ],
-                            'crawl-delay' => null,
-                            'cache-delay' => null,
-                            'request-rate' => [],
-                            'comment' => [],
-                        ],
-                ],
+            'user-agent' => [],
         ];
         return [
             [

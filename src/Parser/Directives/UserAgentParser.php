@@ -41,16 +41,28 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     private $handler = [];
 
     /**
-     * User-agent(s)
+     * Current User-agent(s)
      * @var string[]
      */
-    private $userAgent;
+    private $current = [];
+
+    /**
+     * Append User-agent
+     * @var bool
+     */
+    private $append = false;
+
+    /**
+     * User-agent directive count
+     * @var int[]
+     */
+    private $count = [];
 
     /**
      * User-agent client cache
-     * @var UserAgentClient
+     * @var UserAgentClient[]
      */
-    private $client;
+    private $client = [];
 
     /**
      * UserAgent constructor.
@@ -60,23 +72,32 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     public function __construct($base)
     {
         $this->base = $base;
-        $this->set([self::USER_AGENT]);
+        $this->set(self::USER_AGENT);
+        $this->append = false;
     }
 
     /**
      * Set new User-agent
      *
-     * @param array $array
+     * @param string $userAgent
      * @return bool
      */
-    public function set(array $array)
+    private function set($userAgent)
     {
-        $this->userAgent = array_map('mb_strtolower', $array);
-        foreach ($this->userAgent as $userAgent) {
-            if (!in_array($userAgent, array_keys($this->handler))) {
-                $this->handler[$userAgent] = new SubDirectiveHandler($this->base, $userAgent);
-            }
+        if (!$this->append) {
+            $this->current = [];
         }
+        if (in_array(self::USER_AGENT, $this->current)) {
+            $this->current = [];
+            $userAgent = self::USER_AGENT;
+        }
+        $userAgent = mb_strtolower($userAgent);
+        $this->current[] = $userAgent;
+        if (!in_array($userAgent, array_keys($this->handler))) {
+            $this->handler[$userAgent] = new SubDirectiveHandler($this->base, $userAgent);
+            $this->count[$userAgent] = 0;
+        }
+        $this->append = true;
         return true;
     }
 
@@ -88,12 +109,18 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
      */
     public function add($line)
     {
-        $result = [];
-        if (($pair = $this->generateRulePair($line, array_keys(self::SUB_DIRECTIVES))) === false) {
+        if (($pair = $this->generateRulePair($line, array_merge(array_keys(self::SUB_DIRECTIVES), [self::DIRECTIVE_USER_AGENT]))) === false) {
+            $this->append = false;
             return false;
         }
-        foreach ($this->userAgent as $userAgent) {
+        if ($pair['directive'] === self::DIRECTIVE_USER_AGENT) {
+            return $this->set($pair['value']);
+        }
+        $this->append = false;
+        $result = [];
+        foreach ($this->current as $userAgent) {
             $result[] = $this->handler[$userAgent]->{self::SUB_DIRECTIVES[$pair['directive']]}()->add($pair['value']);
+            $this->count[$userAgent]++;
         }
         return in_array(true, $result, true);
     }
@@ -106,9 +133,9 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     public function render()
     {
         $userAgents = $this->getUserAgents();
-        $result = [];
+        $pair = [];
         foreach ($userAgents as $userAgent) {
-            $current = array_merge(
+            $pair[$userAgent] = array_merge(
                 $this->handler[$userAgent]->robotVersion()->render(),
                 $this->handler[$userAgent]->visitTime()->render(),
                 $this->handler[$userAgent]->disallow()->render(),
@@ -118,9 +145,16 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
                 $this->handler[$userAgent]->requestRate()->render(),
                 $this->handler[$userAgent]->comment()->render()
             );
-            if (!empty($current)) {
-                $result = array_merge($result, [self::DIRECTIVE_USER_AGENT . ':' . $userAgent], $current);
+        }
+        $pair = array_filter($pair);
+        $result = [];
+        while (!empty($pair)) {
+            $groupMembers = current($pair);
+            foreach (array_keys($pair, $groupMembers) as $userAgent) {
+                $result[] = self::DIRECTIVE_USER_AGENT . ':' . $userAgent;
+                unset($pair[$userAgent]);
             }
+            $result = array_merge($result, $groupMembers);
         }
         return $result;
     }
@@ -132,7 +166,7 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
      */
     public function getUserAgents()
     {
-        $list = array_keys($this->handler);
+        $list = array_keys(array_filter($this->count));
         sort($list);
         return $list;
     }

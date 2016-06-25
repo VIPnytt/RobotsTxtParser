@@ -82,7 +82,6 @@ class UserAgentTools implements RobotsTxtInterface
             throw new ClientException('URL belongs to a different robots.txt');
         }
         $statusCodeParser = new StatusCodeParser($this->statusCode, parse_url($this->base, PHP_URL_SCHEME));
-        $statusCodeParser->codeOverride();
         if (($result = $statusCodeParser->accessOverride()) !== false) {
             return $directive === $result;
         }

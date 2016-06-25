@@ -44,7 +44,6 @@ class DelaySQLTest extends \PHPUnit_Framework_TestCase
         $client->reset();
         $this->assertTrue($client->getTimeSleepUntil() === 0);
 
-        $this->assertTrue(is_array($delayHandler->getTopDelays()));
         $this->assertTrue(is_array($delayHandler->getTopWaitTimes()));
 
         $delayHandler->clean();

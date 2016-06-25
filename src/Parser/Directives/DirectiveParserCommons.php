@@ -27,7 +27,7 @@ trait DirectiveParserCommons
         if (
             empty($pair[1]) ||
             empty($pair[0]) ||
-            !in_array(($pair[0] = mb_strtolower($pair[0])), $whiteList)
+            !in_array(($pair[0] = str_ireplace(array_keys(self::ALIAS_DIRECTIVES), array_values(self::ALIAS_DIRECTIVES), mb_strtolower($pair[0]))), $whiteList)
         ) {
             // Line does not contain any supported directive
             return false;

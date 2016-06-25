@@ -22,7 +22,6 @@ class RobotsTxtParser implements RobotsTxtInterface
         self::DIRECTIVE_CLEAN_PARAM => 'cleanParam',
         self::DIRECTIVE_HOST => 'host',
         self::DIRECTIVE_SITEMAP => 'sitemap',
-        self::DIRECTIVE_USER_AGENT => 'userAgent',
     ];
 
     /**
@@ -30,18 +29,6 @@ class RobotsTxtParser implements RobotsTxtInterface
      * @var RootDirectiveHandler
      */
     protected $handler;
-
-    /**
-     * Current user-agent(s)
-     * @var array
-     */
-    private $userAgents;
-
-    /**
-     * Previous directive
-     * @var string
-     */
-    private $previousDirective;
 
     /**
      * TxtClient constructor.
@@ -60,10 +47,11 @@ class RobotsTxtParser implements RobotsTxtInterface
      * Client robots.txt
      *
      * @param string $txt
-     * @return void
+     * @return bool
      */
     private function parseTxt($txt)
     {
+        $result = [];
         $lines = array_filter(array_map('trim', mb_split('\r\n|\n|\r', $txt)));
         // Client each line individually
         foreach ($lines as $line) {
@@ -71,9 +59,10 @@ class RobotsTxtParser implements RobotsTxtInterface
             $line = mb_substr($line, 0, self::MAX_LENGTH_RULE);
             // Remove comments
             $line = mb_split('#', $line, 2)[0];
-            // Client line
-            $this->add($line);
+            // Parse line
+            $result[] = $this->parseLine($line);
         }
+        return in_array(true, $result, true);
     }
 
     /**
@@ -82,23 +71,12 @@ class RobotsTxtParser implements RobotsTxtInterface
      * @param string $line
      * @return bool
      */
-    private function add($line)
+    private function parseLine($line)
     {
-        $previousDirective = $this->previousDirective;
-        $pair = $this->generateRulePair($line, array_keys(self::TOP_LEVEL_DIRECTIVES));
-        if ($pair === false) {
-            $this->previousDirective = $line;
-            return $this->handler->userAgent()->add($line);
-        } elseif ($pair['directive'] === self::DIRECTIVE_USER_AGENT) {
-            if ($previousDirective !== self::DIRECTIVE_USER_AGENT) {
-                $this->userAgents = [];
-            }
-            $this->userAgents[] = $pair['value'];
-            $this->previousDirective = $pair['directive'];
-            return $this->handler->userAgent()->set($this->userAgents);
+        if (($pair = $this->generateRulePair($line, array_keys(self::TOP_LEVEL_DIRECTIVES))) !== false) {
+            return $this->handler->{self::TOP_LEVEL_DIRECTIVES[$pair['directive']]}()->add($pair['value']);
         }
-        $this->previousDirective = $pair['directive'];
-        return $this->handler->{self::TOP_LEVEL_DIRECTIVES[$pair['directive']]}()->add($pair['value']);
+        return $this->handler->userAgent()->add($line);
     }
 
     /**

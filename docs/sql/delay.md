@@ -56,7 +56,6 @@ CREATE TABLE `robotstxt__delay0` (
   `delayUntil` BIGINT(20) UNSIGNED     NOT NULL,
   `lastDelay`  BIGINT(20) UNSIGNED     NOT NULL,
   PRIMARY KEY (`base`, `userAgent`),
-  KEY `lastDelay` (`lastDelay`),
   KEY `delayUntil` (`delayUntil`)
 )
   ENGINE = InnoDB

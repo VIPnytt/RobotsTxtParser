@@ -106,6 +106,7 @@ class DisAllowTest extends \PHPUnit_Framework_TestCase
             [
                 <<<ROBOTS
 User-agent: *
+User-agent: anyone
 Disallow: /admin
 Disallow: /temp#comment
 Disallow: /forum
@@ -139,8 +140,6 @@ disallow:/admin
 disallow:/forum
 disallow:/temp
 user-agent:agentv
-disallow:/foo
-allow:/bar
 user-agent:agentw
 disallow:/foo
 allow:/bar

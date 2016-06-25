@@ -97,6 +97,8 @@ Visit the [Documentation](https://github.com/VIPnytt/RobotsTxtParser/tree/master
 - [x] [Martijn Koster: _"A Method for Web Robots Control"_](http://www.robotstxt.org/norobots-rfc.txt)
 - [x] [Martijn Koster: _"A Standard for Robot Exclusion"_](http://www.robotstxt.org/orig.html)
 
+___Note:__ Where the specifications/drafts differ from each other, the most specific parts is used._
+
 
 ### Directives
 - [x] [`User-agent`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#user-agent)

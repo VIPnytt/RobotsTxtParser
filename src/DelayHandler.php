@@ -66,36 +66,6 @@ SQL
     }
 
     /**
-     * Top X delays
-     *
-     * @param int $limit
-     * @param int $min
-     * @return array
-     */
-    public function getTopDelays($limit = 100, $min = 0)
-    {
-        $query = $this->pdo->prepare(<<<SQL
-SELECT
-  base,
-  userAgent,
-  delayUntil / 1000000,
-  lastDelay / 1000000
-FROM robotstxt__delay0
-WHERE lastDelay > (:minDelay * 1000000)
-ORDER BY lastDelay DESC
-LIMIT :maxCount;
-SQL
-        );
-        $query->bindParam(':minDelay', $min, PDO::PARAM_INT);
-        $query->bindParam(':maxCount', $limit, PDO::PARAM_INT);
-        $query->execute();
-        if ($query->rowCount() > 0) {
-            return $query->fetchAll(PDO::FETCH_ASSOC);
-        }
-        return [];
-    }
-
-    /**
      * Top X wait time
      *
      * @param int $limit

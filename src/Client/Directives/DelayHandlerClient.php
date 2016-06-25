@@ -57,7 +57,6 @@ class DelayHandlerClient implements SQLInterface
      * @param string $baseUri
      * @param string $userAgent
      * @param float|int $delay
-     * @throws SQLException
      */
     public function __construct(PDO $pdo, $baseUri, $userAgent, $delay)
     {

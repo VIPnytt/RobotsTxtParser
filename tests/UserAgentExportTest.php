@@ -22,7 +22,7 @@ class UserAgentExportTest extends \PHPUnit_Framework_TestCase
         $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
 
-        $this->assertEquals($rules, $parser->userAgent('googlebot')->export());
+        $this->assertEquals($rules, $parser->export());
         $this->assertEquals($userAgentList, $parser->getUserAgents());
 
         if ($rendered !== false) {
@@ -49,38 +49,68 @@ Disallow: /admin/
 Allow: /public/
 Crawl-delay: 5
 
-User-agent: BingBot
+UserAgent: BingBot
 Disallow: /
 ROBOTS
                 ,
                 [
-                    'robot-version' => null,
-                    'visit-time' => [],
-                    'disallow' =>
-                        [
-                            'host' => [],
-                            'path' =>
+                    'host' => null,
+                    'clean-param' => [],
+                    'sitemap' => [],
+                    'user-agent' => [
+                        'bingbot' => [
+                            'robot-version' => null,
+                            'visit-time' => [],
+                            'disallow' =>
                                 [
-                                    '/admin/',
+                                    'host' => [],
+                                    'path' =>
+                                        [
+                                            '/',
+                                        ],
+                                    'clean-param' => [],
                                 ],
-                            'clean-param' => [],
-                        ],
-                    'allow' =>
-                        [
-                            'host' => [],
-                            'path' =>
+                            'allow' =>
                                 [
-                                    '/public/',
+                                    'host' => [],
+                                    'path' => [],
+                                    'clean-param' => [],
                                 ],
-                            'clean-param' => [],
+                            'crawl-delay' => null,
+                            'cache-delay' => null,
+                            'request-rate' => [],
+                            'comment' => [],
                         ],
-                    'crawl-delay' => 5,
-                    'cache-delay' => null,
-                    'request-rate' => [],
-                    'comment' => [],
+                        'googlebot' =>
+                            [
+                                'robot-version' => null,
+                                'visit-time' => [],
+                                'disallow' =>
+                                    [
+                                        'host' => [],
+                                        'path' =>
+                                            [
+                                                '/admin/',
+                                            ],
+                                        'clean-param' => [],
+                                    ],
+                                'allow' =>
+                                    [
+                                        'host' => [],
+                                        'path' =>
+                                            [
+                                                '/public/',
+                                            ],
+                                        'clean-param' => [],
+                                    ],
+                                'crawl-delay' => 5,
+                                'cache-delay' => null,
+                                'request-rate' => [],
+                                'comment' => [],
+                            ]
+                    ]
                 ],
                 [
-                    '*',
                     'bingbot',
                     'googlebot',
                 ],

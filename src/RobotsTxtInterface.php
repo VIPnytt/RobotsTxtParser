@@ -158,4 +158,19 @@ interface RobotsTxtInterface
      * @link http://www.conman.org/people/spc/robots2.html#format.directives.visit-time
      */
     const DIRECTIVE_VISIT_TIME = 'visit-time';
+
+    /**
+     * Directive aliases (for simple errors / typos)
+     *
+     * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#file-format
+     */
+    const ALIAS_DIRECTIVES = [
+        'cachedelay' => self::DIRECTIVE_CACHE_DELAY,
+        'cleanparam' => self::DIRECTIVE_CLEAN_PARAM,
+        'crawldelay' => self::DIRECTIVE_CRAWL_DELAY,
+        'requestrate' => self::DIRECTIVE_REQUEST_RATE,
+        'robotversion' => self::DIRECTIVE_ROBOT_VERSION,
+        'useragent' => self::DIRECTIVE_USER_AGENT,
+        'visittime' => self::DIRECTIVE_VISIT_TIME,
+    ];
 }

@@ -77,7 +77,7 @@ ROBOTS;
             [
                 'http://example.com',
                 522,
-                'full allow'
+                'full disallow'
             ],
             [
                 'https://example.com',

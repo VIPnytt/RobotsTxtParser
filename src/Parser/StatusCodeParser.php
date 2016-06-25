@@ -23,16 +23,6 @@ class StatusCodeParser implements RobotsTxtInterface
     ];
 
     /**
-     * Replacement coded
-     * @var array
-     */
-    protected $unofficialCodes = [
-        522 => 408, // CloudFlare could not negotiate a TCP handshake with the origin server.
-        523 => 404, // CloudFlare could not reach the origin server; for example, if the DNS records for the baseUrl server are incorrect.
-        524 => 408, // CloudFlare was able to complete a TCP connection to the origin server, but did not receive a timely HTTP response.
-    ];
-
-    /**
      * Status code
      * @var int
      */
@@ -84,21 +74,6 @@ class StatusCodeParser implements RobotsTxtInterface
             throw new StatusCodeException('Invalid HTTP status code');
         }
         return true;
-    }
-
-    /**
-     * Replace unofficial code
-     *
-     * @param int[] $codePairs
-     * @return int
-     */
-    public function codeOverride($codePairs = [])
-    {
-        $pairs = empty($codePairs) ? $this->unofficialCodes : $codePairs;
-        while (in_array($this->code, array_keys($pairs))) {
-            $this->code = $pairs[$this->code];
-        }
-        return $this->code;
     }
 
     /**
