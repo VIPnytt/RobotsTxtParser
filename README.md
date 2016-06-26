@@ -12,10 +12,11 @@ An easy to use, extensible PHP library to parse `robots.txt` according to [_Goog
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/6fb47427-166b-45d0-bd41-40f7a63c2b0c/big.png)](https://insight.sensiolabs.com/projects/6fb47427-166b-45d0-bd41-40f7a63c2b0c)
 
 #### Usage cases:
-- Permission check for URL crawling
-- XML Sitemap detection
-- Host preference detection
-- Dynamic URL parameter detection
+- Permission checks
+- Fetch crawler rules
+- Sitemap discovery
+- Host preference
+- Dynamic URL parameter discovery
 - `robots.txt` rendering
 
 ### Optional features

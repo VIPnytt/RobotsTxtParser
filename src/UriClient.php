@@ -33,6 +33,7 @@ class UriClient extends TxtClient
             'referer' => true,
             'strict' => true,
         ],
+        'connect_timeout' => 120,
         'decode_content' => false,
         'headers' => [
             'accept' => 'text/plain;q=1.0, text/*;q=0.8, */*;q=0.1',
@@ -57,9 +58,10 @@ class UriClient extends TxtClient
     private $time;
 
     /**
+     * GuzzleHttp request
      * @var \Psr\Http\Message\ResponseInterface
      */
-    private $response;
+    private $request;
 
     /**
      * Cache-Control max-age
@@ -100,10 +102,10 @@ class UriClient extends TxtClient
                     ]
                 )
             );
-            $this->response = $client->request('GET', self::PATH);
+            $this->request = $client->request('GET', self::PATH);
             $this->time = time();
-            $this->statusCode = $this->response->getStatusCode();
-            $this->contents = $this->response->getBody()->getContents();
+            $this->statusCode = $this->request->getStatusCode();
+            $this->contents = $this->request->getBody()->getContents();
             $this->encoding = $this->headerCharset();
             $this->maxAge = $this->headerMaxAge();
         } catch (GuzzleHttp\Exception\TransferException $e) {
@@ -124,7 +126,7 @@ class UriClient extends TxtClient
      */
     private function headerCharset()
     {
-        if (($value = $this->parseHeader($this->response->getHeader('content-type'), 'charset', ';')) !== false) {
+        if (($value = $this->parseHeader($this->request->getHeader('content-type'), 'charset', ';')) !== false) {
             return $value;
         }
         return self::ENCODING;
@@ -159,7 +161,7 @@ class UriClient extends TxtClient
      */
     private function headerMaxAge()
     {
-        if (($value = $this->parseHeader($this->response->getHeader('cache-control'), 'max-age', ',')) !== false) {
+        if (($value = $this->parseHeader($this->request->getHeader('cache-control'), 'max-age', ',')) !== false) {
             return intval($value);
         }
         return 0;
@@ -230,7 +232,7 @@ class UriClient extends TxtClient
      */
     private function headerRetryAfter()
     {
-        foreach ($this->response->getHeader('retry-after') as $parts) {
+        foreach ($this->request->getHeader('retry-after') as $parts) {
             $value = implode(', ', $parts);
             if (is_numeric($value)) {
                 return $this->time + $value;
