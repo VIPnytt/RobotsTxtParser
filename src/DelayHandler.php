@@ -4,7 +4,7 @@ namespace vipnytt\RobotsTxtParser;
 use PDO;
 use vipnytt\RobotsTxtParser\Client\Directives\DelayHandlerClient;
 use vipnytt\RobotsTxtParser\Client\Directives\DelayInterface;
-use vipnytt\RobotsTxtParser\Parser\UrlParser;
+use vipnytt\RobotsTxtParser\Parser\UriParser;
 use vipnytt\RobotsTxtParser\SQL\SQLInterface;
 
 /**
@@ -14,7 +14,7 @@ use vipnytt\RobotsTxtParser\SQL\SQLInterface;
  */
 class DelayHandler implements SQLInterface
 {
-    use UrlParser;
+    use UriParser;
 
     /**
      * Database connection

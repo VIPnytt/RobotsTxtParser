@@ -72,3 +72,6 @@ For the sake of security, it is recommended to use a dedicated user with a bare 
   - `INSERT`
   - `UPDATE`
   - `DELETE`
+
+#### Table version history
+- `robotstxt__delay0` - [2.0 alpha](https://github.com/VIPnytt/RobotsTxtParser/releases/tag/v2.0.0-alpha.2) >>> [latest](https://github.com/VIPnytt/RobotsTxtParser/releases)

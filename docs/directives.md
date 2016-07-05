@@ -7,6 +7,7 @@
 - [Crawl-delay](#crawl-delay)
 - [Disallow](#disallow)
 - [Host](#host)
+- [NoIndex](#noindex)
 - [Request-rate](#request-rate)
 - [Robot-version](#robot-version)
 - [Sitemap](#sitemap)
@@ -23,6 +24,7 @@ allow: [path]
 
 __See also:__
 - [Disallow](#disallow)
+- [NoIndex](#noindex)
 
 __References:__
 - [Google robots.txt specifications](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#allow)
@@ -40,7 +42,7 @@ cache-delay: [seconds]
 
 __Note:__ _This is an unofficial directive._
 
-__Parser specific:__ When the value is requested but not found, the value of ``Crawl-delay`` is returned, to maintain compatibility.
+__Library specific:__ When the value is requested but not found, the value of ``Crawl-delay`` is returned, to maintain compatibility.
 
 __See also:__
 - [Crawl-delay](#crawl-delay)
@@ -51,17 +53,34 @@ If page addresses contain dynamic parameters that do not affect the content (e.g
 
 __robots.txt:__
 ````
-Clean-param: [parameter]
+clean-param: [parameter]
 ````
 ````
-Clean-param: [parameter] [path]
+clean-param: [parameter] [path]
 ````
 ````
-Clean-param: [parameter1]&[parameter2]&[...]
+clean-param: [parameter1]&[parameter2]&[...]
 ````
 ````
-Clean-param: [parameter1]&[parameter2]&[...] [path]
+clean-param: [parameter1]&[parameter2]&[...] [path]
 ````
+
+__References:__
+- [Yandex robots.txt specifications](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#clean-param)
+
+### Inline Clean-param
+The directive can also be used _inside_ other directives, eg. to disallow crawling of pages with specific parameters.
+````
+disallow: clean-param: [parameter]
+````
+````
+noindex: clean-param: [parameter]
+````
+
+__See also:__
+- [Allow](#allow)
+- [Disallow](#disallow)
+- [NoIndex](#noindex)
 
 __References:__
 - [Yandex robots.txt specifications](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#clean-param)
@@ -85,8 +104,6 @@ __robots.txt:__
 crawl-delay: [seconds]
 ````
 
-__Parser specific:__ When the value is requested but not found, the value of ``Request-rate`` is returned, to maintain backwards compatibility.
-
 __See also:__
 - [Cache-delay](#cache-delay)
 - [Request-rate](#request-rate)
@@ -104,6 +121,7 @@ disallow: [path]
 
 __See also:__
 - [Allow](#allow)
+- [NoIndex](#noindex)
 
 __References:__
 - [Google robots.txt specifications](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#disallow)
@@ -126,13 +144,27 @@ The directive can also be used _inside_ other directives, eg. to disallow crawli
 ````
 disallow: host: [host]
 ````
+````
+noindex: host: [host]
+````
 
 __See also:__
 - [Allow](#allow)
 - [Disallow](#disallow)
+- [NoIndex](#noindex)
 
 __References:__
 - [Yandex robots.txt specifications](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#host)
+
+## NoIndex
+The ``noindex`` directive is used to completely remove all traces of any matching site url from the search-engines.
+````
+noindex: [path]
+````
+
+__See also:__
+- [Allow](#allow)
+- [Disallow](#disallow)
 
 ## Request-rate
 The ``request-rate`` directive specifies the minimum time of how often a robot can request a page, along with timestamps in UTC.
@@ -145,7 +177,7 @@ request-rate: [rate]
 request-rate: [rate] [time]-[time]
 ````
 
-__Note:__ _This directive does exist in drafts only, and should therefore be avoided. Please use ``Crawl-delay`` instead._
+__Library specific:__ When the value is requested but not found, the value of ``Crawl-delay`` is returned, to maintain forward compatibility.
 
 __See also:__
 - [Cache-delay](#cache-delay)

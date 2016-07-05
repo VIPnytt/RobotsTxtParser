@@ -9,7 +9,7 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
 abstract class DelayCore implements DelayInterface
 {
     /**
-     * Base Uri
+     * Base uri
      * @var string
      */
     protected $base;

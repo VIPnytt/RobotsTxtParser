@@ -12,7 +12,7 @@ class SubDirectiveHandler implements RobotsTxtInterface
 {
     /**
      * Allow
-     * @var DisAllowParser
+     * @var AllowParser
      */
     private $allow;
 
@@ -36,9 +36,15 @@ class SubDirectiveHandler implements RobotsTxtInterface
 
     /**
      * Disallow
-     * @var DisAllowParser
+     * @var AllowParser
      */
     private $disallow;
+
+    /**
+     * NoIndex
+     * @var AllowParser
+     */
+    private $noIndex;
 
     /**
      * Request-rate
@@ -62,15 +68,17 @@ class SubDirectiveHandler implements RobotsTxtInterface
      * SubDirectiveHandler constructor.
      *
      * @param string $base
+     * @param string $effective
      * @param string $userAgent
      */
-    public function __construct($base, $userAgent)
+    public function __construct($base, $effective, $userAgent)
     {
-        $this->allow = new DisAllowParser($base, self::DIRECTIVE_ALLOW);
+        $this->allow = new AllowParser($base, $effective, self::DIRECTIVE_ALLOW);
         $this->cacheDelay = new DelayParser($base, self::DIRECTIVE_CACHE_DELAY);
         $this->comment = new CommentParser($base, $userAgent);
         $this->crawlDelay = new DelayParser($base, self::DIRECTIVE_CRAWL_DELAY);
-        $this->disallow = new DisAllowParser($base, self::DIRECTIVE_DISALLOW);
+        $this->disallow = new AllowParser($base, $effective, self::DIRECTIVE_DISALLOW);
+        $this->noIndex = new AllowParser($base, $effective, self::DIRECTIVE_NO_INDEX);
         $this->requestRate = new RequestRateParser($base);
         $this->robotVersion = new RobotVersionParser();
         $this->visitTime = new VisitTimeParser();
@@ -79,7 +87,7 @@ class SubDirectiveHandler implements RobotsTxtInterface
     /**
      * Allow
      *
-     * @return DisAllowParser
+     * @return AllowParser
      */
     public function allow()
     {
@@ -119,11 +127,21 @@ class SubDirectiveHandler implements RobotsTxtInterface
     /**
      * Disallow
      *
-     * @return DisAllowParser
+     * @return AllowParser
      */
     public function disallow()
     {
         return $this->disallow;
+    }
+
+    /**
+     * NoIndex
+     *
+     * @return AllowParser
+     */
+    public function noIndex()
+    {
+        return $this->noIndex;
     }
 
     /**

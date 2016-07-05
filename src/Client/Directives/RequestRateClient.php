@@ -19,15 +19,23 @@ class RequestRateClient extends DelayCore implements ClientInterface, DelayInter
     private $rates = [];
 
     /**
+     * Fallback value
+     * @var float|int
+     */
+    private $fallbackValue;
+
+    /**
      * RequestRateClient constructor.
      *
      * @param string $baseUri
      * @param string $userAgent
      * @param array $rates
+     * @param float|int $fallbackValue
      */
-    public function __construct($baseUri, $userAgent, array $rates)
+    public function __construct($baseUri, $userAgent, array $rates, $fallbackValue = 0)
     {
         $this->rates = $rates;
+        $this->fallbackValue = $fallbackValue;
         parent::__construct($baseUri, $userAgent);
     }
 
@@ -67,7 +75,7 @@ class RequestRateClient extends DelayCore implements ClientInterface, DelayInter
         ) {
             return $rate;
         }
-        return 0;
+        return $this->fallbackValue;
     }
 
     /**

@@ -3,7 +3,7 @@ namespace vipnytt\RobotsTxtParser;
 
 use PDO;
 use vipnytt\RobotsTxtParser\Exceptions\SQLException;
-use vipnytt\RobotsTxtParser\Parser\UrlParser;
+use vipnytt\RobotsTxtParser\Parser\UriParser;
 use vipnytt\RobotsTxtParser\SQL\SQLInterface;
 
 /**
@@ -13,7 +13,7 @@ use vipnytt\RobotsTxtParser\SQL\SQLInterface;
  */
 class Cache implements RobotsTxtInterface, SQLInterface
 {
-    use UrlParser;
+    use UriParser;
 
     /**
      * Supported database drivers
@@ -29,10 +29,10 @@ class Cache implements RobotsTxtInterface, SQLInterface
     private $pdo;
 
     /**
-     * GuzzleHTTP config
+     * cURL options
      * @var array
      */
-    private $guzzleConfig = [];
+    private $curlOptions = [];
 
     /**
      * Byte limit
@@ -56,13 +56,13 @@ class Cache implements RobotsTxtInterface, SQLInterface
      * Cache constructor.
      *
      * @param PDO $pdo
-     * @param array $guzzleConfig
+     * @param array $curlOptions
      * @param int|null $byteLimit
      */
-    public function __construct(PDO $pdo, array $guzzleConfig = [], $byteLimit = self::BYTE_LIMIT)
+    public function __construct(PDO $pdo, array $curlOptions = [], $byteLimit = self::BYTE_LIMIT)
     {
         $this->pdo = $this->pdoInitialize($pdo);
-        $this->guzzleConfig = $guzzleConfig;
+        $this->curlOptions = $curlOptions;
         $this->byteLimit = $byteLimit;
     }
 
@@ -86,7 +86,7 @@ class Cache implements RobotsTxtInterface, SQLInterface
             throw new SQLException('Unsupported database. ' . self::README_SQL_CACHE);
         }
         try {
-            $pdo->query("SELECT 1 FROM robotstxt__cache0 LIMIT 1;");
+            $pdo->query("SELECT 1 FROM robotstxt__cache1 LIMIT 1;");
         } catch (\Exception $exception1) {
             try {
                 $pdo->query(file_get_contents(__DIR__ . '/SQL/cache.sql'));
@@ -111,9 +111,10 @@ SELECT
   content,
   statusCode,
   nextUpdate,
+  effective,
   worker,
   UNIX_TIMESTAMP()
-FROM robotstxt__cache0
+FROM robotstxt__cache1
 WHERE base = :base;
 SQL
         );
@@ -124,13 +125,13 @@ SQL
             $this->clockSyncCheck($row['UNIX_TIMESTAMP()']);
             if ($row['nextUpdate'] > ($row['UNIX_TIMESTAMP()'] - $this->clientUpdateMargin)) {
                 $this->markAsActive($base, $row['worker']);
-                return new TxtClient($base, $row['statusCode'], $row['content'], self::ENCODING, $this->byteLimit);
+                return new TxtClient($base, $row['statusCode'], $row['content'], self::ENCODING, $row['effective'], $this->byteLimit);
             }
         }
-        $request = new UriClient($base, $this->guzzleConfig, $this->byteLimit);
+        $request = new UriClient($base, $this->curlOptions, $this->byteLimit);
         $this->push($request);
         $this->markAsActive($base);
-        return new TxtClient($base, $request->getStatusCode(), $request->getContents(), self::ENCODING, $this->byteLimit);
+        return new TxtClient($base, $request->getStatusCode(), $request->getContents(), $request->getEncoding(), $request->getEffectiveUri(), $this->byteLimit);
     }
 
     /**
@@ -141,7 +142,7 @@ SQL
      */
     private function clockSyncCheck($time)
     {
-        if (abs(time() - $time) > 10) {
+        if (abs(time() - $time) >= 10) {
             throw new SQLException('`PHP server` and `SQL server` timestamps are out of sync. Please fix!');
         }
     }
@@ -157,7 +158,7 @@ SQL
     {
         if ($workerID == 0) {
             $query = $this->pdo->prepare(<<<SQL
-UPDATE robotstxt__cache0
+UPDATE robotstxt__cache1
 SET worker = NULL
 WHERE base = :base AND worker = 0;
 SQL
@@ -179,6 +180,7 @@ SQL
         $base = $client->getBaseUri();
         $statusCode = $client->getStatusCode();
         $nextUpdate = $client->nextUpdate();
+        $effective = $client->getEffectiveUri();
         if (
             mb_stripos($base, 'http') === 0 &&
             (
@@ -195,10 +197,10 @@ SQL
         $validUntil = $client->validUntil();
         $content = $client->render();
         $query = $this->pdo->prepare(<<<SQL
-INSERT INTO robotstxt__cache0 (base, content, statusCode, validUntil, nextUpdate)
-VALUES (:base, :content, :statusCode, :validUntil, :nextUpdate)
+INSERT INTO robotstxt__cache1 (base, content, statusCode, validUntil, nextUpdate, effective)
+VALUES (:base, :content, :statusCode, :validUntil, :nextUpdate, :effective)
 ON DUPLICATE KEY UPDATE content = :content, statusCode = :statusCode, validUntil = :validUntil,
-  nextUpdate = :nextUpdate, worker = 0;
+  nextUpdate = :nextUpdate, effective = :effective, worker = 0;
 SQL
         );
         $query->bindParam(':base', $base, PDO::PARAM_STR);
@@ -206,6 +208,7 @@ SQL
         $query->bindParam(':statusCode', $statusCode, PDO::PARAM_INT);
         $query->bindParam(':validUntil', $validUntil, PDO::PARAM_INT);
         $query->bindParam(':nextUpdate', $nextUpdate, PDO::PARAM_INT);
+        $query->bindParam(':effective', $effective, PDO::PARAM_STR);
         return $query->execute();
     }
 
@@ -222,7 +225,7 @@ SQL
 SELECT
   validUntil,
   UNIX_TIMESTAMP()
-FROM robotstxt__cache0
+FROM robotstxt__cache1
 WHERE base = :base;
 SQL
         );
@@ -234,7 +237,7 @@ SQL
             if ($row['validUntil'] > $row['UNIX_TIMESTAMP()']) {
                 $nextUpdate = min($row['validUntil'], $nextUpdate);
                 $query = $this->pdo->prepare(<<<SQL
-UPDATE robotstxt__cache0
+UPDATE robotstxt__cache1
 SET nextUpdate = :nextUpdate, worker = NULL
 WHERE base = :base;
 SQL
@@ -258,7 +261,7 @@ SQL
     {
         $base = $this->urlBase($this->urlEncode($baseUri));
         $query = $this->pdo->prepare(<<<SQL
-DELETE FROM robotstxt__cache0
+DELETE FROM robotstxt__cache1
 WHERE base = :base;
 SQL
         );
@@ -278,13 +281,13 @@ SQL
         $result = true;
         while ($result) {
             $query = $this->pdo->prepare(<<<SQL
-UPDATE robotstxt__cache0
+UPDATE robotstxt__cache1
 SET worker = :workerID
 WHERE worker IS NULL AND nextUpdate <= UNIX_TIMESTAMP()
 ORDER BY nextUpdate ASC
 LIMIT 1;
 SELECT base
-FROM robotstxt__cache0
+FROM robotstxt__cache1
 WHERE worker = :workerID;
 SQL
             );
@@ -292,7 +295,7 @@ SQL
             $query->execute();
             if ($query->rowCount() > 0) {
                 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                    $result = $this->push(new UriClient($row['base'], $this->guzzleConfig, $this->byteLimit));
+                    $result = $this->push(new UriClient($row['base'], $this->curlOptions, $this->byteLimit));
                 }
                 continue;
             }
@@ -331,7 +334,7 @@ SQL
     {
         $delay = self::CACHE_TIME + $delay;
         $query = $this->pdo->prepare(<<<SQL
-DELETE FROM robotstxt__cache0
+DELETE FROM robotstxt__cache1
 WHERE worker = 0 AND nextUpdate < (UNIX_TIMESTAMP() - :delay);
 SQL
         );

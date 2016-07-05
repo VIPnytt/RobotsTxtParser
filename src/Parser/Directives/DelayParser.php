@@ -20,7 +20,7 @@ class DelayParser implements ParserInterface, RobotsTxtInterface
     private $directive;
 
     /**
-     * Base Uri
+     * Base uri
      * @var string
      */
     private $base;
@@ -69,11 +69,11 @@ class DelayParser implements ParserInterface, RobotsTxtInterface
     /**
      * Client
      *
-     * @param float|int $fallbackValue
      * @param string $userAgent
+     * @param float|int $fallbackValue
      * @return DelayClient
      */
-    public function client($fallbackValue = 0, $userAgent = self::USER_AGENT)
+    public function client($userAgent = self::USER_AGENT, $fallbackValue = 0)
     {
         return new DelayClient($this->base, $userAgent, $this->delay, $fallbackValue);
     }

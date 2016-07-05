@@ -4,11 +4,11 @@ namespace vipnytt\RobotsTxtParser\Parser;
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 
 /**
- * Trait UrlParser
+ * Trait UriParser
  *
  * @package vipnytt\RobotsTxtParser\Parser
  */
-trait UrlParser
+trait UriParser
 {
     /**
      * Convert relative to full URL
@@ -125,7 +125,7 @@ trait UrlParser
     protected function urlBase($url)
     {
         if ($this->urlValidate($url) === false) {
-            throw new ClientException("Invalid URL `$url`");
+            throw new ClientException("Invalid or unsupported URL `$url`");
         }
         $parts = [
             'scheme' => parse_url($url, PHP_URL_SCHEME),

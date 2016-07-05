@@ -1,18 +1,27 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
-use vipnytt\RobotsTxtParser\Client\Directives\DisAllowClient;
+use vipnytt\RobotsTxtParser\Client\Directives\AllowClient;
 use vipnytt\RobotsTxtParser\Exceptions;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
- * Class DisAllowParser
+ * Class AllowParser
  *
  * @package vipnytt\RobotsTxtParser\Parser\Directives
  */
-class DisAllowParser implements ParserInterface, RobotsTxtInterface
+class AllowParser implements ParserInterface, RobotsTxtInterface
 {
     use DirectiveParserCommons;
+
+    /**
+     * Supported directives
+     */
+    const SUPPORTED_DIRECTIVES = [
+        self::DIRECTIVE_ALLOW,
+        self::DIRECTIVE_DISALLOW,
+        self::DIRECTIVE_NO_INDEX,
+    ];
 
     /**
      * Sub directives white list
@@ -27,12 +36,6 @@ class DisAllowParser implements ParserInterface, RobotsTxtInterface
      * @var string
      */
     private $directive;
-
-    /**
-     * Base Uri
-     * @var string
-     */
-    private $base;
 
     /**
      * Path
@@ -53,17 +56,17 @@ class DisAllowParser implements ParserInterface, RobotsTxtInterface
     private $host;
 
     /**
-     * DisAllow constructor
+     * AllowParser constructor
      *
      * @param string $base
+     * @param string $effective
      * @param string $directive
      */
-    public function __construct($base, $directive)
+    public function __construct($base, $effective, $directive)
     {
-        $this->base = $base;
-        $this->directive = $this->validateDirective($directive, [self::DIRECTIVE_DISALLOW, self::DIRECTIVE_ALLOW]);
+        $this->directive = $this->validateDirective($directive, self::SUPPORTED_DIRECTIVES);
         $this->cleanParam = new CleanParamParser();
-        $this->host = new HostParser($this->base, $this->directive);
+        $this->host = new HostParser($base, $effective, $this->directive);
     }
 
     /**
@@ -108,9 +111,9 @@ class DisAllowParser implements ParserInterface, RobotsTxtInterface
     {
         $result = [];
         $values = array_merge(
+            $this->host->render(),
             $this->path,
-            $this->cleanParam->render(),
-            $this->host->render()
+            $this->cleanParam->render()
         );
         foreach ($values as $value) {
             $result[] = $this->directive . ':' . $value;
@@ -122,10 +125,10 @@ class DisAllowParser implements ParserInterface, RobotsTxtInterface
     /**
      * Client
      *
-     * @return DisAllowClient
+     * @return AllowClient
      */
     public function client()
     {
-        return new DisAllowClient($this->path, $this->host->client(), $this->cleanParam->client());
+        return new AllowClient($this->path, $this->host->client(), $this->cleanParam->client());
     }
 }

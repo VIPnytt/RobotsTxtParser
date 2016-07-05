@@ -21,7 +21,7 @@ interface SQLInterface
     /**
      * Cache table name
      */
-    const TABLE_CACHE = 'robotstxt__cache0';
+    const TABLE_CACHE = 'robotstxt__cache1';
 
     /**
      * Delay table name

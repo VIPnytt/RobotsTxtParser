@@ -4,11 +4,11 @@ namespace vipnytt\RobotsTxtParser\Tests;
 use vipnytt\RobotsTxtParser;
 
 /**
- * Class DisAllowTest
+ * Class AllowTest
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class DisAllowTest extends \PHPUnit_Framework_TestCase
+class AllowTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -105,8 +105,8 @@ class DisAllowTest extends \PHPUnit_Framework_TestCase
         return [
             [
                 <<<ROBOTS
-User-agent: *
 User-agent: anyone
+User-agent: *
 Disallow: /admin
 Disallow: /temp#comment
 Disallow: /forum

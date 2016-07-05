@@ -2,7 +2,7 @@
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Client\Directives\CleanParamClient;
-use vipnytt\RobotsTxtParser\Parser\UrlParser;
+use vipnytt\RobotsTxtParser\Parser\UriParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -13,7 +13,7 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 class CleanParamParser implements ParserInterface, RobotsTxtInterface
 {
     use DirectiveParserCommons;
-    use UrlParser;
+    use UriParser;
 
     /**
      * Clean-param array

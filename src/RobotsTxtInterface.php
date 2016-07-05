@@ -43,7 +43,7 @@ interface RobotsTxtInterface
      * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#file-format
      * @link https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#additional-info
      */
-    const BYTE_LIMIT = 65535; // 524.280 bits - 65.535 kilobytes
+    const BYTE_LIMIT = 65535; // 524.280 bits or ~65 kilobytes
 
     /**
      * Max rule length
@@ -118,6 +118,11 @@ interface RobotsTxtInterface
     const DIRECTIVE_HOST = 'host';
 
     /**
+     * Directive: NoIndex
+     */
+    const DIRECTIVE_NO_INDEX = 'noindex';
+
+    /**
      * Directive: RequestClient-rate
      *
      * @link http://www.conman.org/people/spc/robots2.html#format.directives.request-rate
@@ -168,6 +173,7 @@ interface RobotsTxtInterface
         'cachedelay' => self::DIRECTIVE_CACHE_DELAY,
         'cleanparam' => self::DIRECTIVE_CLEAN_PARAM,
         'crawldelay' => self::DIRECTIVE_CRAWL_DELAY,
+        'no-index' => self::DIRECTIVE_NO_INDEX,
         'requestrate' => self::DIRECTIVE_REQUEST_RATE,
         'robotversion' => self::DIRECTIVE_ROBOT_VERSION,
         'useragent' => self::DIRECTIVE_USER_AGENT,

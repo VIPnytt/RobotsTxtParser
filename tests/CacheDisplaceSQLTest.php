@@ -81,7 +81,7 @@ class CacheDisplaceSQLTest extends \PHPUnit_Framework_TestCase
         // Insert fake data
         $parser->invalidate($base);
         $query = $pdo->prepare(<<<SQL
-INSERT INTO robotstxt__cache0 (base, content, statusCode, validUntil, nextUpdate)
+INSERT INTO robotstxt__cache1 (base, content, statusCode, validUntil, nextUpdate)
 VALUES (:base, '', NULL, UNIX_TIMESTAMP() + 86400, UNIX_TIMESTAMP() - 3600);
 SQL
         );
@@ -95,7 +95,7 @@ SQL
         // Check if update has been displaced
         $query = $pdo->prepare(<<<SQL
 SELECT *
-FROM robotstxt__cache0
+FROM robotstxt__cache1
 WHERE base = :base AND validUntil > UNIX_TIMESTAMP() AND nextUpdate > UNIX_TIMESTAMP() AND statusCode IS NULL;
 SQL
         );

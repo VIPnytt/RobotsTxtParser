@@ -2,7 +2,7 @@
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Client\Directives\SitemapClient;
-use vipnytt\RobotsTxtParser\Parser\UrlParser;
+use vipnytt\RobotsTxtParser\Parser\UriParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -12,7 +12,7 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  */
 class SitemapParser implements ParserInterface, RobotsTxtInterface
 {
-    use UrlParser;
+    use UriParser;
 
     /**
      * Sitemap array

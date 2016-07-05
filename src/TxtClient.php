@@ -8,7 +8,7 @@ use vipnytt\RobotsTxtParser\Client\Directives\UserAgentClient;
 use vipnytt\RobotsTxtParser\Client\Encoding\EncodingConverter;
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 use vipnytt\RobotsTxtParser\Parser\RobotsTxtParser;
-use vipnytt\RobotsTxtParser\Parser\UrlParser;
+use vipnytt\RobotsTxtParser\Parser\UriParser;
 
 /**
  * Class TxtClient
@@ -17,13 +17,13 @@ use vipnytt\RobotsTxtParser\Parser\UrlParser;
  */
 class TxtClient extends RobotsTxtParser
 {
-    use UrlParser;
+    use UriParser;
 
     /**
      * Status code
      * @var int|null
      */
-    protected $statusCode;
+    private $statusCode;
 
     /**
      * Robots.txt content
@@ -32,34 +32,42 @@ class TxtClient extends RobotsTxtParser
     private $content;
 
     /**
+     * Encoding
+     * @var string
+     */
+    private $encoding;
+
+    /**
      * TxtClient constructor.
      *
      * @param string $baseUri
      * @param int $statusCode
      * @param string $content
      * @param string $encoding
+     * @param string|null $effectiveUri
      * @param int|null $byteLimit
      */
-    public function __construct($baseUri, $statusCode, $content, $encoding = self::ENCODING, $byteLimit = self::BYTE_LIMIT)
+    public function __construct($baseUri, $statusCode, $content, $encoding = self::ENCODING, $effectiveUri = null, $byteLimit = self::BYTE_LIMIT)
     {
         $this->statusCode = $statusCode;
         $this->content = $content;
-        $this->convertEncoding($encoding);
+        $this->encoding = $encoding;
+        $this->convertEncoding();
         $this->limitBytes($byteLimit);
-        parent::__construct($baseUri, $this->content);
+        parent::__construct($baseUri, $this->content, $effectiveUri);
     }
 
     /**
      * Convert character encoding
      *
-     * @param string $encoding
      * @return string
      */
-    private function convertEncoding($encoding)
+    private function convertEncoding()
     {
         mb_internal_encoding(self::ENCODING);
-        $convert = new EncodingConverter($this->content, $encoding);
+        $convert = new EncodingConverter($this->content, $this->encoding);
         if (($result = $convert->auto()) !== false) {
+            $this->encoding = self::ENCODING;
             return $this->content = $result;
         }
         return $this->content;

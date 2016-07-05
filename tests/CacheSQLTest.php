@@ -30,7 +30,7 @@ class CacheSQLTest extends \PHPUnit_Framework_TestCase
 
         $query = $pdo->prepare(<<<SQL
 SELECT *
-FROM robotstxt__cache0
+FROM robotstxt__cache1
 WHERE base = :base;
 SQL
         );

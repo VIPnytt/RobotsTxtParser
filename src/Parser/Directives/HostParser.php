@@ -2,7 +2,7 @@
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Client\Directives\HostClient;
-use vipnytt\RobotsTxtParser\Parser\UrlParser;
+use vipnytt\RobotsTxtParser\Parser\UriParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -12,13 +12,19 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  */
 class HostParser implements ParserInterface, RobotsTxtInterface
 {
-    use UrlParser;
+    use UriParser;
 
     /**
-     * Base Uri
+     * Base uri
      * @var string
      */
     private $base;
+
+    /**
+     * Effective uri
+     * @var string
+     */
+    private $effective;
 
     /**
      * Parent directive
@@ -27,7 +33,7 @@ class HostParser implements ParserInterface, RobotsTxtInterface
     private $parent;
 
     /**
-     * Host array
+     * Host values
      * @var string[]
      */
     private $host = [];
@@ -36,11 +42,13 @@ class HostParser implements ParserInterface, RobotsTxtInterface
      * Host constructor.
      *
      * @param string $base
+     * @param string $effective
      * @param string|null $parentDirective
      */
-    public function __construct($base, $parentDirective = null)
+    public function __construct($base, $effective, $parentDirective = null)
     {
         $this->base = $base;
+        $this->effective = $effective;
         $this->parent = $parentDirective;
     }
 
@@ -126,6 +134,6 @@ class HostParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        return new HostClient($this->base, $this->host, $this->parent);
+        return new HostClient($this->base, $this->effective, $this->host, $this->parent);
     }
 }

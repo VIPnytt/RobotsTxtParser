@@ -33,7 +33,7 @@ class DelayHandlerClient implements SQLInterface
     private $driver;
 
     /**
-     * Base UriClient
+     * Base uri
      * @var string
      */
     private $base;

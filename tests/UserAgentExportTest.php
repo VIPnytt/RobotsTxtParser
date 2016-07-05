@@ -61,6 +61,11 @@ ROBOTS
                         'bingbot' => [
                             'robot-version' => null,
                             'visit-time' => [],
+                            'noindex' => [
+                                'host' => [],
+                                'path' => [],
+                                'clean-param' => [],
+                            ],
                             'disallow' =>
                                 [
                                     'host' => [],
@@ -77,7 +82,8 @@ ROBOTS
                                     'clean-param' => [],
                                 ],
                             'crawl-delay' => null,
-                            'cache-delay' => null,
+                            'cache-delay' => null
+                            ,
                             'request-rate' => [],
                             'comment' => [],
                         ],
@@ -85,6 +91,11 @@ ROBOTS
                             [
                                 'robot-version' => null,
                                 'visit-time' => [],
+                                'noindex' => [
+                                    'host' => [],
+                                    'path' => [],
+                                    'clean-param' => [],
+                                ],
                                 'disallow' =>
                                     [
                                         'host' => [],

@@ -2,13 +2,18 @@
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
-use vipnytt\RobotsTxtParser\Parser\UrlParser;
+use vipnytt\RobotsTxtParser\Parser\UriParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
-class DisAllowClient implements ClientInterface, RobotsTxtInterface
+/**
+ * Class AllowClient
+ *
+ * @package vipnytt\RobotsTxtParser\Client\Directives
+ */
+class AllowClient implements ClientInterface, RobotsTxtInterface
 {
     use DirectiveClientCommons;
-    use UrlParser;
+    use UriParser;
 
     /**
      * Paths
@@ -29,7 +34,7 @@ class DisAllowClient implements ClientInterface, RobotsTxtInterface
     private $cleanParam;
 
     /**
-     * DisAllowClient constructor.
+     * AllowClient constructor.
      *
      * @param array $paths
      * @param HostClient $host
@@ -37,8 +42,8 @@ class DisAllowClient implements ClientInterface, RobotsTxtInterface
      */
     public function __construct(array $paths, HostClient $host, CleanParamClient $cleanParam)
     {
-        $this->paths = $paths;
         $this->host = $host;
+        $this->paths = $paths;
         $this->cleanParam = $cleanParam;
     }
 
@@ -53,8 +58,8 @@ class DisAllowClient implements ClientInterface, RobotsTxtInterface
         $path = $this->getPath($url);
         return (
             $this->checkPaths($path, $this->paths) ||
-            $this->cleanParam->isListed($path) ||
-            $this->host->isListed($url)
+            $this->host->isListed($url) ||
+            $this->cleanParam->isListed($path)
         );
     }
 
@@ -70,7 +75,7 @@ class DisAllowClient implements ClientInterface, RobotsTxtInterface
         // Encode
         $url = mb_split('#', $this->urlEncode($url))[0];
         if (mb_stripos($url, '/') === 0) {
-            // URL already an path
+            // URL is already an path
             return $url;
         }
         if (!$this->urlValidate($url)) {

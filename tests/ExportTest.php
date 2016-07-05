@@ -67,6 +67,11 @@ ROBOTS
                                 [
                                     'robot-version' => null,
                                     'visit-time' => [],
+                                    'noindex' => [
+                                        'host' => [],
+                                        'path' => [],
+                                        'clean-param' => [],
+                                    ],
                                     'disallow' =>
                                         [
                                             'host' => [],
@@ -94,6 +99,11 @@ ROBOTS
                                 [
                                     'robot-version' => null,
                                     'visit-time' => [],
+                                    'noindex' => [
+                                        'host' => [],
+                                        'path' => [],
+                                        'clean-param' => [],
+                                    ],
                                     'disallow' =>
                                         [
                                             'host' => [],

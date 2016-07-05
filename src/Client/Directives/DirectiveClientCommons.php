@@ -5,7 +5,7 @@ use DateTime;
 use DateTimeZone;
 
 /**
- * Class DirectiveClientCommons
+ * Trait DirectiveClientCommons
  *
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */

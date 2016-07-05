@@ -18,7 +18,7 @@ class CommentParser implements ParserInterface, RobotsTxtInterface
     private $userAgent;
 
     /**
-     * Base Uri
+     * Base uri
      * @var string
      */
     private $base;

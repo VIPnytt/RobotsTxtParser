@@ -9,8 +9,6 @@ matrix:
     - php: hhvm
 services:
   - mysql
-before_install:
-  - composer selfupdate
 install:
   - composer install
 before_script:

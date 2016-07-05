@@ -11,7 +11,7 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 class CommentClient implements ClientInterface, RobotsTxtInterface
 {
     /**
-     * Base Uri
+     * Base uri
      * @var string
      */
     private $base;

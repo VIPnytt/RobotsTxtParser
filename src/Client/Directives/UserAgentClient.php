@@ -33,7 +33,7 @@ class UserAgentClient extends UserAgentTools
     /**
      * Allow
      *
-     * @return DisAllowClient
+     * @return AllowClient
      */
     public function allow()
     {
@@ -47,7 +47,7 @@ class UserAgentClient extends UserAgentTools
      */
     public function cacheDelay()
     {
-        return $this->handler->cacheDelay()->client($this->crawlDelay()->getValue(), $this->userAgent);
+        return $this->handler->cacheDelay()->client($this->userAgent, $this->crawlDelay()->getValue());
     }
 
     /**
@@ -57,7 +57,7 @@ class UserAgentClient extends UserAgentTools
      */
     public function crawlDelay()
     {
-        return $this->handler->crawlDelay()->client($this->requestRate()->getValue(), $this->userAgent);
+        return $this->handler->crawlDelay()->client($this->userAgent);
     }
 
     /**
@@ -67,7 +67,7 @@ class UserAgentClient extends UserAgentTools
      */
     public function requestRate()
     {
-        return $this->handler->requestRate()->client($this->userAgent);
+        return $this->handler->requestRate()->client($this->userAgent, $this->crawlDelay()->getValue());
     }
 
     /**
@@ -83,7 +83,7 @@ class UserAgentClient extends UserAgentTools
     /**
      * Disallow
      *
-     * @return DisAllowClient
+     * @return AllowClient
      */
     public function disallow()
     {

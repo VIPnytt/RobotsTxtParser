@@ -26,8 +26,6 @@ class RequestRateTest extends \PHPUnit_Framework_TestCase
             $validRates[] = $value['rate'];
         }
         $this->assertTrue(in_array($parser->userAgent('Legacy')->requestRate()->getValue(), $validRates));
-        $this->assertTrue(in_array($parser->userAgent('Legacy')->crawlDelay()->getValue(), $validRates));
-        $this->assertTrue(in_array($parser->userAgent('Legacy')->cacheDelay()->getValue(), $validRates));
 
         if ($rendered !== false) {
             $this->assertEquals($result, $parser->userAgent('*')->requestRate()->export());

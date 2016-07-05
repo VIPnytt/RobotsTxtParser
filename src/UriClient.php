@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser;
 
-use GuzzleHttp;
+use Composer\CaBundle\CaBundle;
 
 /**
  * Class UriClient
@@ -11,39 +11,9 @@ use GuzzleHttp;
 class UriClient extends TxtClient
 {
     /**
-     * ANSI C's asctime() format
+     * User-agent
      */
-    const DATE_ASCTIME = 'D M j h:i:s Y';
-
-    /**
-     * HTTP date formats
-     */
-    const DATE_HTTP = [
-        DATE_RFC1123,
-        DATE_RFC850,
-        self::DATE_ASCTIME,
-    ];
-
-    /**
-     * GuzzleHttp config
-     */
-    const GUZZLE_HTTP_CONFIG = [
-        'allow_redirects' => [
-            'max' => self::MAX_REDIRECTS,
-            'referer' => true,
-            'strict' => true,
-        ],
-        'connect_timeout' => 120,
-        'decode_content' => false,
-        'headers' => [
-            'accept' => 'text/plain;q=1.0, text/*;q=0.8, */*;q=0.1',
-            'accept-charset' => 'utf-8;q=1.0, *;q=0.1',
-            'accept-encoding' => 'identity;q=1.0, *;q=0.1',
-            'user-agent' => 'RobotsTxtParser-VIPnytt/2.0 (+https://github.com/VIPnytt/RobotsTxtParser/blob/master/README.md)',
-        ],
-        'http_errors' => false,
-        'verify' => true,
-    ];
+    const CURL_USER_AGENT = 'RobotsTxtParser-VIPnytt/2.0 (+https://github.com/VIPnytt/RobotsTxtParser/blob/master/README.md)';
 
     /**
      * Base uri
@@ -52,16 +22,28 @@ class UriClient extends TxtClient
     private $base;
 
     /**
+     * Header parser
+     * @var Parser\HeaderParser
+     */
+    private $headerParser;
+
+    /**
      * RequestClient timestamp
      * @var int
      */
     private $time;
 
     /**
-     * GuzzleHttp request
-     * @var \Psr\Http\Message\ResponseInterface
+     * Status code
+     * @var int|null
      */
-    private $request;
+    private $statusCode;
+
+    /**
+     * Effective uri
+     * @var string
+     */
+    private $effectiveUri;
 
     /**
      * Cache-Control max-age
@@ -85,96 +67,87 @@ class UriClient extends TxtClient
      * RequestClient constructor.
      *
      * @param string $baseUri
-     * @param array $guzzleConfig
+     * @param array $curlOptions
      * @param int|null $byteLimit
      */
-    public function __construct($baseUri, array $guzzleConfig = [], $byteLimit = self::BYTE_LIMIT)
+    public function __construct($baseUri, array $curlOptions = [], $byteLimit = self::BYTE_LIMIT)
     {
         $this->base = $this->urlBase($this->urlEncode($baseUri));
-        $this->time = time();
-        try {
-            $client = new GuzzleHttp\Client(
-                array_merge_recursive(
-                    self::GUZZLE_HTTP_CONFIG,
-                    $guzzleConfig,
-                    [
-                        'base_uri' => $this->base,
-                    ]
-                )
-            );
-            $this->request = $client->request('GET', self::PATH);
+        if ($this->request($curlOptions) === false) {
             $this->time = time();
-            $this->statusCode = $this->request->getStatusCode();
-            $this->contents = $this->request->getBody()->getContents();
-            $this->encoding = $this->headerCharset();
-            $this->maxAge = $this->headerMaxAge();
-        } catch (GuzzleHttp\Exception\TransferException $e) {
+            $this->effectiveUri = $this->base . self::PATH;
             $this->statusCode = null;
             $this->contents = '';
             $this->encoding = self::ENCODING;
             $this->maxAge = 0;
         }
-        parent::__construct($this->base, $this->statusCode, $this->contents, $this->encoding, $byteLimit);
+        parent::__construct($this->base, $this->statusCode, $this->contents, $this->encoding, $this->effectiveUri, $byteLimit);
     }
 
     /**
-     * Content-Type encoding HTTP header
+     * cURL request
      *
-     * @link https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17
-     *
-     * @return string
+     * @param array $options
+     * @return bool
      */
-    private function headerCharset()
+    private function request($options = [])
     {
-        if (($value = $this->parseHeader($this->request->getHeader('content-type'), 'charset', ';')) !== false) {
-            return $value;
+        $this->headerParser = new Parser\HeaderParser();
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_AUTOREFERER => true,
+            CURLOPT_CAINFO => CaBundle::getSystemCaRootBundlePath(),
+            CURLOPT_CONNECTTIMEOUT => 30,
+            CURLOPT_ENCODING => 'identity',
+            CURLOPT_FAILONERROR => false,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_FTPSSLAUTH => CURLFTPAUTH_DEFAULT,
+            CURLOPT_HEADER => false,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_NONE,
+            CURLOPT_IPRESOLVE => CURL_IPRESOLVE_WHATEVER,
+            CURLOPT_NOBODY => false,
+            CURLOPT_MAXREDIRS => self::MAX_REDIRECTS,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_SSL_VERIFYPEER => true,
+            //CURLOPT_SSL_VERIFYSTATUS => true, // PHP 7.0.7
+            CURLOPT_TIMEOUT => 120,
+            CURLOPT_USERAGENT => self::CURL_USER_AGENT,
+            CURLOPT_USERPWD => 'anonymous:',
+        ]);
+        curl_setopt_array($ch, $options);
+        curl_setopt($ch, CURLOPT_HEADERFUNCTION, [$this->headerParser, 'curlCallback']);
+        curl_setopt($ch, CURLOPT_URL, $this->base . self::PATH);
+        if (($this->contents = curl_exec($ch)) === false) {
+            return false;
         }
-        return self::ENCODING;
+        $this->time = time();
+        $this->statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE); // also works with FTP status codes
+        $this->effectiveUri = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+        curl_close($ch);
+        $this->encoding = $this->headerParser->getCharset();
+        $this->maxAge = $this->headerParser->getMaxAge();
+        return true;
     }
 
     /**
-     * Client header
-     *
-     * @param string[] $headers
-     * @param string $part
-     * @param string $delimiter
-     * @return string|false
-     */
-    private function parseHeader(array $headers, $part, $delimiter = ";")
-    {
-        foreach ($headers as $header) {
-            foreach (array_map('trim', mb_split($delimiter, $header)) as $string) {
-                if (mb_stripos($string, $part . '=') === 0) {
-                    return mb_split('=', $string, 2)[1];
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Cache-Control max-age HTTP header
-     *
-     * @link https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.3
-     *
-     * @return int
-     */
-    private function headerMaxAge()
-    {
-        if (($value = $this->parseHeader($this->request->getHeader('cache-control'), 'max-age', ',')) !== false) {
-            return intval($value);
-        }
-        return 0;
-    }
-
-    /**
-     * Base UriClient
+     * Base uri
      *
      * @return string
      */
     public function getBaseUri()
     {
         return $this->base;
+    }
+
+    /**
+     * Effective uri
+     *
+     * @return string
+     */
+    public function getEffectiveUri()
+    {
+        return $this->effectiveUri;
     }
 
     /**
@@ -188,7 +161,7 @@ class UriClient extends TxtClient
     }
 
     /**
-     * URL content
+     * Body content
      *
      * @return string
      */
@@ -214,50 +187,10 @@ class UriClient extends TxtClient
      */
     public function nextUpdate()
     {
-        if (
-            $this->statusCode === 503 &&
-            ($retryTime = $this->headerRetryAfter()) !== false
-        ) {
-            return min($this->time + self::CACHE_TIME, $retryTime);
+        if ($this->statusCode === 503) {
+            return $this->time + min(self::CACHE_TIME, $this->headerParser->getRetryAfter($this->time));
         }
         return $this->time + self::CACHE_TIME;
-    }
-
-    /**
-     * Cache-Control Retry-After HTTP header
-     *
-     * @link https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.37
-     *
-     * @return int|false
-     */
-    private function headerRetryAfter()
-    {
-        foreach ($this->request->getHeader('retry-after') as $parts) {
-            $value = implode(', ', $parts);
-            if (is_numeric($value)) {
-                return $this->time + $value;
-            } elseif (($time = $this->parseHttpDate($value)) !== false) {
-                return $time;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Parse HTTP-date
-     *
-     * @param string $string
-     * @return int|false
-     */
-    private function parseHttpDate($string)
-    {
-        foreach (self::DATE_HTTP as $format) {
-            $dateTime = date_create_from_format($format, $string, new \DateTimeZone('GMT'));
-            if ($dateTime !== false) {
-                return (int)date_format($dateTime, 'U');
-            }
-        }
-        return false;
     }
 
     /**

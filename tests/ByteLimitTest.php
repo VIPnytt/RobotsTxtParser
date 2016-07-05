@@ -20,7 +20,7 @@ class ByteLimitTest extends \PHPUnit_Framework_TestCase
         if ($warning) {
             $this->expectException(RobotsTxtParser\Exceptions\ClientException::class);
         }
-        new RobotsTxtParser\TxtClient('http://example.com', 200, '', 'UTF-8', $byteLimit);
+        new RobotsTxtParser\TxtClient('http://example.com', 200, '', 'UTF-8', 'http://example.com', $byteLimit);
     }
 
     /**

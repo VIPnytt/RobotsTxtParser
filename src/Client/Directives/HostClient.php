@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
-use vipnytt\RobotsTxtParser\Parser\UrlParser;
+use vipnytt\RobotsTxtParser\Parser\UriParser;
 
 /**
  * Class HostClient
@@ -10,16 +10,22 @@ use vipnytt\RobotsTxtParser\Parser\UrlParser;
  */
 class HostClient implements ClientInterface
 {
-    use UrlParser;
+    use UriParser;
 
     /**
-     * Base Uri
+     * Base uri
      * @var string
      */
     private $base;
 
     /**
-     * Host
+     * Effective uri
+     * @var string
+     */
+    private $effective;
+
+    /**
+     * Host values
      * @var string[]
      */
     private $host;
@@ -34,25 +40,27 @@ class HostClient implements ClientInterface
      * HostClient constructor.
      *
      * @param string $base
+     * @param string $effective
      * @param string[] $host
      * @param string|null $parentDirective
      */
-    public function __construct($base, array $host, $parentDirective = null)
+    public function __construct($base, $effective, array $host, $parentDirective = null)
     {
         $this->base = $base;
+        $this->effective = $effective;
         $this->host = $host;
         $this->parent = $parentDirective;
     }
 
     /**
-     * Preferred host
+     * Is preferred host
      *
      * @return bool
      */
     public function isPreferred()
     {
         if (($host = $this->get()) === null) {
-            return true;
+            return $this->base === $this->effective;
         }
         $parsed = parse_url($host);
         $new = [

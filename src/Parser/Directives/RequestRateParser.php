@@ -14,7 +14,7 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
     use DirectiveParserCommons;
 
     /**
-     * Base Uri
+     * Base uri
      * @var string
      */
     private $base;
@@ -63,11 +63,12 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
      * Client
      *
      * @param string $userAgent
+     * @param float|int $fallbackValue
      * @return RequestRateClient
      */
-    public function client($userAgent = self::USER_AGENT)
+    public function client($userAgent = self::USER_AGENT, $fallbackValue = 0)
     {
-        return new RequestRateClient($this->base, $userAgent, $this->requestRates);
+        return new RequestRateClient($this->base, $userAgent, $this->requestRates, $fallbackValue);
     }
 
     /**
