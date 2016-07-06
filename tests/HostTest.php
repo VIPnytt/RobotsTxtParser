@@ -26,6 +26,7 @@ class HostTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent()->isAllowed('/'));
 
         $this->assertEquals('myhost.com', $parser->host()->get());
+        $this->assertEquals('myhost.com', $parser->host()->getWithFallback());
         $this->assertFalse($parser->host()->isPreferred());
 
         if ($rendered !== false) {

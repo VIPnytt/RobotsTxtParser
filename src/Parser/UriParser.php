@@ -23,7 +23,7 @@ trait UriParser
         $url = $this->urlEncode($url);
         if ($this->urlValidate($url)) {
             return $url;
-        } elseif (mb_stripos($url, '/') === 0) {
+        } elseif (stripos($url, '/') === 0) {
             return $this->urlBase($base) . $url;
         }
         throw new ClientException("Invalid URL `$url`");
@@ -105,7 +105,7 @@ trait UriParser
      */
     private static function urlValidateScheme($scheme)
     {
-        return in_array(mb_strtolower($scheme), [
+        return in_array(strtolower($scheme), [
                 'http',
                 'https',
                 'ftp',

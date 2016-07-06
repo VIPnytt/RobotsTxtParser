@@ -19,26 +19,25 @@ An easy to use, extensible PHP library to parse `robots.txt` according to [_Goog
 - Dynamic URL parameter discovery
 - `robots.txt` rendering
 
-### Optional features
-- Automatic download
-- [Caching system](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/sql/cache.md)
-- [Delay handler](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/sql/delay.md)
-
-#### Advantages
+### Advantages
 _(compared to most other robots.txt libraries)_
-- Full support for [every single directive](#directives-supported), from [every specification](#specifications).
+- Automatic `robots.txt` download.
+- Transparent [Caching system](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/sql/cache.md).
+- Integrated crawl [Delay handler](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/sql/delay.md).
+- Full support for [every single directive](#directives), from [every specification](#specifications).
 - HTTP Status code handler, _according to [Google](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt) spec._
 - Dedicated `User-Agent` parser and group determiner library, for maximum accuracy.
-- Full support for _inline directives_, _according to [Yandex](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml) spec._
+- _Inline directive_ support _according to [Yandex](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml) spec._
 - Provides additional data like _preferred host_, dynamic _URL parameters_, _Sitemap_ locations, etc.
-- Supports ``HTTP``, ``HTTPS``, ``FTP``, ``SFTP`` and ``FTP/S``.
+- Supported protocols: ``HTTP``, ``HTTPS``, ``FTP``, ``SFTP`` and ``FTP/S``.
 
 #### Requirements:
 - PHP [>=5.6](http://php.net/supported-versions.php)
-- PHP [cURL](http://php.net/manual/en/book.curl.php) extension
-- PHP [iconv](http://php.net/manual/en/book.iconv.php) extension
-- PHP [mbstring](http://php.net/manual/en/book.mbstring.php) extension
-- PHP [OpenSSL](http://php.net/manual/en/book.openssl.php) extension
+- PHP extensions:
+  - [cURL](http://php.net/manual/en/book.curl.php)
+  - [iconv](http://php.net/manual/en/book.iconv.php)
+  - [mbstring](http://php.net/manual/en/book.mbstring.php)
+  - [OpenSSL](http://php.net/manual/en/book.openssl.php)
 
 Note: HHVM support is planned once [facebook/hhvm#4277](https://github.com/facebook/hhvm/issues/4277) is fixed.
 

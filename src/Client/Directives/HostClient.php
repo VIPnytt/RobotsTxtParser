@@ -88,7 +88,7 @@ class HostClient implements ClientInterface
      */
     public function getWithFallback()
     {
-        return ($get = $this->get()) === null ? $this->effective : $get;
+        return ($get = $this->get()) === null ? parse_url($this->effective, PHP_URL_HOST) : $get;
     }
 
     /**
