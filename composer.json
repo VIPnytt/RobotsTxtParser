@@ -10,10 +10,14 @@
     "W3C",
     "The Web Robots Pages",
     "Robot exclusion standard",
+    "Robot exclusion protocol",
     "Robot",
     "Robots",
     "Spider",
-    "Web-Crawler"
+    "Web-Crawler",
+    "Sitemaps.org",
+    "Sean Conner",
+    "Martijn Koster"
   ],
   "homepage": "https://github.com/VIPnytt/RobotsTxtParser",
   "license": "MIT",
