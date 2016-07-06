@@ -64,7 +64,7 @@ if ($client->userAgent('MyBot')->isDisallowed('http://example.com/admin')) {
     // Access is denied
 }
 ```
-### Some more methods
+### A small excerpt of basic methods
 ```php
 // Syntax: $baseUri, [$statusCode:int|null], [$robotsTxtContent:string], [$encoding:string], [$byteLimit:int|null]
 $client = new vipnytt\RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
@@ -78,7 +78,7 @@ $crawlDelay = $client->userAgent('MyBot')->crawlDelay()->get(); // float | int
 
 // Dynamic URL parameters
 $cleanParam = $client->cleanParam()->export(); // array
-$cleanParam = $client->cleanParam()->isListed('param'); // bool
+$cleanParam = $client->cleanParam()->isListed('http://example.com/somepage/?ref=frontpage'); // bool
 
 // Preferred host
 $host = $client->host()->get(); // string | null
@@ -87,6 +87,8 @@ $host = $client->host()->isPreferred(); // bool
 // XML Sitemap locations
 $host = $client->sitemap()->export(); // array
 ```
+
+The above is just a taste the basics, a whole bunch of more advanced and/or specialized methods are available for almost any purpose.
 
 Visit the [Documentation](https://github.com/VIPnytt/RobotsTxtParser/tree/master/docs) for even more methods, possibilities and additional usage examples.
 
