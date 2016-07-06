@@ -24,6 +24,7 @@ _(compared to most other robots.txt libraries)_
 - Automatic `robots.txt` download.
 - Transparent [Caching system](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/sql/cache.md).
 - Integrated crawl [Delay handler](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/sql/delay.md).
+- Fully [documented](https://github.com/VIPnytt/RobotsTxtParser/tree/master/docs).
 - Full support for [every single directive](#directives), from [every specification](#specifications).
 - HTTP Status code handler, _according to [Google](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt) spec._
 - Dedicated `User-Agent` parser and group determiner library, for maximum accuracy.

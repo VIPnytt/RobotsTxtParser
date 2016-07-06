@@ -91,6 +91,16 @@ class UserAgentClient extends UserAgentTools
     }
 
     /**
+     * NoIndex
+     *
+     * @return AllowClient
+     */
+    public function noIndex()
+    {
+        return $this->handler->noIndex()->client();
+    }
+
+    /**
      * Robot-version
      *
      * @return RobotVersionClient

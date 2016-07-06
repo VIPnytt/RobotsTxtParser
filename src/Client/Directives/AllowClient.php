@@ -50,15 +50,15 @@ class AllowClient implements ClientInterface, RobotsTxtInterface
     /**
      * Check
      *
-     * @param  string $url
+     * @param  string $uri
      * @return bool
      */
-    public function isListed($url)
+    public function isListed($uri)
     {
-        $path = $this->getPath($url);
+        $path = $this->getPath($uri);
         return (
             $this->checkPaths($path, $this->paths) ||
-            $this->host->isUriListed($url) ||
+            $this->host->isUriListed($uri) ||
             $this->cleanParam->isListed($path)
         );
     }

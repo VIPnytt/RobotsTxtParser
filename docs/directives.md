@@ -1,5 +1,4 @@
 # Directives
-
 - [Allow](#allow)
 - [Cache-delay](#cache-delay)
 - [Clean-param](#clean-param)
@@ -177,7 +176,7 @@ request-rate: [rate]
 request-rate: [rate] [time]-[time]
 ````
 
-__Library specific:__ When the value is requested but not found, the value of ``Crawl-delay`` is returned, to maintain forward compatibility.
+__Library specific:__ When the value is requested but not found, the value of ``Crawl-delay`` is returned, to maintain compatibility.
 
 __See also:__
 - [Cache-delay](#cache-delay)
