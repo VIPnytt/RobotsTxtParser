@@ -58,7 +58,7 @@ class AllowClient implements ClientInterface, RobotsTxtInterface
         $path = $this->getPath($url);
         return (
             $this->checkPaths($path, $this->paths) ||
-            $this->host->isListed($url) ||
+            $this->host->isUriListed($url) ||
             $this->cleanParam->isListed($path)
         );
     }

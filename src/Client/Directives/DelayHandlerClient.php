@@ -21,7 +21,7 @@ class DelayHandlerClient implements SQLInterface
     ];
 
     /**
-     * Database connection
+     * Database handler
      * @var PDO
      */
     private $pdo;

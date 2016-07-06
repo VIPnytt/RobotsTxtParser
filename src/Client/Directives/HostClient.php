@@ -82,19 +82,29 @@ class HostClient implements ClientInterface
     }
 
     /**
-     * Preferred host
+     * Get with uri redirect fallback
      *
-     * @param string $url
+     * @return string
+     */
+    public function getWithFallback()
+    {
+        return ($get = $this->get()) === null ? $this->effective : $get;
+    }
+
+    /**
+     * Is host listed by directive
+     *
+     * @param string $uri
      * @return bool
      */
-    public function isListed($url)
+    public function isUriListed($uri)
     {
-        $url = mb_strtolower($this->urlEncode($url));
+        $uri = mb_strtolower($this->urlEncode($uri));
         $parts = [
-            'scheme' => parse_url($url, PHP_URL_SCHEME),
-            'host' => parse_url($url, PHP_URL_HOST),
+            'scheme' => parse_url($uri, PHP_URL_SCHEME),
+            'host' => parse_url($uri, PHP_URL_HOST),
         ];
-        $parts['port'] = is_int($port = parse_url($url, PHP_URL_PORT)) ? $port : getservbyname($parts['scheme'], 'tcp');
+        $parts['port'] = is_int($port = parse_url($uri, PHP_URL_PORT)) ? $port : getservbyname($parts['scheme'], 'tcp');
         $cases = [
             $parts['host'],
             $parts['host'] . ':' . $parts['port'],

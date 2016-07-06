@@ -17,7 +17,7 @@ class DelayHandler implements SQLInterface
     use UriParser;
 
     /**
-     * Database connection
+     * Database handler
      * @var PDO
      */
     private $pdo;

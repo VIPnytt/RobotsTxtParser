@@ -37,31 +37,31 @@ class UriClient extends TxtClient
      * Status code
      * @var int|null
      */
-    private $statusCode;
+    private $rawStatusCode;
 
     /**
      * Effective uri
      * @var string
      */
-    private $effectiveUri;
+    private $rawEffectiveUri;
 
     /**
      * Cache-Control max-age
      * @var int
      */
-    private $maxAge;
+    private $rawMaxAge;
 
     /**
      * Robots.txt contents
      * @var string
      */
-    private $contents;
+    private $rawContents;
 
     /**
      * Robots.txt character encoding
      * @var string
      */
-    private $encoding;
+    private $rawEncoding;
 
     /**
      * RequestClient constructor.
@@ -75,13 +75,13 @@ class UriClient extends TxtClient
         $this->base = $this->urlBase($this->urlEncode($baseUri));
         if ($this->request($curlOptions) === false) {
             $this->time = time();
-            $this->effectiveUri = $this->base . self::PATH;
-            $this->statusCode = null;
-            $this->contents = '';
-            $this->encoding = self::ENCODING;
-            $this->maxAge = 0;
+            $this->rawEffectiveUri = $this->base . self::PATH;
+            $this->rawStatusCode = null;
+            $this->rawContents = '';
+            $this->rawEncoding = self::ENCODING;
+            $this->rawMaxAge = 0;
         }
-        parent::__construct($this->base, $this->statusCode, $this->contents, $this->encoding, $this->effectiveUri, $byteLimit);
+        parent::__construct($this->base, $this->rawStatusCode, $this->rawContents, $this->rawEncoding, $this->rawEffectiveUri, $byteLimit);
     }
 
     /**
@@ -93,8 +93,8 @@ class UriClient extends TxtClient
     private function request($options = [])
     {
         $this->headerParser = new Parser\HeaderParser();
-        $ch = curl_init();
-        curl_setopt_array($ch, [
+        $curl = curl_init();
+        curl_setopt_array($curl, [
             CURLOPT_AUTOREFERER => true,
             CURLOPT_CAINFO => CaBundle::getSystemCaRootBundlePath(),
             CURLOPT_CONNECTTIMEOUT => 30,
@@ -104,29 +104,32 @@ class UriClient extends TxtClient
             CURLOPT_FTPSSLAUTH => CURLFTPAUTH_DEFAULT,
             CURLOPT_HEADER => false,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_NONE,
+            CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
             CURLOPT_IPRESOLVE => CURL_IPRESOLVE_WHATEVER,
-            CURLOPT_NOBODY => false,
             CURLOPT_MAXREDIRS => self::MAX_REDIRECTS,
+            CURLOPT_NOBODY => false,
+            CURLOPT_PROTOCOLS => CURLPROTO_FTP | CURLPROTO_FTPS | CURLPROTO_HTTP | CURLPROTO_HTTPS | CURLPROTO_SFTP,
+            CURLOPT_REDIR_PROTOCOLS => CURLPROTO_FTP | CURLPROTO_FTPS | CURLPROTO_HTTP | CURLPROTO_HTTPS | CURLPROTO_SFTP,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYHOST => 2,
             CURLOPT_SSL_VERIFYPEER => true,
             //CURLOPT_SSL_VERIFYSTATUS => true, // PHP 7.0.7
             CURLOPT_TIMEOUT => 120,
             CURLOPT_USERAGENT => self::CURL_USER_AGENT,
-            CURLOPT_USERPWD => 'anonymous:',
+            CURLOPT_USERPWD => 'anonymous:anonymous@',
         ]);
-        curl_setopt_array($ch, $options);
-        curl_setopt($ch, CURLOPT_HEADERFUNCTION, [$this->headerParser, 'curlCallback']);
-        curl_setopt($ch, CURLOPT_URL, $this->base . self::PATH);
-        if (($this->contents = curl_exec($ch)) === false) {
+        curl_setopt_array($curl, $options);
+        curl_setopt($curl, CURLOPT_HEADERFUNCTION, [$this->headerParser, 'curlCallback']);
+        curl_setopt($curl, CURLOPT_URL, $this->base . self::PATH);
+        if (($this->rawContents = curl_exec($curl)) === false) {
             return false;
         }
         $this->time = time();
-        $this->statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE); // also works with FTP status codes
-        $this->effectiveUri = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
-        curl_close($ch);
-        $this->encoding = $this->headerParser->getCharset();
-        $this->maxAge = $this->headerParser->getMaxAge();
+        $this->rawStatusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE); // also works with FTP status codes
+        $this->rawEffectiveUri = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
+        curl_close($curl);
+        $this->rawEncoding = $this->headerParser->getCharset();
+        $this->rawMaxAge = $this->headerParser->getMaxAge();
         return true;
     }
 
@@ -147,7 +150,7 @@ class UriClient extends TxtClient
      */
     public function getEffectiveUri()
     {
-        return $this->effectiveUri;
+        return $this->rawEffectiveUri;
     }
 
     /**
@@ -157,7 +160,7 @@ class UriClient extends TxtClient
      */
     public function getStatusCode()
     {
-        return $this->statusCode;
+        return $this->rawStatusCode;
     }
 
     /**
@@ -167,7 +170,7 @@ class UriClient extends TxtClient
      */
     public function getContents()
     {
-        return $this->contents;
+        return $this->rawContents;
     }
 
     /**
@@ -177,7 +180,7 @@ class UriClient extends TxtClient
      */
     public function getEncoding()
     {
-        return $this->encoding;
+        return $this->rawEncoding;
     }
 
     /**
@@ -187,7 +190,10 @@ class UriClient extends TxtClient
      */
     public function nextUpdate()
     {
-        if ($this->statusCode === 503) {
+        if (
+            $this->rawStatusCode === 503 &&
+            stripos($this->base, 'http') === 0
+        ) {
             return $this->time + min(self::CACHE_TIME, $this->headerParser->getRetryAfter($this->time));
         }
         return $this->time + self::CACHE_TIME;
@@ -200,6 +206,6 @@ class UriClient extends TxtClient
      */
     public function validUntil()
     {
-        return $this->time + max(self::CACHE_TIME, $this->maxAge);
+        return $this->time + max(self::CACHE_TIME, $this->rawMaxAge);
     }
 }

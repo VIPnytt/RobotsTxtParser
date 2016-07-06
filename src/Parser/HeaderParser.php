@@ -28,7 +28,7 @@ class HeaderParser implements RobotsTxtInterface
      * cURL resource
      * @var resource
      */
-    private $ch;
+    protected $curlHandler;
 
     /**
      * Headers
@@ -46,16 +46,22 @@ class HeaderParser implements RobotsTxtInterface
     /**
      * cURL CURLOPT_HEADERFUNCTION callback
      *
-     * @param resource $ch - cURL resource
-     * @param string $headerLine - cURL header line string
+     * @param resource $handler - cURL resource
+     * @param string $line - cURL header line string
      * @return int - the number of bytes written
      */
-    public function curlCallback($ch, $headerLine)
+    public function curlCallback($handler, $line)
     {
-        $this->ch = $ch;
-        $split = array_map('trim', explode(':', $headerLine, 2));
+        $this->curlHandler = $handler;
+        $split = array_map('trim', explode(':', $line, 2));
         $this->headers[strtolower($split[0])] = end($split);
-        return strlen($headerLine);
+        /*
+         * This callback function must return the number of bytes actually taken care of.
+         * If that amount differs from the amount passed in to your function, it'll signal an error to the library.
+         * This will cause the transfer to get aborted and the libcurl function in progress will return CURLE_WRITE_ERROR.
+         * @link https://curl.haxx.se/libcurl/c/CURLOPT_HEADERFUNCTION.html
+         */
+        return strlen($line);
     }
 
     /**
@@ -126,7 +132,8 @@ class HeaderParser implements RobotsTxtInterface
                 return max(0, $time - $requestTime);
             }
         }
-        return 0;
+        // If no valid Retry-after header is found, retry after 15 minutes
+        return 900;
     }
 
     /**

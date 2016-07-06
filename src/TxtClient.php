@@ -91,6 +91,26 @@ class TxtClient extends RobotsTxtParser
     }
 
     /**
+     * Get Status code
+     *
+     * @return int|null
+     */
+    public function getStatusCode()
+    {
+        return $this->statusCode;
+    }
+
+    /**
+     * Get User-agent list
+     *
+     * @return string[]
+     */
+    public function getUserAgents()
+    {
+        return $this->handler->userAgent()->getUserAgents();
+    }
+
+    /**
      * Clean-param
      *
      * @return CleanParamClient
@@ -121,17 +141,7 @@ class TxtClient extends RobotsTxtParser
     }
 
     /**
-     * Get User-agent list
-     *
-     * @return string[]
-     */
-    public function getUserAgents()
-    {
-        return $this->handler->userAgent()->getUserAgents();
-    }
-
-    /**
-     * Client User-agent specific rules
+     * User-agent specific rules
      *
      * @param string $string
      * @return UserAgentClient

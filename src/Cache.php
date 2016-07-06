@@ -23,7 +23,13 @@ class Cache implements RobotsTxtInterface, SQLInterface
     ];
 
     /**
-     * Database connection
+     * Client nextUpdate margin in seconds
+     * @var int
+     */
+    protected $clientUpdateMargin = 300;
+
+    /**
+     * Database handler
      * @var PDO
      */
     private $pdo;
@@ -39,12 +45,6 @@ class Cache implements RobotsTxtInterface, SQLInterface
      * @var int|null
      */
     private $byteLimit = self::BYTE_LIMIT;
-
-    /**
-     * Client nextUpdate margin in seconds
-     * @var int
-     */
-    private $clientUpdateMargin = 300;
 
     /**
      * PDO driver
@@ -182,7 +182,7 @@ SQL
         $nextUpdate = $client->nextUpdate();
         $effective = $client->getEffectiveUri();
         if (
-            mb_stripos($base, 'http') === 0 &&
+            stripos($base, 'http') === 0 &&
             (
                 $statusCode === null ||
                 (

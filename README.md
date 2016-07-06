@@ -35,8 +35,10 @@ _(compared to most other robots.txt libraries)_
 
 #### Requirements:
 - PHP [>=5.6](http://php.net/supported-versions.php)
-- PHP [iconv](http://php.net/manual/en/book.iconv.php) extension _[enabled by default]_
+- PHP [cURL](http://php.net/manual/en/book.curl.php) extension
+- PHP [iconv](http://php.net/manual/en/book.iconv.php) extension
 - PHP [mbstring](http://php.net/manual/en/book.mbstring.php) extension
+- PHP [OpenSSL](http://php.net/manual/en/book.openssl.php) extension
 
 Note: HHVM support is planned once [facebook/hhvm#4277](https://github.com/facebook/hhvm/issues/4277) is fixed.
 
