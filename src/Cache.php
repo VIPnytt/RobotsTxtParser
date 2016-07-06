@@ -180,7 +180,7 @@ SQL
         $base = $client->getBaseUri();
         $statusCode = $client->getStatusCode();
         $nextUpdate = $client->nextUpdate();
-        $effective = $client->getEffectiveUri();
+        $effective = ($effective = $client->getEffectiveUri()) === $base ? null : $effective;
         if (
             stripos($base, 'http') === 0 &&
             (

@@ -26,6 +26,8 @@ ROBOTS;
         $parser = new RobotsTxtParser\TxtClient($base, $statusCode, $robots);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
 
+        $this->assertEquals($statusCode, $parser->getStatusCode());
+
         switch ($expectedResult) {
             case 'conditional':
                 $this->assertTrue($parser->userAgent()->isDisallowed('/'));
