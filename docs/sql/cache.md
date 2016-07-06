@@ -43,12 +43,12 @@ CREATE TABLE `robotstxt__cache1` (
   `base`       VARCHAR(250)
                COLLATE utf8_unicode_ci      NOT NULL,
   `content`    TEXT COLLATE utf8_unicode_ci NOT NULL,
-  `statusCode` SMALLINT(4) UNSIGNED DEFAULT NULL,
+  `statusCode` SMALLINT(4) UNSIGNED    DEFAULT NULL,
   `validUntil` INT(10) UNSIGNED             NOT NULL,
   `nextUpdate` INT(10) UNSIGNED             NOT NULL,
   `effective`  VARCHAR(250)
-               COLLATE utf8_unicode_ci      NOT NULL,
-  `worker`     TINYINT(3) UNSIGNED  DEFAULT NULL,
+               COLLATE utf8_unicode_ci DEFAULT NULL,
+  `worker`     TINYINT(3) UNSIGNED     DEFAULT NULL,
   PRIMARY KEY (`base`),
   KEY `worker` (`worker`, `nextUpdate`)
 )
@@ -68,5 +68,5 @@ For the sake of security, it is recommended to use a dedicated user with a bare 
   - `DELETE`
 
 #### Table version history
-- `robotstxt__cache1` - [2.0 beta](https://github.com/VIPnytt/RobotsTxtParser/releases/tag/v2.0.0-alpha.2) >>> [latest](https://github.com/VIPnytt/RobotsTxtParser/releases)
+- `robotstxt__cache1` - [2.0 beta](https://github.com/VIPnytt/RobotsTxtParser/releases/tag/v2.0.0-beta.1) >>> [latest](https://github.com/VIPnytt/RobotsTxtParser/releases)
 - `robotstxt__cache0` - [2.0 alpha](https://github.com/VIPnytt/RobotsTxtParser/releases/tag/v2.0.0-alpha.1)

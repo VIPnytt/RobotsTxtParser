@@ -40,8 +40,8 @@ class RobotsTxtParser implements RobotsTxtInterface
     public function __construct($baseUri, $content, $effectiveUri = null)
     {
         mb_internal_encoding(self::ENCODING);
-        $baseUri = $this->urlBase($this->urlEncode($baseUri));
-        $effectiveUri = empty($effectiveUri) ? $baseUri : $this->urlBase($this->urlEncode($effectiveUri));
+        $baseUri = $this->urlBase($baseUri);
+        $effectiveUri = $effectiveUri === null ? $baseUri : $this->urlBase($effectiveUri);
         $this->handler = new RootDirectiveHandler($baseUri, $effectiveUri);
         $this->parseTxt($content);
     }

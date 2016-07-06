@@ -68,7 +68,7 @@ class HostClient implements ClientInterface
             'host' => isset($parsed['host']) ? $parsed['host'] : $parsed['path'],
         ];
         $new['port'] = isset($parsed['port']) ? $parsed['port'] : getservbyname($new['scheme'], 'tcp');
-        return $this->base == $this->urlBase($new['scheme'] . '://' . $new['host'] . ':' . $new['port']);
+        return $this->base == $new['scheme'] . '://' . $new['host'] . ':' . $new['port'];
     }
 
     /**

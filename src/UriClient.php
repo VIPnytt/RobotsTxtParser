@@ -41,9 +41,9 @@ class UriClient extends TxtClient
 
     /**
      * Effective uri
-     * @var string
+     * @var string|null
      */
-    private $rawEffectiveUri;
+    private $effective;
 
     /**
      * Cache-Control max-age
@@ -72,16 +72,16 @@ class UriClient extends TxtClient
      */
     public function __construct($baseUri, array $curlOptions = [], $byteLimit = self::BYTE_LIMIT)
     {
-        $this->base = $this->urlBase($this->urlEncode($baseUri));
+        $this->base = $this->urlBase($baseUri);
         if ($this->request($curlOptions) === false) {
             $this->time = time();
-            $this->rawEffectiveUri = $this->base . self::PATH;
+            $this->effective = null;
             $this->rawStatusCode = null;
             $this->rawContents = '';
             $this->rawEncoding = self::ENCODING;
             $this->rawMaxAge = 0;
         }
-        parent::__construct($this->base, $this->rawStatusCode, $this->rawContents, $this->rawEncoding, $this->rawEffectiveUri, $byteLimit);
+        parent::__construct($this->base, $this->rawStatusCode, $this->rawContents, $this->rawEncoding, $this->effective, $byteLimit);
     }
 
     /**
@@ -126,7 +126,7 @@ class UriClient extends TxtClient
         }
         $this->time = time();
         $this->rawStatusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE); // also works with FTP status codes
-        $this->rawEffectiveUri = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
+        $this->effective = $this->urlBase(curl_getinfo($curl, CURLINFO_EFFECTIVE_URL));
         curl_close($curl);
         $this->rawEncoding = $this->headerParser->getCharset();
         $this->rawMaxAge = $this->headerParser->getMaxAge();
@@ -146,11 +146,11 @@ class UriClient extends TxtClient
     /**
      * Effective uri
      *
-     * @return string
+     * @return string|null
      */
     public function getEffectiveUri()
     {
-        return $this->rawEffectiveUri;
+        return $this->effective;
     }
 
     /**

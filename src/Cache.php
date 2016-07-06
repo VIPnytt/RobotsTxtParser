@@ -105,7 +105,7 @@ class Cache implements RobotsTxtInterface, SQLInterface
      */
     public function client($baseUri)
     {
-        $base = $this->urlBase($this->urlEncode($baseUri));
+        $base = $this->urlBase($baseUri);
         $query = $this->pdo->prepare(<<<SQL
 SELECT
   content,
@@ -205,10 +205,10 @@ SQL
         );
         $query->bindParam(':base', $base, PDO::PARAM_STR);
         $query->bindParam(':content', $content, PDO::PARAM_STR);
-        $query->bindParam(':statusCode', $statusCode, PDO::PARAM_INT);
+        $query->bindParam(':statusCode', $statusCode, PDO::PARAM_INT | PDO::PARAM_NULL);
         $query->bindParam(':validUntil', $validUntil, PDO::PARAM_INT);
         $query->bindParam(':nextUpdate', $nextUpdate, PDO::PARAM_INT);
-        $query->bindParam(':effective', $effective, PDO::PARAM_STR);
+        $query->bindParam(':effective', $effective, PDO::PARAM_STR | PDO::PARAM_NULL);
         return $query->execute();
     }
 
@@ -259,7 +259,7 @@ SQL
      */
     public function invalidate($baseUri)
     {
-        $base = $this->urlBase($this->urlEncode($baseUri));
+        $base = $this->urlBase($baseUri);
         $query = $this->pdo->prepare(<<<SQL
 DELETE FROM robotstxt__cache1
 WHERE base = :base;
