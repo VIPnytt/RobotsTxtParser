@@ -109,7 +109,7 @@ class HeaderParser implements RobotsTxtInterface
     {
         if (
             isset($this->headers['cache-control']) &&
-            ($value = $this->getInlineValue($this->headers['content-type'], 'max-age', ',')) !== false
+            ($value = $this->getInlineValue($this->headers['cache-control'], 'max-age', ',')) !== false
         ) {
             return intval($value);
         }
