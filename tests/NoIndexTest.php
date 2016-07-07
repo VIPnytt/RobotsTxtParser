@@ -20,6 +20,8 @@ class NoIndexTest extends \PHPUnit_Framework_TestCase
         $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
 
+        $this->assertTrue($parser->userAgent('*')->noIndex()->isListed('/public/'));
+
         $this->assertTrue($parser->userAgent('*')->isDisallowed('/public/'));
         $this->assertFalse($parser->userAgent('*')->isAllowed('/public/'));
         $this->assertTrue($parser->userAgent()->isDisallowed('/public/'));

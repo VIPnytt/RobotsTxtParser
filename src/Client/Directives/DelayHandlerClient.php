@@ -3,12 +3,13 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
 
 use PDO;
 use vipnytt\RobotsTxtParser\Exceptions\SQLException;
-use vipnytt\RobotsTxtParser\SQL\SQLInterface;
+use vipnytt\RobotsTxtParser\SQLInterface;
 use vipnytt\UserAgentParser;
 
 /**
  * Class DelayHandlerClient
  *
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/DelayHandlerClient.md for documentation
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
 class DelayHandlerClient implements SQLInterface
@@ -89,7 +90,7 @@ class DelayHandlerClient implements SQLInterface
             $pdo->query("SELECT 1 FROM robotstxt__delay0 LIMIT 1;");
         } catch (\Exception $exception1) {
             try {
-                $pdo->query(file_get_contents(__DIR__ . '/../../SQL/delay.sql'));
+                $pdo->query(file_get_contents(__DIR__ . '/../../../res/delay.sql'));
             } catch (\Exception $exception2) {
                 throw new SQLException('Missing table `' . self::TABLE_DELAY . '`. Setup instructions: ' . self::README_SQL_DELAY);
             }

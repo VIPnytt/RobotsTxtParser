@@ -6,6 +6,7 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 /**
  * Class CommentClient
  *
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/CommentClient.md for documentation
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
 class CommentClient implements ClientInterface, RobotsTxtInterface

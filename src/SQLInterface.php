@@ -1,10 +1,10 @@
 <?php
-namespace vipnytt\RobotsTxtParser\SQL;
+namespace vipnytt\RobotsTxtParser;
 
 /**
  * Interface SQLInterface
  *
- * @package vipnytt\RobotsTxtParser\SQL
+ * @package vipnytt\RobotsTxtParser
  */
 interface SQLInterface
 {

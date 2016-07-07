@@ -2,10 +2,12 @@
 ```
 @package vipnytt\RobotsTxtParser\Client\Directives
 ```
+
 ### Directives:
 - [Sitemap](../directives.md#sitemap)
 
 ## Public functions
+- [export](#export)
 
 ### export
 ```

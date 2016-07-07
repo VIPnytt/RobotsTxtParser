@@ -5,11 +5,11 @@ use PDO;
 use vipnytt\RobotsTxtParser\Client\Directives\DelayHandlerClient;
 use vipnytt\RobotsTxtParser\Client\Directives\DelayInterface;
 use vipnytt\RobotsTxtParser\Parser\UriParser;
-use vipnytt\RobotsTxtParser\SQL\SQLInterface;
 
 /**
  * Class DelayHandler
  *
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/DelayHandler.md for documentation
  * @package vipnytt\RobotsTxtParser
  */
 class DelayHandler implements SQLInterface

@@ -6,6 +6,7 @@ use vipnytt\RobotsTxtParser\Parser\Directives\SubDirectiveHandler;
 /**
  * Class UserAgentClient
  *
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/UserAgentClient.md for documentation
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
 class UserAgentClient extends UserAgentTools

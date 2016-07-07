@@ -8,6 +8,7 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 /**
  * Class AllowClient
  *
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/AllowClient.md for documentation
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
 class AllowClient implements ClientInterface, RobotsTxtInterface

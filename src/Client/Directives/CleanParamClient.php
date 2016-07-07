@@ -4,6 +4,7 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
 /**
  * Class CleanParamClient
  *
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/CleanParamClient.md for documentation
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
 class CleanParamClient implements ClientInterface

@@ -2,13 +2,14 @@
 namespace vipnytt\RobotsTxtParser;
 
 use PDO;
+use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 use vipnytt\RobotsTxtParser\Exceptions\SQLException;
 use vipnytt\RobotsTxtParser\Parser\UriParser;
-use vipnytt\RobotsTxtParser\SQL\SQLInterface;
 
 /**
  * Class Cache
  *
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/Cache.md for documentation
  * @package vipnytt\RobotsTxtParser
  */
 class Cache implements RobotsTxtInterface, SQLInterface
@@ -89,7 +90,7 @@ class Cache implements RobotsTxtInterface, SQLInterface
             $pdo->query("SELECT 1 FROM robotstxt__cache1 LIMIT 1;");
         } catch (\Exception $exception1) {
             try {
-                $pdo->query(file_get_contents(__DIR__ . '/SQL/cache.sql'));
+                $pdo->query(file_get_contents(__DIR__ . '/../res/cache.sql'));
             } catch (\Exception $exception2) {
                 throw new SQLException('Missing table `' . self::TABLE_CACHE . '`. Setup instructions: ' . self::README_SQL_CACHE);
             }
@@ -272,14 +273,17 @@ SQL
     /**
      * Process the update queue
      *
+     * @param float|int $targetTime
      * @param int|null $workerID
-     * @return bool
+     * @return string[]|false
+     * @throws ClientException
      */
-    public function cron($workerID = null)
+    public function cron($targetTime = 60, $workerID = null)
     {
+        $start = microtime(true);
         $worker = $this->setWorkerID($workerID);
-        $result = true;
-        while ($result) {
+        $log = [];
+        while ($targetTime <= microtime(true) - $start) {
             $query = $this->pdo->prepare(<<<SQL
 UPDATE robotstxt__cache1
 SET worker = :workerID
@@ -288,20 +292,24 @@ ORDER BY nextUpdate ASC
 LIMIT 1;
 SELECT base
 FROM robotstxt__cache1
-WHERE worker = :workerID;
+WHERE worker = :workerID
+LIMIT 100;
 SQL
             );
             $query->bindParam(':workerID', $worker, PDO::PARAM_INT);
             $query->execute();
             if ($query->rowCount() > 0) {
                 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                    $result = $this->push(new UriClient($row['base'], $this->curlOptions, $this->byteLimit));
+                    if ($targetTime <= microtime(true) - $start) {
+                        break 2;
+                    } elseif (!$this->push(new UriClient($row['base'], $this->curlOptions, $this->byteLimit))) {
+                        throw new ClientException('Unable to update `' . $row['base'] . '`');
+                    }
+                    $log[] = $row['base'];
                 }
-                continue;
             }
-            return true;
         }
-        return false;
+        return $log;
     }
 
     /**

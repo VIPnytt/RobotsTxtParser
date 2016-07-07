@@ -4,6 +4,7 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
 /**
  * Class SitemapClient
  *
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/SitemapClient.md for documentation
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
 class SitemapClient implements ClientInterface

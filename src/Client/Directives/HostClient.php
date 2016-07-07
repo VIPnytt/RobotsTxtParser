@@ -6,6 +6,7 @@ use vipnytt\RobotsTxtParser\Parser\UriParser;
 /**
  * Class HostClient
  *
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/HostClient.md for documentation
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
 class HostClient implements ClientInterface
@@ -88,7 +89,18 @@ class HostClient implements ClientInterface
      */
     public function getWithFallback()
     {
-        return ($get = $this->get()) === null ? parse_url($this->effective, PHP_URL_HOST) : $get;
+        if (($get = $this->get()) !== null) {
+            // Host defined by the Host directive
+            return $get;
+        } elseif (
+            $this->base !== $this->effective &&
+            parse_url($this->base, PHP_URL_HOST) === ($host = parse_url($this->effective, PHP_URL_HOST))
+        ) {
+            // Host is the same, but Scheme or Port is different
+            return getservbyname($scheme = parse_url($this->effective, PHP_URL_SCHEME), 'tcp') === parse_url($this->effective, PHP_URL_PORT) ? $scheme . '://' . $host : $this->effective;
+        }
+        // Return Host name only
+        return parse_url($this->effective, PHP_URL_HOST);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
 /**
  * Class VisitTimeClient
  *
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/VisitTimeClient.md for documentation
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
 class VisitTimeClient implements ClientInterface

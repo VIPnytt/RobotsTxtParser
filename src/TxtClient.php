@@ -13,6 +13,7 @@ use vipnytt\RobotsTxtParser\Parser\UriParser;
 /**
  * Class TxtClient
  *
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/TxtClient.md for documentation
  * @package vipnytt\RobotsTxtParser
  */
 class TxtClient extends RobotsTxtParser

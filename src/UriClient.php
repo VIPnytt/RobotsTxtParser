@@ -6,6 +6,7 @@ use Composer\CaBundle\CaBundle;
 /**
  * Class UriClient
  *
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/UriClient.md for documentation
  * @package vipnytt\RobotsTxtParser
  */
 class UriClient extends TxtClient

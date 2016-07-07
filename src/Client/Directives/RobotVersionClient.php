@@ -4,6 +4,7 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
 /**
  * Class RobotVersionClient
  *
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/RobotVersionClient.md for documentation
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
 class RobotVersionClient implements ClientInterface
