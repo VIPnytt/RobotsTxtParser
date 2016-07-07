@@ -130,8 +130,7 @@ SQL
             }
         }
         $request = new UriClient($base, $this->curlOptions, $this->byteLimit);
-        $this->push($request);
-        $this->markAsActive($base);
+        $this->push($request, null);
         return new TxtClient($base, $request->getStatusCode(), $request->getContents(), $request->getEncoding(), $request->getEffectiveUri(), $this->byteLimit);
     }
 
@@ -174,9 +173,10 @@ SQL
      * Update an robots.txt in the database
      *
      * @param UriClient $client
+     * @param int|null $worker
      * @return bool
      */
-    private function push(UriClient $client)
+    private function push(UriClient $client, $worker = 0)
     {
         $base = $client->getBaseUri();
         $statusCode = $client->getStatusCode();
@@ -201,7 +201,7 @@ SQL
 INSERT INTO robotstxt__cache1 (base, content, statusCode, validUntil, nextUpdate, effective)
 VALUES (:base, :content, :statusCode, :validUntil, :nextUpdate, :effective)
 ON DUPLICATE KEY UPDATE content = :content, statusCode = :statusCode, validUntil = :validUntil,
-  nextUpdate = :nextUpdate, effective = :effective, worker = 0;
+  nextUpdate = :nextUpdate, effective = :effective, worker = :worker;
 SQL
         );
         $query->bindParam(':base', $base, PDO::PARAM_STR);
@@ -210,6 +210,7 @@ SQL
         $query->bindParam(':validUntil', $validUntil, PDO::PARAM_INT);
         $query->bindParam(':nextUpdate', $nextUpdate, PDO::PARAM_INT);
         $query->bindParam(':effective', $effective, PDO::PARAM_STR | PDO::PARAM_NULL);
+        $query->bindParam(':worker', $worker, PDO::PARAM_INT | PDO::PARAM_NULL);
         return $query->execute();
     }
 
@@ -283,11 +284,12 @@ SQL
         $start = microtime(true);
         $worker = $this->setWorkerID($workerID);
         $log = [];
-        $count = 1;
+        $lastCount = -1;
         while (
-            $count > 0 &&
-            $targetTime > microtime(true) - $start
+            $targetTime > microtime(true) - $start &&
+            count($log) > $lastCount
         ) {
+            $lastCount = count($log);
             $query = $this->pdo->prepare(<<<SQL
 UPDATE robotstxt__cache1
 SET worker = :workerID
@@ -297,16 +299,13 @@ LIMIT 1;
 SELECT base
 FROM robotstxt__cache1
 WHERE worker = :workerID
-LIMIT 100;
+LIMIT 10;
 SQL
             );
             $query->bindParam(':workerID', $worker, PDO::PARAM_INT);
             $query->execute();
-            if (($count = $query->rowCount()) > 0) {
-                while (
-                    $targetTime > microtime(true) - $start &&
-                    ($row = $query->fetch(PDO::FETCH_ASSOC))
-                ) {
+            if ($query->rowCount() > 0) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     if (!$this->push(new UriClient($row['base'], $this->curlOptions, $this->byteLimit))) {
                         throw new ClientException('Unable to update `' . $row['base'] . '`');
                     }
