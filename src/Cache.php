@@ -296,6 +296,11 @@ SET worker = :workerID
 WHERE worker IS NULL AND nextUpdate <= UNIX_TIMESTAMP()
 ORDER BY nextUpdate ASC
 LIMIT 1;
+SQL
+            );
+            $query->bindParam(':workerID', $worker, PDO::PARAM_INT);
+            $query->execute();
+            $query = $this->pdo->prepare(<<<SQL
 SELECT base
 FROM robotstxt__cache1
 WHERE worker = :workerID
@@ -322,7 +327,7 @@ SQL
      * @param int|null $workerID
      * @return int
      */
-    protected function setWorkerID($workerID = null)
+    private function setWorkerID($workerID = null)
     {
         if (
             is_int($workerID) &&
