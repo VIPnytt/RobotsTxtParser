@@ -283,7 +283,11 @@ SQL
         $start = microtime(true);
         $worker = $this->setWorkerID($workerID);
         $log = [];
-        while ($targetTime <= microtime(true) - $start) {
+        $count = 1;
+        while (
+            $count > 0 &&
+            $targetTime > microtime(true) - $start
+        ) {
             $query = $this->pdo->prepare(<<<SQL
 UPDATE robotstxt__cache1
 SET worker = :workerID
@@ -298,11 +302,12 @@ SQL
             );
             $query->bindParam(':workerID', $worker, PDO::PARAM_INT);
             $query->execute();
-            if ($query->rowCount() > 0) {
-                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                    if ($targetTime <= microtime(true) - $start) {
-                        break 2;
-                    } elseif (!$this->push(new UriClient($row['base'], $this->curlOptions, $this->byteLimit))) {
+            if (($count = $query->rowCount()) > 0) {
+                while (
+                    $targetTime > microtime(true) - $start &&
+                    ($row = $query->fetch(PDO::FETCH_ASSOC))
+                ) {
+                    if (!$this->push(new UriClient($row['base'], $this->curlOptions, $this->byteLimit))) {
                         throw new ClientException('Unable to update `' . $row['base'] . '`');
                     }
                     $log[] = $row['base'];
