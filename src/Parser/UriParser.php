@@ -75,7 +75,7 @@ trait UriParser
             (
                 filter_var($uri, FILTER_VALIDATE_URL) ||
                 // PHP 5.x bug fix: FILTER_VALIDATE_URL doesn't support IPv6 urls. IP check not needed in the future.
-                $this->uriValidateIP(parse_url($uri, PHP_URL_HOST))
+                $this->uriValidateIP(($parsed = parse_url($uri, PHP_URL_HOST)) === false ? '' : $parsed)
             ) &&
             ($parsed = parse_url($uri)) !== false &&
             (
