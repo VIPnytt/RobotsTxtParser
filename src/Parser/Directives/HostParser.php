@@ -77,7 +77,7 @@ class HostParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Client
+     * Parse
      *
      * @param string $line
      * @return string|false
@@ -86,10 +86,11 @@ class HostParser implements ParserInterface, RobotsTxtInterface
     {
         if (
             !($parts = $this->getParts($line)) ||
-            !$this->urlValidateHost($parts['host']) ||
+            $this->uriValidateIP($parts['host']) ||
+            !$this->uriValidateHost($parts['host']) ||
             (
                 !empty($parts['scheme']) &&
-                !$this->urlValidateScheme($parts['scheme'])
+                !$this->uriValidateScheme($parts['scheme'])
             )
         ) {
             return false;
@@ -98,14 +99,14 @@ class HostParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Get URL parts
+     * Get URI parts
      *
-     * @param string $url
+     * @param string $uri
      * @return string[]|false
      */
-    private function getParts($url)
+    private function getParts($uri)
     {
-        return ($parsed = parse_url($this->urlEncode(mb_strtolower($url)))) === false ? false : [
+        return ($parsed = parse_url($this->uriEncode(mb_strtolower($uri)))) === false ? false : [
             'scheme' => isset($parsed['scheme']) ? $parsed['scheme'] . '://' : '',
             'host' => isset($parsed['host']) ? $parsed['host'] : $parsed['path'],
             'port' => isset($parsed['port']) ? ':' . $parsed['port'] : '',

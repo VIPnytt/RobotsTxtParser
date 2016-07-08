@@ -36,9 +36,7 @@ _(compared to most other robots.txt libraries)_
 - PHP [>=5.6](http://php.net/supported-versions.php)
 - PHP extensions:
   - [cURL](http://php.net/manual/en/book.curl.php)
-  - [iconv](http://php.net/manual/en/book.iconv.php)
   - [mbstring](http://php.net/manual/en/book.mbstring.php)
-  - [OpenSSL](http://php.net/manual/en/book.openssl.php)
 
 Note: HHVM support is planned once [facebook/hhvm#4277](https://github.com/facebook/hhvm/issues/4277) is fixed.
 

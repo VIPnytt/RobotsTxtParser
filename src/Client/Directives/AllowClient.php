@@ -67,23 +67,23 @@ class AllowClient implements ClientInterface, RobotsTxtInterface
     /**
      * Get path and query
      *
-     * @param string $url
+     * @param string $uri
      * @return string
      * @throws ClientException
      */
-    private function getPath($url)
+    private function getPath($uri)
     {
         // Encode
-        $url = mb_split('#', $this->urlEncode($url))[0];
-        if (mb_stripos($url, '/') === 0) {
-            // URL is already an path
-            return $url;
+        $uri = mb_split('#', $this->uriEncode($uri))[0];
+        if (mb_stripos($uri, '/') === 0) {
+            // URI is already an path
+            return $uri;
         }
-        if (!$this->urlValidate($url)) {
-            throw new ClientException('Invalid URL');
+        if (!$this->uriValidate($uri)) {
+            throw new ClientException('Invalid URI');
         }
-        $path = (($path = parse_url($url, PHP_URL_PATH)) === null) ? '/' : $path;
-        $query = (($query = parse_url($url, PHP_URL_QUERY)) === null) ? '' : '?' . $query;
+        $path = (($path = parse_url($uri, PHP_URL_PATH)) === null) ? '/' : $path;
+        $query = (($query = parse_url($uri, PHP_URL_QUERY)) === null) ? '' : '?' . $query;
         return $path . $query;
     }
 

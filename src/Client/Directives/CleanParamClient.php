@@ -30,18 +30,18 @@ class CleanParamClient implements ClientInterface
     /**
      * Check
      *
-     * @param  string $url
+     * @param  string $uri
      * @return bool
      */
-    public function isListed($url)
+    public function isListed($uri)
     {
         foreach ($this->cleanParam as $param => $paths) {
             if (
                 (
-                    mb_stripos($url, "?$param=") ||
-                    mb_stripos($url, "&$param=")
+                    mb_stripos($uri, "?$param=") ||
+                    mb_stripos($uri, "&$param=")
                 ) &&
-                $this->checkPaths($url, $paths)
+                $this->checkPaths($uri, $paths)
             ) {
                 return true;
             }

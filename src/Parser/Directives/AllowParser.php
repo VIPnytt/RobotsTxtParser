@@ -110,15 +110,18 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
     public function render()
     {
         $result = [];
-        $values = array_merge(
-            $this->host->render(),
-            $this->path,
-            $this->cleanParam->render()
-        );
-        foreach ($values as $value) {
-            $result[] = $this->directive . ':' . $value;
+        foreach (
+            [
+                $this->host->render(),
+                $this->path,
+                $this->cleanParam->render(),
+            ] as $values
+        ) {
+            sort($values);
+            foreach ($values as $value) {
+                $result[] = $this->directive . ':' . $value;
+            }
         }
-        sort($result);
         return $result;
     }
 

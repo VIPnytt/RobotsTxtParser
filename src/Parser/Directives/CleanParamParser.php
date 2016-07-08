@@ -39,7 +39,7 @@ class CleanParamParser implements ParserInterface, RobotsTxtInterface
         // split into parameter and path
         $array = array_map('trim', mb_split('\s+', $line, 2));
         // strip any invalid characters from path prefix
-        $path = isset($array[1]) ? $this->urlEncode(preg_replace('/[^A-Za-z0-9\.-\/\*\_]/', '', $array[1])) : "/";
+        $path = isset($array[1]) ? $this->uriEncode(preg_replace('/[^A-Za-z0-9\.-\/\*\_]/', '', $array[1])) : "/";
         $param = array_map('trim', mb_split('&', $array[0]));
         foreach ($param as $key) {
             $this->cleanParam[$key][] = $path;

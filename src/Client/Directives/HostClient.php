@@ -111,7 +111,7 @@ class HostClient implements ClientInterface
      */
     public function isUriListed($uri)
     {
-        $uri = mb_strtolower($this->urlEncode($uri));
+        $uri = mb_strtolower($this->uriEncode($uri));
         $parts = [
             'scheme' => parse_url($uri, PHP_URL_SCHEME),
             'host' => parse_url($uri, PHP_URL_HOST),

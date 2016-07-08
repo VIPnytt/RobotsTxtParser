@@ -43,13 +43,14 @@
   "require": {
     "php": ">=5.6.0",
     "ext-curl": "*",
-    "ext-iconv": "*",
     "ext-mbstring": "*",
-    "ext-openssl": "*",
     "composer/ca-bundle": "~1.0",
     "vipnytt/useragentparser": "~0.2"
   },
   "require-dev": {
+    "ext-iconv": "*",
+    "ext-intl": "*",
+    "ext-openssl": "*",
     "phpunit/phpunit": ">=4.0",
     "codeclimate/php-test-reporter": ">=0.2.0"
   },

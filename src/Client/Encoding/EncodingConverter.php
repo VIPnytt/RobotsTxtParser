@@ -43,7 +43,15 @@ class EncodingConverter implements RobotsTxtInterface
     {
         if ($this->encoding == self::ENCODING) {
             return $this->string;
-        } elseif (($iconv = $this->iconv()) !== false) {
+        } elseif (
+            extension_loaded('intl') &&
+            ($intl = $this->intl()) !== false
+        ) {
+            return $intl;
+        } elseif (
+            extension_loaded('iconv') &&
+            ($iconv = $this->iconv()) !== false
+        ) {
             return $iconv;
         } elseif (($mbstring = $this->mbstring()) !== false) {
             return $mbstring;
@@ -52,7 +60,26 @@ class EncodingConverter implements RobotsTxtInterface
     }
 
     /**
+     * intl
+     * @link http://php.net/manual/en/uconverter.convert.php
+     *
+     * @return string|false
+     */
+    public function intl()
+    {
+        try {
+            $uConverter = new \UConverter(self::ENCODING, $this->encoding);
+            $converted = $uConverter->convert($this->string);
+        } catch (\Exception $e) {
+            return false;
+        }
+        mb_internal_encoding(self::ENCODING);
+        return $converted;
+    }
+
+    /**
      * iconv
+     * @link http://php.net/manual/en/function.iconv.php
      *
      * @param string $outSuffix
      * @return string|false
@@ -61,7 +88,7 @@ class EncodingConverter implements RobotsTxtInterface
     {
         try {
             $converted = iconv($this->encoding, self::ENCODING . $outSuffix, $this->string);
-        } catch (\Exception $msg) {
+        } catch (\Exception $e) {
             return false;
         }
         mb_internal_encoding(self::ENCODING);
@@ -70,6 +97,7 @@ class EncodingConverter implements RobotsTxtInterface
 
     /**
      * mbstring
+     * @link http://php.net/manual/en/function.mb-convert-encoding.php
      *
      * @param array|string|null $fromOverride
      * @return string|false

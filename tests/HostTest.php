@@ -61,6 +61,7 @@ Host: .my-host.com:8000
 Host: my-host.com.Host: my..host.com
 Host: www.myhost.com:8080/
 Host: 213.180.194.129
+Host: http://213.180.194.129:80
 Host: [2001:db8::1]
 Host: FE80::0202:B3FF:FE1E:8329
 Host: https://[2001:db8:0:1]:80
@@ -75,8 +76,8 @@ ROBOTS
                 <<<RENDERED
 host:myhost.com
 user-agent:*
-disallow:/cgi-bin
 disallow:host:www.myhost.com
+disallow:/cgi-bin
 user-agent:yandex
 disallow:/cgi-bin
 RENDERED

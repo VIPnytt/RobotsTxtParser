@@ -55,7 +55,7 @@ class StatusCodeParser implements RobotsTxtInterface
     }
 
     /**
-     * Check if URL is Applicable for Status code parsing
+     * Check if URI is applicable for Status-code parsing
      *
      * @return bool
      * @throws StatusCodeException

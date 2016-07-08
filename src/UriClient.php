@@ -73,7 +73,7 @@ class UriClient extends TxtClient
      */
     public function __construct($baseUri, array $curlOptions = [], $byteLimit = self::BYTE_LIMIT)
     {
-        $this->base = $this->urlBase($baseUri);
+        $this->base = $this->uriBase($baseUri);
         if ($this->request($curlOptions) === false) {
             $this->time = time();
             $this->effective = null;
@@ -127,7 +127,7 @@ class UriClient extends TxtClient
         }
         $this->time = time();
         $this->rawStatusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE); // also works with FTP status codes
-        $this->effective = $this->urlBase(curl_getinfo($curl, CURLINFO_EFFECTIVE_URL));
+        $this->effective = $this->uriBase(curl_getinfo($curl, CURLINFO_EFFECTIVE_URL));
         curl_close($curl);
         $this->rawEncoding = $this->headerParser->getCharset();
         $this->rawMaxAge = $this->headerParser->getMaxAge();

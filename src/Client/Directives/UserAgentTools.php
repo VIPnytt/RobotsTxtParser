@@ -57,32 +57,32 @@ class UserAgentTools implements RobotsTxtInterface
     }
 
     /**
-     * Check if URL is allowed to crawl
+     * Check if URI is allowed to crawl
      *
-     * @param string $url
+     * @param string $uri
      * @return bool
      */
-    public function isAllowed($url)
+    public function isAllowed($uri)
     {
-        return $this->check(self::DIRECTIVE_ALLOW, $url);
+        return $this->check(self::DIRECTIVE_ALLOW, $uri);
     }
 
     /**
      * Check
      *
      * @param string $directive
-     * @param string $url
+     * @param string $uri
      * @return bool
      * @throws ClientException
      */
-    private function check($directive, $url)
+    private function check($directive, $uri)
     {
-        $url = $this->urlConvertToFull($url, $this->base);
-        if ($this->base !== $this->urlBase($url)) {
-            throw new ClientException('URL belongs to a different robots.txt');
+        $uri = $this->uriConvertToFull($uri, $this->base);
+        if ($this->base !== $this->uriBase($uri)) {
+            throw new ClientException('URI belongs to a different robots.txt');
         }
         // 1st priority override: /robots.txt is permanent allowed
-        if (parse_url($url, PHP_URL_PATH) === self::PATH) {
+        if (parse_url($uri, PHP_URL_PATH) === self::PATH) {
             return $directive === self::DIRECTIVE_ALLOW;
         }
         // 2st priority override: Status code rules
@@ -95,17 +95,17 @@ class UserAgentTools implements RobotsTxtInterface
             return $directive === self::DIRECTIVE_DISALLOW;
         }
         // Path check
-        return $this->checkPath($directive, $url);
+        return $this->checkPath($directive, $uri);
     }
 
     /**
      * Check path
      *
      * @param string $directive
-     * @param string $url
+     * @param string $uri
      * @return bool
      */
-    private function checkPath($directive, $url)
+    private function checkPath($directive, $uri)
     {
         $result = self::DIRECTIVE_ALLOW;
         foreach (
@@ -115,7 +115,7 @@ class UserAgentTools implements RobotsTxtInterface
                 self::DIRECTIVE_ALLOW => $this->handler->allow(),
             ] as $currentDirective => $handler
         ) {
-            if ($handler->client()->isListed($url)) {
+            if ($handler->client()->isListed($uri)) {
                 if ($currentDirective === self::DIRECTIVE_NO_INDEX) {
                     return $directive === self::DIRECTIVE_DISALLOW;
                 }
@@ -126,14 +126,14 @@ class UserAgentTools implements RobotsTxtInterface
     }
 
     /**
-     * Check if URL is disallowed to crawl
+     * Check if URI is disallowed to crawl
      *
-     * @param string $url
+     * @param string $uri
      * @return bool
      */
-    public function isDisallowed($url)
+    public function isDisallowed($uri)
     {
-        return $this->check(self::DIRECTIVE_DISALLOW, $url);
+        return $this->check(self::DIRECTIVE_DISALLOW, $uri);
     }
 
     /**

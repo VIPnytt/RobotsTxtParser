@@ -36,12 +36,12 @@ class SitemapParser implements ParserInterface, RobotsTxtInterface
     public function add($line)
     {
         if (
-            !$this->urlValidate(($url = $this->urlEncode($line))) ||
-            in_array($url, $this->sitemaps)
+            !$this->uriValidate(($uri = $this->uriEncode($line))) ||
+            in_array($uri, $this->sitemaps)
         ) {
             return false;
         }
-        $this->sitemaps[] = $url;
+        $this->sitemaps[] = $uri;
         return true;
     }
 
@@ -63,8 +63,8 @@ class SitemapParser implements ParserInterface, RobotsTxtInterface
     public function render()
     {
         $result = [];
-        foreach ($this->sitemaps as $url) {
-            $result[] = self::DIRECTIVE_SITEMAP . ':' . $url;
+        foreach ($this->sitemaps as $uri) {
+            $result[] = self::DIRECTIVE_SITEMAP . ':' . $uri;
         }
         sort($result);
         return $result;

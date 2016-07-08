@@ -106,7 +106,7 @@ class Cache implements RobotsTxtInterface, SQLInterface
      */
     public function client($baseUri)
     {
-        $base = $this->urlBase($baseUri);
+        $base = $this->uriBase($baseUri);
         $query = $this->pdo->prepare(<<<SQL
 SELECT
   content,
@@ -261,7 +261,7 @@ SQL
      */
     public function invalidate($baseUri)
     {
-        $base = $this->urlBase($baseUri);
+        $base = $this->uriBase($baseUri);
         $query = $this->pdo->prepare(<<<SQL
 DELETE FROM robotstxt__cache1
 WHERE base = :base;
@@ -276,7 +276,7 @@ SQL
      *
      * @param float|int $targetTime
      * @param int|null $workerID
-     * @return string[]|false
+     * @return string[]
      * @throws ClientException
      */
     public function cron($targetTime = 60, $workerID = null)
@@ -347,12 +347,12 @@ SQL
      * @param int $delay - in seconds
      * @return bool
      */
-    public function clean($delay = 600)
+    public function clean($delay = 900)
     {
         $delay = self::CACHE_TIME + $delay;
         $query = $this->pdo->prepare(<<<SQL
 DELETE FROM robotstxt__cache1
-WHERE worker = 0 AND nextUpdate < (UNIX_TIMESTAMP() - :delay);
+WHERE (worker = 0 OR worker IS NULL) AND nextUpdate < (UNIX_TIMESTAMP() - :delay);
 SQL
         );
         $query->bindParam(':delay', $delay, PDO::PARAM_INT);
