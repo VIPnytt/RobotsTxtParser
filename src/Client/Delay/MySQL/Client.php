@@ -1,37 +1,24 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Client\Directives;
+namespace vipnytt\RobotsTxtParser\Client\Delay\MySQL;
 
 use PDO;
+use vipnytt\RobotsTxtParser\Client\Delay\ClientInterface;
 use vipnytt\RobotsTxtParser\Exceptions\SQLException;
-use vipnytt\RobotsTxtParser\SQLInterface;
 use vipnytt\UserAgentParser;
 
 /**
- * Class DelayHandlerClient
+ * Class Client
  *
- * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/DelayHandlerClient.md for documentation
- * @package vipnytt\RobotsTxtParser\Client\Directives
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/DelayClient.md for documentation
+ * @package vipnytt\RobotsTxtParser\Client\Delay\MySQL
  */
-class DelayHandlerClient implements SQLInterface
+class Client implements ClientInterface
 {
-    /**
-     * Supported database drivers
-     */
-    const SUPPORTED_DRIVERS = [
-        self::DRIVER_MYSQL,
-    ];
-
     /**
      * Database handler
      * @var PDO
      */
     private $pdo;
-
-    /**
-     * PDO driver
-     * @var string
-     */
-    private $driver;
 
     /**
      * Base uri
@@ -52,50 +39,21 @@ class DelayHandlerClient implements SQLInterface
     private $delay;
 
     /**
-     * DelayClient constructor.
+     * Client constructor.
      *
      * @param PDO $pdo
      * @param string $baseUri
      * @param string $userAgent
      * @param float|int $delay
+     * @throws SQLException
      */
     public function __construct(PDO $pdo, $baseUri, $userAgent, $delay)
     {
-        $this->pdo = $this->pdoInitialize($pdo);
+        $this->pdo = $pdo;
         $this->base = $baseUri;
         $uaStringParser = new UserAgentParser($userAgent);
         $this->userAgent = $uaStringParser->stripVersion();
         $this->delay = round($delay, 6, PHP_ROUND_HALF_UP);
-    }
-
-    /**
-     * Initialize PDO connection
-     *
-     * @param PDO $pdo
-     * @return PDO
-     * @throws SQLException
-     */
-    private function pdoInitialize(PDO $pdo)
-    {
-        if ($pdo->getAttribute(PDO::ATTR_ERRMODE) === PDO::ERRMODE_SILENT) {
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
-        }
-        $pdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
-        $pdo->exec('SET NAMES ' . self::SQL_ENCODING);
-        $this->driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
-        if (!in_array($this->driver, self::SUPPORTED_DRIVERS)) {
-            throw new SQLException('Unsupported database. ' . self::README_SQL_DELAY);
-        }
-        try {
-            $pdo->query("SELECT 1 FROM robotstxt__delay0 LIMIT 1;");
-        } catch (\Exception $exception1) {
-            try {
-                $pdo->query(file_get_contents(__DIR__ . '/../../../res/delay.sql'));
-            } catch (\Exception $exception2) {
-                throw new SQLException('Missing table `' . self::TABLE_DELAY . '`. Setup instructions: ' . self::README_SQL_DELAY);
-            }
-        }
-        return $pdo;
     }
 
     /**

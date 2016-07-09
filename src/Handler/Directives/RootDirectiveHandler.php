@@ -1,6 +1,10 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Parser\Directives;
+namespace vipnytt\RobotsTxtParser\Handler\Directives;
 
+use vipnytt\RobotsTxtParser\Parser\Directives\CleanParamParser;
+use vipnytt\RobotsTxtParser\Parser\Directives\HostParser;
+use vipnytt\RobotsTxtParser\Parser\Directives\SitemapParser;
+use vipnytt\RobotsTxtParser\Parser\Directives\UserAgentParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**

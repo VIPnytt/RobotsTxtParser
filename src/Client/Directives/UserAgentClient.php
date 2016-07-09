@@ -1,7 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
-use vipnytt\RobotsTxtParser\Parser\Directives\SubDirectiveHandler;
+use vipnytt\RobotsTxtParser\Handler\Directives\SubDirectiveHandler;
 
 /**
  * Class UserAgentClient

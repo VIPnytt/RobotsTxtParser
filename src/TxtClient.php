@@ -5,8 +5,8 @@ use vipnytt\RobotsTxtParser\Client\Directives\CleanParamClient;
 use vipnytt\RobotsTxtParser\Client\Directives\HostClient;
 use vipnytt\RobotsTxtParser\Client\Directives\SitemapClient;
 use vipnytt\RobotsTxtParser\Client\Directives\UserAgentClient;
-use vipnytt\RobotsTxtParser\Client\Encoding\EncodingConverter;
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
+use vipnytt\RobotsTxtParser\Handler\EncodingHandler;
 use vipnytt\RobotsTxtParser\Parser\RobotsTxtParser;
 use vipnytt\RobotsTxtParser\Parser\UriParser;
 
@@ -66,7 +66,7 @@ class TxtClient extends RobotsTxtParser
     private function convertEncoding()
     {
         mb_internal_encoding(self::ENCODING);
-        $convert = new EncodingConverter($this->content, $this->encoding);
+        $convert = new EncodingHandler($this->content, $this->encoding);
         if (($result = $convert->auto()) !== false) {
             $this->encoding = self::ENCODING;
             return $this->content = $result;

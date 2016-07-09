@@ -40,15 +40,15 @@ In case of problems, please [submit an issue](https://github.com/VIPnytt/RobotsT
 Run this `SQL` script:
 ```SQL
 CREATE TABLE `robotstxt__cache1` (
-  `base`       VARCHAR(250)
-               COLLATE utf8_unicode_ci      NOT NULL,
+  `base`       VARCHAR(269)
+               CHARACTER SET ascii          NOT NULL,
   `content`    TEXT COLLATE utf8_unicode_ci NOT NULL,
-  `statusCode` SMALLINT(4) UNSIGNED    DEFAULT NULL,
+  `statusCode` SMALLINT(4) UNSIGNED DEFAULT NULL,
   `validUntil` INT(10) UNSIGNED             NOT NULL,
   `nextUpdate` INT(10) UNSIGNED             NOT NULL,
-  `effective`  VARCHAR(250)
-               COLLATE utf8_unicode_ci DEFAULT NULL,
-  `worker`     TINYINT(3) UNSIGNED     DEFAULT NULL,
+  `effective`  VARCHAR(269)
+               CHARACTER SET ascii  DEFAULT NULL,
+  `worker`     TINYINT(3) UNSIGNED  DEFAULT NULL,
   PRIMARY KEY (`base`),
   KEY `worker` (`worker`, `nextUpdate`)
 )
@@ -56,7 +56,7 @@ CREATE TABLE `robotstxt__cache1` (
   DEFAULT CHARSET = utf8
   COLLATE = utf8_unicode_ci
 ```
-Source: [/src/SQL/cache.sql](https://github.com/VIPnytt/RobotsTxtParser/tree/master/src/SQL/cache.sql)
+Source: [/res/Cache/MySQL.sql](https://github.com/VIPnytt/RobotsTxtParser/blob/master/res/Cache/MySQL.sql)
 
 #### Security
 For the sake of security, it is recommended to use a dedicated user with a bare minimum of permissions:

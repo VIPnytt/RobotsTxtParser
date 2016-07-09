@@ -1,8 +1,8 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Parser;
 
+use vipnytt\RobotsTxtParser\Handler\Directives\RootDirectiveHandler;
 use vipnytt\RobotsTxtParser\Parser\Directives\DirectiveParserCommons;
-use vipnytt\RobotsTxtParser\Parser\Directives\RootDirectiveHandler;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**

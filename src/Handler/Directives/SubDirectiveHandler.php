@@ -1,6 +1,12 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Parser\Directives;
+namespace vipnytt\RobotsTxtParser\Handler\Directives;
 
+use vipnytt\RobotsTxtParser\Parser\Directives\AllowParser;
+use vipnytt\RobotsTxtParser\Parser\Directives\CommentParser;
+use vipnytt\RobotsTxtParser\Parser\Directives\DelayParser;
+use vipnytt\RobotsTxtParser\Parser\Directives\RequestRateParser;
+use vipnytt\RobotsTxtParser\Parser\Directives\RobotVersionParser;
+use vipnytt\RobotsTxtParser\Parser\Directives\VisitTimeParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**

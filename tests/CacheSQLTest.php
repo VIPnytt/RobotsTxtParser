@@ -3,6 +3,7 @@ namespace vipnytt\RobotsTxtParser\Tests;
 
 use PDO;
 use vipnytt\RobotsTxtParser;
+use vipnytt\RobotsTxtParser\Exceptions\SQLException;
 
 /**
  * Class CacheSQLTest
@@ -19,12 +20,13 @@ class CacheSQLTest extends \PHPUnit_Framework_TestCase
     public function testCacheSQL($uri, $base)
     {
         $pdo = new PDO($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
         $parser = new RobotsTxtParser\Cache($pdo);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Cache', $parser);
+        $this->assertFalse($pdo->getAttribute(PDO::ATTR_ERRMODE) === PDO::ERRMODE_SILENT);
 
         $parser->invalidate($base);
-
         $client = $parser->client($uri);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $client);
 
@@ -38,6 +40,10 @@ SQL
         $query->execute();
         $row = $query->fetch();
         $this->assertEquals($client->render(), $row['content']);
+
+        for ($i = 1; $i <= 2; $i++) {
+            $parser->client($uri);
+        }
 
         $parser->cron();
         $parser->clean();
@@ -68,5 +74,12 @@ SQL
                 'http://www.vg.no:80',
             ],
         ];
+    }
+
+    public function testCacheSQLite()
+    {
+        $pdo = new PDO('sqlite::memory:');
+        $this->expectException(SQLException::class);
+        new RobotsTxtParser\Cache($pdo);
     }
 }

@@ -1,8 +1,6 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
-use PDO;
-
 /**
  * Class RequestRateClient
  *
@@ -35,9 +33,9 @@ class RequestRateClient extends DelayCore implements ClientInterface, DelayInter
      */
     public function __construct($baseUri, $userAgent, array $rates, $fallbackValue = 0)
     {
+        parent::__construct($baseUri, $userAgent);
         $this->rates = $rates;
         $this->fallbackValue = $fallbackValue;
-        parent::__construct($baseUri, $userAgent);
     }
 
     /**
@@ -48,17 +46,6 @@ class RequestRateClient extends DelayCore implements ClientInterface, DelayInter
     public function export()
     {
         return $this->rates;
-    }
-
-    /**
-     * Handle delay
-     *
-     * @param PDO $pdo
-     * @return DelayHandlerClient
-     */
-    public function handle(PDO $pdo)
-    {
-        return new DelayHandlerClient($pdo, $this->base, $this->userAgent, $this->getValue());
     }
 
     /**

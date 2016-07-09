@@ -2,6 +2,7 @@
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Client\Directives\UserAgentClient;
+use vipnytt\RobotsTxtParser\Handler\Directives\SubDirectiveHandler;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 use vipnytt\UserAgentParser as UAStringParser;
 

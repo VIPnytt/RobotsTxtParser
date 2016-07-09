@@ -1,14 +1,14 @@
 <?php
-namespace vipnytt\RobotsTxtParser\Client\Encoding;
+namespace vipnytt\RobotsTxtParser\Handler;
 
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
- * Class EncodingConverter
+ * Class EncodingHandler
  *
- * @package vipnytt\RobotsTxtParser\Client\Encoding
+ * @package vipnytt\RobotsTxtParser\Handler
  */
-class EncodingConverter implements RobotsTxtInterface
+class EncodingHandler implements RobotsTxtInterface
 {
     /**
      * Errors
@@ -29,7 +29,7 @@ class EncodingConverter implements RobotsTxtInterface
     private $encoding;
 
     /**
-     * CharacterEncodingConvert constructor.
+     * EncodingHandler constructor.
      *
      * @param string $string
      * @param string $encoding

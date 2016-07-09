@@ -51,6 +51,7 @@
     "ext-iconv": "*",
     "ext-intl": "*",
     "ext-openssl": "*",
+    "ext-pdo": "*",
     "ext-xml": "*",
     "phpunit/phpunit": ">=4.0",
     "codeclimate/php-test-reporter": ">=0.2.0"

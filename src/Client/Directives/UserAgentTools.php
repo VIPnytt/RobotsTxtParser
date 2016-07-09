@@ -2,7 +2,7 @@
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
-use vipnytt\RobotsTxtParser\Parser\Directives\SubDirectiveHandler;
+use vipnytt\RobotsTxtParser\Handler\Directives\SubDirectiveHandler;
 use vipnytt\RobotsTxtParser\Parser\StatusCodeParser;
 use vipnytt\RobotsTxtParser\Parser\UriParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;

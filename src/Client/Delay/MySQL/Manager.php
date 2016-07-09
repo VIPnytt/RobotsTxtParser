@@ -1,18 +1,18 @@
 <?php
-namespace vipnytt\RobotsTxtParser;
+namespace vipnytt\RobotsTxtParser\Client\Delay\MySQL;
 
 use PDO;
-use vipnytt\RobotsTxtParser\Client\Directives\DelayHandlerClient;
-use vipnytt\RobotsTxtParser\Client\Directives\DelayInterface;
+use vipnytt\RobotsTxtParser\Client\Delay\ManagerInterface;
+use vipnytt\RobotsTxtParser\Exceptions\SQLException;
 use vipnytt\RobotsTxtParser\Parser\UriParser;
 
 /**
- * Class DelayHandler
+ * Class Manager
  *
- * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/DelayHandler.md for documentation
- * @package vipnytt\RobotsTxtParser
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/DelayManager.md for documentation
+ * @package vipnytt\RobotsTxtParser\Handler\Delay\MySQL
  */
-class DelayHandler implements SQLInterface
+class Manager implements ManagerInterface
 {
     use UriParser;
 
@@ -23,29 +23,14 @@ class DelayHandler implements SQLInterface
     private $pdo;
 
     /**
-     * DelayHandler constructor.
+     * Manager constructor.
      *
      * @param PDO $pdo
+     * @throws SQLException
      */
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
-        if ($this->pdo->getAttribute(PDO::ATTR_ERRMODE) === PDO::ERRMODE_SILENT) {
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
-        }
-        $this->pdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
-        $this->pdo->exec('SET NAMES ' . self::SQL_ENCODING);
-    }
-
-    /**
-     * Client
-     *
-     * @param DelayInterface $client
-     * @return DelayHandlerClient
-     */
-    public function client(DelayInterface $client)
-    {
-        return new DelayHandlerClient($this->pdo, $client->getBaseUri(), $client->getUserAgent(), $client->getValue());
     }
 
     /**

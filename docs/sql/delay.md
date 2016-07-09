@@ -49,9 +49,9 @@ In case of problems, please [submit an issue](https://github.com/VIPnytt/RobotsT
 Run this `SQL` script:
 ```SQL
 CREATE TABLE `robotstxt__delay0` (
-  `base`       VARCHAR(250)
-               COLLATE utf8_unicode_ci NOT NULL,
-  `userAgent`  VARCHAR(250)
+  `base`       VARCHAR(269)
+               CHARACTER SET ascii     NOT NULL,
+  `userAgent`  VARCHAR(63)
                COLLATE utf8_unicode_ci NOT NULL,
   `delayUntil` BIGINT(20) UNSIGNED     NOT NULL,
   `lastDelay`  BIGINT(20) UNSIGNED     NOT NULL,
@@ -62,7 +62,7 @@ CREATE TABLE `robotstxt__delay0` (
   DEFAULT CHARSET = utf8
   COLLATE = utf8_unicode_ci
 ```
-Source: [/src/SQL/delay.sql](https://github.com/VIPnytt/RobotsTxtParser/tree/master/src/SQL/delay.sql)
+Source: [/res/Delay/MySQL.sql](https://github.com/VIPnytt/RobotsTxtParser/blob/master/res/Delay/MySQL.sql)
 
 #### Security
 For the sake of security, it is recommended to use a dedicated user with a bare minimum of permissions:
