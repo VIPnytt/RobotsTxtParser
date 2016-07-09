@@ -25,12 +25,6 @@ final class Delay implements ManagerInterface
     private $switch;
 
     /**
-     * Handler
-     * @var ManagerInterface
-     */
-    private $handler;
-
-    /**
      * Delay constructor.
      *
      * @param PDO $pdo
@@ -38,7 +32,6 @@ final class Delay implements ManagerInterface
     public function __construct(PDO $pdo)
     {
         $this->switch = new DatabaseHandler($pdo);
-        $this->handler = $this->switch->delayManager();
     }
 
     /**
@@ -60,7 +53,7 @@ final class Delay implements ManagerInterface
      */
     public function clean($delay = 60)
     {
-        return $this->handler->clean($delay);
+        return $this->switch->delayManager()->clean($delay);
     }
 
     /**
@@ -72,6 +65,6 @@ final class Delay implements ManagerInterface
      */
     public function getTopWaitTimes($limit = 100, $min = 0)
     {
-        return $this->handler->getTopWaitTimes($limit, $min);
+        return $this->switch->delayManager()->getTopWaitTimes($limit, $min);
     }
 }

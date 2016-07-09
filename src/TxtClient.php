@@ -65,12 +65,13 @@ class TxtClient extends RobotsTxtParser
      */
     private function convertEncoding()
     {
-        mb_internal_encoding(self::ENCODING);
         $convert = new EncodingHandler($this->content, $this->encoding);
         if (($result = $convert->auto()) !== false) {
             $this->encoding = self::ENCODING;
+            mb_internal_encoding(self::ENCODING);
             return $this->content = $result;
         }
+        mb_internal_encoding(self::ENCODING);
         return $this->content;
     }
 

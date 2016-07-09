@@ -86,7 +86,6 @@ class EncodingHandler implements RobotsTxtInterface
         } catch (\Exception $e) {
             return false;
         }
-        mb_internal_encoding(self::ENCODING);
         return $converted;
     }
 
@@ -104,7 +103,6 @@ class EncodingHandler implements RobotsTxtInterface
         } catch (\Exception $e) {
             return false;
         }
-        mb_internal_encoding(self::ENCODING);
         return $converted;
     }
 
@@ -124,7 +122,6 @@ class EncodingHandler implements RobotsTxtInterface
         } catch (\Exception $e) {
             return false;
         }
-        mb_internal_encoding(self::ENCODING);
         return $converted;
     }
 
@@ -142,7 +139,6 @@ class EncodingHandler implements RobotsTxtInterface
         } catch (\Exception $e) {
             return false;
         }
-        mb_internal_encoding(self::ENCODING);
         return $converted;
     }
 
@@ -157,12 +153,7 @@ class EncodingHandler implements RobotsTxtInterface
      */
     protected function customErrorHandler($errNo, $errStr, $errFile, $errLine)
     {
-        switch ($errNo) {
-            case E_NOTICE:
-            case E_WARNING:
-                $this->errors[] = "lvl: " . $errNo . " | msg:" . $errStr . " | file:" . $errFile . " | ln:" . $errLine;
-                return true;
-        }
-        return false;
+        $this->errors[microtime(true)] = "lvl: " . $errNo . " | msg:" . $errStr . " | file:" . $errFile . " | ln:" . $errLine;
+        return true;
     }
 }

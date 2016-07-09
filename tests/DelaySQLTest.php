@@ -3,7 +3,7 @@ namespace vipnytt\RobotsTxtParser\Tests;
 
 use PDO;
 use vipnytt\RobotsTxtParser;
-use vipnytt\RobotsTxtParser\Exceptions\SQLException;
+use vipnytt\RobotsTxtParser\Exceptions\DatabaseException;
 
 /**
  * Class DelaySQLTest
@@ -81,7 +81,8 @@ class DelaySQLTest extends \PHPUnit_Framework_TestCase
     public function testDelaySQLite()
     {
         $pdo = new PDO('sqlite::memory:');
-        $this->expectException(SQLException::class);
-        new RobotsTxtParser\Delay($pdo);
+        $class = new RobotsTxtParser\Delay($pdo);
+        $this->expectException(DatabaseException::class);
+        $class->clean();
     }
 }

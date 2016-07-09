@@ -4,7 +4,7 @@ namespace vipnytt\RobotsTxtParser\Client\Cache\MySQL;
 use PDO;
 use vipnytt\RobotsTxtParser\Client\Cache\ManagerInterface;
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
-use vipnytt\RobotsTxtParser\Exceptions\SQLException;
+use vipnytt\RobotsTxtParser\Exceptions\DatabaseException;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 use vipnytt\RobotsTxtParser\TxtClient;
 use vipnytt\RobotsTxtParser\UriClient;
@@ -53,10 +53,9 @@ class Manager implements ManagerInterface, RobotsTxtInterface
      * Parser client
      *
      * @param string $base
-     * @param int $updateBufferTime
      * @return TxtClient
      */
-    public function client($base, $updateBufferTime)
+    public function client($base)
     {
         $query = $this->pdo->prepare(<<<SQL
 SELECT
@@ -97,12 +96,12 @@ SQL
      * Clock sync check
      *
      * @param int $time
-     * @throws SQLException
+     * @throws DatabaseException
      */
     private function clockSyncCheck($time)
     {
         if (abs(time() - $time) >= 10) {
-            throw new SQLException('`PHP server` and `SQL server` timestamps are out of sync. Please fix!');
+            throw new DatabaseException('`PHP server` and `SQL server` timestamps are out of sync. Please fix!');
         }
     }
 
@@ -284,6 +283,7 @@ SQL
      *
      * @param int|null $workerID
      * @return int
+     * @throws DatabaseException
      */
     private function setWorkerID($workerID = null)
     {
@@ -294,7 +294,7 @@ SQL
         ) {
             return $workerID;
         } elseif ($workerID !== null) {
-            trigger_error('WorkerID out of range (1-255)', E_USER_WARNING);
+            throw new DatabaseException('WorkerID out of range (1-255)');
         }
         return rand(1, 255);
     }

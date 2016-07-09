@@ -81,21 +81,35 @@ class UserAgentTools implements RobotsTxtInterface
         if ($this->base !== $this->uriBase($uri)) {
             throw new ClientException('URI belongs to a different robots.txt');
         }
-        // 1st priority override: /robots.txt is permanent allowed
-        if (parse_url($uri, PHP_URL_PATH) === self::PATH) {
-            return $directive === self::DIRECTIVE_ALLOW;
-        }
-        // 2st priority override: Status code rules
-        $statusCodeParser = new StatusCodeParser($this->statusCode, parse_url($this->base, PHP_URL_SCHEME));
-        if (($result = $statusCodeParser->accessOverride()) !== false) {
+        if (($result = $this->checkOverride($uri)) !== false) {
             return $directive === $result;
-        }
-        // 3rd priority override: Visit times
-        if ($this->handler->visitTime()->client()->isVisitTime() === false) {
-            return $directive === self::DIRECTIVE_DISALLOW;
         }
         // Path check
         return $this->checkPath($directive, $uri);
+    }
+
+    /**
+     * Check for overrides
+     *
+     * @param string $uri
+     * @return string|false
+     */
+    private function checkOverride($uri)
+    {
+        // 1st priority: /robots.txt is permanent allowed
+        if (parse_url($uri, PHP_URL_PATH) === self::PATH) {
+            return self::DIRECTIVE_ALLOW;
+        }
+        // 2st priority: Status code rules
+        $statusCodeParser = new StatusCodeParser($this->statusCode, parse_url($this->base, PHP_URL_SCHEME));
+        if (($result = $statusCodeParser->accessOverride()) !== false) {
+            return $result;
+        }
+        // 3rd priority: Visit times
+        if ($this->handler->visitTime()->client()->isVisitTime() === false) {
+            return self::DIRECTIVE_DISALLOW;
+        }
+        return false;
     }
 
     /**

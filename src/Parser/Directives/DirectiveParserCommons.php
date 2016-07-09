@@ -2,7 +2,6 @@
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use DateTimeZone;
-use vipnytt\RobotsTxtParser\Exceptions\ParserException;
 
 /**
  * Class DirectiveParserCommons
@@ -91,21 +90,5 @@ trait DirectiveParserCommons
             'from' => date_format($fromTime, 'Hi'),
             'to' => date_format($toTime, 'Hi'),
         ];
-    }
-
-    /**
-     * Validate directive
-     *
-     * @param string $directive
-     * @param string[] $directives
-     * @return string
-     * @throws ParserException
-     */
-    private function validateDirective($directive, array $directives)
-    {
-        if (!in_array($directive, $directives, true)) {
-            throw new ParserException('Directive not supported by this class');
-        }
-        return mb_strtolower($directive);
     }
 }

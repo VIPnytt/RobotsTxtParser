@@ -15,15 +15,6 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
     use DirectiveParserCommons;
 
     /**
-     * Supported directives
-     */
-    const SUPPORTED_DIRECTIVES = [
-        self::DIRECTIVE_ALLOW,
-        self::DIRECTIVE_DISALLOW,
-        self::DIRECTIVE_NO_INDEX,
-    ];
-
-    /**
      * Sub directives white list
      */
     const SUB_DIRECTIVES = [
@@ -64,7 +55,7 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
      */
     public function __construct($base, $effective, $directive)
     {
-        $this->directive = $this->validateDirective($directive, self::SUPPORTED_DIRECTIVES);
+        $this->directive = $directive;
         $this->cleanParam = new CleanParamParser();
         $this->host = new HostParser($base, $effective, $this->directive);
     }

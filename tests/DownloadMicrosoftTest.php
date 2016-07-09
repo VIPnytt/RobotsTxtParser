@@ -26,6 +26,8 @@ class DownloadMicrosoftTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent()->isAllowed('/blacklisted'));
 
         $this->assertTrue(count($parser->sitemap()->export()) > 0);
+
+        $this->assertTrue(is_string($parser->host()->getWithFallback()));
     }
 
     /**

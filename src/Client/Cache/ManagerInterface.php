@@ -8,7 +8,7 @@ use vipnytt\RobotsTxtParser\TxtClient;
  * Interface ManagerInterface
  *
  * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/CacheManager.md for documentation
- * @package vipnytt\RobotsTxtParser\Handler\Cache
+ * @package vipnytt\RobotsTxtParser\Client\Cache
  */
 interface ManagerInterface
 {
@@ -25,10 +25,9 @@ interface ManagerInterface
      * Parser client
      *
      * @param string $base
-     * @param int $updateBufferTime
      * @return TxtClient
      */
-    public function client($base, $updateBufferTime);
+    public function client($base);
 
     /**
      * Invalidate cache

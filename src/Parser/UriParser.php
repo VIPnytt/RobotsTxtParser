@@ -89,14 +89,14 @@ trait UriParser
     /**
      * Validate IPv4 or IPv6
      *
-     * @param  string $ip
+     * @param  string $ipAddress
      * @return bool
      */
-    private function uriValidateIP($ip)
+    private function uriValidateIP($ipAddress)
     {
         return (
-            filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ||
-            filter_var(trim($ip, '[]'), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)
+            filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ||
+            filter_var(trim($ipAddress, '[]'), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)
         );
     }
 

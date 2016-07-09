@@ -3,7 +3,7 @@ namespace vipnytt\RobotsTxtParser\Tests;
 
 use PDO;
 use vipnytt\RobotsTxtParser;
-use vipnytt\RobotsTxtParser\Exceptions\SQLException;
+use vipnytt\RobotsTxtParser\Exceptions\DatabaseException;
 
 /**
  * Class CacheSQLTest
@@ -45,8 +45,12 @@ SQL
             $parser->client($uri);
         }
 
-        $parser->cron();
+        $parser->cron(1);
         $parser->clean();
+
+        $parser->cron();
+        $this->expectException(DatabaseException::class);
+        $parser->cron(1, 999999);
     }
 
     /**
@@ -79,7 +83,7 @@ SQL
     public function testCacheSQLite()
     {
         $pdo = new PDO('sqlite::memory:');
-        $this->expectException(SQLException::class);
+        $this->expectException(DatabaseException::class);
         new RobotsTxtParser\Cache($pdo);
     }
 }

@@ -26,6 +26,8 @@ class DownloadGoogleTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent()->isDisallowed('/search/about'));
 
         $this->assertTrue(count($parser->sitemap()->export()) > 0);
+
+        $this->assertTrue(is_string($parser->host()->getWithFallback()));
     }
 
     /**

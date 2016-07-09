@@ -25,6 +25,11 @@ class DisallowAllTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($parser->userAgent()->isDisallowed('/'));
         $this->assertFalse($parser->userAgent()->isAllowed('/'));
 
+        $this->assertTrue($parser->userAgent()->isAllowed("/robots.txt"));
+        $this->assertFalse($parser->userAgent()->isDisallowed("/robots.txt"));
+        $this->assertTrue($parser->userAgent('*')->isAllowed("http://example.com/robots.txt"));
+        $this->assertFalse($parser->userAgent('*')->isDisallowed("http://example.com/robots.txt"));
+
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render());
             $this->testDisallowAll($rendered, false);

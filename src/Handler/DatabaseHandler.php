@@ -3,7 +3,7 @@ namespace vipnytt\RobotsTxtParser\Handler;
 
 use PDO;
 use vipnytt\RobotsTxtParser\Client;
-use vipnytt\RobotsTxtParser\Exceptions\SQLException;
+use vipnytt\RobotsTxtParser\Exceptions\DatabaseException;
 
 /**
  * Class DatabaseHandler
@@ -84,7 +84,7 @@ final class DatabaseHandler
     {
         $this->pdo = $pdo;
         $this->driver = $this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
-        if (!$this->getSessionVar(null)) {
+        if (!$this->hasSessionVar(null)) {
             if ($this->pdo->getAttribute(PDO::ATTR_ERRMODE) === PDO::ERRMODE_SILENT) {
                 $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
             }
@@ -101,7 +101,7 @@ final class DatabaseHandler
      * @param string|null $table
      * @return bool
      */
-    private function getSessionVar($table)
+    private function hasSessionVar($table)
     {
         if (!isset($this->config[$table][$this->driver]['session_get'])) {
             return false;
@@ -149,7 +149,7 @@ final class DatabaseHandler
      * @param string $userAgent
      * @param float|int $delay
      * @return Client\Delay\ClientInterface
-     * @throws SQLException
+     * @throws DatabaseException
      */
     public function delayClient($baseUri, $userAgent, $delay)
     {
@@ -158,7 +158,7 @@ final class DatabaseHandler
                 $this->initialCheck(self::TABLE_DELAY);
                 return new Client\Delay\MySQL\Client($this->pdo, $baseUri, $userAgent, $delay);
         }
-        throw new SQLException('Unsupported database. ' . $this->config[self::TABLE_DELAY]['readme']);
+        throw new DatabaseException('Unsupported database. ' . $this->config[self::TABLE_DELAY]['readme']);
     }
 
     /**
@@ -166,11 +166,11 @@ final class DatabaseHandler
      *
      * @param string $table
      * @return bool
-     * @throws SQLException
+     * @throws DatabaseException
      */
     private function initialCheck($table)
     {
-        if ($this->getSessionVar($table)) {
+        if ($this->hasSessionVar($table)) {
             return true;
         }
         try {
@@ -179,7 +179,7 @@ final class DatabaseHandler
             try {
                 $this->pdo->query(file_get_contents($this->config[$table][$this->driver]['file']));
             } catch (\Exception $exception2) {
-                throw new SQLException('Missing table `' . key($this->config[$table]) . '`. Setup instructions: ' . $this->config[$table]['readme']);
+                throw new DatabaseException('Missing table `' . $table . '`. Setup instructions: ' . $this->config[$table]['readme']);
             }
         }
         $this->setSessionVar($table);
@@ -192,7 +192,7 @@ final class DatabaseHandler
      * @param array $curlOptions
      * @param int|null $byteLimit
      * @return Client\Cache\MySQL\Manager
-     * @throws SQLException
+     * @throws DatabaseException
      */
     public function cacheManager(array $curlOptions, $byteLimit)
     {
@@ -201,14 +201,14 @@ final class DatabaseHandler
                 $this->initialCheck(self::TABLE_CACHE);
                 return new Client\Cache\MySQL\Manager($this->pdo, $curlOptions, $byteLimit);
         }
-        throw new SQLException('Unsupported database. ' . $this->config[self::TABLE_CACHE]['readme']);
+        throw new DatabaseException('Unsupported database. ' . $this->config[self::TABLE_CACHE]['readme']);
     }
 
     /**
      * Delay manager
      *
      * @return Client\Delay\ManagerInterface
-     * @throws SQLException
+     * @throws DatabaseException
      */
     public function delayManager()
     {
@@ -220,6 +220,6 @@ final class DatabaseHandler
                 $this->initialCheck(self::TABLE_DELAY);
                 return $this->delayManager = new Client\Delay\MySQL\Manager($this->pdo);
         }
-        throw new SQLException('Unsupported database. ' . $this->config[self::TABLE_DELAY]['readme']);
+        throw new DatabaseException('Unsupported database. ' . $this->config[self::TABLE_DELAY]['readme']);
     }
 }

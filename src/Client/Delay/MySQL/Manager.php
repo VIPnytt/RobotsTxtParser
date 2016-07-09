@@ -3,7 +3,7 @@ namespace vipnytt\RobotsTxtParser\Client\Delay\MySQL;
 
 use PDO;
 use vipnytt\RobotsTxtParser\Client\Delay\ManagerInterface;
-use vipnytt\RobotsTxtParser\Exceptions\SQLException;
+use vipnytt\RobotsTxtParser\Exceptions\DatabaseException;
 use vipnytt\RobotsTxtParser\Parser\UriParser;
 
 /**
@@ -26,7 +26,7 @@ class Manager implements ManagerInterface
      * Manager constructor.
      *
      * @param PDO $pdo
-     * @throws SQLException
+     * @throws DatabaseException
      */
     public function __construct(PDO $pdo)
     {

@@ -3,7 +3,7 @@ namespace vipnytt\RobotsTxtParser\Client\Delay\MySQL;
 
 use PDO;
 use vipnytt\RobotsTxtParser\Client\Delay\ClientInterface;
-use vipnytt\RobotsTxtParser\Exceptions\SQLException;
+use vipnytt\RobotsTxtParser\Exceptions\DatabaseException;
 use vipnytt\UserAgentParser;
 
 /**
@@ -45,7 +45,7 @@ class Client implements ClientInterface
      * @param string $baseUri
      * @param string $userAgent
      * @param float|int $delay
-     * @throws SQLException
+     * @throws DatabaseException
      */
     public function __construct(PDO $pdo, $baseUri, $userAgent, $delay)
     {
@@ -123,7 +123,7 @@ SQL
      * Timestamp with milliseconds
      *
      * @return float|int
-     * @throws SQLException
+     * @throws DatabaseException
      */
     public function getTimeSleepUntil()
     {
@@ -145,7 +145,7 @@ SQL
         if ($query->rowCount() > 0) {
             $row = $query->fetch(PDO::FETCH_ASSOC);
             if (abs(time() - $row['UNIX_TIMESTAMP()']) > 10) {
-                throw new SQLException('`PHP server` and `SQL server` timestamps are out of sync. Please fix!');
+                throw new DatabaseException('`PHP server` and `SQL server` timestamps are out of sync. Please fix!');
             }
             return $row['delayUntil'] / 1000000;
         }

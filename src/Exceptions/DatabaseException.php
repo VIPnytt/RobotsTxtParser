@@ -2,10 +2,10 @@
 namespace vipnytt\RobotsTxtParser\Exceptions;
 
 /**
- * Class SQLException
+ * Class DatabaseException
  *
  * @package vipnytt\RobotsTxtParser\Exceptions
  */
-class SQLException extends RobotsTxtParserException
+class DatabaseException extends RobotsTxtParserException
 {
 }

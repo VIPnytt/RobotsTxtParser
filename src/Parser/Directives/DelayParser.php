@@ -40,7 +40,7 @@ class DelayParser implements ParserInterface, RobotsTxtInterface
     public function __construct($base, $directive)
     {
         $this->base = $base;
-        $this->directive = $this->validateDirective($directive, [self::DIRECTIVE_CRAWL_DELAY, self::DIRECTIVE_CACHE_DELAY]);
+        $this->directive = $directive;
     }
 
     /**
