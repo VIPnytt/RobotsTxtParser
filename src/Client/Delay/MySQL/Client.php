@@ -85,12 +85,12 @@ SQL
     /**
      * Reset queue
      *
-     * @param float|int|null $time
+     * @param float|int|null $delay
      * @return bool
      */
-    public function reset($time = null)
+    public function reset($delay = null)
     {
-        if ($time === null) {
+        if ($delay === null) {
             $query = $this->pdo->prepare(<<<SQL
 DELETE FROM robotstxt__delay0
 WHERE base = :base AND userAgent = :useragent;
@@ -102,15 +102,15 @@ SQL
         }
         $query = $this->pdo->prepare(<<<SQL
 INSERT INTO robotstxt__delay0 (base, userAgent, delayUntil, lastDelay)
-VALUES (:base, :useragent, :delay * 1000000, 0)
+VALUES (:base, :useragent, (UNIX_TIMESTAMP(CURTIME(6)) + :delay) * 1000000, :delay * 1000000)
 ON DUPLICATE KEY UPDATE
-  delayUntil = :delay * 1000000,
-  lastDelay  = 0;
+  delayUntil = (UNIX_TIMESTAMP(CURTIME(6)) + :delay) * 1000000,
+  lastDelay  = :delay * 1000000;
 SQL
         );
         $query->bindParam(':base', $this->base, PDO::PARAM_INT);
         $query->bindParam(':useragent', $this->userAgent, PDO::PARAM_INT);
-        $query->bindParam(':delay', $time, is_int($time) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        $query->bindParam(':delay', $delay, is_int($delay) ? PDO::PARAM_INT : PDO::PARAM_STR);
         return $query->execute();
     }
 

@@ -24,10 +24,10 @@ Get the timestamp (with milliseconds) wou'll have to wait until before you'll se
 
 ### reset
 ```
-@param float|int|null $time
+@param float|int|null $delay
 @return bool
 ```
-Reset the queue for the current host. Optionally set an unix timestamp to reset to.
+Reset the queue for the current host. Optionally set an custom delay to reset to.
 
 ### sleep
 ```

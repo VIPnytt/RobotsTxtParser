@@ -50,10 +50,10 @@ class DelaySQLTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($client->getTimeSleepUntil() === 0);
 
         if ($parser->userAgent($userAgent)->crawlDelay()->getValue() > 0) {
-            $client->reset(time() + 60);
+            $client->reset(60);
             $queue = $client->getQueue();
             $this->assertLessThanOrEqual(60, $queue);
-            $this->assertGreaterThanOrEqual(59, $queue);
+            $this->assertGreaterThan(59, $queue);
         }
 
         $client->reset();
