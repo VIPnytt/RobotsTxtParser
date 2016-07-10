@@ -42,7 +42,7 @@ class TxtClient extends RobotsTxtParser
      * TxtClient constructor.
      *
      * @param string $baseUri
-     * @param int $statusCode
+     * @param int|null $statusCode
      * @param string $content
      * @param string $encoding
      * @param string|null $effectiveUri
@@ -90,16 +90,6 @@ class TxtClient extends RobotsTxtParser
             throw new ClientException('Byte limit is set dangerously low! Default value=' . self::BYTE_LIMIT);
         }
         return $this->content = mb_strcut($this->content, 0, intval($bytes));
-    }
-
-    /**
-     * Get Status code
-     *
-     * @return int|null
-     */
-    public function getStatusCode()
-    {
-        return $this->statusCode;
     }
 
     /**

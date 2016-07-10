@@ -2,6 +2,7 @@
 namespace vipnytt\RobotsTxtParser;
 
 use Composer\CaBundle\CaBundle;
+use vipnytt\RobotsTxtParser\Parser\StatusCodeParser;
 
 /**
  * Class UriClient
@@ -42,7 +43,7 @@ class UriClient extends TxtClient
 
     /**
      * Effective uri
-     * @var string|null
+     * @var string
      */
     private $effective;
 
@@ -76,7 +77,7 @@ class UriClient extends TxtClient
         $this->base = $this->uriBase($baseUri);
         if ($this->request($curlOptions) === false) {
             $this->time = time();
-            $this->effective = null;
+            $this->effective = $this->base;
             $this->rawStatusCode = null;
             $this->rawContents = '';
             $this->rawEncoding = self::ENCODING;
@@ -161,7 +162,8 @@ class UriClient extends TxtClient
      */
     public function getStatusCode()
     {
-        return $this->rawStatusCode;
+        $parser = new StatusCodeParser($this->rawStatusCode, parse_url($this->uriBase($this->effective), PHP_URL_SCHEME));
+        return $parser->isValid() ? $this->rawStatusCode : null;
     }
 
     /**

@@ -1,7 +1,6 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Parser;
 
-use vipnytt\RobotsTxtParser\Exceptions\StatusCodeException;
 use vipnytt\RobotsTxtParser\Parser\Directives\DirectiveParserCommons;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
@@ -31,15 +30,11 @@ class StatusCodeParser implements RobotsTxtInterface
      *
      * @param int|null $code - HTTP status code
      * @param string|false $scheme
-     * @throws StatusCodeException
      */
     public function __construct($code, $scheme)
     {
         $this->code = $code === null ? 200 : $code;
         $this->scheme = $scheme;
-        if (!$this->validate()) {
-            throw new StatusCodeException('Invalid Status code');
-        }
     }
 
     /**
@@ -47,7 +42,7 @@ class StatusCodeParser implements RobotsTxtInterface
      *
      * @return bool
      */
-    public function validate()
+    public function isValid()
     {
         return (
             $this->code >= 100 &&
