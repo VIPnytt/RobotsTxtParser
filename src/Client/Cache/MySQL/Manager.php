@@ -149,7 +149,7 @@ SQL
                     $statusCode < 600
                 )
             ) &&
-            $this->displacePush($base, $nextUpdate)
+            $this->displacePush($base, $nextUpdate, $worker)
         ) {
             return true;
         }
@@ -177,9 +177,10 @@ SQL
      *
      * @param string $base
      * @param int $nextUpdate
+     * @param int|null $worker
      * @return bool
      */
-    private function displacePush($base, $nextUpdate)
+    private function displacePush($base, $nextUpdate, $worker = null)
     {
         $query = $this->pdo->prepare(<<<SQL
 SELECT
@@ -198,12 +199,13 @@ SQL
                 $nextUpdate = min($row['validUntil'], $nextUpdate);
                 $query = $this->pdo->prepare(<<<SQL
 UPDATE robotstxt__cache1
-SET nextUpdate = :nextUpdate, worker = 0
+SET nextUpdate = :nextUpdate, worker = :worker
 WHERE base = :base;
 SQL
                 );
                 $query->bindParam(':base', $base, PDO::PARAM_STR);
                 $query->bindParam(':nextUpdate', $nextUpdate, PDO::PARAM_INT);
+                $query->bindParam(':worker', $worker, PDO::PARAM_INT | PDO::PARAM_NULL);
                 return $query->execute();
             }
             $this->invalidate($base);
