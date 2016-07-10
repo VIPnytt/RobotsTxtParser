@@ -50,7 +50,7 @@ class EncodingHandler implements RobotsTxtInterface
         if (strtoupper($this->encoding) === self::ENCODING) {
             return $this->string;
         }
-        set_error_handler([$this, 'customErrorHandler'], E_NOTICE | E_WARNING);
+        set_error_handler([$this, 'errorHandlerCallback'], E_NOTICE | E_WARNING);
         foreach ([
                      'intl',
                      'iconv',
@@ -151,7 +151,7 @@ class EncodingHandler implements RobotsTxtInterface
      * @param string $errLine
      * @return bool
      */
-    protected function customErrorHandler($errNo, $errStr, $errFile, $errLine)
+    public function errorHandlerCallback($errNo, $errStr, $errFile, $errLine)
     {
         $this->errors[microtime(true)] = "lvl: " . $errNo . " | msg:" . $errStr . " | file:" . $errFile . " | ln:" . $errLine;
         return true;
