@@ -77,6 +77,10 @@ SQL
                 'http://www.vg.no/',
                 'http://www.vg.no:80',
             ],
+            [
+                'ftp://mirror.ox.ac.uk/',
+                'ftp://mirror.ox.ac.uk:21',
+            ],
         ];
     }
 

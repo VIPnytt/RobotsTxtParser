@@ -46,7 +46,7 @@ When the value is requested but not found, the value of [``Crawl-delay``](../dir
 @param PDO $pdo
 @return Delay\ClientInterface
 ````
-Returns an instance of [Delay\ClientInterface](ClientInterface.md).
+Returns an instance of [Delay\ClientInterface](DelayInterface.md).
 
 __`Cache-delay` specific:__
 When the value is requested but not found, the value of [``Crawl-delay``](../directives.md#crawl-delay) is returned, to maintain compatibility.
