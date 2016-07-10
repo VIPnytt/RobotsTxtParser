@@ -4,11 +4,10 @@
 ```
 
 ## Public functions
-- [export](#export)
-- [getBaseUri](#getbaseuri)
-- [getUserAgent](#getuseragent)
-- [getValue](#getvalue)
-- [handle](#handle)
+- [getQueue](#getqueue)
+- [getTimeSleepUntil](#gettimesleepuntil)
+- [reset](#reset)
+- [sleep](#sleep)
 
 ### getQueue
 ```

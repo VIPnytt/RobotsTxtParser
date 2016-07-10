@@ -13,8 +13,8 @@ Support for additional databases is possible, just [submit an issue](https://git
 
 ## Usage
 ```php
-$cache = new RobotsTxtParser\Cache($pdo);
-$client = $cache->client('http://example.com');
+$handler = new RobotsTxtParser\Cache($pdo);
+$client = $handler->client('http://example.com');
 ```
 
 #### Cron job
@@ -22,15 +22,15 @@ Recommended, but not required.
 
 Automates the `robots.txt` cache update process, and makes sure the cache stays up to date. Faster client, less overhead.
 ```php
-$cache = new RobotsTxtParser\Cache($pdo);
-$cron = $cache->cron();
+$handler = new RobotsTxtParser\Cache($pdo);
+$handler->cron();
 ```
 
 #### Table maintenance
 Clean old data:
 ```php
-$cache = new RobotsTxtParser\Cache($pdo);
-$cache->clean();
+$handler = new RobotsTxtParser\Cache($pdo);
+$handler->clean();
 ```
 
 ## Issues

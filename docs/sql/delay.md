@@ -38,7 +38,7 @@ if ($client->userAgent('MyBot')->isAllowed('http://example.com/path/to/file')) {
 #### Table maintenance
 Clean old data:
 ```php
-$handler = new RobotsTxtParser\DelayHandler($pdo);
+$handler = new RobotsTxtParser\Delay($pdo);
 $handler->clean();
 ```
 

@@ -18,4 +18,4 @@ __Other available classes:__
 - [UriClient](UriClient.md)
 - [Cache](Cache.md)
 - [Delay](DelayManager.md)
-  - [DelayClient](DelayClient.md)
+  - [ClientInterface](ClientInterface.md)

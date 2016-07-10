@@ -198,7 +198,7 @@ SQL
                 $nextUpdate = min($row['validUntil'], $nextUpdate);
                 $query = $this->pdo->prepare(<<<SQL
 UPDATE robotstxt__cache1
-SET nextUpdate = :nextUpdate, worker = NULL
+SET nextUpdate = :nextUpdate, worker = 0
 WHERE base = :base;
 SQL
                 );
@@ -271,7 +271,7 @@ SQL
                     if (!$this->push(new UriClient($row['base'], $this->curlOptions, $this->byteLimit))) {
                         throw new ClientException('Unable to update `' . $row['base'] . '`');
                     }
-                    $log[] = $row['base'];
+                    $log[microtime(true)] = $row['base'];
                 }
             }
         }
