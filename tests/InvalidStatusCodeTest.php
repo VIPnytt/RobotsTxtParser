@@ -64,12 +64,12 @@ class InvalidStatusCodeTest extends \PHPUnit_Framework_TestCase
             [
                 'ftp://example.com',
                 600,
-                true
+                false
             ],
             [
                 'ftp://example.com',
                 1000,
-                true
+                false
             ],
         ];
     }

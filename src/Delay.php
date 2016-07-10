@@ -11,7 +11,7 @@ use vipnytt\RobotsTxtParser\Parser\UriParser;
 /**
  * Class Delay
  *
- * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/DelayManager.md for documentation
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/Delay.md for documentation
  * @package vipnytt\RobotsTxtParser
  */
 final class Delay implements ManagerInterface

@@ -12,7 +12,7 @@ use vipnytt\RobotsTxtParser\UriClient;
 /**
  * Class Manager
  *
- * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/CacheManager.md for documentation
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/Cache.md for documentation
  * @package vipnytt\RobotsTxtParser\Handler\Cache\MySQL
  */
 class Manager implements ManagerInterface, RobotsTxtInterface

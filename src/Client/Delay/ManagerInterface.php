@@ -6,7 +6,7 @@ use PDO;
 /**
  * Interface ManagerInterface
  *
- * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/DelayManager.md for documentation
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/DelayInterface.md for documentation
  * @package vipnytt\RobotsTxtParser\Client\Delay
  */
 interface ManagerInterface

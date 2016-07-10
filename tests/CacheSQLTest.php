@@ -45,10 +45,10 @@ SQL
             $parser->client($uri);
         }
 
-        $parser->cron(1);
+        $parser->cron();
         $parser->clean();
 
-        $parser->cron();
+        $parser->cron(1, 255);
         $this->expectException(DatabaseException::class);
         $parser->cron(1, 999999);
     }

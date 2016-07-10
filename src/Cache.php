@@ -9,18 +9,12 @@ use vipnytt\RobotsTxtParser\Parser\UriParser;
 /**
  * Class Cache
  *
- * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/CacheManager.md for documentation
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/Cache.md for documentation
  * @package vipnytt\RobotsTxtParser
  */
 class Cache implements RobotsTxtInterface
 {
     use UriParser;
-
-    /**
-     * Client nextUpdate margin in seconds
-     * @var int
-     */
-    protected $clientUpdateBuffer = 300;
 
     /**
      * Handler
@@ -49,7 +43,7 @@ class Cache implements RobotsTxtInterface
      */
     public function client($baseUri)
     {
-        return $this->handler->client($this->uriBase($baseUri), $this->clientUpdateBuffer);
+        return $this->handler->client($this->uriBase($baseUri));
     }
 
     /**

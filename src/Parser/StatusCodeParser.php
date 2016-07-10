@@ -15,14 +15,6 @@ class StatusCodeParser implements RobotsTxtInterface
     use DirectiveParserCommons;
 
     /**
-     * Valid schemes
-     */
-    const VALID_SCHEME = [
-        'http',
-        'https',
-    ];
-
-    /**
      * Status code
      * @var int
      */
@@ -35,12 +27,6 @@ class StatusCodeParser implements RobotsTxtInterface
     private $scheme;
 
     /**
-     * Applicable
-     * @var bool
-     */
-    private $applicable;
-
-    /**
      * Constructor
      *
      * @param int|null $code - HTTP status code
@@ -49,49 +35,41 @@ class StatusCodeParser implements RobotsTxtInterface
      */
     public function __construct($code, $scheme)
     {
-        $this->code = $code;
+        $this->code = $code === null ? 200 : $code;
         $this->scheme = $scheme;
-        $this->applicable = $this->isApplicable();
+        if (!$this->validate()) {
+            throw new StatusCodeException('Invalid Status code');
+        }
     }
 
     /**
-     * Check if URI is applicable for Status-code parsing
+     * Validate
      *
      * @return bool
-     * @throws StatusCodeException
      */
-    private function isApplicable()
+    public function validate()
     {
-        if (
-            !in_array($this->scheme, self::VALID_SCHEME) ||
-            $this->code === null
-        ) {
-            return false;
-        } elseif (
-            $this->code < 100 ||
-            $this->code > 599
-        ) {
-            throw new StatusCodeException('Invalid HTTP status code');
-        }
-        return true;
+        return (
+            $this->code >= 100 &&
+            $this->code <= 599
+        );
     }
 
     /**
-     * Check
+     * Check if the code overrides the robots.txt file
      *
      * @return string|false
      */
     public function accessOverride()
     {
-        if (!$this->applicable) {
-            return false;
-        }
-        switch (floor($this->code / 100) * 100) {
-            case 300:
-            case 400:
-                return self::DIRECTIVE_ALLOW;
-            case 500:
-                return self::DIRECTIVE_DISALLOW;
+        if (stripos($this->scheme, 'http') === 0) {
+            switch (floor($this->code / 100) * 100) {
+                case 300:
+                case 400:
+                    return self::DIRECTIVE_ALLOW;
+                case 500:
+                    return self::DIRECTIVE_DISALLOW;
+            }
         }
         return false;
     }

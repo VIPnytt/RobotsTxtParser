@@ -16,18 +16,23 @@ class DownloadGoogleTest extends \PHPUnit_Framework_TestCase
      */
     public function testDownloadGoogle($base)
     {
-        $parser = new RobotsTxtParser\UriClient($base);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\UriClient', $parser);
+        $uriClient = new RobotsTxtParser\UriClient($base);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\UriClient', $uriClient);
 
-        $this->assertTrue($parser->userAgent()->isDisallowed('/search'));
-        $this->assertFalse($parser->userAgent()->isAllowed('/search'));
+        $this->assertTrue($uriClient->userAgent()->isDisallowed('/search'));
+        $this->assertFalse($uriClient->userAgent()->isAllowed('/search'));
 
-        $this->assertTrue($parser->userAgent()->isAllowed('/search/about'));
-        $this->assertFalse($parser->userAgent()->isDisallowed('/search/about'));
+        $this->assertTrue($uriClient->userAgent()->isAllowed('/search/about'));
+        $this->assertFalse($uriClient->userAgent()->isDisallowed('/search/about'));
 
-        $this->assertTrue(count($parser->sitemap()->export()) > 0);
+        $this->assertTrue(count($uriClient->sitemap()->export()) > 0);
 
-        $this->assertTrue(is_string($parser->host()->getWithFallback()));
+        $this->assertTrue(is_string($uriClient->host()->getWithFallback()));
+
+        $txtClient = new RobotsTxtParser\TxtClient($uriClient->getBaseUri(), $uriClient->getStatusCode(), $uriClient->getContents(), $uriClient->getEncoding(), $uriClient->getEffectiveUri());
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $txtClient);
+
+        $this->assertEquals($uriClient->render(), $txtClient->render());
     }
 
     /**

@@ -31,9 +31,10 @@ interface ClientInterface
     /**
      * Reset queue
      *
+     * @param float|int|null $time
      * @return bool
      */
-    public function reset();
+    public function reset($time = null);
 
     /**
      * Sleep

@@ -84,4 +84,15 @@ RENDERED
             ]
         ];
     }
+
+    public function testHostWithFallback()
+    {
+        $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, '', 'UTF-8', 'https://example.com');
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
+        $this->assertEquals('https://example.com', $parser->host()->getWithFallback());
+
+        $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, '', 'UTF-8', 'http://example.com:8080');
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
+        $this->assertEquals('http://example.com:8080', $parser->host()->getWithFallback());
+    }
 }

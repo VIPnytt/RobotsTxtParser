@@ -7,7 +7,7 @@ use vipnytt\RobotsTxtParser\TxtClient;
 /**
  * Interface ManagerInterface
  *
- * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/CacheManager.md for documentation
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/Cache.md for documentation
  * @package vipnytt\RobotsTxtParser\Client\Cache
  */
 interface ManagerInterface

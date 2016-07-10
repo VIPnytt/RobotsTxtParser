@@ -4,6 +4,7 @@
 ```
 
 ## Public functions
+- [__construct](#__construct)
 - [cleanParam](#cleanparam)
 - [export](#export)
 - [getStatusCode](#getstatuscode)
@@ -12,6 +13,16 @@
 - [render](#render)
 - [sitemap](#sitemap)
 - [userAgent](#useragent)
+
+### __construct
+```
+@param string $baseUri
+@param int $statusCode
+@param string $content
+@param string $encoding
+@param string|null $effectiveUri
+@param int|null $byteLimit
+```
 
 ### cleanParam
 ```

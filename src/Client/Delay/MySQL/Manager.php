@@ -9,7 +9,7 @@ use vipnytt\RobotsTxtParser\Parser\UriParser;
 /**
  * Class Manager
  *
- * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/DelayManager.md for documentation
+ * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/DelayInterface.md for documentation
  * @package vipnytt\RobotsTxtParser\Handler\Delay\MySQL
  */
 class Manager implements ManagerInterface

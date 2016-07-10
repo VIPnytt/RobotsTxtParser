@@ -16,18 +16,23 @@ class DownloadMicrosoftTest extends \PHPUnit_Framework_TestCase
      */
     public function testDownloadMicrosoft($base)
     {
-        $parser = new RobotsTxtParser\UriClient($base);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\UriClient', $parser);
+        $uriClient = new RobotsTxtParser\UriClient($base);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\UriClient', $uriClient);
 
-        $this->assertTrue($parser->userAgent()->isAllowed('/'));
-        $this->assertFalse($parser->userAgent()->isDisallowed('/'));
+        $this->assertTrue($uriClient->userAgent()->isAllowed('/'));
+        $this->assertFalse($uriClient->userAgent()->isDisallowed('/'));
 
-        $this->assertTrue($parser->userAgent()->isDisallowed('/blacklisted'));
-        $this->assertFalse($parser->userAgent()->isAllowed('/blacklisted'));
+        $this->assertTrue($uriClient->userAgent()->isDisallowed('/blacklisted'));
+        $this->assertFalse($uriClient->userAgent()->isAllowed('/blacklisted'));
 
-        $this->assertTrue(count($parser->sitemap()->export()) > 0);
+        $this->assertTrue(count($uriClient->sitemap()->export()) > 0);
 
-        $this->assertTrue(is_string($parser->host()->getWithFallback()));
+        $this->assertTrue(is_string($uriClient->host()->getWithFallback()));
+
+        $txtClient = new RobotsTxtParser\TxtClient($uriClient->getBaseUri(), $uriClient->getStatusCode(), $uriClient->getContents(), $uriClient->getEncoding(), $uriClient->getEffectiveUri());
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $txtClient);
+
+        $this->assertEquals($uriClient->render(), $txtClient->render());
     }
 
     /**

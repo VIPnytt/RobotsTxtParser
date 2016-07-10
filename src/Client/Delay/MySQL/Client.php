@@ -85,17 +85,32 @@ SQL
     /**
      * Reset queue
      *
+     * @param float|int|null $time
      * @return bool
      */
-    public function reset()
+    public function reset($time = null)
     {
-        $query = $this->pdo->prepare(<<<SQL
+        if ($time === null) {
+            $query = $this->pdo->prepare(<<<SQL
 DELETE FROM robotstxt__delay0
 WHERE base = :base AND userAgent = :useragent;
+SQL
+            );
+            $query->bindParam(':base', $this->base, PDO::PARAM_INT);
+            $query->bindParam(':useragent', $this->userAgent, PDO::PARAM_INT);
+            return $query->execute();
+        }
+        $query = $this->pdo->prepare(<<<SQL
+INSERT INTO robotstxt__delay0 (base, userAgent, delayUntil, lastDelay)
+VALUES (:base, :useragent, :delay * 1000000, 0)
+ON DUPLICATE KEY UPDATE
+  delayUntil = :delay * 1000000,
+  lastDelay  = 0;
 SQL
         );
         $query->bindParam(':base', $this->base, PDO::PARAM_INT);
         $query->bindParam(':useragent', $this->userAgent, PDO::PARAM_INT);
+        $query->bindParam(':delay', $time, is_int($time) ? PDO::PARAM_INT : PDO::PARAM_STR);
         return $query->execute();
     }
 
