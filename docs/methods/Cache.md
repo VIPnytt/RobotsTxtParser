@@ -5,9 +5,10 @@
 
 ## Public functions
 - [__construct](#__construct)
+- [clean](#clean)
 - [client](#client)
 - [cron](#cron)
-- [getTopWaitTimes](#gettopwaittimes)
+- [invalidate](#invalidate)
 
 ### __construct
 ```
@@ -15,6 +16,15 @@
 @param array $curlOptions
 @param int|null $byteLimit
 ```
+
+### clean
+```
+@param int $delay - in seconds
+@return bool
+```
+Clean the cache for any inactive out-of-date records.
+
+This _may_ save you for some disk space, but don't over-estimate it. Internal tests is showing that 10.000 cached `robots.txt` files, only takes up about 5-6 Megabytes in the database. Additionally, most deleted `robots.txt` files usually shows up in the databases again after a shorter or longer period of time, depending on how often your crawler requests access to these hosts.
 
 ### client
 ```
@@ -35,10 +45,9 @@ Intended for periodic execution (like a _Cron job_). Updates the cache of outdat
 
 If an cached `robots.txt` record is kept updated by this cron job, both resources and request waiting times are freed from the [client](#client), allowing it do do it's job dramatically faster.
 
-### getTopWaitTimes
+### invalidate
 ```
-@param int $limit
-@param int $min
-@return array
+@param $baseUri
+@return bool
 ```
-Get an array of the hosts with highest wait-time. Such hosts are either frequently requested, or has set an unusual high delay in their `robots.txt` file.
+Invalidates and deletes the cache for an specified host.

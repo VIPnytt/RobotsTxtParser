@@ -7,7 +7,6 @@
 - [__construct](#__construct)
 - [cleanParam](#cleanparam)
 - [export](#export)
-- [getStatusCode](#getstatuscode)
 - [getUserAgents](#getuseragents)
 - [host](#host)
 - [render](#render)
@@ -37,12 +36,6 @@ Returns an instance of [CleanParamClient](CleanParamClient.md).
 @return array
 ```
 Returns an tree-formatted array containing every single rule. Perfect for external usage.
-
-### getStatusCode
-```
-@return int|null
-```
-Get the HTTP/FTP status code
 
 ### getUserAgents
 ```
