@@ -1,6 +1,9 @@
 # Delay handler
 Many hosts requires you to control the robot's request flow, using a minimum interval between each request. The reasons for this isn't always obvious, and may sometimes be complicated.
 
+Did you know this number is as high as about 40% of all `robots.txt` files?
+_Source: internal statistics_
+
 Examples of a 5 second interval:
 - [`Crawl-delay: 5`](../directives.md#crawl-delay)
 - [`Cache-delay: 5`](../directives.md#cache-delay)
@@ -12,9 +15,12 @@ Multiple _user-agents_ / _crawlers_ may share the same database. The delay is ha
 ### Requirements
 - MySQL 5.6+
 
-Support for additional databases is possible, just [submit an issue](https://github.com/VIPnytt/RobotsTxtParser/issues) and we'll see what we can do about it.
+The library is built with cross-system in mind, and everything is set for additional database support. Just [submit an issue](https://github.com/VIPnytt/RobotsTxtParser/issues) and we'll see what we can do about it.
 
 ## Usage
+- See the [DelayInterface](../methods/DelayInterface.md) for client usage
+- See the [Delay class](../methods/Delay.md) for management
+
 #### Automated
 Sleep until the timestamp is reached
 ```php

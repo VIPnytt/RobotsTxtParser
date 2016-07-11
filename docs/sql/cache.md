@@ -9,13 +9,15 @@ Multiple crawlers may with benefits share the same database.
 ### Requirements:
 - MySQL
 
-Support for additional databases is possible, just [submit an issue](https://github.com/VIPnytt/RobotsTxtParser/issues) and we'll see what we can do about it.
+The library is built with cross-system in mind, and everything is set for additional database support. Just [submit an issue](https://github.com/VIPnytt/RobotsTxtParser/issues) and we'll see what we can do about it.
 
 ## Usage
 ```php
 $handler = new RobotsTxtParser\Cache($pdo);
 $client = $handler->client('http://example.com');
 ```
+
+See the [Cache class documentation](../methods/Cache.md) for more information and additional available methods.
 
 #### Cron job
 Recommended, but not required.

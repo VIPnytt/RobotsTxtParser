@@ -6,14 +6,14 @@
 
 ## Create an `robots.txt` parser instance
 You have 3 different ways to construct the `robots.txt` parser, each suited for different demands.
-### Automatic download
+### - Automatic download
 ```php
 $client = new \vipnytt\RobotsTxtParser\UriClient('http://example.com');
 ```
 - [Documentation + additional UriClient specific methods](methods/UriClient.md).
 - [Usage examples](#uriclient)
 
-### Custom `robots.txt` input
+### - Custom `robots.txt` input
 ```php
 $robotsTxt = "
 User-agent: *
@@ -26,7 +26,7 @@ $client = new \vipnytt\RobotsTxtParser\TxtClient('http://example.com', 200, $rob
 - [Documentation](methods/TxtClient.md).
 - [Usage examples](#txtclient)
 
-### The integrated caching system
+### - The integrated caching system
 ```php
 $pdo = new PDO('mysql:host=127.0.0.1;dbname=database', 'username', 'password');
 $handler = new \vipnytt\RobotsTxtParser\Cache($pdo);
@@ -39,6 +39,7 @@ $client = $handler->client('http://example.com');
 ## The Delay handler
 The Delay class is mainly for administration purposes, but may also be used as an alternative way to handle delays. It is generally not needed, but available usage examples are shown below.
 ```php
+$pdo = new PDO('mysql:host=127.0.0.1;dbname=database', 'username', 'password');
 $delayHandler = new \vipnytt\RobotsTxtParser\Delay($pdo);
 ```
 - [Set-up instructions](sql/delay.md).
