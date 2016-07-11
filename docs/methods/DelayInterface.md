@@ -1,4 +1,4 @@
-# Class DelayInterface
+# Delay ClientInterface
 ```
 @package vipnytt\RobotsTxtParser\Client\Delay
 ```
