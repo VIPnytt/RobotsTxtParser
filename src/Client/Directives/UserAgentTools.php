@@ -14,8 +14,6 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  */
 class UserAgentTools implements RobotsTxtInterface
 {
-    use UriParser;
-
     /**
      * Rules
      * @var SubDirectiveHandler
@@ -77,8 +75,9 @@ class UserAgentTools implements RobotsTxtInterface
      */
     private function check($directive, $uri)
     {
-        $uri = $this->uriConvertToFull($uri, $this->base);
-        if ($this->base !== $this->uriBase($uri)) {
+        $uriParser = new UriParser($uri);
+        $uri = $uriParser->convertToFull($this->base);
+        if ($this->base !== $uriParser->base()) {
             throw new ClientException('URI belongs to a different robots.txt');
         }
         if (($result = $this->checkOverride($uri)) !== false) {

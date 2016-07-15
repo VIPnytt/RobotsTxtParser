@@ -8,12 +8,12 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 /**
  * Class HostParser
  *
+ * @link http://tools.ietf.org/html/rfc952
+ *
  * @package vipnytt\RobotsTxtParser\Parser\Directives
  */
 class HostParser implements ParserInterface, RobotsTxtInterface
 {
-    use UriParser;
-
     /**
      * Base uri
      * @var string
@@ -84,17 +84,19 @@ class HostParser implements ParserInterface, RobotsTxtInterface
      */
     private function parse($line)
     {
+        $uriParser = new UriParser($line);
+        $line = $uriParser->encode();
         if (
-            !($parts = $this->getParts($line)) ||
-            $this->uriValidateIP($parts['host']) ||
-            !$this->uriValidateHost($parts['host']) ||
+            $uriParser->validateIP() ||
+            !$uriParser->validateHost() ||
             (
-                !empty($parts['scheme']) &&
-                !$this->uriValidateScheme($parts['scheme'])
+                parse_url($line, PHP_URL_SCHEME) !== null &&
+                !$uriParser->validateScheme()
             )
         ) {
             return false;
         }
+        $parts = $this->getParts($line);
         return $parts['scheme'] . $parts['host'] . $parts['port'];
     }
 
@@ -106,7 +108,7 @@ class HostParser implements ParserInterface, RobotsTxtInterface
      */
     private function getParts($uri)
     {
-        return ($parsed = parse_url($this->uriEncode(mb_strtolower($uri)))) === false ? false : [
+        return ($parsed = parse_url($uri)) === false ? false : [
             'scheme' => isset($parsed['scheme']) ? $parsed['scheme'] . '://' : '',
             'host' => isset($parsed['host']) ? $parsed['host'] : $parsed['path'],
             'port' => isset($parsed['port']) ? ':' . $parsed['port'] : '',

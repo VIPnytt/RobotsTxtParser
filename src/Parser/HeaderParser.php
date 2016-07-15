@@ -6,6 +6,10 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 /**
  * Class HeaderParser
  *
+ * @link https://tools.ietf.org/html/rfc7231
+ * @link https://tools.ietf.org/html/rfc7230
+ * @link https://tools.ietf.org/html/rfc2616
+ *
  * @package vipnytt\RobotsTxtParser\Parser
  */
 class HeaderParser implements RobotsTxtInterface
@@ -17,6 +21,8 @@ class HeaderParser implements RobotsTxtInterface
 
     /**
      * HTTP date formats
+     * @link https://tools.ietf.org/html/rfc7231#section-7.1.1
+     * @link https://tools.ietf.org/html/rfc2616#section-3.3
      */
     const DATE_HTTP = [
         DATE_RFC1123,
@@ -38,13 +44,17 @@ class HeaderParser implements RobotsTxtInterface
 
     /**
      * HeaderParser constructor.
+     *
+     * @param resource $handler
      */
-    public function __construct()
+    public function __construct($handler)
     {
+        $this->curlHandler = $handler;
     }
 
     /**
      * cURL CURLOPT_HEADERFUNCTION callback
+     * @link https://tools.ietf.org/html/rfc7230#section-3.2.4
      *
      * @param resource $handler - cURL resource
      * @param string $line - cURL header line string
@@ -53,8 +63,8 @@ class HeaderParser implements RobotsTxtInterface
     public function curlCallback($handler, $line)
     {
         $this->curlHandler = $handler;
-        $split = array_map('trim', explode(':', $line, 2));
-        $this->headers[strtolower($split[0])] = end($split);
+        $split = explode(':', $line, 2);
+        $this->headers[strtolower($split[0])] = trim(end($split));
         /*
          * This callback function must return the number of bytes actually taken care of.
          * If that amount differs from the amount passed in to your function, it'll signal an error to the library.
@@ -66,7 +76,7 @@ class HeaderParser implements RobotsTxtInterface
 
     /**
      * Content-Type encoding HTTP header
-     * @link https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17
+     * @link https://tools.ietf.org/html/rfc2616#section-14.17
      *
      * @return string
      */
@@ -101,7 +111,9 @@ class HeaderParser implements RobotsTxtInterface
 
     /**
      * Cache-Control max-age HTTP header
-     * @link https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.3
+     * @link https://tools.ietf.org/html/rfc7234#section-5.2.1.1
+     * @link https://tools.ietf.org/html/rfc7234#section-5.2.2.8
+     * @link https://tools.ietf.org/html/rfc2616#section-14.9.3
      *
      * @return int
      */
@@ -118,7 +130,7 @@ class HeaderParser implements RobotsTxtInterface
 
     /**
      * Cache-Control Retry-After HTTP header
-     * @link https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.37
+     * @link https://tools.ietf.org/html/rfc2616#section-14.37
      *
      * @param int $requestTime
      * @return int
@@ -138,6 +150,7 @@ class HeaderParser implements RobotsTxtInterface
 
     /**
      * Parse HTTP-date
+     * @link https://tools.ietf.org/html/rfc7231#section-7.1.1
      * @link https://tools.ietf.org/html/rfc2616#section-3.3
      *
      * @param string $string
@@ -146,7 +159,7 @@ class HeaderParser implements RobotsTxtInterface
     private function parseHttpDate($string)
     {
         foreach (self::DATE_HTTP as $format) {
-            if (($dateTime = date_create_from_format($format, $string, new \DateTimeZone('GMT'))) !== false) {
+            if (($dateTime = date_create_from_format($format, $string, new \DateTimeZone('UTC'))) !== false) {
                 return (int)date_format($dateTime, 'U');
             }
         }

@@ -1,5 +1,5 @@
 # Class VisitTimeClient
-```
+```php
 @package vipnytt\RobotsTxtParser\Client\Directives
 ```
 
@@ -11,13 +11,13 @@
 - [isVisitTime](#isvisittime)
 
 ### export
-```
+```php
 @return array
 ```
 Export an array of visit-times in UTC.
 
 ### isVisitTime
-```
+```php
 @param int|null $timestamp
 @return bool
 ```

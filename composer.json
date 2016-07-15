@@ -1,6 +1,6 @@
 {
   "name": "vipnytt/robotstxtparser",
-  "description": "Robots.txt parser class, according to Google, Yandex, W3C and The Web Robots Pages specifications.",
+  "description": "Robots.txt parsing library, according to Google, Yandex, W3C and The Web Robots Pages specifications.",
   "type": "library",
   "keywords": [
     "robots.txt",
@@ -36,7 +36,7 @@
   "support": {
     "email": "vipnytt@gmail.com",
     "issues": "https://github.com/VIPnytt/RobotsTxtParser/issues",
-    "wiki": "https://github.com/VIPnytt/RobotsTxtParser/wiki",
+    "wiki": "https://github.com/VIPnytt/RobotsTxtParser/tree/master/docs",
     "source": "https://github.com/VIPnytt/RobotsTxtParser",
     "docs": "https://github.com/VIPnytt/RobotsTxtParser/tree/master/docs"
   },
@@ -45,7 +45,7 @@
     "ext-curl": "*",
     "ext-mbstring": "*",
     "composer/ca-bundle": "~1.0",
-    "vipnytt/useragentparser": "~0.2"
+    "vipnytt/useragentparser": "~1.0"
   },
   "require-dev": {
     "ext-iconv": "*",
@@ -57,7 +57,7 @@
     "codeclimate/php-test-reporter": ">=0.2.0"
   },
   "suggest": {
-    "vipnytt/x-robots-tag-parser": "X-Robots-Tag HTTP header parser"
+    "vipnytt/x-robots-tag-parser": "Robots meta tag and X-Robots-Tag HTTP header parser"
   },
   "autoload": {
     "psr-4": {

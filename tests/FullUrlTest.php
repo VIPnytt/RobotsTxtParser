@@ -22,8 +22,8 @@ class FullUrlTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($parser->userAgent()->isDisallowed("http://example.com/admin/"));
         $this->assertFalse($parser->userAgent()->isAllowed("http://example.com/admin/"));
-        $this->assertTrue($parser->userAgent('*')->isDisallowed("http://example.com/admin/"));
-        $this->assertFalse($parser->userAgent('*')->isAllowed("http://example.com/admin/"));
+        $this->assertTrue($parser->userAgent('*')->isDisallowed("HTTP://EXAMPLE.COM/admin/"));
+        $this->assertFalse($parser->userAgent('*')->isAllowed("HTTP://EXAMPLE.COM/admin/"));
 
         $this->assertTrue($parser->userAgent()->isAllowed("http://example.com/"));
         $this->assertFalse($parser->userAgent()->isDisallowed("http://example.com/"));

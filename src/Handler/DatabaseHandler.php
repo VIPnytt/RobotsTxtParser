@@ -4,6 +4,7 @@ namespace vipnytt\RobotsTxtParser\Handler;
 use PDO;
 use vipnytt\RobotsTxtParser\Client;
 use vipnytt\RobotsTxtParser\Exceptions\DatabaseException;
+use vipnytt\UserAgentParser;
 
 /**
  * Class DatabaseHandler
@@ -153,6 +154,8 @@ final class DatabaseHandler
      */
     public function delayClient($baseUri, $userAgent, $delay)
     {
+        $parser = new UserAgentParser($userAgent);
+        $userAgent = strtolower($parser->getProduct());
         switch ($this->driver) {
             case self::DRIVER_MYSQL:
                 $this->initialCheck(self::TABLE_DELAY);

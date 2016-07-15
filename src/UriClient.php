@@ -3,6 +3,7 @@ namespace vipnytt\RobotsTxtParser;
 
 use Composer\CaBundle\CaBundle;
 use vipnytt\RobotsTxtParser\Parser\StatusCodeParser;
+use vipnytt\RobotsTxtParser\Parser\UriParser;
 
 /**
  * Class UriClient
@@ -74,7 +75,8 @@ class UriClient extends TxtClient
      */
     public function __construct($baseUri, array $curlOptions = [], $byteLimit = self::BYTE_LIMIT)
     {
-        $this->base = $this->uriBase($baseUri);
+        $uriParser = new UriParser($baseUri);
+        $this->base = $uriParser->base();
         if ($this->request($curlOptions) === false) {
             $this->time = time();
             $this->effective = $this->base;
@@ -94,41 +96,49 @@ class UriClient extends TxtClient
      */
     private function request($options = [])
     {
-        $this->headerParser = new Parser\HeaderParser();
         $curl = curl_init();
+        // Set default cURL options
         curl_setopt_array($curl, [
             CURLOPT_AUTOREFERER => true,
             CURLOPT_CAINFO => CaBundle::getSystemCaRootBundlePath(),
             CURLOPT_CONNECTTIMEOUT => 30,
             CURLOPT_ENCODING => 'identity',
-            CURLOPT_FAILONERROR => false,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_FTPSSLAUTH => CURLFTPAUTH_DEFAULT,
-            CURLOPT_HEADER => false,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_NONE,
-            CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
             CURLOPT_IPRESOLVE => CURL_IPRESOLVE_WHATEVER,
-            CURLOPT_MAXREDIRS => self::MAX_REDIRECTS,
-            CURLOPT_NOBODY => false,
-            CURLOPT_PROTOCOLS => CURLPROTO_FTP | CURLPROTO_FTPS | CURLPROTO_HTTP | CURLPROTO_HTTPS | CURLPROTO_SFTP,
-            CURLOPT_REDIR_PROTOCOLS => CURLPROTO_FTP | CURLPROTO_FTPS | CURLPROTO_HTTP | CURLPROTO_HTTPS | CURLPROTO_SFTP,
-            CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYHOST => 2,
             CURLOPT_SSL_VERIFYPEER => true,
             //CURLOPT_SSL_VERIFYSTATUS => true, // PHP 7.0.7
             CURLOPT_TIMEOUT => 120,
             CURLOPT_USERAGENT => self::CURL_USER_AGENT,
+        ]);
+        // Apply custom cURL options
+        curl_setopt_array($curl, $options);
+        $this->headerParser = new Parser\HeaderParser($curl);
+        // Make sure these cURL options stays untouched
+        curl_setopt_array($curl, [
+            CURLOPT_FAILONERROR => false,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_FTPSSLAUTH => CURLFTPAUTH_DEFAULT,
+            CURLOPT_HEADER => false,
+            CURLOPT_HEADERFUNCTION => [$this->headerParser, 'curlCallback'],
+            CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+            CURLOPT_MAXREDIRS => self::MAX_REDIRECTS,
+            CURLOPT_NOBODY => false,
+            CURLOPT_PROTOCOLS => CURLPROTO_FTP | CURLPROTO_FTPS | CURLPROTO_HTTP | CURLPROTO_HTTPS | CURLPROTO_SFTP,
+            CURLOPT_REDIR_PROTOCOLS => CURLPROTO_FTP | CURLPROTO_FTPS | CURLPROTO_HTTP | CURLPROTO_HTTPS | CURLPROTO_SFTP,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_URL => $this->base . self::PATH,
             CURLOPT_USERPWD => 'anonymous:anonymous@',
         ]);
-        curl_setopt_array($curl, $options);
-        curl_setopt($curl, CURLOPT_HEADERFUNCTION, [$this->headerParser, 'curlCallback']);
-        curl_setopt($curl, CURLOPT_URL, $this->base . self::PATH);
+        // Execute cURL request
         if (($this->rawContents = curl_exec($curl)) === false) {
+            // Request failed
             return false;
         }
         $this->time = time();
         $this->rawStatusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE); // also works with FTP status codes
-        $this->effective = $this->uriBase(curl_getinfo($curl, CURLINFO_EFFECTIVE_URL));
+        $uriParser = new UriParser(curl_getinfo($curl, CURLINFO_EFFECTIVE_URL));
+        $this->effective = $uriParser->base();
         curl_close($curl);
         $this->rawEncoding = $this->headerParser->getCharset();
         $this->rawMaxAge = $this->headerParser->getMaxAge();
@@ -162,8 +172,8 @@ class UriClient extends TxtClient
      */
     public function getStatusCode()
     {
-        $parser = new StatusCodeParser($this->rawStatusCode, parse_url($this->uriBase($this->effective), PHP_URL_SCHEME));
-        return $parser->isValid() ? $this->rawStatusCode : null;
+        $statusCodeParser = new StatusCodeParser($this->rawStatusCode, parse_url($this->effective, PHP_URL_SCHEME));
+        return $statusCodeParser->isValid() ? $this->rawStatusCode : null;
     }
 
     /**
@@ -195,7 +205,7 @@ class UriClient extends TxtClient
     {
         if (
             $this->rawStatusCode === 503 &&
-            stripos($this->base, 'http') === 0
+            strpos($this->base, 'http') === 0
         ) {
             return $this->time + min(self::CACHE_TIME, $this->headerParser->getRetryAfter($this->time));
         }

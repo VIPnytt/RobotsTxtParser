@@ -6,6 +6,7 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
  * Class StatusCodeParser
+ * 
  *
  * @package vipnytt\RobotsTxtParser\Parser
  */
@@ -57,7 +58,7 @@ class StatusCodeParser implements RobotsTxtInterface
      */
     public function accessOverride()
     {
-        if (stripos($this->scheme, 'http') === 0) {
+        if (strpos($this->scheme, 'http') === 0) {
             switch (floor($this->code / 100) * 100) {
                 case 300:
                 case 400:

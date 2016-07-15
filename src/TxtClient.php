@@ -8,7 +8,6 @@ use vipnytt\RobotsTxtParser\Client\Directives\UserAgentClient;
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 use vipnytt\RobotsTxtParser\Handler\EncodingHandler;
 use vipnytt\RobotsTxtParser\Parser\RobotsTxtParser;
-use vipnytt\RobotsTxtParser\Parser\UriParser;
 
 /**
  * Class TxtClient
@@ -18,8 +17,6 @@ use vipnytt\RobotsTxtParser\Parser\UriParser;
  */
 class TxtClient extends RobotsTxtParser
 {
-    use UriParser;
-
     /**
      * Status code
      * @var int|null
@@ -135,11 +132,12 @@ class TxtClient extends RobotsTxtParser
     /**
      * User-agent specific rules
      *
-     * @param string $string
+     * @param string $product
+     * @param int|string|null $version
      * @return UserAgentClient
      */
-    public function userAgent($string = self::USER_AGENT)
+    public function userAgent($product = self::USER_AGENT, $version = null)
     {
-        return $this->handler->userAgent()->client($string, $this->statusCode);
+        return $this->handler->userAgent()->client($product, $version, $this->statusCode);
     }
 }

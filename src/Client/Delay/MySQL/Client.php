@@ -4,7 +4,6 @@ namespace vipnytt\RobotsTxtParser\Client\Delay\MySQL;
 use PDO;
 use vipnytt\RobotsTxtParser\Client\Delay\ClientInterface;
 use vipnytt\RobotsTxtParser\Exceptions\DatabaseException;
-use vipnytt\UserAgentParser;
 
 /**
  * Class Client
@@ -51,8 +50,7 @@ class Client implements ClientInterface
     {
         $this->pdo = $pdo;
         $this->base = $baseUri;
-        $uaStringParser = new UserAgentParser($userAgent);
-        $this->userAgent = $uaStringParser->stripVersion();
+        $this->userAgent = $userAgent;
         $this->delay = round($delay, 6, PHP_ROUND_HALF_UP);
     }
 
@@ -97,7 +95,7 @@ WHERE base = :base AND userAgent = :useragent;
 SQL
             );
             $query->bindParam(':base', $this->base, PDO::PARAM_INT);
-            $query->bindParam(':useragent', $this->userAgent, PDO::PARAM_INT);
+            $query->bindParam(':useragent', $this->userAgent, PDO::PARAM_STR);
             return $query->execute();
         }
         $query = $this->pdo->prepare(<<<SQL
@@ -109,8 +107,8 @@ ON DUPLICATE KEY UPDATE
 SQL
         );
         $query->bindParam(':base', $this->base, PDO::PARAM_INT);
-        $query->bindParam(':useragent', $this->userAgent, PDO::PARAM_INT);
-        $query->bindParam(':delay', $delay, is_int($delay) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        $query->bindParam(':useragent', $this->userAgent, PDO::PARAM_STR);
+        $query->bindParam(':delay', $delay, PDO::PARAM_INT | PDO::PARAM_STR);
         return $query->execute();
     }
 
@@ -184,7 +182,7 @@ SQL
         );
         $query->bindParam(':base', $this->base, PDO::PARAM_STR);
         $query->bindParam(':userAgent', $this->userAgent, PDO::PARAM_STR);
-        $query->bindParam(':delay', $this->delay, is_int($this->delay) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        $query->bindParam(':delay', $this->delay, PDO::PARAM_INT | PDO::PARAM_STR);
         return $query->execute();
     }
 }

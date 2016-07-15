@@ -1,5 +1,5 @@
 # Class CommentClient
-```
+```php
 @package vipnytt\RobotsTxtParser\Client\Directives
 ```
 
@@ -12,13 +12,13 @@
 - [__destruct](#__destruct)
 
 ### export
-```
+```php
 @return array
 ```
 Export an array of comments for the matching user-agent.
 
 ### get
-```
+```php
 @return string[]
 ```
 Get any comments for the matching user-agent.

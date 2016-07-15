@@ -6,7 +6,6 @@ use vipnytt\RobotsTxtParser\Client\Delay\ClientInterface;
 use vipnytt\RobotsTxtParser\Client\Delay\ManagerInterface;
 use vipnytt\RobotsTxtParser\Client\Directives\DelayInterface;
 use vipnytt\RobotsTxtParser\Handler\DatabaseHandler;
-use vipnytt\RobotsTxtParser\Parser\UriParser;
 
 /**
  * Class Delay
@@ -16,7 +15,6 @@ use vipnytt\RobotsTxtParser\Parser\UriParser;
  */
 final class Delay implements ManagerInterface
 {
-    use UriParser;
 
     /**
      * SQL Driver switch

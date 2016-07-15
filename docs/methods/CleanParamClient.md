@@ -1,5 +1,5 @@
 # Class CleanParamClient
-```
+```php
 @package vipnytt\RobotsTxtParser\Client\Directives
 ```
 
@@ -11,14 +11,14 @@
 - [isListed](#islisted)
 
 ### export
-```
+```php
 @return array
 ```
 Export an array of parameters and their corresponding paths.
 
 
 ### isListed
-```
+```php
 @param  string $uri
 @return bool
 ```

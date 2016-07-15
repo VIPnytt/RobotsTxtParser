@@ -11,8 +11,6 @@ use vipnytt\RobotsTxtParser\Parser\UriParser;
  */
 class HostClient implements ClientInterface
 {
-    use UriParser;
-
     /**
      * Base uri
      * @var string
@@ -73,7 +71,7 @@ class HostClient implements ClientInterface
     }
 
     /**
-     * Get
+     * Get Host
      *
      * @return string|null
      */
@@ -83,7 +81,7 @@ class HostClient implements ClientInterface
     }
 
     /**
-     * Get with uri redirect fallback
+     * Get Host, falls back to Effective Request URI if not found
      *
      * @return string
      */
@@ -111,7 +109,8 @@ class HostClient implements ClientInterface
      */
     public function isUriListed($uri)
     {
-        $uri = mb_strtolower($this->uriEncode($uri));
+        $uriParser = new UriParser($uri);
+        $uri = mb_strtolower($uriParser->encode());
         $parts = [
             'scheme' => parse_url($uri, PHP_URL_SCHEME),
             'host' => parse_url($uri, PHP_URL_HOST),

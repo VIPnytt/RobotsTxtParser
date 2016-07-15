@@ -1,5 +1,5 @@
 # Class SitemapClient
-```
+```php
 @package vipnytt\RobotsTxtParser\Client\Directives
 ```
 
@@ -10,7 +10,7 @@
 - [export](#export)
 
 ### export
-```
+```php
 @return string[]
 ```
 Export all sitemaps.

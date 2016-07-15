@@ -13,7 +13,6 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 class RobotsTxtParser implements RobotsTxtInterface
 {
     use DirectiveParserCommons;
-    use UriParser;
 
     /**
      * Directive white list
@@ -40,9 +39,14 @@ class RobotsTxtParser implements RobotsTxtInterface
     public function __construct($baseUri, $content, $effectiveUri = null)
     {
         mb_internal_encoding(self::ENCODING);
-        $baseUri = $this->uriBase($baseUri);
-        $effectiveUri = $effectiveUri === null ? $baseUri : $this->uriBase($effectiveUri);
-        $this->handler = new RootDirectiveHandler($baseUri, $effectiveUri);
+        $baseParser = new UriParser($baseUri);
+        $baseUri = $baseParser->base();
+        $effectiveBase = $baseUri;
+        if ($effectiveUri !== null) {
+            $effectiveParser = new UriParser($effectiveUri);
+            $effectiveBase = $effectiveParser->base();
+        }
+        $this->handler = new RootDirectiveHandler($baseUri, $effectiveBase);
         $this->parseTxt($content);
     }
 

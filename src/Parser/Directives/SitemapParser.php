@@ -12,8 +12,6 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  */
 class SitemapParser implements ParserInterface, RobotsTxtInterface
 {
-    use UriParser;
-
     /**
      * Sitemap array
      * @var string[]
@@ -35,8 +33,10 @@ class SitemapParser implements ParserInterface, RobotsTxtInterface
      */
     public function add($line)
     {
+        $uriParser = new UriParser($line);
+        $uri = $uriParser->encode();
         if (
-            !$this->uriValidate(($uri = $this->uriEncode($line))) ||
+            !$uriParser->validate() ||
             in_array($uri, $this->sitemaps)
         ) {
             return false;

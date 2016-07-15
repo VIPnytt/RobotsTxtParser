@@ -91,7 +91,7 @@ trait DirectiveClientCommons
                 // Rule does not match
                 return false;
             } elseif (
-                mb_stripos($rule, '$') === false || // No special parsing required
+                mb_strpos($rule, '$') === false || // No special parsing required
                 mb_substr($rule, 0, -1) == $path // Rule does contain an end anchor, and matches
             ) {
                 return true;

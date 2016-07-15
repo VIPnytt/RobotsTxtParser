@@ -86,10 +86,60 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
      */
     private function addPath($path)
     {
-        if (in_array($path, $this->path)) {
-            return false;
+        foreach ([
+                     $path,
+                     '/',
+                     '*',
+                 ] as $testPath) {
+            if (in_array($testPath, $this->path)) {
+                return false;
+            }
         }
-        $this->path[] = $path;
+        if ($this->isPath($path)) {
+            $this->path[] = $path;
+            $this->removeOverlapping();
+        }
+        return in_array($path, $this->path);
+    }
+
+    /**
+     * Check if path is valid
+     *
+     * @param string $path
+     * @return bool
+     */
+    private function isPath($path)
+    {
+        if (mb_strpos($path, '/') !== 0) {
+            foreach (
+                [
+                    '*',
+                    '?',
+                ] as $char) {
+                $path = str_replace($char, '/', $path);
+            }
+        }
+        return mb_strpos($path, '/') === 0;
+    }
+
+    /**
+     * Remove overlapping paths
+     *
+     * @return bool
+     */
+    private function removeOverlapping()
+    {
+        foreach ($this->path as $key1 => $path1) {
+            foreach ($this->path as $key2 => $path2) {
+                if (
+                    $key1 !== $key2 &&
+                    mb_strpos($path1, $path2) === 0
+                ) {
+                    unset($this->path[$key1]);
+                    return $this->removeOverlapping();
+                }
+            }
+        }
         return true;
     }
 

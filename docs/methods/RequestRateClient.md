@@ -1,5 +1,5 @@
 # Class RequestRateClient
-```
+```php
 @package vipnytt\RobotsTxtParser\Client\Directives
 ```
 
@@ -14,25 +14,25 @@
 - [handle](#handle)
 
 ### export
-```
+```php
 @return array
 ```
 All request-rates exported with their corresponding timestamps.
 
 ### getBaseUri
-```
+```php
 @return string
 ```
 Get the base URI, witch the directive applies to.
 
 ### getUserAgent
-```
+```php
 @return string
 ```
 Get selected user-agent.
 
 ### getValue
-```
+```php
 @param int|null $timestamp
 @return float|int
 ```
@@ -41,10 +41,10 @@ Get the rate for an given timestamp. If no timestamp integer is provided, curren
 When the value is requested but not found, the value of [``Crawl-delay``](../directives.md#crawl-delay) is returned, to maintain compatibility.
 
 ### handle
-````
+```php
 @param PDO $pdo
 @return Delay\ClientInterface
-````
+```
 Returns an instance of [Delay\ClientInterface](DelayInterface.md).
 
 When the value is requested but not found, the value of [``Crawl-delay``](../directives.md#crawl-delay) is returned, to maintain compatibility.

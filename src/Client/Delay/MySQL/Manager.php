@@ -4,7 +4,6 @@ namespace vipnytt\RobotsTxtParser\Client\Delay\MySQL;
 use PDO;
 use vipnytt\RobotsTxtParser\Client\Delay\ManagerInterface;
 use vipnytt\RobotsTxtParser\Exceptions\DatabaseException;
-use vipnytt\RobotsTxtParser\Parser\UriParser;
 
 /**
  * Class Manager
@@ -14,8 +13,6 @@ use vipnytt\RobotsTxtParser\Parser\UriParser;
  */
 class Manager implements ManagerInterface
 {
-    use UriParser;
-
     /**
      * Database handler
      * @var PDO

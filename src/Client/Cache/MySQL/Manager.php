@@ -141,7 +141,7 @@ SQL
         $nextUpdate = $client->nextUpdate();
         $effective = ($effective = $client->getEffectiveUri()) === $base ? null : $effective;
         if (
-            stripos($base, 'http') === 0 &&
+            strpos($base, 'http') === 0 &&
             (
                 $statusCode === null ||
                 (
@@ -233,20 +233,23 @@ SQL
     /**
      * Process the update queue
      *
-     * @param float|int $targetTime
+     * @param float|int|null $timeLimit
      * @param int|null $workerID
      * @return string[]
      * @throws ClientException
      */
-    public function cron($targetTime, $workerID)
+    public function cron($timeLimit, $workerID)
     {
         $start = microtime(true);
         $worker = $this->setWorkerID($workerID);
         $log = [];
         $lastCount = -1;
         while (
-            $targetTime > microtime(true) - $start &&
-            count($log) > $lastCount
+            count($log) > $lastCount &&
+            (
+                empty($timeLimit) ||
+                $timeLimit > (microtime(true) - $start)
+            )
         ) {
             $lastCount = count($log);
             $query = $this->pdo->prepare(<<<SQL
@@ -273,7 +276,7 @@ SQL
                     if (!$this->push(new UriClient($row['base'], $this->curlOptions, $this->byteLimit))) {
                         throw new ClientException('Unable to update `' . $row['base'] . '`');
                     }
-                    $log[microtime(true)] = $row['base'];
+                    $log[(string)microtime(true)] = $row['base'];
                 }
             }
         }

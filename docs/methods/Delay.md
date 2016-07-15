@@ -1,5 +1,5 @@
 # Class Delay
-```
+```php
 @package vipnytt\RobotsTxtParser
 ```
 
@@ -10,26 +10,26 @@
 - [getTopWaitTimes](#gettopwaittimes)
 
 ### __construct
-```
+```php
 @param PDO $pdo
 ```
 
 ### clean
-```
+```php
 @param int $delay - in seconds
 @return bool
 ```
 Cleans the database for any out-of-date delay-until records.
 
 ### client
-```
+```php
 @param DelayInterface $client
 @return ClientInterface
 ```
 Returns an instance of [DelayInterface](DelayClient.md).
 
 ### getTopWaitTimes
-```
+```php
 @param int $limit
 @param int $min
 @return array

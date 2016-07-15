@@ -23,9 +23,15 @@ class AllowTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($parser->userAgent()->isAllowed("/"));
         $this->assertTrue($parser->userAgent()->isAllowed("/article"));
         $this->assertTrue($parser->userAgent()->isDisallowed("/temp"));
+        $this->assertTrue($parser->userAgent()->isDisallowed("/Admin"));
+        $this->assertTrue($parser->userAgent()->isDisallowed("/admin"));
+        $this->assertTrue($parser->userAgent()->isDisallowed("/admin/cp/test/"));
         $this->assertFalse($parser->userAgent()->isDisallowed("/"));
         $this->assertFalse($parser->userAgent()->isDisallowed("/article"));
         $this->assertFalse($parser->userAgent()->isAllowed("/temp"));
+        $this->assertFalse($parser->userAgent()->isAllowed("/Admin"));
+        $this->assertFalse($parser->userAgent()->isAllowed("/admin"));
+        $this->assertFalse($parser->userAgent()->isAllowed("/admin/cp/test/"));
 
         $this->assertTrue($parser->userAgent('*')->isAllowed("/"));
         $this->assertTrue($parser->userAgent('*')->isAllowed("/article"));
@@ -43,8 +49,10 @@ class AllowTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($parser->userAgent('agentV')->isDisallowed("/foo"));
         $this->assertTrue($parser->userAgent('agentV')->isAllowed("/bar"));
+        $this->assertTrue($parser->userAgent('agentV')->isAllowed("/Foo"));
         $this->assertTrue($parser->userAgent('agentW')->isDisallowed("/foo"));
         $this->assertTrue($parser->userAgent('agentW')->isAllowed("/bar"));
+        $this->assertTrue($parser->userAgent('agentW')->isAllowed("/Foo"));
 
         $this->assertTrue($parser->userAgent('spiderX/1.0')->isAllowed("/temp"));
         $this->assertTrue($parser->userAgent('spiderX/1.0')->isDisallowed("/assets"));
@@ -108,9 +116,11 @@ class AllowTest extends \PHPUnit_Framework_TestCase
 User-agent: anyone
 User-agent: *
 Disallow: /admin
+Disallow: /admin
+Disallow: /Admin
 Disallow: /temp#comment
 Disallow: /forum
-Disallow: /admin
+Disallow: /admin/cp/test/
 
 User-agent: agentV
 User-agent: agentW
@@ -124,7 +134,7 @@ Disallow: /assets
 
 User-agent: botY
 Disallow: /
-Disallow: &&/1@| #invalid
+Allow: &&/1@| #invalid
 Allow: /forum/$
 Allow: /article
 
@@ -136,6 +146,7 @@ ROBOTS
                 ,
                 <<<RENDERED
 user-agent:*
+disallow:/Admin
 disallow:/admin
 disallow:/forum
 disallow:/temp
@@ -144,7 +155,6 @@ user-agent:agentw
 disallow:/foo
 allow:/bar
 user-agent:boty
-disallow:&&/1@|
 disallow:/
 allow:/article
 allow:/forum/$

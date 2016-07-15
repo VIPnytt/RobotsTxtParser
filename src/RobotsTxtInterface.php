@@ -12,6 +12,8 @@ interface RobotsTxtInterface
      * Robots.txt path
      *
      * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#file-location--range-of-validity
+     * @link https://tools.ietf.org/html/rfc3986
+     * @link https://tools.ietf.org/html/rfc1808
      */
     const PATH = '/robots.txt';
 
@@ -25,8 +27,8 @@ interface RobotsTxtInterface
     /**
      * Max redirects
      *
-     * @link http://www.ietf.org/rfc/rfc1945.txt
      * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#handling-http-result-codes
+     * @link https://tools.ietf.org/html/rfc1945
      */
     const MAX_REDIRECTS = 5;
 
@@ -34,6 +36,7 @@ interface RobotsTxtInterface
      * Expected encoding
      *
      * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#file-format
+     * @link https://tools.ietf.org/html/rfc3986
      */
     const ENCODING = 'UTF-8';
 
@@ -114,6 +117,7 @@ interface RobotsTxtInterface
      * Directive: Host
      *
      * @link https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#host
+     * @link https://tools.ietf.org/html/rfc952
      */
     const DIRECTIVE_HOST = 'host';
 

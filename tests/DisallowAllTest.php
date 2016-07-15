@@ -30,6 +30,12 @@ class DisallowAllTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($parser->userAgent('*')->isAllowed("http://example.com/robots.txt"));
         $this->assertFalse($parser->userAgent('*')->isDisallowed("http://example.com/robots.txt"));
 
+        $this->assertTrue($parser->userAgent()->isDisallowed('/admin/'));
+        $this->assertFalse($parser->userAgent()->isAllowed('/admin/'));
+
+        $this->assertTrue($parser->userAgent()->isDisallowed('/page/test/'));
+        $this->assertFalse($parser->userAgent()->isAllowed('/page/test/'));
+
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render());
             $this->testDisallowAll($rendered, false);
@@ -48,6 +54,8 @@ class DisallowAllTest extends \PHPUnit_Framework_TestCase
                 <<<ROBOTS
 User-agent: *
 Disallow: /
+Disallow: /admin/
+Disallow: *test*
 ROBOTS
                 ,
                 <<<RENDERED

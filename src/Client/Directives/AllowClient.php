@@ -14,7 +14,6 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 class AllowClient implements ClientInterface, RobotsTxtInterface
 {
     use DirectiveClientCommons;
-    use UriParser;
 
     /**
      * Paths
@@ -73,13 +72,14 @@ class AllowClient implements ClientInterface, RobotsTxtInterface
      */
     private function getPath($uri)
     {
+        $uriParser = new UriParser($uri);
         // Encode
-        $uri = mb_split('#', $this->uriEncode($uri))[0];
-        if (mb_stripos($uri, '/') === 0) {
+        $uri = mb_split('#', $uriParser->encode())[0];
+        if (mb_strpos($uri, '/') === 0) {
             // URI is already an path
             return $uri;
         }
-        if (!$this->uriValidate($uri)) {
+        if (!$uriParser->validate()) {
             throw new ClientException('Invalid URI');
         }
         $path = (($path = parse_url($uri, PHP_URL_PATH)) === null) ? '/' : $path;

@@ -1,5 +1,5 @@
 # Class AllowClient
-```
+```php
 @package vipnytt\RobotsTxtParser\Client\Directives
 ```
 
@@ -13,14 +13,14 @@
 - [isListed](#isListed)
 
 ### export
-```
+```php
 @return array
 ```
 Export an array of the current directives rules.
 
 
 ### isListed
-```
+```php
 @param  string $uri
 @return bool
 ```

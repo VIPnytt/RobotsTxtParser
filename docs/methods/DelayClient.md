@@ -1,5 +1,5 @@
 # Class DelayClient
-```
+```php
 @package vipnytt\RobotsTxtParser\Client\Directives
 ```
 
@@ -15,25 +15,25 @@
 - [handle](#handle)
 
 ### export
-```
+```php
 @return float|int
 ```
 Get the numeric value of the directive.
 
 ### getBaseUri
-```
+```php
 @return string
 ```
 Get the base URI, witch the directive applies to.
 
 ### getUserAgent
-```
+```php
 @return string
 ```
 Get selected user-agent.
 
 ### getValue
-```
+```php
 @return float|int
 ```
 Get the numeric value of the directive.
@@ -42,10 +42,10 @@ __`Cache-delay` specific:__
 When the value is requested but not found, the value of [``Crawl-delay``](../directives.md#crawl-delay) is returned, to maintain compatibility.
 
 ### handle
-````
+```php
 @param PDO $pdo
 @return Delay\ClientInterface
-````
+```
 Returns an instance of [Delay\ClientInterface](DelayInterface.md).
 
 __`Cache-delay` specific:__

@@ -50,7 +50,7 @@ Disallow: /
 Host: example.com
 
 Sitemap: http://example.com/sitemap.xml
-Sitemap: http://example.com/sitemap.xml.gz
+Sitemap: HTTP://EXAMPLE.COM/sitemap.xml.gz
 ROBOTS
                 ,
                 [

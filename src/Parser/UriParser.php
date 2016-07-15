@@ -3,30 +3,42 @@ namespace vipnytt\RobotsTxtParser\Parser;
 
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 
-/**
- * Trait UriParser
- *
- * @package vipnytt\RobotsTxtParser\Parser
- */
-trait UriParser
+class UriParser
 {
     /**
-     * Convert relative to full uri
+     * URI
+     * @var string
+     */
+    private $uri;
+
+    /**
+     * UriParser constructor.
      *
-     * @param string $uri
-     * @param string $base
+     * @param $uri
+     */
+    public function __construct($uri)
+    {
+        $this->uri = $uri;
+    }
+
+    /**
+     * Convert relative to full
+     *
+     * @param string $fallbackBase
      * @return string
      * @throws ClientException
      */
-    private function uriConvertToFull($uri, $base)
+    public function convertToFull($fallbackBase)
     {
-        $uri = $this->uriEncode($uri);
-        if ($this->uriValidate($uri)) {
-            return $uri;
-        } elseif (stripos($uri, '/') === 0) {
-            return $this->uriBase($base) . $uri;
+        $this->encode();
+        if ($this->validate()) {
+            return $this->uri;
+        } elseif (strpos($this->uri, '/') === 0) {
+            $relative = $this->uri;
+            $this->uri = $fallbackBase;
+            return $this->base() . $relative;
         }
-        throw new ClientException("Invalid URI `$uri`");
+        throw new ClientException("Invalid URI `$this->uri`");
     }
 
     /**
@@ -34,10 +46,9 @@ trait UriParser
      * Returns a string containing the encoded URI with disallowed characters converted to their percentage encodings.
      * @link http://publicmind.in/blog/url-encoding/
      *
-     * @param string $uri
      * @return string
      */
-    protected function uriEncode($uri)
+    public function encode()
     {
         $reserved = [
             '!%21!ui' => "!",
@@ -60,40 +71,58 @@ trait UriParser
             '!%5B!ui' => "[",
             '!%5D!ui' => "]",
         ];
-        return preg_replace(array_keys($reserved), array_values($reserved), rawurlencode($uri));
+        $this->uri = preg_replace(array_keys($reserved), array_values($reserved), rawurlencode($this->uri));
+        return $this->baseToLowercase();
     }
 
     /**
-     * Validate uri
+     * Base uri to lowercase
      *
-     * @param string $uri
+     * @return string
+     */
+    private function baseToLowercase()
+    {
+        if (($host = parse_url($this->uri, PHP_URL_HOST)) === null) {
+            return $this->uri;
+        }
+        $pos = strpos($this->uri, $host) + strlen($host);
+        return $this->uri = substr_replace($this->uri, strtolower(substr($this->uri, 0, $pos)), 0, $pos);
+    }
+
+    /**
+     * Validate
+     *
      * @return bool
      */
-    private function uriValidate($uri)
+    public function validate()
     {
         return (
             (
-                filter_var($uri, FILTER_VALIDATE_URL) ||
+                filter_var($this->uri, FILTER_VALIDATE_URL) ||
                 // PHP 5.x bug fix: FILTER_VALIDATE_URL doesn't support IPv6 urls. IP check not needed in the future.
-                $this->uriValidateIP(($parsed = parse_url($uri, PHP_URL_HOST)) === false ? '' : $parsed)
+                $this->validateIP(($parsed = parse_url($this->uri, PHP_URL_HOST)) === false ? '' : $parsed)
             ) &&
-            ($parsed = parse_url($uri)) !== false &&
+            ($parsed = parse_url($this->uri)) !== false &&
             (
-                $this->uriValidateHost($parsed['host']) ||
-                $this->uriValidateIP($parsed['host'])
+                $this->validateHost($parsed['host']) ||
+                $this->validateIP($parsed['host'])
             ) &&
-            $this->uriValidateScheme($parsed['scheme'])
+            $this->validateScheme($parsed['scheme'])
         );
     }
 
     /**
      * Validate IPv4 or IPv6
      *
-     * @param  string $ipAddress
+     * @param  string|null $ipAddress
      * @return bool
      */
-    private function uriValidateIP($ipAddress)
+    public function validateIP($ipAddress = null)
     {
+        if ($ipAddress === null) {
+            $parsed = parse_url($this->uri);
+            $ipAddress = isset($parsed['host']) ? $parsed['host'] : $parsed['path'];
+        }
         return (
             filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ||
             filter_var(trim($ipAddress, '[]'), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)
@@ -105,28 +134,36 @@ trait UriParser
      *
      * @link http://stackoverflow.com/questions/1755144/how-to-validate-domain-name-in-php
      *
-     * @param  string $host
+     * @param  string|null $host
      * @return bool
      */
-    private function uriValidateHost($host)
+    public function validateHost($host = null)
     {
+        if ($host === null) {
+            $parsed = parse_url($this->uri);
+            $host = isset($parsed['host']) ? $parsed['host'] : $parsed['path'];
+        }
         return (
             preg_match("/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i", $host) //valid chars check
             && preg_match("/^.{1,253}$/", $host) //overall length check
             && preg_match("/^[^\.]{1,63}(\.[^\.]{1,63})*$/", $host) //length of each label
-            && !$this->uriValidateIP($host)
+            && !$this->validateIP($host)
         );
     }
 
     /**
-     * Validate uri scheme
+     * Validate scheme
      *
-     * @param  string $scheme
+     * @param  string|null $scheme
      * @return bool
      */
-    private function uriValidateScheme($scheme)
+    public function validateScheme($scheme = null)
     {
-        return in_array(strtolower($scheme), [
+        if ($scheme === null) {
+            $parsed = parse_url($this->uri);
+            $scheme = isset($parsed['host']) ? $parsed['host'] : $parsed['path'];
+        }
+        return in_array($scheme, [
                 'http',
                 'https',
                 'ftp',
@@ -137,22 +174,21 @@ trait UriParser
     }
 
     /**
-     * Base uri
+     * Base
      *
-     * @param string $uri
      * @return string
      * @throws ClientException
      */
-    protected function uriBase($uri)
+    public function base()
     {
-        if ($this->uriValidate($uri) === false) {
-            throw new ClientException("Invalid or unsupported URI `$uri`");
+        if (!$this->validate()) {
+            throw new ClientException('Invalid URI');
         }
         $parts = [
-            'scheme' => parse_url($uri, PHP_URL_SCHEME),
-            'host' => parse_url($uri, PHP_URL_HOST),
+            'scheme' => parse_url($this->uri, PHP_URL_SCHEME),
+            'host' => parse_url($this->uri, PHP_URL_HOST),
         ];
-        $parts['port'] = is_int($port = parse_url($uri, PHP_URL_PORT)) ? $port : getservbyname($parts['scheme'], 'tcp');
-        return $parts['scheme'] . '://' . $parts['host'] . ':' . $parts['port'];
+        $parts['port'] = is_int($port = parse_url($this->uri, PHP_URL_PORT)) ? $port : getservbyname($parts['scheme'], 'tcp');
+        return strtolower($parts['scheme'] . '://' . $parts['host'] . ':' . $parts['port']);
     }
 }

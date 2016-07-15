@@ -65,7 +65,6 @@ allow:/$
 user-agent:denyme
 disallow:*deny_all/$
 disallow:/deny_all/$
-disallow:deny_all/$
 RENDERED
             ]
         ];

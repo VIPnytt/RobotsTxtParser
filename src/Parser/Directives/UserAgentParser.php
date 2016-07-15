@@ -199,20 +199,20 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     /**
      * Client
      *
-     * @param string $userAgent
+     * @param string $product
+     * @param int|string|null $version
      * @param int|null $statusCode
      * @return UserAgentClient
      */
-    public function client($userAgent = self::USER_AGENT, $statusCode = null)
+    public function client($product = self::USER_AGENT, $version = null, $statusCode = null)
     {
-        if (isset($this->client[$userAgent])) {
-            return $this->client[$userAgent];
+        if (isset($this->client[$product . $version . $statusCode])) {
+            return $this->client[$product . $version . $statusCode];
         }
-        $userAgent = mb_strtolower($userAgent);
-        $userAgentParser = new UAStringParser($userAgent);
-        if (($userAgentMatch = $userAgentParser->match($this->getUserAgents())) === false) {
+        $userAgentParser = new UAStringParser($product, $version);
+        if (($userAgentMatch = $userAgentParser->getMostSpecific($this->getUserAgents())) === false) {
             $userAgentMatch = self::USER_AGENT;
         }
-        return $this->client[$userAgent] = new UserAgentClient($this->handler[$userAgentMatch], $this->base, $statusCode, $userAgent);
+        return $this->client[$product . $version . $statusCode] = new UserAgentClient($this->handler[$userAgentMatch], $this->base, $statusCode, $userAgentParser->getProduct());
     }
 }

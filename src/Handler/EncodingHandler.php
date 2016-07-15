@@ -6,6 +6,8 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 /**
  * Class EncodingHandler
  *
+ * @link http://www.ietf.org/rfc/rfc3986.txt
+ *
  * @package vipnytt\RobotsTxtParser\Handler
  */
 class EncodingHandler implements RobotsTxtInterface

@@ -37,19 +37,19 @@ class FTPTest extends \PHPUnit_Framework_TestCase
     {
         return [
             [
-                'ftp://mirror.ox.ac.uk',
+                'ftp://MIRROR.ox.ac.uk',
                 'mirror.ox.ac.uk'
             ],
             [
-                'ftp://mirrors.easynews.com',
+                'ftp://MIRRORS.easynews.com',
                 'mirrors.easynews.com',
             ],
             [
-                'ftps://mirrors.easynews.com',
+                'ftps://MIRRORS.easynews.com',
                 'mirrors.easynews.com',
             ],
             [
-                'sftp://mirrors.easynews.com',
+                'sftp://MIRRORS.easynews.com',
                 'mirrors.easynews.com',
             ],
         ];

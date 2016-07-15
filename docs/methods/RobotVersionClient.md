@@ -1,5 +1,5 @@
 # Class RobotVersionClient
-```
+```php
 @package vipnytt\RobotsTxtParser\Client\Directives
 ```
 
@@ -10,7 +10,7 @@
 - [export](#export)
 
 ### export
-```
+```php
 @return string|null
 ```
 Export the directives value.

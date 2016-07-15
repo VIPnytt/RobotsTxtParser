@@ -1,5 +1,5 @@
 # Class HostClient
-```
+```php
 @package vipnytt\RobotsTxtParser\Client\Directives
 ```
 
@@ -14,31 +14,31 @@
 - [isUriListed](#isurilisted)
 
 ### export
-```
+```php
 @return string[]|string|null
 ```
 Export the host(s).
 
 ### get
-```
+```php
 @return string|null
 ```
 Get the Host listed by the directive.
 
 ### getWithFallback
-```
+```php
 @return string
 ```
-Get the Host listed by the directive. Falls back to the host of the effective URL (request URL after any redirects).
+Get the Host listed by the directive. Falls back to the host of the "Effective Request URI" when no hosts are defined.
 
 ### isPreferred
-```
+```php
 @return bool
 ```
 Check if the requested host also is the preferred one.
 
 ### isUriListed
-```
+```php
 @param string $uri
 @return bool
 ```

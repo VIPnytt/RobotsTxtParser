@@ -3,6 +3,7 @@ namespace vipnytt\RobotsTxtParser;
 
 use PDO;
 use vipnytt\RobotsTxtParser\Client\Cache\ManagerInterface;
+use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 use vipnytt\RobotsTxtParser\Handler\DatabaseHandler;
 use vipnytt\RobotsTxtParser\Parser\UriParser;
 
@@ -14,8 +15,6 @@ use vipnytt\RobotsTxtParser\Parser\UriParser;
  */
 class Cache implements RobotsTxtInterface
 {
-    use UriParser;
-
     /**
      * Handler
      * @var ManagerInterface
@@ -40,22 +39,24 @@ class Cache implements RobotsTxtInterface
      *
      * @param string $baseUri
      * @return TxtClient
+     * @throws ClientException
      */
     public function client($baseUri)
     {
-        return $this->handler->client($this->uriBase($baseUri));
+        $parser = new UriParser($baseUri);
+        return $this->handler->client($parser->base());
     }
 
     /**
      * Process the update queue
      *
-     * @param float|int $targetTime
+     * @param float|int|null $timeLimit
      * @param int|null $workerID
      * @return string[]
      */
-    public function cron($targetTime = 60, $workerID = null)
+    public function cron($timeLimit = null, $workerID = null)
     {
-        return $this->handler->cron($targetTime, $workerID);
+        return $this->handler->cron($timeLimit, $workerID);
     }
 
     /**
@@ -74,9 +75,11 @@ class Cache implements RobotsTxtInterface
      *
      * @param $baseUri
      * @return bool
+     * @throws ClientException
      */
     public function invalidate($baseUri)
     {
-        return $this->handler->invalidate($this->uriBase($baseUri));
+        $parser = new UriParser($baseUri);
+        return $this->handler->invalidate($parser->base());
     }
 }

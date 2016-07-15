@@ -40,11 +40,11 @@ interface ManagerInterface
     /**
      * Process the update queue
      *
-     * @param float|int $targetTime
+     * @param float|int|null $timeLimit
      * @param int|null $workerID
      * @return string[]
      */
-    public function cron($targetTime, $workerID);
+    public function cron($timeLimit, $workerID);
 
     /**
      * Clean the cache table

@@ -91,6 +91,27 @@ The above is just a taste the basics, a whole bunch of more advanced and/or spec
 
 Visit the [Documentation](https://github.com/VIPnytt/RobotsTxtParser/tree/master/docs) for more information.
 
+### Directives
+- [x] [`Clean-param`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#clean-param)
+- [x] [`Host`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#host)
+- [x] [`Sitemap`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#sitemap)
+- [x] [`User-agent`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#user-agent)
+  - [x] [`Allow`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#allow)
+    - [x] _inline_ [`Clean-param`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#inline-clean-param)
+    - [x] _inline_ [`Host`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#inline-host)
+  - [x] [`Cache-delay`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#cache-delay)
+  - [x] [`Comment`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#comment)
+  - [x] [`Crawl-delay`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#crawl-delay)
+  - [x] [`Disallow`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#disallow)
+    - [x] _inline_ [`Clean-param`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#inline-clean-param)
+    - [x] _inline_ [`Host`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#inline-host)
+  - [x] [`NoIndex`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#noindex)
+    - [x] _inline_ [`Clean-param`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#inline-clean-param)
+    - [x] _inline_ [`Host`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#inline-host)
+  - [x] [`Request-rate`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#request-rate)
+  - [x] [`Robot-version`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#robot-version)
+  - [x] [`Visit-time`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#visit-time)
+
 ## Specifications
 - [x] [Google robots.txt specifications](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt)
 - [x] [Yandex robots.txt specifications](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml)
@@ -99,26 +120,10 @@ Visit the [Documentation](https://github.com/VIPnytt/RobotsTxtParser/tree/master
 - [x] [Sean Conner: _"An Extended Standard for Robot Exclusion"_](http://www.conman.org/people/spc/robots2.html)
 - [x] [Martijn Koster: _"A Method for Web Robots Control"_](http://www.robotstxt.org/norobots-rfc.txt)
 - [x] [Martijn Koster: _"A Standard for Robot Exclusion"_](http://www.robotstxt.org/orig.html)
-
-Note: _Where the specifications/drafts differ from each other, the most specific parts is implemented in this library._
-
-### Directives
-- [x] [`Host`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#host)
-- [x] [`Clean-param`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#clean-param)
-- [x] [`Sitemap`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#sitemap)
-- [x] [`User-agent`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#user-agent)
-  - [x] [`Robot-version`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#robot-version)
-  - [x] [`Visit-time`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#visit-time)
-  - [x] [`NoIndex`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#noindex)
-    - [x] _inline_ [`Host`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#inline-host)
-    - [x] _inline_ [`Clean-param`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#inline-clean-param)
-  - [x] [`Disallow`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#disallow)
-    - [x] _inline_ [`Host`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#inline-host)
-    - [x] _inline_ [`Clean-param`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#inline-clean-param)
-  - [x] [`Allow`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#allow)
-    - [x] _inline_ [`Host`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#inline-host)
-    - [x] _inline_ [`Clean-param`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#inline-clean-param)
-  - [x] [`Crawl-delay`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#crawl-delay)
-  - [x] [`Cache-delay`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#cache-delay)
-  - [x] [`Request-rate`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#request-rate)
-  - [x] [`Comment`](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/directives.md#comment)
+- [x] [RFC 7231](https://tools.ietf.org/html/rfc7231), [~~2616~~](https://tools.ietf.org/html/rfc2616)
+- [x] [RFC 7230](https://tools.ietf.org/html/rfc7230), [~~2616~~](https://tools.ietf.org/html/rfc2616)
+- [x] [RFC 5322](https://tools.ietf.org/html/rfc5322), [~~2822~~](https://tools.ietf.org/html/rfc2822), [~~822~~](https://tools.ietf.org/html/rfc822)
+- [x] [RFC 3986](https://tools.ietf.org/html/rfc3986), [~~1808~~](https://tools.ietf.org/html/rfc3986)
+- [x] [RFC 1945](https://tools.ietf.org/html/rfc1945)
+- [x] [RFC 1738](https://tools.ietf.org/html/rfc1738)
+- [x] [RFC 952](https://tools.ietf.org/html/rfc952)
