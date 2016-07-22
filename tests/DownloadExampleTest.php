@@ -28,7 +28,7 @@ class DownloadExampleTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals([], $parser->sitemap()->export());
 
-        $this->assertNull($parser->host()->get());
+        $this->assertNull($parser->host()->export());
         $this->assertEquals(parse_url($base, PHP_URL_HOST), $parser->host()->getWithUriFallback());
 
         $this->assertEquals([], $parser->cleanParam()->export());

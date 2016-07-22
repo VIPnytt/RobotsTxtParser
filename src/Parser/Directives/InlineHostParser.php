@@ -1,17 +1,17 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
-use vipnytt\RobotsTxtParser\Client\Directives\HostClient;
+use vipnytt\RobotsTxtParser\Client\Directives\InlineHostClient;
 
 /**
- * Class HostParser
+ * Class InlineHostParser
  *
  * @package vipnytt\RobotsTxtParser\Parser\Directives
  */
-class HostParser extends HostParserCore
+class InlineHostParser extends HostParserCore
 {
     /**
-     * HostParser constructor.
+     * InlineHostParser constructor.
      *
      * @param string $base
      * @param string $effective
@@ -24,11 +24,11 @@ class HostParser extends HostParserCore
     /**
      * Client
      *
-     * @return HostClient
+     * @return InlineHostClient
      */
     public function client()
     {
-        return new HostClient($this->base, $this->effective, $this->host);
+        return new InlineHostClient($this->base, $this->effective, $this->host);
     }
 
     /**
@@ -38,8 +38,11 @@ class HostParser extends HostParserCore
      */
     public function render()
     {
-        return isset($this->host[0]) ? [
-            self::DIRECTIVE_HOST . ':' . $this->host[0]
-        ] : [];
+        $result = [];
+        foreach ($this->host as $host) {
+            $result[] = self::DIRECTIVE_HOST . ':' . $host;
+        }
+        sort($result);
+        return $result;
     }
 }

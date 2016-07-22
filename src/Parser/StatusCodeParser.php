@@ -1,19 +1,16 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Parser;
 
-use vipnytt\RobotsTxtParser\Parser\Directives\DirectiveParserCommons;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
  * Class StatusCodeParser
- * 
+ *
  *
  * @package vipnytt\RobotsTxtParser\Parser
  */
 class StatusCodeParser implements RobotsTxtInterface
 {
-    use DirectiveParserCommons;
-
     /**
      * Status code
      * @var int

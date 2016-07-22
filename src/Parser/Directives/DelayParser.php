@@ -11,8 +11,6 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  */
 class DelayParser implements ParserInterface, RobotsTxtInterface
 {
-    use DirectiveParserCommons;
-
     /**
      * Directive
      * @var string

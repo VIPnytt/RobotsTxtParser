@@ -8,17 +8,10 @@
 
 ## Public functions
 - [export](#export)
-- [get](#get)
 - [getWithFallback](#getwithfallback)
 - [isPreferred](#ispreferred)
 
 ### export
-```php
-@return string[]|string|null
-```
-Export the host(s).
-
-### get
 ```php
 @return string|null
 ```

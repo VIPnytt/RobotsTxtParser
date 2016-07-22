@@ -36,13 +36,13 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
 
     /**
      * Sub-directive Clean-param
-     * @var CleanParamParser
+     * @var InlineCleanParamParser
      */
     private $cleanParam;
 
     /**
      * Sub-directive Host
-     * @var HostParser
+     * @var InlineHostParser
      */
     private $host;
 
@@ -56,8 +56,8 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
     public function __construct($base, $effective, $directive)
     {
         $this->directive = $directive;
-        $this->cleanParam = new CleanParamParser();
-        $this->host = new HostParser($base, $effective, $this->directive);
+        $this->cleanParam = new InlineCleanParamParser();
+        $this->host = new InlineHostParser($base, $effective);
     }
 
     /**

@@ -7,56 +7,27 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
  * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/HostClient.md for documentation
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
-class HostClient implements ClientInterface
+class HostClient extends HostClientCore
 {
     /**
-     * Base uri
-     * @var string
-     */
-    private $base;
-
-    /**
-     * Effective uri
-     * @var string
-     */
-    private $effective;
-
-    /**
-     * Host values
-     * @var string[]
-     */
-    private $host;
-
-    /**
-     * Parent directive
-     * @var string|null
-     */
-    private $parent;
-
-    /**
      * HostClient constructor.
-     *
      * @param string $base
      * @param string $effective
      * @param string[] $host
-     * @param string|null $parentDirective
      */
-    public function __construct($base, $effective, array $host, $parentDirective = null)
+    public function __construct($base, $effective, $host)
     {
-        $this->base = $base;
-        $this->effective = $effective;
-        $this->host = $host;
-        $this->parent = $parentDirective;
+        parent::__construct($base, $effective, $host);
     }
 
     /**
-     * Is preferred host
+     * Is preferred host?
      *
      * @return bool
      */
     public function isPreferred()
     {
-        if (($host = $this->get()) === null) {
+        if (($host = $this->export()) === null) {
             return $this->base === $this->effective;
         }
         $parsed = parse_url($host);
@@ -69,11 +40,11 @@ class HostClient implements ClientInterface
     }
 
     /**
-     * Get Host
+     * Export
      *
      * @return string|null
      */
-    public function get()
+    public function export()
     {
         return isset($this->host[0]) ? $this->host[0] : null;
     }
@@ -85,7 +56,7 @@ class HostClient implements ClientInterface
      */
     public function getWithUriFallback()
     {
-        if (($get = $this->get()) !== null) {
+        if (($get = $this->export()) !== null) {
             // Host defined by the Host directive
             return $get;
         } elseif (
@@ -97,18 +68,5 @@ class HostClient implements ClientInterface
         }
         // Return Host name only
         return parse_url($this->effective, PHP_URL_HOST);
-    }
-
-    /**
-     * Export
-     *
-     * @return string[]|string|null
-     */
-    public function export()
-    {
-        if ($this->parent === null) {
-            return isset($this->host[0]) ? $this->host[0] : null;
-        }
-        return $this->host;
     }
 }

@@ -189,13 +189,17 @@ $client = new \vipnytt\RobotsTxtParser\TxtClient('http://example.com', 200, 'rob
 #### `Clean-param` directive
 [Documentation](methods/CleanParamClient.md)
 
+Array of dynamic URI parameters detected in an URI.
+```php
+$client->cleanParam()->detect('http://example.com?param1=value1&param2=value2');
+```
+Array of dynamic URI parameters detected in an URI. This func also includes an list of generic dynamic parameters, as well as any (optional) custom parameters.
+```php
+$client->cleanParam()->detectWithCommon('http://example.com?param1=value1&param2=value2');
+```
 List of dynamic URI parameters
 ```php
 $client->cleanParam()->export();
-```
-Find out whether the URL contains dynamic URI parameters
-```php
-$client->cleanParam()->isListed('http://example.com?param1=value1&param2=value2');
 ```
 
 #### Export
@@ -217,13 +221,9 @@ $client->getUserAgents();
 #### `Host` directive
 [Documentation](methods/HostClient.md)
 
-Export the content of the Host directive(s)
+Get the main host declared by the Host directive.
 ```php
 $client->host()->export();
-```
-Get the main host declared by the Host directive
-```php
-$client->host()->get();
 ```
 Get the main host declared by the Host directive. Falls back to the host of the effective URI if it isn't set
 ```php
@@ -253,9 +253,21 @@ $client->sitemap()->export();
 #### `Allow` directive
 [Documentation](methods/AllowClient.md)
 
+Check if an uri has parameters that makes it allowed to crawl
+```php
+$client->userAgent('myBot')->allow()->cleanParam()->detect('http://example.com/?ref=google');
+```
+Export an array of inline Clean-param parameters and paths
+```php
+$client->userAgent('myBot')->allow()->cleanParam()->export();
+```
 Export an array of the directives rules
 ```php
 $client->userAgent('myBot')->allow()->export();
+```
+Export an array of inline Host hosts
+```php
+$client->userAgent('myBot')->allow()->host()->export();
 ```
 Check if the specified path is covered by any of the directives rules
 ```php
@@ -357,9 +369,21 @@ $client->userAgent('myBot')->crawlDelay()->handle($pdo)->sleep();
 #### `Disallow` directive
 [Documentation](methods/AllowClient.md)
 
+Check if an uri has parameters that makes it disallowed to crawl
+```php
+$client->userAgent('myBot')->disallow()->cleanParam()->detect('http://example.com/?ref=google');
+```
+Export an array of inline Clean-param parameters and paths
+```php
+$client->userAgent('myBot')->disallow()->cleanParam()->export();
+```
 Export an array of the directives rules
 ```php
 $client->userAgent('myBot')->disallow()->export();
+```
+Export an array of inline Host hosts
+```php
+$client->userAgent('myBot')->disallow()->host()->export();
 ```
 Check if the specified path is covered by any of the directives rules
 ```php
@@ -393,9 +417,21 @@ $client->userAgent('myBot')->isDisallowed('http://example.com/path/to/file');
 #### `NoIndex` directive
 [Documentation](methods/AllowClient.md)
 
+Check if an uri has parameters that is denied to crawl
+```php
+$client->userAgent('myBot')->noIndex()->cleanParam()->detect('http://example.com/?ref=google');
+```
+Export an array of inline Clean-param parameters and paths
+```php
+$client->userAgent('myBot')->noIndex()->cleanParam()->export();
+```
 Export an array of the directives rules
 ```php
 $client->userAgent('myBot')->noIndex()->export();
+```
+Export an array of inline Host hosts
+```php
+$client->userAgent('myBot')->noIndex()->host()->export();
 ```
 Check if the specified path is covered by any of the directives rules
 ```php

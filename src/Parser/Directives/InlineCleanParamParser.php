@@ -2,16 +2,17 @@
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Client\Directives\CleanParamClient;
+use vipnytt\RobotsTxtParser\Client\Directives\InlineCleanParamClient;
 
 /**
- * Class CleanParamParser
+ * Class InlineCleanParamParser
  *
  * @package vipnytt\RobotsTxtParser\Parser\Directives
  */
-class CleanParamParser extends CleanParamParserCore
+class InlineCleanParamParser extends CleanParamParserCore
 {
     /**
-     * CleanParamParser constructor.
+     * InlineCleanParamParser constructor.
      */
     public function __construct()
     {
@@ -25,6 +26,6 @@ class CleanParamParser extends CleanParamParserCore
      */
     public function client()
     {
-        return new CleanParamClient($this->cleanParam);
+        return new InlineCleanParamClient($this->cleanParam);
     }
 }

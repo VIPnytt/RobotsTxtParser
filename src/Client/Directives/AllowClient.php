@@ -23,13 +23,13 @@ class AllowClient implements ClientInterface, RobotsTxtInterface
 
     /**
      * Host
-     * @var HostClient
+     * @var InlineHostClient
      */
     private $host;
 
     /**
      * Clean-param
-     * @var CleanParamClient
+     * @var InlineCleanParamClient
      */
     private $cleanParam;
 
@@ -37,14 +37,34 @@ class AllowClient implements ClientInterface, RobotsTxtInterface
      * AllowClient constructor.
      *
      * @param array $paths
-     * @param HostClient $host
-     * @param CleanParamClient $cleanParam
+     * @param InlineHostClient $host
+     * @param InlineCleanParamClient $cleanParam
      */
-    public function __construct(array $paths, HostClient $host, CleanParamClient $cleanParam)
+    public function __construct(array $paths, InlineHostClient $host, InlineCleanParamClient $cleanParam)
     {
         $this->host = $host;
         $this->paths = $paths;
         $this->cleanParam = $cleanParam;
+    }
+
+    /**
+     * Inline Clean-param directive
+     *
+     * @return InlineCleanParamClient
+     */
+    public function cleanParam()
+    {
+        return $this->cleanParam;
+    }
+
+    /**
+     * Inline Host directive
+     *
+     * @return InlineHostClient
+     */
+    public function host()
+    {
+        return $this->host;
     }
 
     /**
@@ -58,7 +78,7 @@ class AllowClient implements ClientInterface, RobotsTxtInterface
         $path = $this->getPath($uri);
         return (
             $this->checkPaths($path, $this->paths) ||
-            $this->isHostListed($uri, $this->host->export()) ||
+            $this->host->isListed($uri) ||
             !empty($this->cleanParam->detect($path))
         );
     }
@@ -85,36 +105,6 @@ class AllowClient implements ClientInterface, RobotsTxtInterface
         $path = (($path = parse_url($uri, PHP_URL_PATH)) === null) ? '/' : $path;
         $query = (($query = parse_url($uri, PHP_URL_QUERY)) === null) ? '' : '?' . $query;
         return $path . $query;
-    }
-
-    /**
-     * Is host listed by directive
-     *
-     * @param string $uri
-     * @param string[] $hosts
-     * @return bool
-     */
-    private function isHostListed($uri, $hosts)
-    {
-        $uriParser = new UriParser($uri);
-        $uri = $uriParser->encode();
-        $parts = [
-            'scheme' => parse_url($uri, PHP_URL_SCHEME),
-            'host' => parse_url($uri, PHP_URL_HOST),
-        ];
-        $parts['port'] = is_int($port = parse_url($uri, PHP_URL_PORT)) ? $port : getservbyname($parts['scheme'], 'tcp');
-        $cases = [
-            $parts['host'],
-            $parts['host'] . ':' . $parts['port'],
-            $parts['scheme'] . '://' . $parts['host'],
-            $parts['scheme'] . '://' . $parts['host'] . ':' . $parts['port']
-        ];
-        foreach ($hosts as $host) {
-            if (in_array($host, $cases)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

@@ -9,6 +9,8 @@
       - [Comment](CommentClient.md)
       - [Crawl-delay](DelayClient.md)
       - [Disallow](AllowClient.md)
+      - [Inline Clean-param](InlineCleanParamClient.md)
+      - [Inline Host](InlineHostClient.md)
       - [NoIndex](AllowClient.md)
       - [Request-rate](RequestRateClient.md)
       - [Robot-version](RobotVersionClient.md)

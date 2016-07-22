@@ -7,25 +7,19 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
  * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/CleanParamClient.md for documentation
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
-class CleanParamClient implements ClientInterface
+class CleanParamClient extends InlineCleanParamClient
 {
-    use DirectiveClientCommons;
-
     /**
      * Common dynamic uri parameters
-     * @var string
+     * @var string[]
      */
     protected $commonParam = [
         'popup',
         'ref',
-        'token'
+        'token',
+        'utm_medium',
+        'utm_source',
     ];
-
-    /**
-     * Clean-param
-     * @var string[][]
-     */
-    private $cleanParam = [];
 
     /**
      * CleanParamClient constructor.
@@ -34,7 +28,7 @@ class CleanParamClient implements ClientInterface
      */
     public function __construct(array $cleanParam)
     {
-        $this->cleanParam = $cleanParam;
+        parent::__construct($cleanParam);
     }
 
     /**
@@ -67,51 +61,5 @@ class CleanParamClient implements ClientInterface
             $result[$parameter] = ['/'];
         }
         return $result;
-    }
-
-    /**
-     * Parse uri and return detected parameters
-     *
-     * @param string $uri
-     * @param array $pairs
-     * @return string[]
-     */
-    private function parse($uri, array $pairs)
-    {
-        $result = [];
-        foreach ($pairs as $param => $paths) {
-            if (
-                (
-                    strpos($uri, "?$param=") ||
-                    strpos($uri, "&$param=")
-                ) &&
-                $this->checkPaths($uri, $paths)
-            ) {
-                $result[] = $param;
-            }
-        }
-        sort($result);
-        return $result;
-    }
-
-    /**
-     * Detect dynamic parameters
-     *
-     * @param  string $uri
-     * @return string[]
-     */
-    public function detect($uri)
-    {
-        return $this->parse($uri, $this->cleanParam);
-    }
-
-    /**
-     * Export
-     *
-     * @return string[][]
-     */
-    public function export()
-    {
-        return $this->cleanParam;
     }
 }
