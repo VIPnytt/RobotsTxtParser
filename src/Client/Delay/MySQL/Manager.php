@@ -36,7 +36,7 @@ class Manager implements ManagerInterface
      * @param int $delay - in seconds
      * @return bool
      */
-    public function clean($delay = 60)
+    public function clean($delay)
     {
         $query = $this->pdo->prepare(<<<SQL
 DELETE FROM robotstxt__delay0
@@ -54,7 +54,7 @@ SQL
      * @param int $min
      * @return array
      */
-    public function getTopWaitTimes($limit = 100, $min = 0)
+    public function getTopWaitTimes($limit, $min)
     {
         $query = $this->pdo->prepare(<<<SQL
 SELECT

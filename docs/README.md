@@ -1,19 +1,21 @@
 # Getting started
 
-- [What class to use?](#createanrobotstxtparserinstance)
+- [What class to use?](#create-an-robotstxt-parser-instance)
+- [The Delay handler](#the-delay-handler)
 - [Directives](directives.md)
-- [Cheat sheet](#cheatsheet)
+- [Cheat sheet](#cheat-sheet)
 
 ## Create an `robots.txt` parser instance
 You have 3 different ways to construct the `robots.txt` parser, each suited for different demands.
-### - Automatic download
+
+### Alternative 1 - Automatic download
 ```php
 $client = new \vipnytt\RobotsTxtParser\UriClient('http://example.com');
 ```
 - [Documentation + additional UriClient specific methods](methods/UriClient.md).
 - [Usage examples](#uriclient)
 
-### - Custom `robots.txt` input
+### Alternative 2 - Custom `robots.txt` input
 ```php
 $robotsTxt = "
 User-agent: *
@@ -26,7 +28,7 @@ $client = new \vipnytt\RobotsTxtParser\TxtClient('http://example.com', 200, $rob
 - [Documentation](methods/TxtClient.md).
 - [Usage examples](#txtclient)
 
-### - The integrated caching system
+### Alternative 3 - The integrated caching system
 ```php
 $pdo = new PDO('mysql:host=127.0.0.1;dbname=database', 'username', 'password');
 $handler = new \vipnytt\RobotsTxtParser\Cache($pdo);
@@ -56,25 +58,29 @@ $delayHandler = new \vipnytt\RobotsTxtParser\Delay($pdo);
 [Cache documentation](methods/Cache.md)
 
 Note: _Most parameters available is set to their default values and is not shown. Referer to the documentation for the specific class, for a full overview._
+
+__Example usage:__
 ```php
 $pdo = new PDO('mysql:host=127.0.0.1;dbname=database', 'username', 'password');
 $handler = new \vipnytt\RobotsTxtParser\Cache($pdo);
 ```
+Clean the cache for unused robots.txt files
 ```php
-// Clean the cache for unused robots.txt files
 $handler->clean();
 ```
+Update the cache for any active robots.txt files
 ```php
-// Update the cache for any active robots.txt files
 $handler->cron();
 ```
+Invalidate the cache for an specific URI
 ```php
-// Invalidate the cache for an specific URI
 $handler->invalidate('http://example.com');
 ```
-Create an [TxtClient](#txtclient). [Documentation](methods/TxtClient.md)
+#### Create an [TxtClient](#txtclient)
+[Documentation](methods/TxtClient.md)
+
+Create the TxtClient for parsing purposes
 ```php
-// Create the TxtClient for parsing purposes
 $client = $handler->client('http://example.com');
 ```
 
@@ -82,43 +88,51 @@ $client = $handler->client('http://example.com');
 [Delay documentation](methods/Delay.md)
 
 Note: _Most parameters available is set to their default values and is not shown. Referer to the documentation for the specific class, for a full overview._
+
+__Example usage:__
 ```php
 $pdo = new PDO('mysql:host=127.0.0.1;dbname=database', 'username', 'password');
 $delayHandler = new \vipnytt\RobotsTxtParser\Delay($pdo);
 ```
+Clean the delay storage for any outdated records
 ```php
-// Clean the delay storage for any outdated records
 $delayHandler->clean();
 ```
+Get an list of the hosts with highest wait-time.
 ```php
-// Get an list of the hosts with highest wait-time.
 $delayHandler->getTopWaitTimes();
 ```
 
-Delay client. [Documentation](methods/DelayInterface.md)
+#### Delay client
+[Documentation](methods/DelayInterface.md)
+
+__Example usage:__
 ```php
 $txtClient = new \vipnytt\RobotsTxtParser\TxtClient('http://example.com', 200, 'robots.txt');
+
 $delayInterface = $txtClient->userAgent('myBot')->crawlDelay();
+// or
 $delayInterface = $txtClient->userAgent('myBot')->cacheDelay();
+// or
 $delayInterface = $txtClient->userAgent('myBot')->requestRate();
 
 // Delay client constructed from any DelayInterface class
 $delayClient = $delayHandler->client($delayInterface);
 ```
+Get the size of the current request queue in seconds
 ```php
-// Get the size of the current request queue in seconds
 $delayClient->getQueue();
 ```
+Get the timestamp w/microseconds you'll have to wait until before sending the request
 ```php
-// Get the timestamp w/microseconds you'll have to wait until before sending the request
 $delayClient->getTimeSleepUntil();
 ```
+Reset the global queue for this host
 ```php
-// Reset the global queue for this host
 $delayClient->reset();
 ```
+Sleep until it's your turn to send the request
 ```php
-// Sleep until it's your turn to send the request
 $delayClient->sleep();
 ```
 
@@ -126,35 +140,37 @@ $delayClient->sleep();
 [UriClient documentation](methods/UriClient.md)
 
 Note: _Most parameters available is set to their default values and is not shown. Referer to the documentation for the specific class, for a full overview._
+
+__Example usage:__
 ```php
 $client = new \vipnytt\RobotsTxtParser\UriClient('http://example.com');
 ```
+Get base-URI
 ```php
-// Get base-URI
 $client->getBaseUri();
 ```
+Get the robots.txt contents
 ```php
-// Get the robots.txt contents
 $client->getContents();
 ```
+Get the effective base-URI (after any redirects)
 ```php
-// Get the effective base-URI (after any redirects)
 $client->getEffectiveUri();
 ```
+Get the character encoding
 ```php
-// Get the character encoding
 $client->getEncoding();
 ```
+Get the HTTP/FTP status code
 ```php
-// Get the HTTP status code (also works with FTP)
 $client->getStatusCode();
 ```
+Next-update timestamp
 ```php
-// Next-update timestamp
 $client->nextUpdate();
 ```
+The timestamp the robots.txt is valid until
 ```php
-// The timestamp the robots.txt is valid until
 $client->validUntil();
 ```
 
@@ -164,195 +180,284 @@ The `UriClient` extends the `TxtClient`. See [TxtClient](#txtclient) for the res
 [TxtClient documentation](methods/TxtClient.md)
 
 Note: _Most parameters available is set to their default values and is not shown. Referer to the documentation for the specific class, for a full overview._
+
+__Example usage:__
 ```php
 $client = new \vipnytt\RobotsTxtParser\TxtClient('http://example.com', 200, 'robots.txt');
 ```
-`Clean-param` directive. [Documentation](methods/CleanParamClient.md)
-```php
-// List of dynamic URI parameters
-$client->cleanParam()->export();
 
-// Find out whether the URL contains dynamic URI parameters
+#### `Clean-param` directive
+[Documentation](methods/CleanParamClient.md)
+
+List of dynamic URI parameters
+```php
+$client->cleanParam()->export();
+```
+Find out whether the URL contains dynamic URI parameters
+```php
 $client->cleanParam()->isListed('http://example.com?param1=value1&param2=value2');
 ```
-Export
+
+#### Export
+[Documentation](methods/TxtClient.md)
+
+Export all rules as an array
 ```php
-// Export all rules as an array
 $client->export();
 ```
-Get user-agents
+
+#### Get user-agents
+[Documentation](methods/TxtClient.md)
+
+Get an list of all declared User-agents
 ```php
-// Get an list of all declared User-agents
 $client->getUserAgents();
 ```
-`Host` directive. [Documentation](methods/HostClient.md)
+
+#### `Host` directive
+[Documentation](methods/HostClient.md)
+
+Export the content of the Host directive(s)
 ```php
-// Export the content of the Host directive(s)
 $client->host()->export();
-
-// Get the main host declared by the Host directive
-$client->host()->get();
-
-// Get the main host declared by the Host directive. Falls back to the host of the effective URI if it isn't set
-$client->host()->getWithFallback();
-
-// Find out whether the host of the current URI also is the preferred one
-$client->host()->isPreferred();
-
-// Find out whether the host of the specified URI is listed by the Host directive
-$client->host()->isUriListed('http://example.com');
 ```
-Render
+Get the main host declared by the Host directive
 ```php
-// Renders the parsed robots.txt file
+$client->host()->get();
+```
+Get the main host declared by the Host directive. Falls back to the host of the effective URI if it isn't set
+```php
+$client->host()->getWithUriFallback();
+```
+Find out whether the host of the current URI also is the preferred one
+```php
+$client->host()->isPreferred();
+```
+
+#### Render
+[Documentation](methods/TxtClient.md)
+
+Renders the parsed robots.txt file
+```php
 $client->render();
 ```
-`Sitemap` directive. [Documentation](methods/SitemapClient.md)
+
+#### `Sitemap` directive
+[Documentation](methods/SitemapClient.md)
+
+Export an list of sitemaps
 ```php
-// Export an list of sitemaps
 $client->sitemap()->export();
 ```
-`Allow` directive. [Documentation](methods/AllowClient.md)
-```php
-// Export an array of the directives rules
-$client->userAgent('myBot')->allow()->export();
 
-// Check if the specified path is covered by any of the directives rules
+#### `Allow` directive
+[Documentation](methods/AllowClient.md)
+
+Export an array of the directives rules
+```php
+$client->userAgent('myBot')->allow()->export();
+```
+Check if the specified path is covered by any of the directives rules
+```php
 $client->userAgent('myBot')->allow()->isListed('http://example.com/path/to/file');
 ```
-`Cache-delay` directive. [Documentation](methods/DelayClient.md)
+
+#### `Cache-delay` directive
+[Documentation](methods/DelayClient.md)
+
+Export the value of the directive
 ```php
-// Export the value of the directive
 $client->userAgent('myBot')->cacheDelay()->export();
-
-// Intended for usage by an 3rd party Delay handler
+```
+Intended for usage by an 3rd party Delay handler
+```php
 $client->userAgent('myBot')->cacheDelay()->getBaseUri();
-
-// Intended for usage by an 3rd party Delay handler
+```
+Intended for usage by an 3rd party Delay handler
+```php
 $client->userAgent('myBot')->cacheDelay()->getUserAgent();
-
-// Get the request-delay value
+```
+Get the request-delay value
+```php
 $client->userAgent('myBot')->cacheDelay()->getValue();
 ```
-Handling of the `Cache-delay` directive. [Documentation](methods/DelayInterface.md)
+
+#### Handling of the `Cache-delay` directive
+[Documentation](methods/DelayInterface.md)
+
+Get the size of the current request queue in seconds
 ```php
-// Get the size of the current request queue in seconds
 $client->userAgent('myBot')->cacheDelay()->handle($pdo)->getQueue();
-
-// Get the timestamp w/microseconds you'll have to wait until before sending the request
+```
+Get the timestamp w/microseconds you'll have to wait until before sending the request
+```php
 $client->userAgent('myBot')->cacheDelay()->handle($pdo)->getTimeSleepUntil();
-
-// Reset the global queue for this host
+```
+Reset the global queue for this host
+```php
 $client->userAgent('myBot')->cacheDelay()->handle($pdo)->reset();
-
-// Sleep until it's your turn to send the request
+```
+Sleep until it's your turn to send the request
+```php
 $client->userAgent('myBot')->cacheDelay()->handle($pdo)->sleep();
 ```
-`Comment` directive. [Documentation](methods/CommentClient.md)
-```php
-// Export an list of comments/messages/information that exists for the matching user-agent.
-$client->userAgent('myBot')->comment()->export();
 
-// Export an list of comments/messages/information that exists for your user-agent only. Spam-filtered, intended to be read.
+#### `Comment` directive
+[Documentation](methods/CommentClient.md)
+
+Export an list of comments/messages/information that exists for the matching user-agent.
+```php
+$client->userAgent('myBot')->comment()->export();
+```
+Export an list of comments/messages/information that exists for your user-agent only. Spam-filtered and is intended to be read.
+```php
 $client->userAgent('myBot')->comment()->get();
 ```
-`Crawl-delay` directive. [Documentation](methods/DelayClient.md)
+
+#### `Crawl-delay` directive
+[Documentation](methods/DelayClient.md)
+
+Export the value of the directive
 ```php
-// Export the value of the directive
 $client->userAgent('myBot')->crawlDelay()->export();
-
-// Intended for usage by an 3rd party Delay handler
+```
+Intended for usage by an 3rd party Delay handler
+```php
 $client->userAgent('myBot')->crawlDelay()->getBaseUri();
-
-// Intended for usage by an 3rd party Delay handler
+```
+Intended for usage by an 3rd party Delay handler
+```php
 $client->userAgent('myBot')->crawlDelay()->getUserAgent();
-
-// Get the request-delay value
+```
+Get the request-delay value
+```php
 $client->userAgent('myBot')->crawlDelay()->getValue();
 ```
-Handling of the `Crawl-delay` directive. [Documentation](methods/DelayInterface.md)
+
+#### Handling of the `Crawl-delay` directive
+[Documentation](methods/DelayInterface.md)
+
+Get the size of the current request queue in seconds
 ```php
-// Get the size of the current request queue in seconds
 $client->userAgent('myBot')->crawlDelay()->handle($pdo)->getQueue();
-
-// Get the timestamp w/microseconds you'll have to wait until before sending the request
+```
+Get the timestamp w/microseconds you'll have to wait until before sending the request
+```php
 $client->userAgent('myBot')->crawlDelay()->handle($pdo)->getTimeSleepUntil();
-
-// Reset the global queue for this host
+```
+Reset the global queue for this host
+```php
 $client->userAgent('myBot')->crawlDelay()->handle($pdo)->reset();
-
-// Sleep until it's your turn to send the request
+```
+Sleep until it's your turn to send the request
+```php
 $client->userAgent('myBot')->crawlDelay()->handle($pdo)->sleep();
 ```
-`Disallow` directive. [Documentation](methods/AllowClient.md)
-```php
-// Export an array of the directives rules
-$client->userAgent('myBot')->disallow()->export();
 
-// Check if the specified path is covered by any of the directives rules
+#### `Disallow` directive
+[Documentation](methods/AllowClient.md)
+
+Export an array of the directives rules
+```php
+$client->userAgent('myBot')->disallow()->export();
+```
+Check if the specified path is covered by any of the directives rules
+```php
 $client->userAgent('myBot')->disallow()->isListed('http://example.com/path/to/file');
 ```
-Export
+
+#### Export
+[Documentation](methods/UserAgentClient.md)
+
+Export an array of the rules for the selected User-agent
 ```php
-// Export an array of the rules for the selected User-agent
 $client->userAgent('myBot')->export();
 ```
-isAllowed
+
+#### isAllowed
+[Documentation](methods/UserAgentClient.md)
+
+Check if an URI is allowed to crawl
 ```php
-// Check if an URI is allowed to crawl
 $client->userAgent('myBot')->isAllowed('http://example.com/path/to/file');
 ```
-isDisallowed
+
+#### isDisallowed
+[Documentation](methods/UserAgentClient.md)
+
+Check if an URI is disallowed to crawl
 ```php
-// Check if an URI is disallowed to crawl
 $client->userAgent('myBot')->isDisallowed('http://example.com/path/to/file');
 ```
-`NoIndex` directive. [Documentation](methods/AllowClient.md)
-```php
-// Export an array of the directives rules
-$client->userAgent('myBot')->noIndex()->export();
 
-// Check if the specified path is covered by any of the directives rules
+#### `NoIndex` directive
+[Documentation](methods/AllowClient.md)
+
+Export an array of the directives rules
+```php
+$client->userAgent('myBot')->noIndex()->export();
+```
+Check if the specified path is covered by any of the directives rules
+```php
 $client->userAgent('myBot')->noIndex()->isListed('http://example.com/path/to/file');
 ```
-`Request-rate` directive. [Documentation](methods/DelayClient.md)
+
+#### `Request-rate` directive
+[Documentation](methods/DelayClient.md)
+
+Export an array of delays and their corresponding timestamps
 ```php
-// Export an array of delays and their corresponding timestamps
 $client->userAgent('myBot')->requestRate()->export();
-
-// Intended for usage by an 3rd party Delay handler
+```
+Intended for usage by an 3rd party Delay handler
+```php
 $client->userAgent('myBot')->requestRate()->getBaseUri();
-
-// Intended for usage by an 3rd party Delay handler
+```
+Intended for usage by an 3rd party Delay handler
+```php
 $client->userAgent('myBot')->requestRate()->getUserAgent();
-
-// Get the request-delay value
+```
+Get the request-delay value
+```php
 $client->userAgent('myBot')->requestRate()->getValue();
 ```
-Handling of the `Request-rate` directive. [Documentation](methods/DelayInterface.md)
+
+#### Handling of the `Request-rate` directive
+[Documentation](methods/DelayInterface.md)
+
+Get the size of the current request queue in seconds
 ```php
-// Get the size of the current request queue in seconds
 $client->userAgent('myBot')->requestRate()->handle($pdo)->getQueue();
-
-// Get the timestamp w/microseconds you'll have to wait until before sending the request
+```
+Get the timestamp w/microseconds you'll have to wait until before sending the request
+```php
 $client->userAgent('myBot')->requestRate()->handle($pdo)->getTimeSleepUntil();
-
-// Reset the global queue for this host
+```
+Reset the global queue for this host
+```php
 $client->userAgent('myBot')->requestRate()->handle($pdo)->reset();
-
-// Sleep until it's your turn to send the request
+```
+Sleep until it's your turn to send the request
+```php
 $client->userAgent('myBot')->requestRate()->handle($pdo)->sleep();
 ```
-`Robot-version` directive. [Documentation](methods/RobotVersionClient.md)
+
+#### `Robot-version` directive
+[Documentation](methods/RobotVersionClient.md)
+
+Exports the value of the directive
 ```php
-// Exports the value of the directive
 $client->userAgent('myBot')->robotVersion()->export();
 ```
-`Visit-time` directive. [Documentation](methods/VisitTimeClient.md)
-```php
-// Export an list of visit-times in UTC
-$client->userAgent('myBot')->visitTime()->export();
 
-// Check if it's currently visiting time
+#### `Visit-time` directive
+[Documentation](methods/VisitTimeClient.md)
+
+Export an list of visit-times in UTC
+```php
+$client->userAgent('myBot')->visitTime()->export();
+```
+Check if it's currently visiting time
+```php
 $client->userAgent('myBot')->visitTime()->isVisitTime();
 ```

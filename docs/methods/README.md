@@ -15,7 +15,7 @@
       - [Visit-time](VisitTimeClient.md)
 
 __Other available classes:__
-- [UriClient](UriClient.md)
 - [Cache](Cache.md)
 - [Delay](DelayManager.md)
   - [ClientInterface](DelayInterface.md)
+- [UriClient](UriClient.md)

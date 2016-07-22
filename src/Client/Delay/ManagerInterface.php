@@ -24,7 +24,7 @@ interface ManagerInterface
      * @param int $delay - in seconds
      * @return bool
      */
-    public function clean($delay = 60);
+    public function clean($delay);
 
     /**
      * Top X wait time
@@ -33,5 +33,5 @@ interface ManagerInterface
      * @param int $min
      * @return array
      */
-    public function getTopWaitTimes($limit = 100, $min = 0);
+    public function getTopWaitTimes($limit, $min);
 }

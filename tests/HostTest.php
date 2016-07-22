@@ -26,7 +26,7 @@ class HostTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent()->isAllowed('/'));
 
         $this->assertEquals('myhost.com', $parser->host()->get());
-        $this->assertEquals('myhost.com', $parser->host()->getWithFallback());
+        $this->assertEquals('myhost.com', $parser->host()->getWithUriFallback());
         $this->assertFalse($parser->host()->isPreferred());
 
         if ($rendered !== false) {
@@ -89,10 +89,10 @@ RENDERED
     {
         $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, '', 'UTF-8', 'https://example.com');
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
-        $this->assertEquals('https://example.com', $parser->host()->getWithFallback());
+        $this->assertEquals('https://example.com', $parser->host()->getWithUriFallback());
 
         $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, '', 'UTF-8', 'http://example.com:8080');
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
-        $this->assertEquals('http://example.com:8080', $parser->host()->getWithFallback());
+        $this->assertEquals('http://example.com:8080', $parser->host()->getWithUriFallback());
     }
 }

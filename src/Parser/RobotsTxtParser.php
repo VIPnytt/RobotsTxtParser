@@ -65,7 +65,7 @@ class RobotsTxtParser implements RobotsTxtInterface
             // Limit rule length
             $line = mb_substr($line, 0, self::MAX_LENGTH_RULE);
             // Remove comments
-            $line = mb_split('#', $line, 2)[0];
+            $line = explode('#', $line, 2)[0];
             // Parse line
             $result[] = $this->parseLine($line);
         }

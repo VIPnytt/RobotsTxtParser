@@ -20,7 +20,7 @@ class FTPTest extends \PHPUnit_Framework_TestCase
         $uriClient = new RobotsTxtParser\UriClient($base);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\UriClient', $uriClient);
 
-        $this->assertEquals($host, $uriClient->host()->getWithFallback());
+        $this->assertEquals($host, $uriClient->host()->getWithUriFallback());
 
         $txtClient = new RobotsTxtParser\TxtClient($uriClient->getBaseUri(), $uriClient->getStatusCode(), $uriClient->getContents(), $uriClient->getEncoding(), $uriClient->getEffectiveUri());
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $txtClient);

@@ -27,7 +27,7 @@ class DownloadGoogleTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue(count($uriClient->sitemap()->export()) > 0);
 
-        $this->assertTrue(is_string($uriClient->host()->getWithFallback()));
+        $this->assertTrue(is_string($uriClient->host()->getWithUriFallback()));
 
         $txtClient = new RobotsTxtParser\TxtClient($uriClient->getBaseUri(), $uriClient->getStatusCode(), $uriClient->getContents(), $uriClient->getEncoding(), $uriClient->getEffectiveUri());
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $txtClient);

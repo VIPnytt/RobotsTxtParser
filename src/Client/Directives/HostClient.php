@@ -1,8 +1,6 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
-use vipnytt\RobotsTxtParser\Parser\UriParser;
-
 /**
  * Class HostClient
  *
@@ -85,7 +83,7 @@ class HostClient implements ClientInterface
      *
      * @return string
      */
-    public function getWithFallback()
+    public function getWithUriFallback()
     {
         if (($get = $this->get()) !== null) {
             // Host defined by the Host directive
@@ -99,35 +97,6 @@ class HostClient implements ClientInterface
         }
         // Return Host name only
         return parse_url($this->effective, PHP_URL_HOST);
-    }
-
-    /**
-     * Is host listed by directive
-     *
-     * @param string $uri
-     * @return bool
-     */
-    public function isUriListed($uri)
-    {
-        $uriParser = new UriParser($uri);
-        $uri = mb_strtolower($uriParser->encode());
-        $parts = [
-            'scheme' => parse_url($uri, PHP_URL_SCHEME),
-            'host' => parse_url($uri, PHP_URL_HOST),
-        ];
-        $parts['port'] = is_int($port = parse_url($uri, PHP_URL_PORT)) ? $port : getservbyname($parts['scheme'], 'tcp');
-        $cases = [
-            $parts['host'],
-            $parts['host'] . ':' . $parts['port'],
-            $parts['scheme'] . '://' . $parts['host'],
-            $parts['scheme'] . '://' . $parts['host'] . ':' . $parts['port']
-        ];
-        foreach ($this->host as $host) {
-            if (in_array($host, $cases)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

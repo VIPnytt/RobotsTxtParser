@@ -65,7 +65,7 @@ class Cache implements RobotsTxtInterface
      * @param int $delay - in seconds
      * @return bool
      */
-    public function clean($delay = 900)
+    public function clean($delay = 3600)
     {
         return $this->handler->clean($delay);
     }

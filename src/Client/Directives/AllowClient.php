@@ -58,8 +58,8 @@ class AllowClient implements ClientInterface, RobotsTxtInterface
         $path = $this->getPath($uri);
         return (
             $this->checkPaths($path, $this->paths) ||
-            $this->host->isUriListed($uri) ||
-            $this->cleanParam->isListed($path)
+            $this->isHostListed($uri, $this->host->export()) ||
+            !empty($this->cleanParam->detect($path))
         );
     }
 
@@ -74,7 +74,7 @@ class AllowClient implements ClientInterface, RobotsTxtInterface
     {
         $uriParser = new UriParser($uri);
         // Encode
-        $uri = mb_split('#', $uriParser->encode())[0];
+        $uri = explode('#', $uriParser->encode(), 2)[0];
         if (mb_strpos($uri, '/') === 0) {
             // URI is already an path
             return $uri;
@@ -85,6 +85,36 @@ class AllowClient implements ClientInterface, RobotsTxtInterface
         $path = (($path = parse_url($uri, PHP_URL_PATH)) === null) ? '/' : $path;
         $query = (($query = parse_url($uri, PHP_URL_QUERY)) === null) ? '' : '?' . $query;
         return $path . $query;
+    }
+
+    /**
+     * Is host listed by directive
+     *
+     * @param string $uri
+     * @param string[] $hosts
+     * @return bool
+     */
+    private function isHostListed($uri, $hosts)
+    {
+        $uriParser = new UriParser($uri);
+        $uri = $uriParser->encode();
+        $parts = [
+            'scheme' => parse_url($uri, PHP_URL_SCHEME),
+            'host' => parse_url($uri, PHP_URL_HOST),
+        ];
+        $parts['port'] = is_int($port = parse_url($uri, PHP_URL_PORT)) ? $port : getservbyname($parts['scheme'], 'tcp');
+        $cases = [
+            $parts['host'],
+            $parts['host'] . ':' . $parts['port'],
+            $parts['scheme'] . '://' . $parts['host'],
+            $parts['scheme'] . '://' . $parts['host'] . ':' . $parts['port']
+        ];
+        foreach ($hosts as $host) {
+            if (in_array($host, $cases)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

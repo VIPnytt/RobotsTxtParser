@@ -11,7 +11,6 @@
 - [get](#get)
 - [getWithFallback](#getwithfallback)
 - [isPreferred](#ispreferred)
-- [isUriListed](#isurilisted)
 
 ### export
 ```php
@@ -25,21 +24,14 @@ Export the host(s).
 ```
 Get the Host listed by the directive.
 
-### getWithFallback
+### getWithUriFallback
 ```php
 @return string
 ```
-Get the Host listed by the directive. Falls back to the host of the "Effective Request URI" when no hosts are defined.
+Get the Host listed by the directive. Falls back to the host of the "Effective Request URI" if no host are defined.
 
 ### isPreferred
 ```php
 @return bool
 ```
 Check if the requested host also is the preferred one.
-
-### isUriListed
-```php
-@param string $uri
-@return bool
-```
-Check if the host of the given URL is listed by any Host directive.

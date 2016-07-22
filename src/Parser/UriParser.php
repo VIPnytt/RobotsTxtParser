@@ -182,7 +182,7 @@ class UriParser
     public function base()
     {
         if (!$this->validate()) {
-            throw new ClientException('Invalid URI');
+            throw new ClientException("Invalid URI: $this->uri");
         }
         $parts = [
             'scheme' => parse_url($this->uri, PHP_URL_SCHEME),

@@ -12,6 +12,16 @@ class CleanParamClient implements ClientInterface
     use DirectiveClientCommons;
 
     /**
+     * Common dynamic uri parameters
+     * @var string
+     */
+    protected $commonParam = [
+        'popup',
+        'ref',
+        'token'
+    ];
+
+    /**
      * Clean-param
      * @var string[][]
      */
@@ -28,25 +38,71 @@ class CleanParamClient implements ClientInterface
     }
 
     /**
-     * Check
+     * Has robots.txt defined dynamic or common dynamic parameters check
      *
-     * @param  string $uri
-     * @return bool
+     * @param string $uri
+     * @param string[] $customParam
+     * @return string[]
      */
-    public function isListed($uri)
+    public function detectWithCommon($uri, array $customParam = [])
     {
-        foreach ($this->cleanParam as $param => $paths) {
+        $pairs = array_merge_recursive(
+            $this->cleanParam,
+            $this->appendPath($this->commonParam),
+            $this->appendPath($customParam)
+        );
+        return $this->parse($uri, $pairs);
+    }
+
+    /**
+     * Convert param list to an valid Clean-param list
+     *
+     * @param string[] $parameters
+     * @return array
+     */
+    private function appendPath(array $parameters)
+    {
+        $result = [];
+        foreach ($parameters as $parameter) {
+            $result[$parameter] = ['/'];
+        }
+        return $result;
+    }
+
+    /**
+     * Parse uri and return detected parameters
+     *
+     * @param string $uri
+     * @param array $pairs
+     * @return string[]
+     */
+    private function parse($uri, array $pairs)
+    {
+        $result = [];
+        foreach ($pairs as $param => $paths) {
             if (
                 (
-                    mb_stripos($uri, "?$param=") ||
-                    mb_stripos($uri, "&$param=")
+                    strpos($uri, "?$param=") ||
+                    strpos($uri, "&$param=")
                 ) &&
                 $this->checkPaths($uri, $paths)
             ) {
-                return true;
+                $result[] = $param;
             }
         }
-        return false;
+        sort($result);
+        return $result;
+    }
+
+    /**
+     * Detect dynamic parameters
+     *
+     * @param  string $uri
+     * @return string[]
+     */
+    public function detect($uri)
+    {
+        return $this->parse($uri, $this->cleanParam);
     }
 
     /**

@@ -10,7 +10,8 @@
     "W3C",
     "The Web Robots Pages",
     "Robot exclusion standard",
-    "Robot exclusion protocol",
+    "Robots Exclusion Protocol",
+    "REP",
     "Robot",
     "Robots",
     "Spider",
@@ -57,7 +58,7 @@
     "codeclimate/php-test-reporter": ">=0.2.0"
   },
   "suggest": {
-    "vipnytt/x-robots-tag-parser": "Robots meta tag and X-Robots-Tag HTTP header parser"
+    "vipnytt/robotstagparser": "Robots meta tag and X-Robots-Tag HTTP header parser"
   },
   "autoload": {
     "psr-4": {

@@ -19,14 +19,14 @@ trait DirectiveParserCommons
      */
     private function generateRulePair($line, array $whiteList)
     {
-        $whiteList = array_map('mb_strtolower', $whiteList);
+        $whiteList = array_map('strtolower', $whiteList);
         // Split by directive and rule
-        $pair = array_map('trim', mb_split(':', $line, 2));
+        $pair = array_map('trim', explode(':', $line, 2));
         // Check if the line contains a rule
         if (
             empty($pair[1]) ||
             empty($pair[0]) ||
-            !in_array(($pair[0] = str_ireplace(array_keys(self::ALIAS_DIRECTIVES), array_values(self::ALIAS_DIRECTIVES), mb_strtolower($pair[0]))), $whiteList)
+            !in_array(($pair[0] = str_ireplace(array_keys(self::ALIAS_DIRECTIVES), array_values(self::ALIAS_DIRECTIVES), strtolower($pair[0]))), $whiteList)
         ) {
             // Line does not contain any supported directive
             return false;
@@ -47,12 +47,12 @@ trait DirectiveParserCommons
      */
     private function draftParseRate($string)
     {
-        $parts = array_map('trim', mb_split('/', $string));
+        $parts = array_map('trim', explode('/', $string));
         if (count($parts) != 2) {
             return false;
         }
         $multiplier = 1;
-        switch (mb_substr(mb_strtolower(preg_replace('/[^A-Za-z]/', '', $parts[1])), 0, 1)) {
+        switch (strtolower(substr(preg_replace('/[^A-Za-z]/', '', $parts[1]), 0, 1))) {
             case 'm':
                 $multiplier = 60;
                 break;
@@ -78,9 +78,9 @@ trait DirectiveParserCommons
      */
     private function draftParseTime($string)
     {
-        $array = preg_replace('/[^0-9]/', '', mb_split('-', $string));
+        $array = preg_replace('/[^0-9]/', '', explode('-', $string, 3));
         if (
-            count($array) != 2 ||
+            count($array) !== 2 ||
             ($fromTime = date_create_from_format('Hi', $array[0], $dtz = new DateTimeZone('UTC'))) === false ||
             ($toTime = date_create_from_format('Hi', $array[1], $dtz)) === false
         ) {
