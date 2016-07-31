@@ -28,7 +28,7 @@ class ExportTest extends TestCase
             $this->assertEquals($rendered['compressed'], $parser->render()->compressed());
             $this->assertEquals($rendered['minimal'], $parser->render()->minimal());
             $this->assertEquals($rendered['normal'], $parser->render()->normal());
-            $this->assertEquals($rendered['extensive'], $parser->render()->compatibility());
+            $this->assertEquals($rendered['compatibility'], $parser->render()->compatibility());
             foreach ($rendered as $robotstxt) {
                 $this->testExport($robotstxt, $export, false);
             }
@@ -298,7 +298,7 @@ User-agent: googlebot
 Disallow: /
 NORMAL
                     ,
-                    'extensive' => <<<EXTENSIVE
+                    'compatibility' => <<<COMPATIBILITY
 User-agent: googlebot
 Disallow: /
 
@@ -326,7 +326,8 @@ Host: example.com
 
 Sitemap: http://example.com/sitemap.xml
 Sitemap: http://example.com/sitemap.xml.gz
-EXTENSIVE
+
+COMPATIBILITY
                     ,
                 ]
             ]

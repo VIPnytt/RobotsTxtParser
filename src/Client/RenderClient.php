@@ -43,12 +43,11 @@ class RenderClient implements RobotsTxtInterface
      * - Byte consuming, may be multiple times larger (depending on the number of user-agents)
      * - Maximum compatibility, optimized for badly written 3rd party parsers with limited specification support
      *
-     * @param string $lineSeparator
      * @return string
      */
-    public function compatibility($lineSeparator = "\r\n")
+    public function compatibility()
     {
-        return $this->generate(3, $lineSeparator);
+        return $this->generate(3, "\r\n") . "\r\n";
     }
 
     /**
@@ -56,7 +55,7 @@ class RenderClient implements RobotsTxtInterface
      *
      * @param int $level
      * @param string $lineSeparator
-     * @return string[]
+     * @return string
      */
     private function generate($level, $lineSeparator)
     {

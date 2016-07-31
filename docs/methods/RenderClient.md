@@ -22,6 +22,7 @@ Differences compared to [minimal](#minimal):
 
 ### compressed
 ```php
+@param string $lineSeparator
 @return string
 ```
 Generates an robots.txt compressed to a absolute minimum.
@@ -30,6 +31,7 @@ Best suited for parsing purposes and storage in databases.
 
 ### normal
 ```php
+@param string $lineSeparator
 @return string
 ```
 Generates an normal looking robots.txt.
@@ -41,6 +43,7 @@ Differences compared to [compressed](#compressed):
 
 ### minimal
 ```php
+@param string $lineSeparator
 @return string
 ```
 Generates an minimal but normal looking robots.txt.
