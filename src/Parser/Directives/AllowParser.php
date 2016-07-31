@@ -1,8 +1,16 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Client\Directives\AllowClient;
 use vipnytt\RobotsTxtParser\Exceptions;
+use vipnytt\RobotsTxtParser\Handler\RenderHandler;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -12,7 +20,7 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  */
 class AllowParser implements ParserInterface, RobotsTxtInterface
 {
-    use DirectiveParserCommons;
+    use DirectiveParserTrait;
 
     /**
      * Sub directives white list
@@ -111,11 +119,10 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
     private function isPath($path)
     {
         if (mb_strpos($path, '/') !== 0) {
-            foreach (
-                [
-                    '*',
-                    '?',
-                ] as $char) {
+            foreach ([
+                         '*',
+                         '?',
+                     ] as $char) {
                 $path = str_replace($char, '/', $path);
             }
         }
@@ -131,8 +138,7 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
     {
         foreach ($this->path as $key1 => $path1) {
             foreach ($this->path as $key2 => $path2) {
-                if (
-                    $key1 !== $key2 &&
+                if ($key1 !== $key2 &&
                     mb_strpos($path1, $path2) === 0
                 ) {
                     unset($this->path[$key1]);
@@ -146,24 +152,20 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
     /**
      * Render
      *
-     * @return string[]
+     * @param RenderHandler $handler
+     * @return bool
      */
-    public function render()
+    public function render(RenderHandler $handler)
     {
-        $result = [];
-        foreach (
-            [
-                $this->host->render(),
-                $this->path,
-                $this->cleanParam->render(),
-            ] as $values
-        ) {
-            sort($values);
-            foreach ($values as $value) {
-                $result[] = $this->directive . ':' . $value;
-            }
+        sort($this->path);
+        $inline = new RenderHandler($handler->getMode());
+        $this->host->render($inline);
+        $this->cleanParam->render($inline);
+        $handler->addInline($this->directive, $inline);
+        foreach ($this->path as $path) {
+            $handler->add($this->directive, $path);
         }
-        return $result;
+        return true;
     }
 
     /**

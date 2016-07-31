@@ -7,6 +7,7 @@
 - [__construct](#__construct)
 - [clean](#clean)
 - [client](#client)
+- [debug](#debug)
 - [getTopWaitTimes](#gettopwaittimes)
 
 ### __construct
@@ -27,6 +28,13 @@ Cleans the database for any out-of-date delay-until records.
 @return ClientInterface
 ```
 Returns an instance of [DelayInterface](DelayClient.md).
+
+### debug
+```php
+@param string $base
+@return array
+```
+Get the RAW data from the database.
 
 ### getTopWaitTimes
 ```php

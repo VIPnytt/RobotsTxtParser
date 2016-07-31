@@ -1,4 +1,11 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use DateTimeZone;
@@ -8,7 +15,7 @@ use DateTimeZone;
  *
  * @package vipnytt\RobotsTxtParser\Directive
  */
-trait DirectiveParserCommons
+trait DirectiveParserTrait
 {
     /**
      * Generate directive/rule pair
@@ -23,8 +30,7 @@ trait DirectiveParserCommons
         // Split by directive and rule
         $pair = array_map('trim', explode(':', $line, 2));
         // Check if the line contains a rule
-        if (
-            empty($pair[1]) ||
+        if (empty($pair[1]) ||
             empty($pair[0]) ||
             !in_array(($pair[0] = str_ireplace(array_keys(self::ALIAS_DIRECTIVES), array_values(self::ALIAS_DIRECTIVES), strtolower($pair[0]))), $whiteList)
         ) {
@@ -79,8 +85,7 @@ trait DirectiveParserCommons
     private function draftParseTime($string)
     {
         $array = preg_replace('/[^0-9]/', '', explode('-', $string, 3));
-        if (
-            count($array) !== 2 ||
+        if (count($array) !== 2 ||
             ($fromTime = date_create_from_format('Hi', $array[0], $dtz = new DateTimeZone('UTC'))) === false ||
             ($toTime = date_create_from_format('Hi', $array[1], $dtz)) === false
         ) {

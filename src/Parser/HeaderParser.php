@@ -1,4 +1,11 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Parser;
 
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
@@ -56,6 +63,11 @@ class HeaderParser implements RobotsTxtInterface
      * cURL CURLOPT_HEADERFUNCTION callback
      * @link https://tools.ietf.org/html/rfc7230#section-3.2.4
      *
+     * This callback function must return the number of bytes actually taken care of.
+     * If that amount differs from the amount passed in to your function, it'll signal an error to the library.
+     * This will cause the transfer to get aborted and the libcurl function in progress will return CURLE_WRITE_ERROR.
+     * @link https://curl.haxx.se/libcurl/c/CURLOPT_HEADERFUNCTION.html
+     *
      * @param resource $handler - cURL resource
      * @param string $line - cURL header line string
      * @return int - the number of bytes written
@@ -65,12 +77,6 @@ class HeaderParser implements RobotsTxtInterface
         $this->curlHandler = $handler;
         $split = explode(':', $line, 2);
         $this->headers[strtolower($split[0])] = trim(end($split));
-        /*
-         * This callback function must return the number of bytes actually taken care of.
-         * If that amount differs from the amount passed in to your function, it'll signal an error to the library.
-         * This will cause the transfer to get aborted and the libcurl function in progress will return CURLE_WRITE_ERROR.
-         * @link https://curl.haxx.se/libcurl/c/CURLOPT_HEADERFUNCTION.html
-         */
         return strlen($line);
     }
 
@@ -82,8 +88,7 @@ class HeaderParser implements RobotsTxtInterface
      */
     public function getCharset()
     {
-        if (
-            isset($this->headers['content-type']) &&
+        if (isset($this->headers['content-type']) &&
             ($value = $this->getInlineValue($this->headers['content-type'], 'charset', ';')) !== false
         ) {
             return $value;
@@ -119,8 +124,7 @@ class HeaderParser implements RobotsTxtInterface
      */
     public function getMaxAge()
     {
-        if (
-            isset($this->headers['cache-control']) &&
+        if (isset($this->headers['cache-control']) &&
             ($value = $this->getInlineValue($this->headers['cache-control'], 'max-age', ',')) !== false
         ) {
             return intval($value);

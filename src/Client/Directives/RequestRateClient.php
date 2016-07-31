@@ -1,4 +1,11 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
 /**
@@ -57,8 +64,7 @@ class RequestRateClient extends DelayCore implements ClientInterface, DelayInter
     public function getValue($timestamp = null)
     {
         $values = $this->determine(is_int($timestamp) ? $timestamp : time());
-        if (
-            count($values) > 0 &&
+        if (count($values) > 0 &&
             ($rate = min($values)) > 0
         ) {
             return $rate;
@@ -76,8 +82,7 @@ class RequestRateClient extends DelayCore implements ClientInterface, DelayInter
     {
         $values = [];
         foreach ($this->rates as $array) {
-            if (
-                !isset($array['from']) ||
+            if (!isset($array['from']) ||
                 !isset($array['to'])
             ) {
                 $values[] = $array['rate'];

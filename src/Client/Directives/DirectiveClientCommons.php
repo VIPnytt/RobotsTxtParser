@@ -1,4 +1,11 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
 use DateTime;
@@ -90,8 +97,7 @@ trait DirectiveClientCommons
             if (!preg_match('#' . $rule . '#', $path)) {
                 // Rule does not match
                 return false;
-            } elseif (
-                mb_strpos($rule, '$') === false || // No special parsing required
+            } elseif (mb_strpos($rule, '$') === false || // No special parsing required
                 mb_substr($rule, 0, -1) == $path // Rule does contain an end anchor, and matches
             ) {
                 return true;

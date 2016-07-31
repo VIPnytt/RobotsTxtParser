@@ -1,4 +1,11 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Client\Delay\MySQL;
 
 use PDO;
@@ -75,5 +82,24 @@ SQL
             return $query->fetchAll(PDO::FETCH_ASSOC);
         }
         return [];
+    }
+
+    /**
+     * Debug - Get raw data
+     *
+     * @param string $base
+     * @return array
+     */
+    public function debug($base)
+    {
+        $query = $this->pdo->prepare(<<<SQL
+SELECT *
+FROM robotstxt__delay0
+WHERE base = :base;
+SQL
+        );
+        $query->bindParam(':base', $base, PDO::PARAM_STR);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 }

@@ -1,7 +1,15 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Client\Directives\DelayClient;
+use vipnytt\RobotsTxtParser\Handler\RenderHandler;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -49,8 +57,7 @@ class DelayParser implements ParserInterface, RobotsTxtInterface
      */
     public function add($line)
     {
-        if (
-            !is_numeric($line) ||
+        if (!is_numeric($line) ||
             (
                 isset($this->delay) &&
                 $this->delay > 0
@@ -79,10 +86,14 @@ class DelayParser implements ParserInterface, RobotsTxtInterface
     /**
      * Render
      *
-     * @return string[]
+     * @param RenderHandler $handler
+     * @return bool
      */
-    public function render()
+    public function render(RenderHandler $handler)
     {
-        return empty($this->delay) ? [] : [$this->directive . ':' . $this->delay];
+        if (!empty($this->delay)) {
+            $handler->add($this->directive, $this->delay);
+        }
+        return true;
     }
 }

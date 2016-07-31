@@ -1,7 +1,15 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Client\Directives\CommentClient;
+use vipnytt\RobotsTxtParser\Handler\RenderHandler;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -75,14 +83,14 @@ class CommentParser implements ParserInterface, RobotsTxtInterface
     /**
      * Render
      *
-     * @return string[]
+     * @param RenderHandler $handler
+     * @return bool
      */
-    public function render()
+    public function render(RenderHandler $handler)
     {
-        $result = [];
         foreach ($this->comments as $comment) {
-            $result[] = self::DIRECTIVE_COMMENT . ':' . $comment;
+            $handler->add(self::DIRECTIVE_COMMENT, $comment);
         }
-        return $result;
+        return true;
     }
 }

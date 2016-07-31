@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class UserAgentExportTest extends \PHPUnit_Framework_TestCase
+class UserAgentExportTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -26,7 +27,7 @@ class UserAgentExportTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($userAgentList, $parser->getUserAgents());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertEquals($rendered, $parser->render()->normal());
             $this->testUserAgentExport($rendered, $rules, $userAgentList, false);
         }
     }
@@ -126,12 +127,13 @@ ROBOTS
                     'googlebot',
                 ],
                 <<<RENDERED
-user-agent:bingbot
-disallow:/
-user-agent:googlebot
-disallow:/admin/
-allow:/public/
-crawl-delay:5
+User-agent: bingbot
+Disallow: /
+
+User-agent: googlebot
+Disallow: /admin/
+Allow: /public/
+Crawl-delay: 5
 RENDERED
             ],
         ];

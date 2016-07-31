@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class VisitTimeTest extends \PHPUnit_Framework_TestCase
+class VisitTimeTest extends TestCase
 {
     public function testVisitTimeIsClosed()
     {
@@ -47,7 +48,7 @@ ROBOTS;
         $this->assertEquals($result, $parser->userAgent('*')->visitTime()->export());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertEquals($rendered, $parser->render()->normal());
             $this->testVisitTime($rendered, $result, false);
         }
     }
@@ -84,10 +85,10 @@ ROBOTS
                     ],
                 ],
                 <<<RENDERED
-user-agent:*
-visit-time:0715-1100
-visit-time:1200-1700
-visit-time:1800-2045
+User-agent: *
+Visit-time: 0715-1100
+Visit-time: 1200-1700
+Visit-time: 1800-2045
 RENDERED
             ]
         ];

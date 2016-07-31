@@ -53,10 +53,9 @@ Returns an instance of [HostClient](HostClient.md).
 
 ### render
 ```php
-@param string $lineSeparator
-@return string
+@return RenderClient
 ```
-Returns an optimized and rendered copy of the original `robots.txt` file.
+Returns an instance of [RenderClient](RenderClient.md).
 
 ### sitemap
 ```php

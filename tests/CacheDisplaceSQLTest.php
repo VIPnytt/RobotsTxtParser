@@ -2,6 +2,7 @@
 namespace vipnytt\RobotsTxtParser\Tests;
 
 use PDO;
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -9,7 +10,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class CacheDisplaceSQLTest extends \PHPUnit_Framework_TestCase
+class CacheDisplaceSQLTest extends TestCase
 {
     /**
      * Test that the robots.txt content is cached for longer than 24h in case of failures when updating the cache

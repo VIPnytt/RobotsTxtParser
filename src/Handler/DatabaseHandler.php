@@ -1,4 +1,11 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Handler;
 
 use PDO;
@@ -32,7 +39,7 @@ final class DatabaseHandler
      * Configuration data
      */
     private $config = [
-        null => [ // Class initialization 
+        null => [ // Class initialization
             self::DRIVER_MYSQL => [
                 'session_get' => 'SELECT @robotstxt;',
                 'session_set' => 'SET @robotstxt = 1;',

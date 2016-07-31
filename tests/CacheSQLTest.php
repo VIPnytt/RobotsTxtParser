@@ -2,6 +2,7 @@
 namespace vipnytt\RobotsTxtParser\Tests;
 
 use PDO;
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 use vipnytt\RobotsTxtParser\Exceptions\DatabaseException;
 
@@ -10,7 +11,7 @@ use vipnytt\RobotsTxtParser\Exceptions\DatabaseException;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class CacheSQLTest extends \PHPUnit_Framework_TestCase
+class CacheSQLTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -39,7 +40,7 @@ SQL
         $query->bindParam(':base', $base, PDO::PARAM_STR);
         $query->execute();
         $row = $query->fetch();
-        $this->assertEquals($client->render(), $row['content']);
+        $this->assertEquals($client->render()->compressed("\n"), $row['content']);
 
         for ($i = 1; $i <= 2; $i++) {
             $parser->client($uri);
@@ -72,10 +73,6 @@ SQL
             [
                 'http://example.com/',
                 'http://example.com:80',
-            ],
-            [
-                'http://www.vg.no/',
-                'http://www.vg.no:80',
             ],
             [
                 'ftp://mirror.ox.ac.uk/',

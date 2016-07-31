@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,24 +9,29 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class ExportTest extends \PHPUnit_Framework_TestCase
+class ExportTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
-     * @param array $result
+     * @param array $export
      * @param string|false $rendered
      */
-    public function testExport($robotsTxtContent, $result, $rendered)
+    public function testExport($robotsTxtContent, $export, $rendered)
     {
         $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
 
-        $this->assertEquals($result, $parser->export());
+        $this->assertEquals($export, $parser->export());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
-            $this->testExport($rendered, $result, false);
+            $this->assertEquals($rendered['compressed'], $parser->render()->compressed());
+            $this->assertEquals($rendered['minimal'], $parser->render()->minimal());
+            $this->assertEquals($rendered['normal'], $parser->render()->normal());
+            $this->assertEquals($rendered['extensive'], $parser->render()->compatibility());
+            foreach ($rendered as $robotstxt) {
+                $this->testExport($robotstxt, $export, false);
+            }
         }
     }
 
@@ -41,10 +47,23 @@ class ExportTest extends \PHPUnit_Framework_TestCase
                 <<<ROBOTS
 User-agent: *
 Disallow: /admin/
-Allow: /public/
+Disallow: Clean-param: token&uid /public/users
+Disallow: Host: www.example.com
+Allow: /public
+Noindex: /private
 Crawl-delay: 5
+Cache-delay: 10
+Request-rate: 1200/3h 09.00-15.00
+Request-rate: 1000/1h
+Visit-time: 01.23-23.01
+Robot-version 2.0
+Comment: Please honor the robots.txt rules. Thanks!
 
 User-agent: Googlebot
+User-agent: Bingbot
+Disallow: /
+
+User-agent: DuckDuckGo
 Disallow: /
 
 Host: example.com
@@ -66,34 +85,63 @@ ROBOTS
                             '*' =>
                                 [
                                     'robot-version' => null,
-                                    'visit-time' => [],
+                                    'visit-time' => [
+                                        [
+                                            'from' => '0123',
+                                            'to' => '2301',
+                                        ],
+                                    ],
                                     'noindex' => [
                                         'host' => [],
-                                        'path' => [],
+                                        'path' => [
+                                            '/private',
+                                        ],
                                         'clean-param' => [],
                                     ],
                                     'disallow' =>
                                         [
-                                            'host' => [],
+                                            'host' => [
+                                                'www.example.com',
+                                            ],
                                             'path' =>
                                                 [
                                                     '/admin/',
                                                 ],
-                                            'clean-param' => [],
+                                            'clean-param' => [
+                                                'token' => [
+                                                    '/public/users',
+                                                ],
+                                                'uid' => [
+                                                    '/public/users',
+                                                ],
+                                            ],
                                         ],
                                     'allow' =>
                                         [
                                             'host' => [],
                                             'path' =>
                                                 [
-                                                    '/public/',
+                                                    '/public',
                                                 ],
                                             'clean-param' => [],
                                         ],
                                     'crawl-delay' => 5,
-                                    'cache-delay' => null,
-                                    'request-rate' => [],
-                                    'comment' => [],
+                                    'cache-delay' => 10,
+                                    'request-rate' => [
+                                        [
+                                            'rate' => 9,
+                                            'from' => '0900',
+                                            'to' => '1500',
+                                        ],
+                                        [
+                                            'rate' => 3.6,
+                                            'from' => null,
+                                            'to' => null,
+                                        ],
+                                    ],
+                                    'comment' => [
+                                        'Please honor the robots.txt rules. Thanks!'
+                                    ],
                                 ],
                             'googlebot' =>
                                 [
@@ -123,19 +171,164 @@ ROBOTS
                                     'request-rate' => [],
                                     'comment' => [],
                                 ],
+                            'bingbot' =>
+                                [
+                                    'robot-version' => null,
+                                    'visit-time' => [],
+                                    'noindex' => [
+                                        'host' => [],
+                                        'path' => [],
+                                        'clean-param' => [],
+                                    ],
+                                    'disallow' =>
+                                        [
+                                            'host' => [],
+                                            'path' =>
+                                                [
+                                                    '/',
+                                                ],
+                                            'clean-param' => [],
+                                        ],
+                                    'allow' => [
+                                        'host' => [],
+                                        'path' => [],
+                                        'clean-param' => [],
+                                    ],
+                                    'crawl-delay' => null,
+                                    'cache-delay' => null,
+                                    'request-rate' => [],
+                                    'comment' => [],
+                                ],
+                            'duckduckgo' =>
+                                [
+                                    'robot-version' => null,
+                                    'visit-time' => [],
+                                    'noindex' => [
+                                        'host' => [],
+                                        'path' => [],
+                                        'clean-param' => [],
+                                    ],
+                                    'disallow' =>
+                                        [
+                                            'host' => [],
+                                            'path' =>
+                                                [
+                                                    '/',
+                                                ],
+                                            'clean-param' => [],
+                                        ],
+                                    'allow' => [
+                                        'host' => [],
+                                        'path' => [],
+                                        'clean-param' => [],
+                                    ],
+                                    'crawl-delay' => null,
+                                    'cache-delay' => null,
+                                    'request-rate' => [],
+                                    'comment' => [],
+                                ],
                         ],
                 ],
-                <<<RENDERED
+                [
+                    'compressed' => <<<COMPRESSED
 host:example.com
 sitemap:http://example.com/sitemap.xml
 sitemap:http://example.com/sitemap.xml.gz
 user-agent:*
+visit-time:0123-2301
+noindex:/private
+disallow:host:www.example.com
+disallow:clean-param:token&uid /public/users
 disallow:/admin/
-allow:/public/
+allow:/public
 crawl-delay:5
+cache-delay:10
+request-rate:1/9s 0900-1500
+request-rate:1/3.6s
+comment:Please honor the robots.txt rules. Thanks!
+user-agent:bingbot
+user-agent:duckduckgo
 user-agent:googlebot
 disallow:/
-RENDERED
+COMPRESSED
+                    ,
+                    'minimal' => <<<MINIMAL
+Host: example.com
+Sitemap: http://example.com/sitemap.xml
+Sitemap: http://example.com/sitemap.xml.gz
+User-agent: *
+Visit-time: 0123-2301
+Noindex: /private
+Disallow: Host: www.example.com
+Disallow: Clean-param: token&uid /public/users
+Disallow: /admin/
+Allow: /public
+Crawl-delay: 5
+Cache-delay: 10
+Request-rate: 1/9s 0900-1500
+Request-rate: 1/3.6s
+Comment: Please honor the robots.txt rules. Thanks!
+User-agent: bingbot
+User-agent: duckduckgo
+User-agent: googlebot
+Disallow: /
+MINIMAL
+                    ,
+                    'normal' => <<<NORMAL
+Host: example.com
+Sitemap: http://example.com/sitemap.xml
+Sitemap: http://example.com/sitemap.xml.gz
+
+User-agent: *
+Visit-time: 0123-2301
+Noindex: /private
+Disallow: Host: www.example.com
+Disallow: Clean-param: token&uid /public/users
+Disallow: /admin/
+Allow: /public
+Crawl-delay: 5
+Cache-delay: 10
+Request-rate: 1/9s 0900-1500
+Request-rate: 1/3.6s
+Comment: Please honor the robots.txt rules. Thanks!
+
+User-agent: bingbot
+User-agent: duckduckgo
+User-agent: googlebot
+Disallow: /
+NORMAL
+                    ,
+                    'extensive' => <<<EXTENSIVE
+User-agent: googlebot
+Disallow: /
+
+User-agent: duckduckgo
+Disallow: /
+
+User-agent: bingbot
+Disallow: /
+
+User-agent: *
+Visit-time: 0123-2301
+Noindex: /private
+Disallow: Host: www.example.com
+Disallow: Clean-param: token /public/users
+Disallow: Clean-param: uid /public/users
+Disallow: /admin/
+Allow: /public
+Crawl-delay: 5
+Cache-delay: 10
+Request-rate: 1/9s 0900-1500
+Request-rate: 1/3.6s
+Comment: Please honor the robots.txt rules. Thanks!
+
+Host: example.com
+
+Sitemap: http://example.com/sitemap.xml
+Sitemap: http://example.com/sitemap.xml.gz
+EXTENSIVE
+                    ,
+                ]
             ]
         ];
     }

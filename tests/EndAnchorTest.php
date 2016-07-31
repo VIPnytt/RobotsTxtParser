@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class EndAnchorTest extends \PHPUnit_Framework_TestCase
+class EndAnchorTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -33,7 +34,7 @@ class EndAnchorTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent('DenyMe')->isAllowed('http://example.com/deny_all/'));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertEquals($rendered, $parser->render()->normal());
             $this->testEndAnchor($rendered, false);
         }
     }
@@ -59,12 +60,13 @@ Disallow: deny_all/$
 ROBOTS
                 ,
                 <<<RENDERED
-user-agent:*
-disallow:/*
-allow:/$
-user-agent:denyme
-disallow:*deny_all/$
-disallow:/deny_all/$
+User-agent: *
+Disallow: /*
+Allow: /$
+
+User-agent: denyme
+Disallow: *deny_all/$
+Disallow: /deny_all/$
 RENDERED
             ]
         ];

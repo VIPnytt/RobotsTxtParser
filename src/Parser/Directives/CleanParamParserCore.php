@@ -1,6 +1,14 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
+use vipnytt\RobotsTxtParser\Handler\RenderHandler;
 use vipnytt\RobotsTxtParser\Parser\UriParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
@@ -50,17 +58,49 @@ abstract class CleanParamParserCore implements ParserInterface, RobotsTxtInterfa
     /**
      * Render
      *
-     * @return string[]
+     * @param RenderHandler $handler
+     * @return bool
      */
-    public function render()
+    public function render(RenderHandler $handler)
     {
-        $result = [];
+        ksort($this->cleanParam);
+        return $handler->getMode() >= 3 ? $this->renderExtensive($handler) : $this->renderCompressed($handler);
+    }
+
+    /**
+     * Render extensive
+     *
+     * @param RenderHandler $handler
+     * @return bool
+     */
+    private function renderExtensive(RenderHandler $handler)
+    {
         foreach ($this->cleanParam as $param => $paths) {
             foreach ($paths as $path) {
-                $result[] = self::DIRECTIVE_CLEAN_PARAM . ':' . $param . ' ' . $path;
+                $handler->add(self::DIRECTIVE_CLEAN_PARAM, $param . ' ' . $path);
             }
         }
-        sort($result);
-        return $result;
+        return true;
+    }
+
+    /**
+     * Render compressed
+     *
+     * @param RenderHandler $handler
+     * @return bool
+     */
+    private function renderCompressed(RenderHandler $handler)
+    {
+        $pair = $this->cleanParam;
+        while (!empty($pair)) {
+            $equalParams = array_keys($pair, current($pair));
+            foreach (current($pair) as $path) {
+                $handler->add(self::DIRECTIVE_CLEAN_PARAM, implode('&', $equalParams) . ' ' . $path);
+            }
+            foreach ($equalParams as $param) {
+                unset($pair[$param]);
+            }
+        }
+        return true;
     }
 }

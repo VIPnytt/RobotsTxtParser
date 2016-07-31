@@ -1,4 +1,11 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Client\Cache;
 
 use PDO;
@@ -53,4 +60,12 @@ interface ManagerInterface
      * @return bool
      */
     public function clean($delay);
+
+    /**
+     * Debug - get raw data
+     *
+     * @param $base
+     * @return array
+     */
+    public function debug($base);
 }

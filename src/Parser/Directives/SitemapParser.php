@@ -1,7 +1,15 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Client\Directives\SitemapClient;
+use vipnytt\RobotsTxtParser\Handler\RenderHandler;
 use vipnytt\RobotsTxtParser\Parser\UriParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
@@ -35,8 +43,7 @@ class SitemapParser implements ParserInterface, RobotsTxtInterface
     {
         $uriParser = new UriParser($line);
         $uri = $uriParser->encode();
-        if (
-            !$uriParser->validate() ||
+        if (!$uriParser->validate() ||
             in_array($uri, $this->sitemaps)
         ) {
             return false;
@@ -58,15 +65,15 @@ class SitemapParser implements ParserInterface, RobotsTxtInterface
     /**
      * Render
      *
-     * @return string[]
+     * @param RenderHandler $handler
+     * @return bool
      */
-    public function render()
+    public function render(RenderHandler $handler)
     {
-        $result = [];
-        foreach ($this->sitemaps as $uri) {
-            $result[] = self::DIRECTIVE_SITEMAP . ':' . $uri;
+        sort($this->sitemaps);
+        foreach ($this->sitemaps as $sitemap) {
+            $handler->add(self::DIRECTIVE_SITEMAP, $sitemap);
         }
-        sort($result);
-        return $result;
+        return true;
     }
 }

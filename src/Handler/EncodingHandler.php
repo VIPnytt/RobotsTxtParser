@@ -1,4 +1,11 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Handler;
 
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
@@ -58,11 +65,9 @@ class EncodingHandler implements RobotsTxtInterface
                      'iconv',
                      'xml',
                      'mbstring',
-                 ] as $extension
-        ) {
+                 ] as $extension) {
             $last = end($this->errors);
-            if (
-                extension_loaded($extension) &&
+            if (extension_loaded($extension) &&
                 ($result = call_user_func([$this, $extension])) !== false &&
                 $last === end($this->errors)
             ) {

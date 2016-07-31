@@ -1,4 +1,11 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Parser;
 
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
@@ -164,13 +171,12 @@ class UriParser
             $scheme = isset($parsed['host']) ? $parsed['host'] : $parsed['path'];
         }
         return in_array($scheme, [
-                'http',
-                'https',
-                'ftp',
-                'ftps',
-                'sftp',
-            ]
-        );
+            'http',
+            'https',
+            'ftp',
+            'ftps',
+            'sftp',
+        ]);
     }
 
     /**

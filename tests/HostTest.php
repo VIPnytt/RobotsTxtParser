@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class HostTest extends \PHPUnit_Framework_TestCase
+class HostTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -29,8 +30,12 @@ class HostTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('myhost.com', $parser->host()->getWithUriFallback());
         $this->assertFalse($parser->host()->isPreferred());
 
+        $this->assertFalse($parser->userAgent()->allow()->host()->isListed('http://www.myhost.com/'));
+        $this->assertTrue($parser->userAgent()->disallow()->host()->isListed('http://www.myhost.com/'));
+        $this->assertFalse($parser->userAgent()->noIndex()->host()->isListed('http://www.myhost.com/'));
+
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertEquals($rendered, $parser->render()->normal());
             $this->testHost($rendered, false);
         }
     }
@@ -74,12 +79,14 @@ Host: www.myhost.com # is not used
 ROBOTS
                 ,
                 <<<RENDERED
-host:myhost.com
-user-agent:*
-disallow:host:www.myhost.com
-disallow:/cgi-bin
-user-agent:yandex
-disallow:/cgi-bin
+Host: myhost.com
+
+User-agent: *
+Disallow: Host: www.myhost.com
+Disallow: /cgi-bin
+
+User-agent: yandex
+Disallow: /cgi-bin
 RENDERED
             ]
         ];

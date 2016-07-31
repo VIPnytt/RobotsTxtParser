@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class WhitespaceTest extends \PHPUnit_Framework_TestCase
+class WhitespaceTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -31,7 +32,7 @@ class WhitespaceTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent()->isDisallowed('/admin/front'));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertEquals($rendered, $parser->render()->normal());
             $this->testWhitespace($rendered, false);
         }
     }
@@ -52,9 +53,9 @@ Allow    :   /admin/front
 ROBOTS
                 ,
                 <<<RENDERED
-user-agent:*
-disallow:/admin
-allow:/admin/front
+User-agent: *
+Disallow: /admin
+Allow: /admin/front
 RENDERED
             ]
         ];

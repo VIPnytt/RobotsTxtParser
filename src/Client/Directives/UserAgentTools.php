@@ -1,4 +1,11 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
@@ -121,13 +128,11 @@ class UserAgentTools implements RobotsTxtInterface
     private function checkPath($directive, $uri)
     {
         $result = self::DIRECTIVE_ALLOW;
-        foreach (
-            [
-                self::DIRECTIVE_NO_INDEX => $this->handler->noIndex(),
-                self::DIRECTIVE_DISALLOW => $this->handler->disallow(),
-                self::DIRECTIVE_ALLOW => $this->handler->allow(),
-            ] as $currentDirective => $handler
-        ) {
+        foreach ([
+                     self::DIRECTIVE_NO_INDEX => $this->handler->noIndex(),
+                     self::DIRECTIVE_DISALLOW => $this->handler->disallow(),
+                     self::DIRECTIVE_ALLOW => $this->handler->allow(),
+                 ] as $currentDirective => $handler) {
             if ($handler->client()->isListed($uri)) {
                 if ($currentDirective === self::DIRECTIVE_NO_INDEX) {
                     return $directive === self::DIRECTIVE_DISALLOW;

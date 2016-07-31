@@ -1,4 +1,11 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Parser\UriParser;
@@ -52,8 +59,7 @@ abstract class HostParserCore implements ParserInterface, RobotsTxtInterface
     public function add($line)
     {
         $host = $this->parse($line);
-        if (
-            $host === false ||
+        if ($host === false ||
             $host !== $line ||
             in_array($host, $this->host)
         ) {
@@ -73,8 +79,7 @@ abstract class HostParserCore implements ParserInterface, RobotsTxtInterface
     {
         $uriParser = new UriParser($line);
         $line = $uriParser->encode();
-        if (
-            $uriParser->validateIP() ||
+        if ($uriParser->validateIP() ||
             !$uriParser->validateHost() ||
             (
                 parse_url($line, PHP_URL_SCHEME) !== null &&

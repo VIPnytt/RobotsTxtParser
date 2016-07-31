@@ -1,8 +1,16 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Client\Directives\UserAgentClient;
 use vipnytt\RobotsTxtParser\Handler\Directives\SubDirectiveHandler;
+use vipnytt\RobotsTxtParser\Handler\RenderHandler;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 use vipnytt\UserAgentParser as UAStringParser;
 
@@ -13,7 +21,7 @@ use vipnytt\UserAgentParser as UAStringParser;
  */
 class UserAgentParser implements ParserInterface, RobotsTxtInterface
 {
-    use DirectiveParserCommons;
+    use DirectiveParserTrait;
 
     /**
      * Sub directives white list
@@ -138,36 +146,29 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     /**
      * Render
      *
-     * @return string[]
+     * @param RenderHandler $handler
+     * @return bool
      */
-    public function render()
+    public function render(RenderHandler $handler)
+    {
+        return $handler->getMode() >= 3 ? $this->renderExtensive($handler) : $this->renderCompressed($handler);
+    }
+
+    /**
+     * Render extensive
+     *
+     * @param RenderHandler $handler
+     * @return bool
+     */
+    private function renderExtensive(RenderHandler $handler)
     {
         $userAgents = $this->getUserAgents();
-        $pair = [];
+        rsort($userAgents);
         foreach ($userAgents as $userAgent) {
-            $pair[$userAgent] = array_merge(
-                $this->handler[$userAgent]->robotVersion()->render(),
-                $this->handler[$userAgent]->visitTime()->render(),
-                $this->handler[$userAgent]->noIndex()->render(),
-                $this->handler[$userAgent]->disallow()->render(),
-                $this->handler[$userAgent]->allow()->render(),
-                $this->handler[$userAgent]->crawlDelay()->render(),
-                $this->handler[$userAgent]->cacheDelay()->render(),
-                $this->handler[$userAgent]->requestRate()->render(),
-                $this->handler[$userAgent]->comment()->render()
-            );
+            $handler->add(self::DIRECTIVE_USER_AGENT, $userAgent);
+            $this->renderAdd($userAgent, $handler);
         }
-        $pair = array_filter($pair);
-        $result = [];
-        while (!empty($pair)) {
-            $groupMembers = current($pair);
-            foreach (array_keys($pair, $groupMembers) as $userAgent) {
-                $result[] = self::DIRECTIVE_USER_AGENT . ':' . $userAgent;
-                unset($pair[$userAgent]);
-            }
-            $result = array_merge($result, $groupMembers);
-        }
-        return $result;
+        return true;
     }
 
     /**
@@ -180,6 +181,42 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
         $list = array_keys(array_filter($this->count));
         sort($list);
         return $list;
+    }
+
+    private function renderAdd($userAgent, RenderHandler $handler)
+    {
+        $this->handler[$userAgent]->robotVersion()->render($handler);
+        $this->handler[$userAgent]->visitTime()->render($handler);
+        $this->handler[$userAgent]->noIndex()->render($handler);
+        $this->handler[$userAgent]->disallow()->render($handler);
+        $this->handler[$userAgent]->allow()->render($handler);
+        $this->handler[$userAgent]->crawlDelay()->render($handler);
+        $this->handler[$userAgent]->cacheDelay()->render($handler);
+        $this->handler[$userAgent]->requestRate()->render($handler);
+        $this->handler[$userAgent]->comment()->render($handler);
+    }
+
+    /**
+     * Render compressed
+     *
+     * @param RenderHandler $handler
+     * @return bool
+     */
+    private function renderCompressed(RenderHandler $handler)
+    {
+        $pair = $this->export();
+        while (!empty($pair)) {
+            $groupMembers = current($pair);
+            foreach (array_keys($pair, $groupMembers) as $userAgent) {
+                $handler->add(self::DIRECTIVE_USER_AGENT, $userAgent);
+                unset($pair[$userAgent]);
+            }
+            if (isset($userAgent)) {
+                $this->renderAdd($userAgent, $handler);
+                unset($userAgent);
+            }
+        }
+        return true;
     }
 
     /**

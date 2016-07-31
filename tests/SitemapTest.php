@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class SitemapTest extends \PHPUnit_Framework_TestCase
+class SitemapTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -24,7 +25,7 @@ class SitemapTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $parser->sitemap()->export());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertEquals($rendered, $parser->render()->normal());
             sort($result);
             $this->testSitemap($rendered, $result, false);
         }
@@ -65,14 +66,15 @@ ROBOTS
                     'http://example.com/sitemap.xml?year=2014',
                 ],
                 <<<RENDERED
-sitemap:http://example.com/sitemap.xml.gz
-sitemap:http://example.com/sitemap.xml?year=2014
-sitemap:http://example.com/sitemap.xml?year=2015
-sitemap:http://internet.com/sitemap.xml
-sitemap:http://somesite.com/sitemap.xml
-sitemap:http://worldwideweb.com/sitemap.xml
-user-agent:*
-disallow:/admin/
+Sitemap: http://example.com/sitemap.xml.gz
+Sitemap: http://example.com/sitemap.xml?year=2014
+Sitemap: http://example.com/sitemap.xml?year=2015
+Sitemap: http://internet.com/sitemap.xml
+Sitemap: http://somesite.com/sitemap.xml
+Sitemap: http://worldwideweb.com/sitemap.xml
+
+User-agent: *
+Disallow: /admin/
 RENDERED
             ]
         ];

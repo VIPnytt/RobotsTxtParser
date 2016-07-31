@@ -8,6 +8,7 @@
 - [clean](#clean)
 - [client](#client)
 - [cron](#cron)
+- [debug](#debug)
 - [invalidate](#invalidate)
 
 ### __construct
@@ -44,6 +45,13 @@ This method is optional, but is highly recommended to implement!
 Intended for periodic execution (like a _Cron job_). Updates the cache of outdated (but active) `robots.txt` records.
 
 If an cached `robots.txt` record is kept updated by this cron job, both resources and request waiting times are freed from the [client](#client), allowing it do do it's job dramatically faster.
+
+### debug
+```php
+@param string $base
+@return array
+```
+Get the RAW data from the database.
 
 ### invalidate
 ```php

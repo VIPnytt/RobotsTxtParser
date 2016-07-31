@@ -74,6 +74,10 @@ $handler->cron();
 ```
 Invalidate the cache for an specific URI
 ```php
+$handler->debug('http://example.com');
+```
+Get the RAW data from the database.
+```php
 $handler->invalidate('http://example.com');
 ```
 #### Create an [TxtClient](#txtclient)
@@ -99,6 +103,10 @@ Clean the delay storage for any outdated records
 $delayHandler->clean();
 ```
 Get an list of the hosts with highest wait-time.
+```php
+$handler->debug('http://example.com');
+```
+Get the RAW data from the database.
 ```php
 $delayHandler->getTopWaitTimes();
 ```
@@ -235,11 +243,23 @@ $client->host()->isPreferred();
 ```
 
 #### Render
-[Documentation](methods/TxtClient.md)
+[Documentation](methods/RenderClient.md)
 
-Renders the parsed robots.txt file
+Compatibility mode. Optimized for parsing by custom 3rd party parsers, witch do not follow the standards.
 ```php
-$client->render();
+$client->render()->compatibility();
+```
+Compressed to a absolute minimum. Optimized for storage in databases.
+```php
+$client->render()->compressed();
+```
+Normal looking robots.txt. Optimized for human readability, and is also the easiest to modify.
+```php
+$client->render()->normal();
+```
+Minimal robots.txt. Same as normal, but without the eye candy.
+```php
+$client->render()->minimal();
 ```
 
 #### `Sitemap` directive

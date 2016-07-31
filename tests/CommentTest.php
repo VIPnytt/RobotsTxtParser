@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class CommentTest extends \PHPUnit_Framework_TestCase
+class CommentTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -26,7 +27,7 @@ class CommentTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent('receiver')->isAllowed("/"));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertEquals($rendered, $parser->render()->normal());
             $this->testComment($rendered, $result, false);
         }
     }
@@ -71,12 +72,13 @@ ROBOTS
                     "Contact ceo@example.com for robot white listing."
                 ],
                 <<<RENDERED
-user-agent:*
-comment:This is a spam-like broadcast.
-user-agent:receiver
-disallow:/
-comment:This comment should be sent back to the author/user of the robot 'receiver'.
-comment:Contact ceo@example.com for robot white listing.
+User-agent: *
+Comment: This is a spam-like broadcast.
+
+User-agent: receiver
+Disallow: /
+Comment: This comment should be sent back to the author/user of the robot 'receiver'.
+Comment: Contact ceo@example.com for robot white listing.
 RENDERED
             ]
         ];

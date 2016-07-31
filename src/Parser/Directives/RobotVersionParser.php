@@ -1,7 +1,15 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Client\Directives\RobotVersionClient;
+use vipnytt\RobotsTxtParser\Handler\RenderHandler;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -15,7 +23,7 @@ class RobotVersionParser implements ParserInterface, RobotsTxtInterface
      * RobotVersion value
      * @var float|int|string
      */
-    private $robotVersion;
+    private $version;
 
     /**
      * RobotVersionParser constructor.
@@ -32,10 +40,10 @@ class RobotVersionParser implements ParserInterface, RobotsTxtInterface
      */
     public function add($line)
     {
-        if (!empty($this->robotVersion)) {
+        if (!empty($this->version)) {
             return false;
         }
-        $this->robotVersion = $line;
+        $this->version = $line;
         return true;
     }
 
@@ -46,16 +54,20 @@ class RobotVersionParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        return new RobotVersionClient($this->robotVersion);
+        return new RobotVersionClient($this->version);
     }
 
     /**
      * Render
      *
-     * @return string[]
+     * @param RenderHandler $handler
+     * @return bool
      */
-    public function render()
+    public function render(RenderHandler $handler)
     {
-        return empty($this->robotVersion) ? [] : [self::DIRECTIVE_ROBOT_VERSION . ':' . $this->robotVersion];
+        if (!empty($this->version)) {
+            $handler->add(self::DIRECTIVE_ROBOT_VERSION, $this->version);
+        }
+        return true;
     }
 }

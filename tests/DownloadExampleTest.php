@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class DownloadExampleTest extends \PHPUnit_Framework_TestCase
+class DownloadExampleTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -34,7 +35,8 @@ class DownloadExampleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([], $parser->cleanParam()->export());
 
         $this->assertEquals($result, $parser->export());
-        $this->assertEquals('', $parser->render());
+        $this->assertEquals('', $parser->render()->normal());
+        $this->assertEquals('', $parser->render()->normal());
     }
 
     /**

@@ -1,4 +1,11 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser;
 
 /**
@@ -76,7 +83,7 @@ interface RobotsTxtInterface
      * Directive: Cache-delay
      *
      * Unofficial
-     * Some has implemented it as an crawl-delay alternative specially for caching, others as an alias for crawl-delay.
+     * Used as an crawl-delay alternative specifically for caching purposes.
      */
     const DIRECTIVE_CACHE_DELAY = 'cache-delay';
 

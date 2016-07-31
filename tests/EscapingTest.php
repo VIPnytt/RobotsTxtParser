@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class EscapingTest extends \PHPUnit_Framework_TestCase
+class EscapingTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -30,7 +31,7 @@ class EscapingTest extends \PHPUnit_Framework_TestCase
         //$this->assertFalse($parser->userAgent()->isAllowed("/("));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertEquals($rendered, $parser->render()->normal());
             $this->testEscaping($rendered, false);
         }
     }
@@ -52,10 +53,10 @@ Disallow: /.
 ROBOTS
                 ,
                 <<<RENDERED
-user-agent:*
-disallow:/(
-disallow:/)
-disallow:/.
+User-agent: *
+Disallow: /(
+Disallow: /)
+Disallow: /.
 RENDERED
             ]
         ];

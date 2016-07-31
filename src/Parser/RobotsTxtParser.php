@@ -1,8 +1,16 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Parser;
 
+use vipnytt\RobotsTxtParser\Client\RenderClient;
 use vipnytt\RobotsTxtParser\Handler\Directives\RootDirectiveHandler;
-use vipnytt\RobotsTxtParser\Parser\Directives\DirectiveParserCommons;
+use vipnytt\RobotsTxtParser\Parser\Directives\DirectiveParserTrait;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -12,7 +20,7 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  */
 class RobotsTxtParser implements RobotsTxtInterface
 {
-    use DirectiveParserCommons;
+    use DirectiveParserTrait;
 
     /**
      * Directive white list
@@ -89,17 +97,11 @@ class RobotsTxtParser implements RobotsTxtInterface
     /**
      * Render
      *
-     * @param string $lineSeparator
-     * @return string
+     * @return RenderClient
      */
-    public function render($lineSeparator = "\n")
+    public function render()
     {
-        return implode($lineSeparator, array_merge(
-            $this->handler->host()->render(),
-            $this->handler->cleanParam()->render(),
-            $this->handler->sitemap()->render(),
-            $this->handler->userAgent()->render()
-        ));
+        return new RenderClient($this->handler);
     }
 
     /**

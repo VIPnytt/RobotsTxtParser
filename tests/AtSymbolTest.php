@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class AtSymbolTest extends \PHPUnit_Framework_TestCase
+class AtSymbolTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -27,7 +28,7 @@ class AtSymbolTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent()->isAllowed("/url_containing_@_symbol"));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertEquals($rendered, $parser->render()->normal());
             $this->testAtSymbol($rendered, false);
         }
     }
@@ -48,9 +49,9 @@ Allow: /peanuts
 ROBOTS
                 ,
                 <<<RENDERED
-user-agent:*
-disallow:/url_containing_@_symbol
-allow:/peanuts
+User-agent: *
+Disallow: /url_containing_@_symbol
+Allow: /peanuts
 RENDERED
             ]
         ];

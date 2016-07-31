@@ -1,4 +1,11 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Client\Cache\MySQL;
 
 use PDO;
@@ -47,6 +54,25 @@ class Manager implements ManagerInterface, RobotsTxtInterface
         $this->pdo = $pdo;
         $this->curlOptions = $curlOptions;
         $this->byteLimit = $byteLimit;
+    }
+
+    /**
+     * Debug - Get raw data
+     *
+     * @param string $base
+     * @return array
+     */
+    public function debug($base)
+    {
+        $query = $this->pdo->prepare(<<<SQL
+SELECT *
+FROM robotstxt__cache1
+WHERE base = :base;
+SQL
+        );
+        $query->bindParam(':base', $base, PDO::PARAM_STR);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -140,8 +166,7 @@ SQL
         $statusCode = $client->getStatusCode();
         $nextUpdate = $client->nextUpdate();
         $effective = ($effective = $client->getEffectiveUri()) === $base ? null : $effective;
-        if (
-            strpos($base, 'http') === 0 &&
+        if (strpos($base, 'http') === 0 &&
             (
                 $statusCode === null ||
                 (
@@ -154,7 +179,7 @@ SQL
             return true;
         }
         $validUntil = $client->validUntil();
-        $content = $client->render();
+        $content = $client->render()->compressed("\n");
         $query = $this->pdo->prepare(<<<SQL
 INSERT INTO robotstxt__cache1 (base, content, statusCode, validUntil, nextUpdate, effective)
 VALUES (:base, :content, :statusCode, :validUntil, :nextUpdate, :effective)
@@ -244,8 +269,7 @@ SQL
         $worker = $this->setWorkerID($workerID);
         $log = [];
         $lastCount = -1;
-        while (
-            count($log) > $lastCount &&
+        while (count($log) > $lastCount &&
             (
                 empty($timeLimit) ||
                 $timeLimit > (microtime(true) - $start)
@@ -292,8 +316,7 @@ SQL
      */
     private function setWorkerID($workerID = null)
     {
-        if (
-            is_int($workerID) &&
+        if (is_int($workerID) &&
             $workerID <= 255 &&
             $workerID >= 1
         ) {

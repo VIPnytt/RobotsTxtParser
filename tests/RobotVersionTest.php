@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class RobotVersionTest extends \PHPUnit_Framework_TestCase
+class RobotVersionTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -25,7 +26,7 @@ class RobotVersionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result['user-agent']['*']['robot-version'], $parser->userAgent()->robotVersion()->export());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertEquals($rendered, $parser->render()->normal());
             $this->testRobotVersion($rendered, $result, false);
         }
     }
@@ -106,10 +107,11 @@ ROBOTS
                         ],
                 ],
                 <<<RENDERED
-user-agent:*
-robot-version:2.0
-user-agent:googlebot
-robot-version:1.0
+User-agent: *
+Robot-version: 2.0
+
+User-agent: googlebot
+Robot-version: 1.0
 RENDERED
             ]
         ];

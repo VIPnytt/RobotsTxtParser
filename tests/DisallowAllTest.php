@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class DisallowAllTest extends \PHPUnit_Framework_TestCase
+class DisallowAllTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -37,7 +38,7 @@ class DisallowAllTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent()->isAllowed('/page/test/'));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertEquals($rendered, $parser->render()->normal());
             $this->testDisallowAll($rendered, false);
         }
     }
@@ -59,8 +60,8 @@ Disallow: *test*
 ROBOTS
                 ,
                 <<<RENDERED
-user-agent:*
-disallow:/
+User-agent: *
+Disallow: /
 RENDERED
             ]
         ];

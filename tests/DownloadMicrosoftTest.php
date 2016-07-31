@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class DownloadMicrosoftTest extends \PHPUnit_Framework_TestCase
+class DownloadMicrosoftTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -32,7 +33,7 @@ class DownloadMicrosoftTest extends \PHPUnit_Framework_TestCase
         $txtClient = new RobotsTxtParser\TxtClient($uriClient->getBaseUri(), $uriClient->getStatusCode(), $uriClient->getContents(), $uriClient->getEncoding(), $uriClient->getEffectiveUri());
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $txtClient);
 
-        $this->assertEquals($uriClient->render(), $txtClient->render());
+        $this->assertEquals($uriClient->render()->normal(), $txtClient->render()->normal());
     }
 
     /**

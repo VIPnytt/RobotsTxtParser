@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class CleanParamTest extends \PHPUnit_Framework_TestCase
+class CleanParamTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -27,10 +28,14 @@ class CleanParamTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($parser->userAgent()->isDisallowed('http://www.site1.com/page.php?ref=ads&uid=123456'));
         $this->assertFalse($parser->userAgent()->isAllowed('http://www.site1.com/page.php?ref=ads&uid=123456'));
 
-        $this->assertEquals($result, $parser->cleanParam()->export());
+        $this->assertEquals($result['Clean-param'], $parser->cleanParam()->export());
+
+        $this->assertEquals($result['NoIndex'], $parser->userAgent()->noIndex()->cleanParam()->export());
+        $this->assertEquals($result['Disallow'], $parser->userAgent()->disallow()->cleanParam()->export());
+        $this->assertEquals($result['Allow'], $parser->userAgent()->allow()->cleanParam()->export());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertEquals($rendered, $parser->render()->normal());
             $this->testCleanParam($rendered, $result, false);
         }
     }
@@ -55,32 +60,45 @@ Clean-param: someTrash&otherTrash
 ROBOTS
                 ,
                 [
-                    "abc" => [
-                        "/forum/showthread.php",
+                    'Clean-param' => [
+                        "abc" => [
+                            "/forum/showthread.php",
+                        ],
+                        "sid" => [
+                            "/forum/*.php",
+                        ],
+                        "sort" => [
+                            "/forum/*.php",
+                        ],
+                        "someTrash" => [
+                            "/",
+                        ],
+                        "otherTrash" => [
+                            "/",
+                        ],
                     ],
-                    "sid" => [
-                        "/forum/*.php",
+                    'NoIndex' => [],
+                    'Disallow' => [
+                        'ref' => [
+                            '/forum*/sh*wthread.php',
+                        ],
+                        's' => [
+                            '/forum*/sh*wthread.php',
+                        ],
+                        'uid' => [
+                            '/',
+                        ]
                     ],
-                    "sort" => [
-                        "/forum/*.php",
-                    ],
-                    "someTrash" => [
-                        "/",
-                    ],
-                    "otherTrash" => [
-                        "/",
-                    ],
+                    'Allow' => [],
                 ],
                 <<<RENDERED
-clean-param:abc /forum/showthread.php
-clean-param:otherTrash /
-clean-param:sid /forum/*.php
-clean-param:someTrash /
-clean-param:sort /forum/*.php
-user-agent:*
-disallow:clean-param:ref /forum*/sh*wthread.php
-disallow:clean-param:s /forum*/sh*wthread.php
-disallow:clean-param:uid /
+Clean-param: abc /forum/showthread.php
+Clean-param: otherTrash&someTrash /
+Clean-param: sid&sort /forum/*.php
+
+User-agent: *
+Disallow: Clean-param: ref&s /forum*/sh*wthread.php
+Disallow: Clean-param: uid /
 RENDERED
             ]
         ];

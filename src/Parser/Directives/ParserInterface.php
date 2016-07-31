@@ -1,5 +1,14 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
+
+use vipnytt\RobotsTxtParser\Handler\RenderHandler;
 
 /**
  * Interface ParserInterface
@@ -26,7 +35,8 @@ interface ParserInterface
     /**
      * Render
      *
-     * @return string[]
+     * @param RenderHandler $handler
+     * @return bool
      */
-    public function render();
+    public function render(RenderHandler $handler);
 }

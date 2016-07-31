@@ -1,7 +1,15 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Client\Directives\HostClient;
+use vipnytt\RobotsTxtParser\Handler\RenderHandler;
 
 /**
  * Class HostParser
@@ -28,18 +36,20 @@ class HostParser extends HostParserCore
      */
     public function client()
     {
-        return new HostClient($this->base, $this->effective, $this->host);
+        return new HostClient($this->base, $this->effective, isset($this->host[0]) ? [$this->host[0]] : []);
     }
 
     /**
      * Render
      *
-     * @return string[]
+     * @param RenderHandler $handler
+     * @return bool
      */
-    public function render()
+    public function render(RenderHandler $handler)
     {
-        return isset($this->host[0]) ? [
-            self::DIRECTIVE_HOST . ':' . $this->host[0]
-        ] : [];
+        if (isset($this->host[0])) {
+            $handler->add(self::DIRECTIVE_HOST, $this->host[0]);
+        }
+        return true;
     }
 }

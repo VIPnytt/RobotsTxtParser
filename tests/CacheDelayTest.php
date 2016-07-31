@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class CacheDelayTest extends \PHPUnit_Framework_TestCase
+class CacheDelayTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -26,7 +27,7 @@ class CacheDelayTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(9.2, $parser->userAgent('BingBot')->cacheDelay()->getValue());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertEquals($rendered, $parser->render()->normal());
             $this->testCacheDelay($rendered, false);
         }
     }
@@ -55,13 +56,15 @@ Cache-Delay: 2.9
 ROBOTS
                 ,
                 <<<RENDERED
-user-agent:*
-crawl-delay:0.5
-user-agent:bingbot
-cache-delay:9.2
-user-agent:googlebot
-crawl-delay:3.7
-cache-delay:8
+User-agent: *
+Crawl-delay: 0.5
+
+User-agent: bingbot
+Cache-delay: 9.2
+
+User-agent: googlebot
+Crawl-delay: 3.7
+Cache-delay: 8
 RENDERED
             ]
         ];

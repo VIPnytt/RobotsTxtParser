@@ -1,7 +1,15 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Client\Directives\RequestRateClient;
+use vipnytt\RobotsTxtParser\Handler\RenderHandler;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -11,7 +19,7 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  */
 class RequestRateParser implements ParserInterface, RobotsTxtInterface
 {
-    use DirectiveParserCommons;
+    use DirectiveParserTrait;
 
     /**
      * Base uri
@@ -46,11 +54,12 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
         $array = preg_split('/\s+/', $line, 2);
         $result = [
             'rate' => $this->draftParseRate($array[0]),
+            'from' => null,
+            'to' => null,
         ];
         if ($result['rate'] === false) {
             return false;
-        } elseif (
-            !empty($array[1]) &&
+        } elseif (!empty($array[1]) &&
             ($times = $this->draftParseTime($array[1])) !== false
         ) {
             $result = array_merge($result, $times);
@@ -68,28 +77,41 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
      */
     public function client($userAgent = self::USER_AGENT, $fallbackValue = 0)
     {
+        $this->sort();
         return new RequestRateClient($this->base, $userAgent, $this->requestRates, $fallbackValue);
+    }
+
+    /**
+     * Sort
+     *
+     * @return void
+     */
+    private function sort()
+    {
+        usort($this->requestRates, function ($a, $b) {
+            // PHP 7: Switch to the <=> "Spaceship" operator
+            return $b['rate'] > $a['rate'];
+        });
     }
 
     /**
      * Render
      *
-     * @return string[]
+     * @param RenderHandler $handler
+     * @return bool
      */
-    public function render()
+    public function render(RenderHandler $handler)
     {
-        $result = [];
+        $this->sort();
         foreach ($this->requestRates as $array) {
             $suffix = 's';
-            if (
-                isset($array['from']) &&
+            if (isset($array['from']) &&
                 isset($array['to'])
             ) {
                 $suffix .= ' ' . $array['from'] . '-' . $array['to'];
             }
-            $result[] = self::DIRECTIVE_REQUEST_RATE . ':1/' . $array['rate'] . $suffix;
+            $handler->add(self::DIRECTIVE_REQUEST_RATE, '1/' . $array['rate'] . $suffix);
         }
-        sort($result);
-        return $result;
+        return true;
     }
 }

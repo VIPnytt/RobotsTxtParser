@@ -1,7 +1,15 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Client\Directives\VisitTimeClient;
+use vipnytt\RobotsTxtParser\Handler\RenderHandler;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -11,7 +19,7 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  */
 class VisitTimeParser implements ParserInterface, RobotsTxtInterface
 {
-    use DirectiveParserCommons;
+    use DirectiveParserTrait;
 
     /**
      * VisitTime array
@@ -55,15 +63,28 @@ class VisitTimeParser implements ParserInterface, RobotsTxtInterface
     /**
      * Render
      *
-     * @return string[]
+     * @param RenderHandler $handler
+     * @return bool
      */
-    public function render()
+    public function render(RenderHandler $handler)
     {
-        $result = [];
+        $this->sort();
         foreach ($this->visitTimes as $array) {
-            $result[] = self::DIRECTIVE_VISIT_TIME . ':' . $array['from'] . '-' . $array['to'];
+            $handler->add(self::DIRECTIVE_VISIT_TIME, $array['from'] . '-' . $array['to']);
         }
-        sort($result);
-        return $result;
+        return true;
+    }
+
+    /**
+     * Sort
+     *
+     * @return void
+     */
+    private function sort()
+    {
+        usort($this->visitTimes, function ($a, $b) {
+            // PHP 7: Switch to the <=> "Spaceship" operator
+            return $a['from'] > $b['from'];
+        });
     }
 }

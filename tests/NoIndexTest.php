@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class NoIndexTest extends \PHPUnit_Framework_TestCase
+class NoIndexTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -28,7 +29,7 @@ class NoIndexTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent()->isAllowed('/public/'));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertEquals($rendered, $parser->render()->normal());
             $this->testNoIndex($rendered, false);
         }
     }
@@ -50,10 +51,10 @@ NoIndex: /
 ROBOTS
                 ,
                 <<<RENDERED
-user-agent:*
-noindex:/
-disallow:/admin/
-allow:/public/
+User-agent: *
+Noindex: /
+Disallow: /admin/
+Allow: /public/
 RENDERED
             ]
         ];

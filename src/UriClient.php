@@ -1,4 +1,11 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser;
 
 use Composer\CaBundle\CaBundle;
@@ -203,8 +210,7 @@ class UriClient extends TxtClient
      */
     public function nextUpdate()
     {
-        if (
-            $this->rawStatusCode === 503 &&
+        if ($this->rawStatusCode === 503 &&
             strpos($this->base, 'http') === 0
         ) {
             return $this->time + min(self::CACHE_TIME, $this->headerParser->getRetryAfter($this->time));

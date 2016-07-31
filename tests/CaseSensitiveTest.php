@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class CaseSensitiveTest extends \PHPUnit_Framework_TestCase
+class CaseSensitiveTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -66,7 +67,7 @@ class CaseSensitiveTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent()->isDisallowed("/"));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertEquals($rendered, $parser->render()->normal());
             $this->testCaseSensitive($rendered, false);
         }
     }
@@ -91,12 +92,13 @@ Allow: /iNfO/
 ROBOTS
                 ,
                 <<<RENDERED
-user-agent:lowercase
-disallow:/
-allow:/iNfO/
-user-agent:uppercase
-disallow:/
-allow:/InFo/
+User-agent: lowercase
+Disallow: /
+Allow: /iNfO/
+
+User-agent: uppercase
+Disallow: /
+Allow: /InFo/
 RENDERED
             ]
         ];

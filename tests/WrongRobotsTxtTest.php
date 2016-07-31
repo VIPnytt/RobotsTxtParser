@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 
@@ -9,7 +10,7 @@ use vipnytt\RobotsTxtParser\Exceptions\ClientException;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class WrongRobotsTxtTest extends \PHPUnit_Framework_TestCase
+class WrongRobotsTxtTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest

@@ -1,4 +1,11 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
 /**
@@ -59,8 +66,7 @@ class InlineCleanParamClient implements ClientInterface
     {
         $result = [];
         foreach ($pairs as $param => $paths) {
-            if (
-                (
+            if ((
                     strpos($uri, "?$param=") ||
                     strpos($uri, "&$param=")
                 ) &&

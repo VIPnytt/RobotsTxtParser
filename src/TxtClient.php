@@ -1,4 +1,11 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser;
 
 use vipnytt\RobotsTxtParser\Client\Directives\CleanParamClient;
@@ -45,8 +52,14 @@ class TxtClient extends RobotsTxtParser
      * @param string|null $effectiveUri
      * @param int|null $byteLimit
      */
-    public function __construct($baseUri, $statusCode, $content, $encoding = self::ENCODING, $effectiveUri = null, $byteLimit = self::BYTE_LIMIT)
-    {
+    public function __construct(
+        $baseUri,
+        $statusCode,
+        $content,
+        $encoding = self::ENCODING,
+        $effectiveUri = null,
+        $byteLimit = self::BYTE_LIMIT
+    ) {
         $this->statusCode = $statusCode;
         $this->content = $content;
         $this->encoding = $encoding;

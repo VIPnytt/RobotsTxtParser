@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class IgnoreTest extends \PHPUnit_Framework_TestCase
+class IgnoreTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -26,7 +27,7 @@ class IgnoreTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent()->isDisallowed('/tech'));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertEquals($rendered, $parser->render()->normal());
             $this->testIgnore($rendered, false);
         }
     }

@@ -1,21 +1,22 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
- * Class FullUrlTest
+ * Class FullUriTest
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class FullUrlTest extends \PHPUnit_Framework_TestCase
+class FullUriTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
      * @param string|false $rendered
      */
-    public function testFullUrl($robotsTxtContent, $rendered)
+    public function testFullUri($robotsTxtContent, $rendered)
     {
         $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
@@ -36,8 +37,8 @@ class FullUrlTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($parser->host()->isPreferred());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
-            $this->testFullUrl($rendered, false);
+            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->testFullUri($rendered, false);
         }
     }
 
@@ -60,11 +61,13 @@ Host: example.com
 ROBOTS
                 ,
                 <<<RENDERED
-host:example.com
-user-agent:*
-disallow:/admin/
-user-agent:badbot
-disallow:/
+Host: example.com
+
+User-agent: *
+Disallow: /admin/
+
+User-agent: badbot
+Disallow: /
 RENDERED
             ]
         ];

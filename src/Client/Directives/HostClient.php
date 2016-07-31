@@ -1,4 +1,11 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
 /**
@@ -59,8 +66,7 @@ class HostClient extends HostClientCore
         if (($get = $this->export()) !== null) {
             // Host defined by the Host directive
             return $get;
-        } elseif (
-            $this->base !== $this->effective &&
+        } elseif ($this->base !== $this->effective &&
             parse_url($this->base, PHP_URL_HOST) === ($host = parse_url($this->effective, PHP_URL_HOST))
         ) {
             // Host is the same, but Scheme or Port is different

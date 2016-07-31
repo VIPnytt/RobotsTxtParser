@@ -2,6 +2,7 @@
 namespace vipnytt\RobotsTxtParser\Tests;
 
 use PDO;
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 use vipnytt\RobotsTxtParser\Exceptions\DatabaseException;
 
@@ -10,7 +11,7 @@ use vipnytt\RobotsTxtParser\Exceptions\DatabaseException;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class DelaySQLTest extends \PHPUnit_Framework_TestCase
+class DelaySQLTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest

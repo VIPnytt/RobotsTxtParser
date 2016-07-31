@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class AllowTest extends \PHPUnit_Framework_TestCase
+class AllowTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -80,7 +81,7 @@ class AllowTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($parser->userAgent('crawlerZ')->isAllowed("/public"));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertEquals($rendered, $parser->render()->normal());
             $this->testDisAllow($rendered, false);
         }
     }
@@ -94,7 +95,7 @@ class AllowTest extends \PHPUnit_Framework_TestCase
     {
         $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
-        $this->assertEquals($rendered, $parser->render());
+        $this->assertEquals($rendered, $parser->render()->normal());
 
         $this->assertTrue($parser->userAgent('*')->disallow()->isListed('/admin'));
         $this->assertTrue($parser->userAgent('agentV')->allow()->isListed('/bar'));
@@ -145,25 +146,29 @@ Allow: /$
 ROBOTS
                 ,
                 <<<RENDERED
-user-agent:*
-disallow:/Admin
-disallow:/admin
-disallow:/forum
-disallow:/temp
-user-agent:agentv
-user-agent:agentw
-disallow:/foo
-allow:/bar
-user-agent:boty
-disallow:/
-allow:/article
-allow:/forum/$
-user-agent:crawlerz
-disallow:/
-allow:/$
-user-agent:spiderx
-disallow:/admin
-disallow:/assets
+User-agent: *
+Disallow: /Admin
+Disallow: /admin
+Disallow: /forum
+Disallow: /temp
+
+User-agent: agentv
+User-agent: agentw
+Disallow: /foo
+Allow: /bar
+
+User-agent: boty
+Disallow: /
+Allow: /article
+Allow: /forum/$
+
+User-agent: crawlerz
+Disallow: /
+Allow: /$
+
+User-agent: spiderx
+Disallow: /admin
+Disallow: /assets
 RENDERED
             ]
         ];

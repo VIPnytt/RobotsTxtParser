@@ -1,6 +1,7 @@
 <?php
 namespace vipnytt\RobotsTxtParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
@@ -8,7 +9,7 @@ use vipnytt\RobotsTxtParser;
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class RequestRateTest extends \PHPUnit_Framework_TestCase
+class RequestRateTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
@@ -29,7 +30,7 @@ class RequestRateTest extends \PHPUnit_Framework_TestCase
 
         if ($rendered !== false) {
             $this->assertEquals($result, $parser->userAgent('*')->requestRate()->export());
-            $this->assertEquals($rendered, $parser->render());
+            $this->assertEquals($rendered, $parser->render()->normal());
             $this->testRequestRate($rendered, $result, false);
         }
     }
@@ -54,9 +55,9 @@ ROBOTS
                 ,
                 [
                     [
-                        'rate' => 1,
-                        'from' => '2200',
-                        'to' => '0600',
+                        'rate' => 37.5,
+                        'from' => null,
+                        'to' => null,
                     ],
                     [
                         'rate' => 15,
@@ -69,15 +70,17 @@ ROBOTS
                         'to' => '1500',
                     ],
                     [
-                        'rate' => 37.5,
+                        'rate' => 1,
+                        'from' => '2200',
+                        'to' => '0600',
                     ],
                 ],
                 <<<RENDERED
-user-agent:*
-request-rate:1/15s 0700-2100
-request-rate:1/1s 2200-0600
-request-rate:1/37.5s
-request-rate:1/9s 0900-1500
+User-agent: *
+Request-rate: 1/37.5s
+Request-rate: 1/15s 0700-2100
+Request-rate: 1/9s 0900-1500
+Request-rate: 1/1s 2200-0600
 RENDERED
             ]
         ];

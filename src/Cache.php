@@ -1,4 +1,11 @@
 <?php
+/**
+ * vipnytt/RobotsTxtParser
+ *
+ * @link https://github.com/VIPnytt/RobotsTxtParser
+ * @license https://github.com/VIPnytt/RobotsTxtParser/blob/master/LICENSE The MIT License (MIT)
+ */
+
 namespace vipnytt\RobotsTxtParser;
 
 use PDO;
@@ -68,6 +75,18 @@ class Cache implements RobotsTxtInterface
     public function clean($delay = 3600)
     {
         return $this->handler->clean($delay);
+    }
+
+    /**
+     * Get the RAW data
+     *
+     * @param string $baseUri
+     * @return array
+     */
+    public function debug($baseUri)
+    {
+        $parser = new UriParser($baseUri);
+        return $this->handler->debug($parser->base());
     }
 
     /**
