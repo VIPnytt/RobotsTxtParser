@@ -38,7 +38,7 @@ class EscapingTest extends TestCase
         //$this->assertFalse($parser->userAgent()->isAllowed("/("));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testEscaping($rendered, false);
         }
     }

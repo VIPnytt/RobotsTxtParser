@@ -11,6 +11,7 @@
 
 ### compatibility
 ```php
+@param string $lineSeparator
 @return string
 ```
 Generates an robots.txt optimized for parsing by custom 3rd party parsers, witch do not follow the standards.

@@ -88,7 +88,7 @@ class AllowTest extends TestCase
         $this->assertFalse($parser->userAgent('crawlerZ')->isAllowed("/public"));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testDisAllow($rendered, false);
         }
     }
@@ -102,7 +102,7 @@ class AllowTest extends TestCase
     {
         $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
-        $this->assertEquals($rendered, $parser->render()->normal());
+        $this->assertEquals($rendered, $parser->render()->normal("\n"));
 
         $this->assertTrue($parser->userAgent('*')->disallow()->isListed('/admin'));
         $this->assertTrue($parser->userAgent('agentV')->allow()->isListed('/bar'));

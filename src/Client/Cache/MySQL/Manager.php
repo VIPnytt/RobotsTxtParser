@@ -179,7 +179,7 @@ SQL
             return true;
         }
         $validUntil = $client->validUntil();
-        $content = $client->render()->compressed("\n");
+        $content = $client->render()->compressed(PHP_EOL);
         $query = $this->pdo->prepare(<<<SQL
 INSERT INTO robotstxt__cache1 (base, content, statusCode, validUntil, nextUpdate, effective)
 VALUES (:base, :content, :statusCode, :validUntil, :nextUpdate, :effective)

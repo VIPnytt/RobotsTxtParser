@@ -32,7 +32,7 @@ class SitemapTest extends TestCase
         $this->assertEquals($result, $parser->sitemap()->export());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             sort($result);
             $this->testSitemap($rendered, $result, false);
         }

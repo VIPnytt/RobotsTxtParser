@@ -41,7 +41,7 @@ class EndAnchorTest extends TestCase
         $this->assertFalse($parser->userAgent('DenyMe')->isAllowed('http://example.com/deny_all/'));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testEndAnchor($rendered, false);
         }
     }

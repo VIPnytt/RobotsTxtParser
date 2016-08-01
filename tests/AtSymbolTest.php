@@ -35,7 +35,7 @@ class AtSymbolTest extends TestCase
         $this->assertFalse($parser->userAgent()->isAllowed("/url_containing_@_symbol"));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testAtSymbol($rendered, false);
         }
     }

@@ -74,7 +74,7 @@ class CaseSensitiveTest extends TestCase
         $this->assertFalse($parser->userAgent()->isDisallowed("/"));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testCaseSensitive($rendered, false);
         }
     }

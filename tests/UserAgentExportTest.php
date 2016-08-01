@@ -34,7 +34,7 @@ class UserAgentExportTest extends TestCase
         $this->assertEquals($userAgentList, $parser->getUserAgents());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testUserAgentExport($rendered, $rules, $userAgentList, false);
         }
     }

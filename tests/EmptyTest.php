@@ -40,7 +40,7 @@ class EmptyTest extends TestCase
         $this->assertEquals([], $parser->cleanParam()->export());
 
         $this->assertEquals($result, $parser->export());
-        $this->assertEquals('', $parser->render()->normal());
+        $this->assertEquals('', $parser->render()->normal("\n"));
     }
 
     /**

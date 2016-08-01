@@ -42,7 +42,7 @@ class HostTest extends TestCase
         $this->assertFalse($parser->userAgent()->noIndex()->host()->isListed('http://www.myhost.com/'));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testHost($rendered, false);
         }
     }

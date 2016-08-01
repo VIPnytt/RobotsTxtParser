@@ -37,7 +37,7 @@ class RequestRateTest extends TestCase
 
         if ($rendered !== false) {
             $this->assertEquals($result, $parser->userAgent('*')->requestRate()->export());
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testRequestRate($rendered, $result, false);
         }
     }

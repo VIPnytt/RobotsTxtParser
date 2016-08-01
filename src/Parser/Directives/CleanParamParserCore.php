@@ -92,9 +92,9 @@ abstract class CleanParamParserCore implements ParserInterface, RobotsTxtInterfa
     private function renderCompressed(RenderHandler $handler)
     {
         $pair = $this->cleanParam;
-        while (!empty($pair)) {
-            $equalParams = array_keys($pair, current($pair));
-            foreach (current($pair) as $path) {
+        while (($currentPair = current($pair)) !== false) {
+            $equalParams = array_keys($pair, $currentPair);
+            foreach ($currentPair as $path) {
                 $handler->add(self::DIRECTIVE_CLEAN_PARAM, implode('&', $equalParams) . ' ' . $path);
             }
             foreach ($equalParams as $param) {

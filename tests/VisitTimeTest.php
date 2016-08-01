@@ -55,7 +55,7 @@ ROBOTS;
         $this->assertEquals($result, $parser->userAgent('*')->visitTime()->export());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testVisitTime($rendered, $result, false);
         }
     }

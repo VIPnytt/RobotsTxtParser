@@ -34,7 +34,7 @@ class CacheDelayTest extends TestCase
         $this->assertEquals(9.2, $parser->userAgent('BingBot')->cacheDelay()->getValue());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testCacheDelay($rendered, false);
         }
     }

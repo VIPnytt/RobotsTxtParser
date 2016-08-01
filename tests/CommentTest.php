@@ -34,7 +34,7 @@ class CommentTest extends TestCase
         $this->assertFalse($parser->userAgent('receiver')->isAllowed("/"));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testComment($rendered, $result, false);
         }
     }

@@ -42,7 +42,7 @@ class CleanParamTest extends TestCase
         $this->assertEquals($result['Allow'], $parser->userAgent()->allow()->cleanParam()->export());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testCleanParam($rendered, $result, false);
         }
     }

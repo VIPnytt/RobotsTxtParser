@@ -34,7 +34,7 @@ class IgnoreTest extends TestCase
         $this->assertFalse($parser->userAgent()->isDisallowed('/tech'));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testIgnore($rendered, false);
         }
     }

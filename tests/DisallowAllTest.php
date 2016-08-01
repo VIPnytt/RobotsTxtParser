@@ -45,7 +45,7 @@ class DisallowAllTest extends TestCase
         $this->assertFalse($parser->userAgent()->isAllowed('/page/test/'));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testDisallowAll($rendered, false);
         }
     }

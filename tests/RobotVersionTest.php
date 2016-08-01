@@ -33,7 +33,7 @@ class RobotVersionTest extends TestCase
         $this->assertEquals($result['user-agent']['*']['robot-version'], $parser->userAgent()->robotVersion()->export());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testRobotVersion($rendered, $result, false);
         }
     }

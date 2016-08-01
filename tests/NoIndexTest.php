@@ -36,7 +36,7 @@ class NoIndexTest extends TestCase
         $this->assertFalse($parser->userAgent()->isAllowed('/public/'));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testNoIndex($rendered, false);
         }
     }

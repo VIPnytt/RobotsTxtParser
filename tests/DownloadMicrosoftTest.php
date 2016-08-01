@@ -40,7 +40,7 @@ class DownloadMicrosoftTest extends TestCase
         $txtClient = new RobotsTxtParser\TxtClient($uriClient->getBaseUri(), $uriClient->getStatusCode(), $uriClient->getContents(), $uriClient->getEncoding(), $uriClient->getEffectiveUri());
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $txtClient);
 
-        $this->assertEquals($uriClient->render()->normal(), $txtClient->render()->normal());
+        $this->assertEquals($uriClient->render()->normal("\n"), $txtClient->render()->normal("\n"));
     }
 
     /**

@@ -32,10 +32,10 @@ class ExportTest extends TestCase
         $this->assertEquals($export, $parser->export());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered['compressed'], $parser->render()->compressed());
-            $this->assertEquals($rendered['minimal'], $parser->render()->minimal());
-            $this->assertEquals($rendered['normal'], $parser->render()->normal());
-            $this->assertEquals($rendered['compatibility'], $parser->render()->compatibility());
+            $this->assertEquals($rendered['compressed'], $parser->render()->compressed("\n"));
+            $this->assertEquals($rendered['minimal'], $parser->render()->minimal("\n"));
+            $this->assertEquals($rendered['normal'], $parser->render()->normal("\n"));
+            $this->assertEquals($rendered['compatibility'], $parser->render()->compatibility("\n"));
             foreach ($rendered as $robotstxt) {
                 $this->testExport($robotstxt, $export, false);
             }

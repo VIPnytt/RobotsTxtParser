@@ -39,7 +39,7 @@ class WhitespaceTest extends TestCase
         $this->assertFalse($parser->userAgent()->isDisallowed('/admin/front'));
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testWhitespace($rendered, false);
         }
     }

@@ -44,7 +44,7 @@ class FullUriTest extends TestCase
         $this->assertTrue($parser->host()->isPreferred());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testFullUri($rendered, false);
         }
     }

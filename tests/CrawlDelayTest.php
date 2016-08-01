@@ -35,7 +35,7 @@ class CrawlDelayTest extends TestCase
         $this->assertEquals(2.5, $parser->userAgent('BingBot')->requestRate()->getValue());
 
         if ($rendered !== false) {
-            $this->assertEquals($rendered, $parser->render()->normal());
+            $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testCrawlDelay($rendered, false);
         }
     }
