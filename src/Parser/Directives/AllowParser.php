@@ -158,7 +158,7 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
     public function render(RenderHandler $handler)
     {
         sort($this->path);
-        $inline = new RenderHandler($handler->getMode());
+        $inline = new RenderHandler($handler->getLevel());
         $this->host->render($inline);
         $this->cleanParam->render($inline);
         $handler->addInline($this->directive, $inline);

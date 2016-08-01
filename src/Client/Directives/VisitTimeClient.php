@@ -16,7 +16,7 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
  */
 class VisitTimeClient implements ClientInterface
 {
-    use DirectiveClientCommons;
+    use DirectiveClientTrait;
 
     /**
      * Times

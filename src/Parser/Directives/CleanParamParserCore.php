@@ -64,7 +64,7 @@ abstract class CleanParamParserCore implements ParserInterface, RobotsTxtInterfa
     public function render(RenderHandler $handler)
     {
         ksort($this->cleanParam);
-        return $handler->getMode() >= 3 ? $this->renderExtensive($handler) : $this->renderCompressed($handler);
+        return $handler->getLevel() >= 3 ? $this->renderExtensive($handler) : $this->renderCompressed($handler);
     }
 
     /**

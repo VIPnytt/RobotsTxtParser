@@ -11,7 +11,7 @@ namespace vipnytt\RobotsTxtParser\Parser\Directives;
 use DateTimeZone;
 
 /**
- * Class DirectiveParserCommons
+ * Class DirectiveParserTrait
  *
  * @package vipnytt\RobotsTxtParser\Directive
  */
@@ -41,38 +41,6 @@ trait DirectiveParserTrait
             'directive' => $pair[0],
             'value' => $pair[1],
         ];
-    }
-
-    /**
-     * Client rate as specified in the `Robot exclusion standard` version 2.0 draft
-     * rate = numDocuments / timeUnit
-     * @link http://www.conman.org/people/spc/robots2.html#format.directives.request-rate
-     *
-     * @param string $string
-     * @return float|int|false
-     */
-    private function draftParseRate($string)
-    {
-        $parts = array_map('trim', explode('/', $string));
-        if (count($parts) != 2) {
-            return false;
-        }
-        $multiplier = 1;
-        switch (strtolower(substr(preg_replace('/[^A-Za-z]/', '', $parts[1]), 0, 1))) {
-            case 'm':
-                $multiplier = 60;
-                break;
-            case 'h':
-                $multiplier = 3600;
-                break;
-            case 'd':
-                $multiplier = 86400;
-                break;
-        }
-        $num = floatval(preg_replace('/[^0-9]/', '', $parts[0]));
-        $sec = floatval(preg_replace('/[^0-9.]/', '', $parts[1])) * $multiplier;
-        $rate = $sec / $num;
-        return $rate > 0 ? $rate : false;
     }
 
     /**

@@ -43,24 +43,24 @@ class RenderClient implements RobotsTxtInterface
      * - Byte consuming, may be multiple times larger (depending on the number of user-agents)
      * - Maximum compatibility, optimized for badly written 3rd party parsers with limited specification support
      *
-     * @param string $lineSeparator
+     * @param string $eol
      * @return string
      */
-    public function compatibility($lineSeparator = "\r\n")
+    public function compatibility($eol = "\r\n")
     {
-        return $this->generate(3, $lineSeparator) . $lineSeparator;
+        return $this->generate(3, $eol) . $eol;
     }
 
     /**
      * Generate an rule string array
      *
      * @param int $level
-     * @param string $lineSeparator
+     * @param string $eol
      * @return string
      */
-    private function generate($level, $lineSeparator)
+    private function generate($level, $eol)
     {
-        $handler = new RenderHandler($level, $lineSeparator);
+        $handler = new RenderHandler($level, $eol);
         if ($level === 3) {
             $this->root->userAgent()->render($handler);
         }
@@ -80,13 +80,13 @@ class RenderClient implements RobotsTxtInterface
      * - The directives first character is uppercase
      * - Whitespace between the directive and it's value
      *
-     * @param string $lineSeparator
+     * @param string $eol
      * @return string
      */
-    public function minimal($lineSeparator = "\r\n")
+    public function minimal($eol = "\r\n")
     {
 
-        return $this->generate(1, $lineSeparator);
+        return $this->generate(1, $eol);
     }
 
     /**
@@ -97,12 +97,12 @@ class RenderClient implements RobotsTxtInterface
      * - Easy to edit
      * - User-agent groups are separated with blank lines
      *
-     * @param string $lineSeparator
+     * @param string $eol
      * @return string
      */
-    public function normal($lineSeparator = "\r\n")
+    public function normal($eol = "\r\n")
     {
-        return $this->generate(2, $lineSeparator);
+        return $this->generate(2, $eol);
     }
 
     /**
@@ -111,11 +111,11 @@ class RenderClient implements RobotsTxtInterface
      * Generates an robots.txt compressed to a absolute minimum.
      * Best suited for parsing purposes and storage in databases.
      *
-     * @param string $lineSeparator
+     * @param string $eol
      * @return string
      */
-    public function compressed($lineSeparator = PHP_EOL)
+    public function compressed($eol = PHP_EOL)
     {
-        return $this->generate(0, $lineSeparator);
+        return $this->generate(0, $eol);
     }
 }

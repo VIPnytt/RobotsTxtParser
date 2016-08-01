@@ -12,11 +12,11 @@ use DateTime;
 use DateTimeZone;
 
 /**
- * Trait DirectiveClientCommons
+ * Trait DirectiveClientTrait
  *
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
-trait DirectiveClientCommons
+trait DirectiveClientTrait
 {
     /**
      * Is time between

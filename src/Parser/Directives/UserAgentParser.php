@@ -151,7 +151,7 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
      */
     public function render(RenderHandler $handler)
     {
-        return $handler->getMode() >= 3 ? $this->renderExtensive($handler) : $this->renderCompressed($handler);
+        return $handler->getLevel() >= 3 ? $this->renderExtensive($handler) : $this->renderCompressed($handler);
     }
 
     /**

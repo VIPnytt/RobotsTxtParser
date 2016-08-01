@@ -11,7 +11,7 @@
 
 ### compatibility
 ```php
-@param string $lineSeparator
+@param string $eol
 @return string
 ```
 Generates an robots.txt optimized for parsing by custom 3rd party parsers, witch do not follow the standards.
@@ -23,7 +23,7 @@ Differences compared to [minimal](#minimal):
 
 ### compressed
 ```php
-@param string $lineSeparator
+@param string $eol
 @return string
 ```
 Generates an robots.txt compressed to a absolute minimum.
@@ -32,7 +32,7 @@ Best suited for parsing purposes and storage in databases.
 
 ### normal
 ```php
-@param string $lineSeparator
+@param string $eol
 @return string
 ```
 Generates an normal looking robots.txt.
@@ -44,7 +44,7 @@ Differences compared to [compressed](#compressed):
 
 ### minimal
 ```php
-@param string $lineSeparator
+@param string $eol
 @return string
 ```
 Generates an minimal but normal looking robots.txt.

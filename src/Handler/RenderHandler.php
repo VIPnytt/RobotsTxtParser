@@ -19,16 +19,16 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 class RenderHandler implements RobotsTxtInterface
 {
     /**
-     * Mode
+     * Render level
      * @var int
      */
-    private $mode;
+    private $level;
 
     /**
      * Line separator
      * @var string
      */
-    private $separator;
+    private $eol;
 
     /**
      * Rule strings
@@ -57,24 +57,24 @@ class RenderHandler implements RobotsTxtInterface
     /**
      * RenderHandler constructor.
      *
-     * @param int $mode
+     * @param int $level
      * @param string $lineSeparator
      */
-    public function __construct($mode, $lineSeparator = "\r\n")
+    public function __construct($level, $lineSeparator = "\r\n")
     {
-        $this->mode = $mode;
+        $this->level = $level;
         $this->separatorCheck($lineSeparator);
     }
 
     /**
      * Line separator check
      *
-     * @param string $lineSeparator
+     * @param string $eol
      * @throws ClientException
      */
-    private function separatorCheck($lineSeparator)
+    private function separatorCheck($eol)
     {
-        if (!in_array($lineSeparator, [
+        if (!in_array($eol, [
             "\r\n",
             "\n",
             "\r",
@@ -82,7 +82,7 @@ class RenderHandler implements RobotsTxtInterface
         ) {
             throw new ClientException('Invalid line separator');
         }
-        $this->separator = $lineSeparator;
+        $this->eol = $eol;
     }
 
     /**
@@ -90,9 +90,9 @@ class RenderHandler implements RobotsTxtInterface
      *
      * @return int
      */
-    public function getMode()
+    public function getLevel()
     {
-        return $this->mode;
+        return $this->level;
     }
 
     /**
@@ -104,8 +104,9 @@ class RenderHandler implements RobotsTxtInterface
      */
     public function addInline($directive, RenderHandler $handler)
     {
-        foreach ($handler->export() as $line) {
-            $this->add($directive, trim($line));
+        $lines = array_map('trim', $handler->export());
+        foreach ($lines as $line) {
+            $this->add($directive, $line);
         }
         return true;
     }
@@ -131,7 +132,7 @@ class RenderHandler implements RobotsTxtInterface
     {
         $this->previous = $this->directive;
         $this->directive = $directive;
-        if ($this->mode >= 2) {
+        if ($this->level >= 2) {
             $this->strings[] = $this->advanced() . $line;
             return true;
         }
@@ -147,11 +148,11 @@ class RenderHandler implements RobotsTxtInterface
     private function advanced()
     {
         $result = '';
-        if ($this->boolInsertSeparatorMode3() ||
+        if ($this->boolInsertSeparatorLevel3() ||
             $this->previous !== self::DIRECTIVE_USER_AGENT &&
             $this->directive === self::DIRECTIVE_USER_AGENT
         ) {
-            $result = $this->separator;
+            $result = $this->eol;
             $this->previousRoot = $this->directive;
         }
         $result .= $this->basic();
@@ -163,9 +164,9 @@ class RenderHandler implements RobotsTxtInterface
      *
      * @return bool
      */
-    private function boolInsertSeparatorMode3()
+    private function boolInsertSeparatorLevel3()
     {
-        return $this->mode >= 3 &&
+        return $this->level >= 3 &&
         $this->previousRoot !== $this->directive &&
         in_array($this->directive, [
             self::DIRECTIVE_HOST,
@@ -182,7 +183,7 @@ class RenderHandler implements RobotsTxtInterface
     private function basic()
     {
         $result = $this->directive . ':';
-        if ($this->mode === 0) {
+        if ($this->level === 0) {
             return $result;
         }
         return ucfirst($result) . ' ';
@@ -195,6 +196,6 @@ class RenderHandler implements RobotsTxtInterface
      */
     public function generate()
     {
-        return trim(implode($this->separator, $this->strings));
+        return trim(implode($this->eol, $this->strings));
     }
 }

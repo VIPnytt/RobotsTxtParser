@@ -20,7 +20,7 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  */
 class AllowClient implements ClientInterface, RobotsTxtInterface
 {
-    use DirectiveClientCommons;
+    use DirectiveClientTrait;
 
     /**
      * Paths

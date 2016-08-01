@@ -16,7 +16,7 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
  */
 class RequestRateClient extends DelayCore implements ClientInterface, DelayInterface
 {
-    use DirectiveClientCommons;
+    use DirectiveClientTrait;
 
     /**
      * Rates

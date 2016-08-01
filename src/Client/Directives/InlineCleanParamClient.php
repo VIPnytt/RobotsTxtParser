@@ -16,7 +16,7 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
  */
 class InlineCleanParamClient implements ClientInterface
 {
-    use DirectiveClientCommons;
+    use DirectiveClientTrait;
 
     /**
      * Clean-param
