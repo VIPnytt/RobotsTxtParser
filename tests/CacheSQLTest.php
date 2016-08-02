@@ -53,6 +53,8 @@ SQL
             $parser->client($uri);
         }
 
+        $this->assertTrue(count($parser->debug($uri), COUNT_NORMAL) >= 5);
+
         $parser->cron();
         $parser->clean();
 

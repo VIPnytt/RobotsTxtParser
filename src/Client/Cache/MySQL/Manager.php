@@ -72,7 +72,7 @@ SQL
         );
         $query->bindParam(':base', $base, PDO::PARAM_STR);
         $query->execute();
-        return $query->fetchAll(PDO::FETCH_ASSOC);
+        return $query->rowCount() > 0 ? $query->fetch(PDO::FETCH_ASSOC) : [];
     }
 
     /**

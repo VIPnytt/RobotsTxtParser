@@ -82,7 +82,7 @@ class VisitTimeParser implements ParserInterface, RobotsTxtInterface
      */
     private function sort()
     {
-        usort($this->visitTimes, function ($visitTimeA, $visitTimeB) {
+        usort($this->visitTimes, function (array $visitTimeA, array $visitTimeB) {
             // PHP 7: Switch to the <=> "Spaceship" operator
             return $visitTimeA['from'] > $visitTimeB['from'];
         });

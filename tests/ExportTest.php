@@ -340,4 +340,13 @@ COMPATIBILITY
             ]
         ];
     }
+
+    public function testRenderInvalidNewLine()
+    {
+        $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, '');
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
+
+        $this->expectException(RobotsTxtParser\Exceptions\ClientException::class);
+        $parser->render()->normal('<br>');
+    }
 }

@@ -62,6 +62,7 @@ class DelaySQLTest extends TestCase
             $queue = $client->getQueue();
             $this->assertLessThanOrEqual(60, $queue);
             $this->assertGreaterThan(59, $queue);
+            $this->assertTrue(count($delayHandler->debug($uri), COUNT_NORMAL) >= 3);
         }
 
         $client->reset();
