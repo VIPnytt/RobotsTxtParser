@@ -32,7 +32,7 @@ class ImportTest extends TestCase
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Import', $import);
 
         $this->assertEquals($export, $import->export());
-        $this->assertEquals($diff, $import->getIgnoredImportData());
+        $this->assertSame($diff, $import->getIgnoredImportData());
     }
 
     /**

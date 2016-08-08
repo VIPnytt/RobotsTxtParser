@@ -224,14 +224,15 @@ class Import extends TxtClient
      */
     public function getIgnoredImportData()
     {
-        $source = $this->array;
-        $source = $this->arrayFilterRecursive($source);
-        array_multisort($source);
-        $this->kSortRecursive($source);
-        $parsed = $this->export();
-        $parsed = $this->arrayFilterRecursive($parsed);
-        array_multisort($parsed);
-        $this->kSortRecursive($parsed);
-        return $this->arrayDiffAssocRecursive($source, $parsed);
+        $pair = [
+            'source' => $this->array,
+            'parsed' => $this->export(),
+        ];
+        foreach ($pair as &$array) {
+            $array = $this->arrayFilterRecursive($array);
+            array_multisort($array);
+            $this->kSortRecursive($array);
+        }
+        return $this->arrayDiffAssocRecursive($pair['source'], $pair['parsed']);
     }
 }
