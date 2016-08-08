@@ -4,7 +4,7 @@
 ```
 
 ### Directives:
-- [Comment](../directives.md#comment)
+- [Comment](../Directives.md#comment)
 
 ## Public functions
 - [export](#export)

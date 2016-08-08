@@ -4,7 +4,7 @@
 ```
 
 ### Directives:
-- [Visit-time](../directives.md#visit-time)
+- [Visit-time](../Directives.md#visit-time)
 
 ## Public functions
 - [export](#export)

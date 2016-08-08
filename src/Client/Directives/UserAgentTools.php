@@ -58,6 +58,7 @@ class UserAgentTools implements RobotsTxtInterface
      */
     public function __destruct()
     {
+        // Make sure the Comment client is initialized at least once. 
         $this->handler->comment()->client();
     }
 

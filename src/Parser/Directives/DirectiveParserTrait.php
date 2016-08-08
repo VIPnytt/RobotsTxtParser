@@ -26,7 +26,6 @@ trait DirectiveParserTrait
      */
     private function generateRulePair($line, array $whiteList)
     {
-        $whiteList = array_map('strtolower', $whiteList);
         // Split by directive and rule
         $pair = array_map('trim', explode(':', $line, 2));
         // Check if the line contains a rule
@@ -52,7 +51,7 @@ trait DirectiveParserTrait
      */
     private function draftParseTime($string)
     {
-        $array = preg_replace('/[^0-9]/', '', explode('-', $string, 3));
+        $array = explode('-', str_replace('+', '', filter_var($string, FILTER_SANITIZE_NUMBER_INT)), 3);
         if (count($array) !== 2 ||
             ($fromTime = date_create_from_format('Hi', $array[0], $dtz = new DateTimeZone('UTC'))) === false ||
             ($toTime = date_create_from_format('Hi', $array[1], $dtz)) === false

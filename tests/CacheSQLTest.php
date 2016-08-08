@@ -47,7 +47,7 @@ SQL
         $query->bindParam(':base', $base, PDO::PARAM_STR);
         $query->execute();
         $row = $query->fetch();
-        $this->assertEquals($client->render()->compressed("\n"), $row['content']);
+        $this->assertEquals($client->render()->compressed(PHP_EOL), $row['content']);
 
         for ($i = 1; $i <= 2; $i++) {
             $parser->client($uri);

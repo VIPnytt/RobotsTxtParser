@@ -4,8 +4,8 @@
 ```
 
 ### Directives:
-- [Cache-delay](../directives.md#cache-delay)
-- [Crawl-delay](../directives.md#crawl-delay)
+- [Cache-delay](../Directives.md#cache-delay)
+- [Crawl-delay](../Directives.md#crawl-delay)
 
 ## Public functions
 - [export](#export)
@@ -39,7 +39,7 @@ Get selected user-agent.
 Get the numeric value of the directive.
 
 __`Cache-delay` specific:__
-When the value is requested but not found, the value of [``Crawl-delay``](../directives.md#crawl-delay) is returned, to maintain compatibility.
+When the value is requested but not found, the value of [``Crawl-delay``](../Directives.md#crawl-delay) is returned, to maintain compatibility.
 
 ### handle
 ```php
@@ -49,4 +49,4 @@ When the value is requested but not found, the value of [``Crawl-delay``](../dir
 Returns an instance of [Delay\ClientInterface](DelayInterface.md).
 
 __`Cache-delay` specific:__
-When the value is requested but not found, the value of [``Crawl-delay``](../directives.md#crawl-delay) is returned, to maintain compatibility.
+When the value is requested but not found, the value of [``Crawl-delay``](../Directives.md#crawl-delay) is returned, to maintain compatibility.

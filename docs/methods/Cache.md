@@ -3,6 +3,8 @@
 @package vipnytt\RobotsTxtParser
 ```
 
+Cache manager
+
 ## Public functions
 - [__construct](#__construct)
 - [clean](#clean)

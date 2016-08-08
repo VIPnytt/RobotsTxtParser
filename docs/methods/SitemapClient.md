@@ -4,7 +4,7 @@
 ```
 
 ### Directives:
-- [Sitemap](../directives.md#sitemap)
+- [Sitemap](../Directives.md#sitemap)
 
 ## Public functions
 - [export](#export)

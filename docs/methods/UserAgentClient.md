@@ -4,7 +4,7 @@
 ```
 
 ### Directives:
-- [User-agent](../directives.md#user-agent)
+- [User-agent](../Directives.md#user-agent)
 
 ## Public functions
 - [allow](#allow)
@@ -24,7 +24,7 @@
 ```php
 @return AllowClient
 ```
-Wrapper for the [Allow](../directives.md#allow) directive.
+Wrapper for the [Allow](../Directives.md#allow) directive.
 
 Returns an instance of [AllowClient](AllowClient.md).
 
@@ -32,7 +32,7 @@ Returns an instance of [AllowClient](AllowClient.md).
 ```php
 @return DelayClient
 ```
-Wrapper for the [Cache-delay](../directives.md#cache-delay) directive.
+Wrapper for the [Cache-delay](../Directives.md#cache-delay) directive.
 
 Returns an instance of [DelayClient](DelayClient.md).
 
@@ -40,7 +40,7 @@ Returns an instance of [DelayClient](DelayClient.md).
 ```php
 @return CommentClient
 ```
-Wrapper for the [Comment](../directives.md#comment) directive.
+Wrapper for the [Comment](../Directives.md#comment) directive.
 
 Returns an instance of [CommentClient](CommentClient.md).
 
@@ -48,7 +48,7 @@ Returns an instance of [CommentClient](CommentClient.md).
 ```php
 @return DelayClient
 ```
-Wrapper for the [Crawl-delay](../directives.md#crawl-delay) directive.
+Wrapper for the [Crawl-delay](../Directives.md#crawl-delay) directive.
 
 Returns an instance of [DelayClient](DelayClient.md).
 
@@ -56,7 +56,7 @@ Returns an instance of [DelayClient](DelayClient.md).
 ```php
 @return AllowClient
 ```
-Wrapper for the [Disallow](../directives.md#disallow) directive.
+Wrapper for the [Disallow](../Directives.md#disallow) directive.
 
 Returns an instance of [AllowClient](AllowClient.md).
 
@@ -84,7 +84,7 @@ Check if an URI is disallowed to crawl.
 ```php
 @return AllowClient
 ```
-Wrapper for the [NoIndex](../directives.md#noindex) directive.
+Wrapper for the [NoIndex](../Directives.md#noindex) directive.
 
 Returns an instance of [AllowClient](AllowClient.md).
 
@@ -92,7 +92,7 @@ Returns an instance of [AllowClient](AllowClient.md).
 ```php
 @return RequestRateClient
 ```
-Wrapper for the [Request-rate](../directives.md#request-rate) directive.
+Wrapper for the [Request-rate](../Directives.md#request-rate) directive.
 
 Returns an instance of [RequestRateClient](RequestRateClient.md).
 
@@ -100,7 +100,7 @@ Returns an instance of [RequestRateClient](RequestRateClient.md).
 ```php
 @return RobotVersionClient
 ```
-Wrapper for the [Robot-version](../directives.md#robot-version) directive.
+Wrapper for the [Robot-version](../Directives.md#robot-version) directive.
 
 Returns an instance of [RobotVersionClient](RobotVersionClient.md).
 
@@ -108,6 +108,6 @@ Returns an instance of [RobotVersionClient](RobotVersionClient.md).
 ```php
 @return VisitTimeClient
 ```
-Wrapper for the [Visit-time](../directives.md#visit-time) directive.
+Wrapper for the [Visit-time](../Directives.md#visit-time) directive.
 
 Returns an instance of [VisitTimeClient](VisitTimeClient.md).

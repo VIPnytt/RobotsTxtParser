@@ -19,11 +19,7 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  */
 class EncodingHandler implements RobotsTxtInterface
 {
-    /**
-     * Errors
-     * @var array
-     */
-    protected $errors = [];
+    use ErrorHandlerTrait;
 
     /**
      * String to convert
@@ -66,10 +62,10 @@ class EncodingHandler implements RobotsTxtInterface
                      'xml',
                      'mbstring',
                  ] as $extension) {
-            $last = end($this->errors);
+            $last = end($this->errorLog);
             if (extension_loaded($extension) &&
                 ($result = call_user_func([$this, $extension])) !== false &&
-                $last === end($this->errors)
+                $last === end($this->errorLog)
             ) {
                 restore_error_handler();
                 return $result;
@@ -147,20 +143,5 @@ class EncodingHandler implements RobotsTxtInterface
             return false;
         }
         return $converted;
-    }
-
-    /**
-     * Custom error handler
-     *
-     * @param int $errNo
-     * @param string $errStr
-     * @param string $errFile
-     * @param string $errLine
-     * @return bool
-     */
-    public function errorHandlerCallback($errNo, $errStr, $errFile, $errLine)
-    {
-        $this->errors[microtime(true)] = "lvl: " . $errNo . " | msg:" . $errStr . " | file:" . $errFile . " | ln:" . $errLine;
-        return true;
     }
 }

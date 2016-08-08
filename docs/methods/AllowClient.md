@@ -4,9 +4,9 @@
 ```
 
 ### Directives:
-- [Allow](../directives.md#allow)
-- [Disallow](../directives.md#disallow)
-- [NoIndex](../directives.md#noindex)
+- [Allow](../Directives.md#allow)
+- [Disallow](../Directives.md#disallow)
+- [NoIndex](../Directives.md#noindex)
 
 ## Public functions
 - [cleanParam](#cleanparam)
@@ -18,7 +18,7 @@
 ```php
 @return CleanParamClient
 ```
-Wrapper for the inline [CleanParam](../directives.md#cleanparam) directive.
+Wrapper for the inline [CleanParam](../Directives.md#cleanparam) directive.
 
 Returns an instance of [CleanParamClient](CleanParamClient.md).
 
@@ -32,7 +32,7 @@ Export an array of the current directives rules.
 ```php
 @return HostInlineClient
 ```
-Wrapper for the inline [Host](../directives.md#host) directive.
+Wrapper for the inline [Host](../Directives.md#host) directive.
 
 Returns an instance of [HostInlineClient](Hostinlineclient.md).
 

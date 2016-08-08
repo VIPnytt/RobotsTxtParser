@@ -1,6 +1,6 @@
 {
   "name": "vipnytt/robotstxtparser",
-  "description": "Robots.txt parsing library, according to Google, Yandex, W3C and The Web Robots Pages specifications.",
+  "description": "Robots.txt parsing library, with full support for every directive and specification.",
   "type": "library",
   "keywords": [
     "robots.txt",
@@ -9,8 +9,8 @@
     "Yandex",
     "W3C",
     "The Web Robots Pages",
-    "Robot exclusion standard",
     "Robots Exclusion Protocol",
+    "Robot exclusion standard",
     "REP",
     "Robot",
     "Robots",

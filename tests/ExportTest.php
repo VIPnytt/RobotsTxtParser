@@ -39,6 +39,17 @@ class ExportTest extends TestCase
             foreach ($rendered as $robotstxt) {
                 $this->testExport($robotstxt, $export, false);
             }
+
+            $import = new RobotsTxtParser\Import($export, 'http://example.com');
+            $this->assertInstanceOf('vipnytt\RobotsTxtParser\Import', $import);
+
+            $this->assertEquals($export, $import->export());
+            $this->assertEquals([], $import->getIgnoredImportData());
+
+            $this->assertEquals($rendered['compressed'], $import->render()->compressed("\n"));
+            $this->assertEquals($rendered['minimal'], $import->render()->minimal("\n"));
+            $this->assertEquals($rendered['normal'], $import->render()->normal("\n"));
+            $this->assertEquals($rendered['compatibility'], $import->render()->compatibility("\n"));
         }
     }
 

@@ -83,7 +83,7 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
             return false;
         }
         $multiplier = 1;
-        switch (strtolower(substr(preg_replace('/[^A-Za-z]/', '', $parts[1]), 0, 1))) {
+        switch (strtolower(substr(preg_replace('/[^A-Za-z]/', '', filter_var($parts[1], FILTER_SANITIZE_STRING)), 0, 1))) {
             case 'm':
                 $multiplier = 60;
                 break;
@@ -94,9 +94,7 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
                 $multiplier = 86400;
                 break;
         }
-        $num = floatval(preg_replace('/[^0-9]/', '', $parts[0]));
-        $sec = floatval(preg_replace('/[^0-9.]/', '', $parts[1])) * $multiplier;
-        $rate = $sec / $num;
+        $rate = abs(filter_var($parts[1], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION)) * $multiplier / abs(filter_var($parts[0], FILTER_SANITIZE_NUMBER_INT));
         return $rate > 0 ? $rate : false;
     }
 

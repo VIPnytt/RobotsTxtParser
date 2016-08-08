@@ -3,6 +3,8 @@
 @package vipnytt\RobotsTxtParser
 ```
 
+Delay manager
+
 ## Public functions
 - [__construct](#__construct)
 - [clean](#clean)

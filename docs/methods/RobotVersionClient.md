@@ -4,7 +4,7 @@
 ```
 
 ### Directives:
-- [Robot-version](../directives.md#robot-version)
+- [Robot-version](../Directives.md#robot-version)
 
 ## Public functions
 - [export](#export)

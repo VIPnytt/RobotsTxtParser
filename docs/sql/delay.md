@@ -5,9 +5,9 @@ Did you know this number is as high as about 40% of all `robots.txt` files?
 _Source: internal statistics_
 
 Examples of a 5 second interval:
-- [`Crawl-delay: 5`](../directives.md#crawl-delay)
-- [`Cache-delay: 5`](../directives.md#cache-delay)
-- [`Request-rate: 720/1h`](../directives.md#request-rate)
+- [`Crawl-delay: 5`](../Directives.md#crawl-delay)
+- [`Cache-delay: 5`](../Directives.md#cache-delay)
+- [`Request-rate: 720/1h`](../Directives.md#request-rate)
 
 #### Shared-setup compatible
 Multiple _user-agents_ / _crawlers_ may share the same database. The delay is handled and stored individually for each user-agent, leaving no worries.

@@ -20,5 +20,6 @@ __Other available classes:__
 - [Cache](Cache.md)
 - [Delay](DelayManager.md)
   - [ClientInterface](DelayInterface.md)
+- [Import](Import.md)
 - [RenderClient](RenderClient.md)
 - [UriClient](UriClient.md)

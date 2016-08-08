@@ -3,6 +3,8 @@
 @package vipnytt\RobotsTxtParser
 ```
 
+Parse the robots.txt content of an URI
+
 ## Public functions
 - [__construct](#__construct)
 - [parent::TxtClient](#parenttxtclient)

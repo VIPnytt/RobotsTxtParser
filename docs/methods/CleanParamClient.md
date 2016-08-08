@@ -4,7 +4,7 @@
 ```
 
 ### Directives:
-- [Clean-param](../directives.md#clean-param)
+- [Clean-param](../Directives.md#clean-param)
 
 ## Public functions
 - [parent::InlineCleanParamClient](#parentinlinecleanparamclient)

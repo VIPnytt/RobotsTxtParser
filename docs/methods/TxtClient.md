@@ -3,6 +3,8 @@
 @package vipnytt\RobotsTxtParser
 ```
 
+Parse robots.txt content
+
 ## Public functions
 - [__construct](#__construct)
 - [cleanParam](#cleanparam)
@@ -27,7 +29,7 @@
 ```php
 @return CleanParamClient
 ```
-Wrapper for the [Clean-param](../directives.md#clean-param) directive.
+Wrapper for the [Clean-param](../Directives.md#clean-param) directive.
 
 Returns an instance of [CleanParamClient](CleanParamClient.md).
 
@@ -47,7 +49,7 @@ List all user-agents defined in the `robots.txt`.
 ```php
 @return HostClient
 ```
-Wrapper for the [Host](../directives.md#host) directive.
+Wrapper for the [Host](../Directives.md#host) directive.
 
 Returns an instance of [HostClient](HostClient.md).
 
@@ -61,7 +63,7 @@ Returns an instance of [RenderClient](RenderClient.md).
 ```php
 @return SitemapClient
 ```
-Wrapper for the [Sitemap](../directives.md#sitemap) directive.
+Wrapper for the [Sitemap](../Directives.md#sitemap) directive.
 
 Returns an instance of [SitemapClient](SitemapClient.md).
 
@@ -70,6 +72,6 @@ Returns an instance of [SitemapClient](SitemapClient.md).
 @param string $string
 @return UserAgentClient
 ```
-Wrapper for the [User-agent](../directives.md#user-agent) directive.
+Wrapper for the [User-agent](../Directives.md#user-agent) directive.
 
 Returns an instance of [UserAgentClient](UserAgentClient.md).

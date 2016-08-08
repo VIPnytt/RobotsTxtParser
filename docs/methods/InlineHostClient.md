@@ -4,7 +4,7 @@
 ```
 
 ### Directives:
-- [Host](../directives.md#host)
+- [Host](../Directives.md#host)
 
 ## Public functions
 - [export](#export)

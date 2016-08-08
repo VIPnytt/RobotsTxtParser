@@ -3,6 +3,8 @@
 @package vipnytt\RobotsTxtParser\Client
 ```
 
+Generate `robots.txt` content.
+
 ## Public functions
 - [compatibility](#compatibility)
 - [compressed](#compressed)

@@ -4,7 +4,7 @@
 ```
 
 ### Directives:
-- [Request-rate](../directives.md#request-rate)
+- [Request-rate](../Directives.md#request-rate)
 
 ## Public functions
 - [export](#export)
@@ -38,7 +38,7 @@ Get selected user-agent.
 ```
 Get the rate for an given timestamp. If no timestamp integer is provided, current timestamp is used.
 
-When the value is requested but not found, the value of [``Crawl-delay``](../directives.md#crawl-delay) is returned, to maintain compatibility.
+When the value is requested but not found, the value of [``Crawl-delay``](../Directives.md#crawl-delay) is returned, to maintain compatibility.
 
 ### handle
 ```php
@@ -47,4 +47,4 @@ When the value is requested but not found, the value of [``Crawl-delay``](../dir
 ```
 Returns an instance of [Delay\ClientInterface](DelayInterface.md).
 
-When the value is requested but not found, the value of [``Crawl-delay``](../directives.md#crawl-delay) is returned, to maintain compatibility.
+When the value is requested but not found, the value of [``Crawl-delay``](../Directives.md#crawl-delay) is returned, to maintain compatibility.

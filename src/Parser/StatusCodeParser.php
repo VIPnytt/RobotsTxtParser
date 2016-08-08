@@ -13,7 +13,6 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 /**
  * Class StatusCodeParser
  *
- *
  * @package vipnytt\RobotsTxtParser\Parser
  */
 class StatusCodeParser implements RobotsTxtInterface

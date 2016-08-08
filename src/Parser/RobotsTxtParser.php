@@ -44,7 +44,7 @@ class RobotsTxtParser implements RobotsTxtInterface
      * @param string $content
      * @param string|null $effectiveUri
      */
-    public function __construct($baseUri, $content, $effectiveUri = null)
+    public function __construct($baseUri, &$content, $effectiveUri = null)
     {
         mb_internal_encoding(self::ENCODING);
         $baseParser = new UriParser($baseUri);
@@ -64,7 +64,7 @@ class RobotsTxtParser implements RobotsTxtInterface
      * @param string $txt
      * @return bool
      */
-    private function parseTxt($txt)
+    private function parseTxt(&$txt)
     {
         $result = [];
         $lines = array_filter(array_map('trim', mb_split('\r\n|\n|\r', $txt)));

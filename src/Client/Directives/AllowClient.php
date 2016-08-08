@@ -43,7 +43,7 @@ class AllowClient implements ClientInterface, RobotsTxtInterface
     /**
      * AllowClient constructor.
      *
-     * @param array $paths
+     * @param string[] $paths
      * @param InlineHostClient $host
      * @param InlineCleanParamClient $cleanParam
      */
