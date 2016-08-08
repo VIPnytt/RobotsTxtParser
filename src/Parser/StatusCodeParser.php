@@ -57,6 +57,9 @@ class StatusCodeParser implements RobotsTxtInterface
     /**
      * Check if the code overrides the robots.txt file
      *
+     * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#handling-http-result-codes
+     * @link https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#additional-info
+     *
      * @return string|false
      */
     public function accessOverride()

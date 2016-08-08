@@ -23,15 +23,15 @@ trait PhpAddOnTrait
      * @param array $array2
      * @return array
      */
-    private function arrayDiffAssocRecursive(&$array1, &$array2)
+    private function arrayDiffAssocRecursive(array &$array1, array &$array2)
     {
         $difference = [];
         foreach ($array1 as $key => $value) {
             if (is_array($value)) {
                 if (!isset($array2[$key]) || !is_array($array2[$key])) {
                     $difference[$key] = $value;
-                } elseif (!empty($new_diff = $this->arrayDiffAssocRecursive($value, $array2[$key]))) {
-                    $difference[$key] = $new_diff;
+                } elseif (!empty($newDiff = $this->arrayDiffAssocRecursive($value, $array2[$key]))) {
+                    $difference[$key] = $newDiff;
                 }
             } elseif (!array_key_exists($key, $array2) || $array2[$key] !== $value) {
                 $difference[$key] = $value;
@@ -70,24 +70,19 @@ trait PhpAddOnTrait
      */
     private function arrayMergeRecursiveEx(array $array1, array &$array2)
     {
-        $merged = $array1;
         foreach ($array2 as $key => &$value) {
             if (is_array($value) &&
-                isset($merged[$key]) &&
-                is_array($merged[$key])
+                isset($array1[$key]) &&
+                is_array($array1[$key])
             ) {
-                $merged[$key] = $this->arrayMergeRecursiveEx($merged[$key], $value);
-            } else {
-                if (is_numeric($key)) {
-                    if (!in_array($value, $merged)) {
-                        $merged[] = $value;
-                    }
-                } else {
-                    $merged[$key] = $value;
-                }
+                $array1[$key] = $this->arrayMergeRecursiveEx($array1[$key], $value);
+            } elseif (!is_int($key)) {
+                $array1[$key] = $value;
+            } elseif (!in_array($value, $array1)) {
+                $array1[] = $value;
             }
         }
-        return $merged;
+        return $array1;
     }
 
     /**

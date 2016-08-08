@@ -96,7 +96,8 @@ class TxtClient extends RobotsTxtParser
     {
         if ($bytes === null) {
             return $this->content;
-        } elseif ($bytes < (self::BYTE_LIMIT * 0.25)) {
+        } elseif (intval($bytes) < (self::BYTE_LIMIT * 0.046875)) {
+            // less than 24 kilobytes (512 kilobytes * 0.046875)
             throw new ClientException('Byte limit is set dangerously low! Default value=' . self::BYTE_LIMIT);
         }
         return $this->content = mb_strcut($this->content, 0, intval($bytes));

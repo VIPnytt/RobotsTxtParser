@@ -84,10 +84,14 @@ trait DirectiveClientTrait
          * Warning: preg_match need to be replaced
          *
          * Bug report
-         * @link https://github.com/t1gor/Robots.txt-Core-Class/issues/62
+         * @link https://github.com/t1gor/Robots.txt-Parser-Class/issues/59
          *
-         * An robots.txt parser, where a bug-fix is planned
+         * An robots.txt parser, where a bug-fix is/was planned
          * @link https://github.com/diggin/Diggin_RobotRules
+         *
+         * References:
+         * @link https://github.com/diggin/Diggin_RobotRules/blob/d5fe3c7a41be28dcd20fafee3ed4297dbc9e0378/README.markdown
+         * @link https://github.com/diggin/Diggin_RobotRules/commit/d5fe3c7a41be28dcd20fafee3ed4297dbc9e0378#diff-0a369498a5a8db3ac8fa606b544c9810R19
          *
          * The solution?
          * PHP PEG (parsing expression grammar)

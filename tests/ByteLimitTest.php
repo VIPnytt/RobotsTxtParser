@@ -44,11 +44,11 @@ class ByteLimitTest extends TestCase
                 false,
             ],
             [
-                15000,
+                24000,
                 true,
             ],
             [
-                20000,
+                25000,
                 false,
             ],
         ];
