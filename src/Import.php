@@ -23,8 +23,8 @@ class Import extends TxtClient
      * Root level export template
      */
     const TEMPLATE_ROOT = [
-        self::DIRECTIVE_HOST => null,
         self::DIRECTIVE_CLEAN_PARAM => [],
+        self::DIRECTIVE_HOST => null,
         self::DIRECTIVE_SITEMAP => [],
         self::DIRECTIVE_USER_AGENT => []
     ];
@@ -33,29 +33,27 @@ class Import extends TxtClient
      * User-agent level export template
      */
     const TEMPLATE_SUB = [
-        self::DIRECTIVE_ROBOT_VERSION => null,
-        self::DIRECTIVE_VISIT_TIME => [],
-        self::DIRECTIVE_NO_INDEX => [
-            self::DIRECTIVE_HOST => [],
+        self::DIRECTIVE_ALLOW => [
             'path' => [],
             self::DIRECTIVE_CLEAN_PARAM => [],
+            self::DIRECTIVE_HOST => [],
         ],
-        self::DIRECTIVE_DISALLOW =>
-            [
-                self::DIRECTIVE_HOST => [],
-                'path' => [],
-                self::DIRECTIVE_CLEAN_PARAM => [],
-            ],
-        self::DIRECTIVE_ALLOW =>
-            [
-                self::DIRECTIVE_HOST => [],
-                'path' => [],
-                self::DIRECTIVE_CLEAN_PARAM => [],
-            ],
-        self::DIRECTIVE_CRAWL_DELAY => null,
         self::DIRECTIVE_CACHE_DELAY => null,
-        self::DIRECTIVE_REQUEST_RATE => [],
         self::DIRECTIVE_COMMENT => [],
+        self::DIRECTIVE_CRAWL_DELAY => null,
+        self::DIRECTIVE_DISALLOW => [
+            'path' => [],
+            self::DIRECTIVE_CLEAN_PARAM => [],
+            self::DIRECTIVE_HOST => [],
+        ],
+        self::DIRECTIVE_NO_INDEX => [
+            self::DIRECTIVE_CLEAN_PARAM => [],
+            self::DIRECTIVE_HOST => [],
+            'path' => [],
+        ],
+        self::DIRECTIVE_REQUEST_RATE => [],
+        self::DIRECTIVE_ROBOT_VERSION => null,
+        self::DIRECTIVE_VISIT_TIME => [],
     ];
 
     /**
@@ -229,8 +227,11 @@ class Import extends TxtClient
         $source = $this->array;
         $source = $this->arrayFilterRecursive($source);
         array_multisort($source);
-        $parsed = $this->arrayFilterRecursive($this->export());
+        $this->kSortRecursive($source);
+        $parsed = $this->export();
+        $parsed = $this->arrayFilterRecursive($parsed);
         array_multisort($parsed);
+        $this->kSortRecursive($parsed);
         return $this->arrayDiffAssocRecursive($source, $parsed);
     }
 }

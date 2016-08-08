@@ -3,7 +3,7 @@
 - [Delay](#delay)
 - [Import](#import)
 - [UriClient](#uriclient)
-- [TxtClient](txtclient)
+- [TxtClient](#txtclient)
 
 ## Cache
 [Cache documentation](methods/Cache.md)
@@ -96,7 +96,8 @@ $delayClient->sleep();
 ```
 
 ## Import
-[Import documentation](methods/Import.md)
+[Documentation](methods/Import.md)
+
 __Example usage:__
 ```php
 $client = new \vipnytt\RobotsTxtParser\Import($array);
@@ -109,7 +110,7 @@ $client->getIgnoredImportData();
 The `Import` class extends the `TxtClient`. See [TxtClient](#txtclient) for the rest of the available methods.
 
 ## UriClient
-[UriClient documentation](methods/UriClient.md)
+[Documentation](methods/UriClient.md)
 
 Note: _Most parameters available is set to their default values and is not shown. Referer to the documentation for the specific class, for a full overview._
 
@@ -149,7 +150,7 @@ $client->validUntil();
 The `UriClient` extends the `TxtClient`. See [TxtClient](#txtclient) for the rest of the available methods.
 
 ## TxtClient
-[TxtClient documentation](methods/TxtClient.md)
+[Documentation](methods/TxtClient.md)
 
 Note: _Most parameters available is set to their default values and is not shown. Referer to the documentation for the specific class, for a full overview._
 

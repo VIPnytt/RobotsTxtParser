@@ -47,9 +47,9 @@ trait PhpAddOnTrait
      * @param array $array
      * @return array
      */
-    private function arrayFilterRecursive(&$array)
+    private function arrayFilterRecursive(array &$array)
     {
-        foreach ($array as $key => $item) {
+        foreach ($array as $key => &$item) {
             is_array($item) && $array[$key] = $this->arrayFilterRecursive($item);
             if ($array[$key] === null ||
                 $array[$key] === []
@@ -88,5 +88,24 @@ trait PhpAddOnTrait
             }
         }
         return $merged;
+    }
+
+    /**
+     * ksort_recursive
+     * @link http://stackoverflow.com/a/2543447/4396537
+     *
+     * @param array $array
+     * @return bool
+     */
+    private function kSortRecursive(array &$array)
+    {
+        foreach ($array as &$current) {
+            if (is_array($current) &&
+                $this->kSortRecursive($current) === false
+            ) {
+                return false;
+            }
+        }
+        return ksort($array);
     }
 }
