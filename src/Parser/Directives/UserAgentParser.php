@@ -243,8 +243,9 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
      */
     public function client($product = self::USER_AGENT, $version = null, $statusCode = null)
     {
-        if (isset($this->client[$product . $version . $statusCode])) {
-            return $this->client[$product . $version . $statusCode];
+        $infix = $product . $version . $statusCode;
+        if (isset($this->client[$infix])) {
+            return $this->client[$infix];
         }
         $userAgentProduct = rtrim($product . '/' . $version, '/');
         $userAgentMatch = $userAgentProduct;
@@ -255,10 +256,9 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
                 $userAgentMatch = self::USER_AGENT;
             }
         }
-        $client = new UserAgentClient($this->handler[$userAgentMatch], $this->base, $statusCode, $userAgentProduct);
-        $this->client = [
-            $product . $version . $statusCode => $client
-        ];
-        return $client;
+        // Clear cache
+        $this->client = [];
+        // Cache and return
+        return $this->client[$infix] = new UserAgentClient($this->handler[$userAgentMatch], $this->base, $statusCode, $userAgentProduct);
     }
 }
