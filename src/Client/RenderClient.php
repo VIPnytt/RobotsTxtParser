@@ -85,7 +85,6 @@ class RenderClient implements RobotsTxtInterface
      */
     public function minimal($eol = "\r\n")
     {
-
         return $this->generate(1, $eol);
     }
 

@@ -14,7 +14,7 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
  * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/DelayClient.md for documentation
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
-class DelayClient extends DelayCore implements ClientInterface
+class DelayClient extends DelayCore
 {
     /**
      * Value

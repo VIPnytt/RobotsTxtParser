@@ -12,7 +12,7 @@ use vipnytt\RobotsTxtParser\Client\Directives\UserAgentClient;
 use vipnytt\RobotsTxtParser\Handler\Directives\SubDirectiveHandler;
 use vipnytt\RobotsTxtParser\Handler\RenderHandler;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
-use vipnytt\UserAgentParser as UAStringParser;
+use vipnytt\UserAgentParser as UserAgentStringParser;
 
 /**
  * Class UserAgentParser
@@ -246,10 +246,19 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
         if (isset($this->client[$product . $version . $statusCode])) {
             return $this->client[$product . $version . $statusCode];
         }
-        $userAgentParser = new UAStringParser($product, $version);
-        if (($userAgentMatch = $userAgentParser->getMostSpecific($this->getUserAgents())) === false) {
-            $userAgentMatch = self::USER_AGENT;
+        $userAgentProduct = rtrim($product . '/' . $version, '/');
+        $userAgentMatch = $userAgentProduct;
+        if (!isset($this->handler[$userAgentMatch])) {
+            $userAgentParser = new UserAgentStringParser($product, $version);
+            $userAgentProduct = $userAgentParser->getProduct();
+            if (($userAgentMatch = $userAgentParser->getMostSpecific($this->getUserAgents())) === false) {
+                $userAgentMatch = self::USER_AGENT;
+            }
         }
-        return $this->client[$product . $version . $statusCode] = new UserAgentClient($this->handler[$userAgentMatch], $this->base, $statusCode, $userAgentParser->getProduct());
+        $client = new UserAgentClient($this->handler[$userAgentMatch], $this->base, $statusCode, $userAgentProduct);
+        $this->client = [
+            $product . $version . $statusCode => $client
+        ];
+        return $client;
     }
 }

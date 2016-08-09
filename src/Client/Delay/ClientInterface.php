@@ -33,7 +33,7 @@ interface ClientInterface
      *
      * @return float|int
      */
-    public function getQueue();
+    public function checkQueue();
 
     /**
      * Reset queue

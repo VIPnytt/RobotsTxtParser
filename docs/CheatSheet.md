@@ -78,9 +78,9 @@ $delayInterface = $txtClient->userAgent('myBot')->requestRate();
 // Delay client constructed from any DelayInterface class
 $delayClient = $delayHandler->client($delayInterface);
 ```
-Get the size of the current request queue in seconds
+Check the current request queue, returns the number of seconds of expected delay/sleep time.
 ```php
-$delayClient->getQueue();
+$delayClient->checkQueue();
 ```
 Get the timestamp w/microseconds you'll have to wait until before sending the request
 ```php
@@ -284,7 +284,7 @@ $client->userAgent('myBot')->cacheDelay()->getValue();
 
 Get the size of the current request queue in seconds
 ```php
-$client->userAgent('myBot')->cacheDelay()->handle($pdo)->getQueue();
+$client->userAgent('myBot')->cacheDelay()->handle($pdo)->checkQueue();
 ```
 Get the timestamp w/microseconds you'll have to wait until before sending the request
 ```php
@@ -336,7 +336,7 @@ $client->userAgent('myBot')->crawlDelay()->getValue();
 
 Get the size of the current request queue in seconds
 ```php
-$client->userAgent('myBot')->crawlDelay()->handle($pdo)->getQueue();
+$client->userAgent('myBot')->crawlDelay()->handle($pdo)->checkQueue();
 ```
 Get the timestamp w/microseconds you'll have to wait until before sending the request
 ```php
@@ -448,7 +448,7 @@ $client->userAgent('myBot')->requestRate()->getValue();
 
 Get the size of the current request queue in seconds
 ```php
-$client->userAgent('myBot')->requestRate()->handle($pdo)->getQueue();
+$client->userAgent('myBot')->requestRate()->handle($pdo)->checkQueue();
 ```
 Get the timestamp w/microseconds you'll have to wait until before sending the request
 ```php

@@ -31,7 +31,7 @@ class DelaySQLTest extends TestCase
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
         $parser = new RobotsTxtParser\UriClient($uri);
-        $this->assertTrue(is_numeric($parser->userAgent($userAgent)->crawlDelay()->handle($pdo)->getQueue()));
+        $this->assertTrue(is_numeric($parser->userAgent($userAgent)->crawlDelay()->handle($pdo)->checkQueue()));
         $this->assertTrue(is_numeric($parser->userAgent($userAgent)->crawlDelay()->handle($pdo)->getTimeSleepUntil()));
         $this->assertTrue(is_numeric($parser->userAgent($userAgent)->crawlDelay()->handle($pdo)->sleep()));
 
@@ -43,7 +43,7 @@ class DelaySQLTest extends TestCase
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client\Delay\ClientInterface', $client);
         $this->assertTrue(is_numeric($client->getTimeSleepUntil()));
 
-        $this->assertTrue(is_numeric($client->getQueue()));
+        $this->assertTrue(is_numeric($client->checkQueue()));
         $start = microtime(true);
         $sleepTime = $client->sleep();
         $stop = microtime(true);
@@ -59,7 +59,7 @@ class DelaySQLTest extends TestCase
 
         if ($parser->userAgent($userAgent)->crawlDelay()->getValue() > 0) {
             $client->reset(60);
-            $queue = $client->getQueue();
+            $queue = $client->checkQueue();
             $this->assertLessThanOrEqual(60, $queue);
             $this->assertGreaterThan(59, $queue);
             $this->assertTrue(count($delayHandler->debug($uri), COUNT_NORMAL) >= 3);

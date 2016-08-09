@@ -55,12 +55,12 @@ trait DirectiveClientTrait
      */
     private function checkPaths($path, array $paths)
     {
+        $escape = [
+            '?' => '\?',
+            '.' => '\.',
+            '*' => '.*',
+        ];
         foreach ($paths as $rule) {
-            $escape = [
-                '?' => '\?',
-                '.' => '\.',
-                '*' => '.*',
-            ];
             foreach ($escape as $search => $replace) {
                 $rule = str_replace($search, $replace, $rule);
             }
@@ -102,7 +102,7 @@ trait DirectiveClientTrait
                 // Rule does not match
                 return false;
             } elseif (mb_strpos($rule, '$') === false || // No special parsing required
-                mb_substr($rule, 0, -1) == $path // Rule does contain an end anchor, and matches
+                mb_substr($rule, 0, -1) === $path // Rule does contain an end anchor, and matches
             ) {
                 return true;
             } elseif (($wildcardPos = mb_strrpos($rule, '*')) !== false) {

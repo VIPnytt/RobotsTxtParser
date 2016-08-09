@@ -53,7 +53,7 @@ interface RobotsTxtInterface
      * @link https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#file-format
      * @link https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#additional-info
      */
-    const BYTE_LIMIT = 524288; // 4,194,304 bits | 512 kilobytes | 0.5 megabytes
+    const BYTE_LIMIT = 524288; // 512 kilobytes | 0.5 megabytes
 
     /**
      * Max rule length

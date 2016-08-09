@@ -66,7 +66,7 @@ class Client implements ClientInterface
      *
      * @return float|int
      */
-    public function getQueue()
+    public function checkQueue()
     {
         if ($this->delay == 0) {
             return 0;

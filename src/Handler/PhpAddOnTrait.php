@@ -26,7 +26,7 @@ trait PhpAddOnTrait
     private function arrayDiffAssocRecursive(array &$array1, array &$array2)
     {
         $difference = [];
-        foreach ($array1 as $key => $value) {
+        foreach ($array1 as $key => &$value) {
             if (is_array($value)) {
                 if (!isset($array2[$key]) || !is_array($array2[$key])) {
                     $difference[$key] = $value;
@@ -47,7 +47,7 @@ trait PhpAddOnTrait
      * @param array $array
      * @return array
      */
-    private function arrayFilterRecursive(array &$array)
+    private function arrayFilterRecursive(array $array)
     {
         foreach ($array as $key => &$item) {
             is_array($item) && $array[$key] = $this->arrayFilterRecursive($item);

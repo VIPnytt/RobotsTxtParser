@@ -77,7 +77,7 @@ Visit-time: 01.23-23.01
 Robot-version 2.0
 Comment: Please honor the robots.txt rules. Thanks!
 
-User-agent: Googlebot
+User-agent: Yahoo! slurp
 User-agent: Bingbot
 Disallow: /
 
@@ -161,7 +161,7 @@ ROBOTS
                                         'Please honor the robots.txt rules. Thanks!'
                                     ],
                                 ],
-                            'googlebot' =>
+                            'yahoo! slurp' =>
                                 [
                                     'robot-version' => null,
                                     'visit-time' => [],
@@ -266,7 +266,7 @@ request-rate:1/3.6s
 comment:Please honor the robots.txt rules. Thanks!
 user-agent:bingbot
 user-agent:duckduckgo
-user-agent:googlebot
+user-agent:yahoo! slurp
 disallow:/
 COMPRESSED
                     ,
@@ -288,7 +288,7 @@ Request-rate: 1/3.6s
 Comment: Please honor the robots.txt rules. Thanks!
 User-agent: bingbot
 User-agent: duckduckgo
-User-agent: googlebot
+User-agent: yahoo! slurp
 Disallow: /
 MINIMAL
                     ,
@@ -312,12 +312,12 @@ Comment: Please honor the robots.txt rules. Thanks!
 
 User-agent: bingbot
 User-agent: duckduckgo
-User-agent: googlebot
+User-agent: yahoo! slurp
 Disallow: /
 NORMAL
                     ,
                     'compatibility' => <<<COMPATIBILITY
-User-agent: googlebot
+User-agent: yahoo! slurp
 Disallow: /
 
 User-agent: duckduckgo
