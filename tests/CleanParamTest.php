@@ -37,9 +37,11 @@ class CleanParamTest extends TestCase
 
         $this->assertEquals($result['Clean-param'], $parser->cleanParam()->export());
 
-        $this->assertEquals($result['NoIndex'], $parser->userAgent()->noIndex()->cleanParam()->export());
-        $this->assertEquals($result['Disallow'], $parser->userAgent()->disallow()->cleanParam()->export());
-        $this->assertEquals($result['Allow'], $parser->userAgent()->allow()->cleanParam()->export());
+        for ($i = 1; $i <= 2; $i++) {
+            $this->assertEquals($result['NoIndex'], $parser->userAgent()->noIndex()->cleanParam()->export());
+            $this->assertEquals($result['Disallow'], $parser->userAgent()->disallow()->cleanParam()->export());
+            $this->assertEquals($result['Allow'], $parser->userAgent()->allow()->cleanParam()->export());
+        }
 
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render()->normal("\n"));

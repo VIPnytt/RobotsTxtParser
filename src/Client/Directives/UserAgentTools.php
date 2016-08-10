@@ -133,7 +133,7 @@ class UserAgentTools implements RobotsTxtInterface
                      self::DIRECTIVE_NO_INDEX => $this->handler->noIndex(),
                      self::DIRECTIVE_DISALLOW => $this->handler->disallow(),
                      self::DIRECTIVE_ALLOW => $this->handler->allow(),
-                 ] as $currentDirective => &$handler) {
+                 ] as $currentDirective => $handler) {
             if ($handler->client()->isListed($uri)) {
                 if ($currentDirective === self::DIRECTIVE_NO_INDEX) {
                     return $directive === self::DIRECTIVE_DISALLOW;

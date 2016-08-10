@@ -37,9 +37,11 @@ class HostTest extends TestCase
         $this->assertEquals('myhost.com', $parser->host()->getWithUriFallback());
         $this->assertFalse($parser->host()->isPreferred());
 
-        $this->assertFalse($parser->userAgent()->allow()->host()->isListed('http://www.myhost.com/'));
-        $this->assertTrue($parser->userAgent()->disallow()->host()->isListed('http://www.myhost.com/'));
-        $this->assertFalse($parser->userAgent()->noIndex()->host()->isListed('http://www.myhost.com/'));
+        for ($i = 1; $i <= 2; $i++) {
+            $this->assertFalse($parser->userAgent()->allow()->host()->isListed('http://www.myhost.com/'));
+            $this->assertTrue($parser->userAgent()->disallow()->host()->isListed('http://www.myhost.com/'));
+            $this->assertFalse($parser->userAgent()->noIndex()->host()->isListed('http://www.myhost.com/'));
+        }
 
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render()->normal("\n"));
