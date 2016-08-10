@@ -237,28 +237,24 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
      * Client
      *
      * @param string $product
-     * @param int|string|null $version
+     * @param float|int|string|null $version
      * @param int|null $statusCode
      * @return UserAgentClient
      */
     public function client($product = self::USER_AGENT, $version = null, $statusCode = null)
     {
-        $infix = $product . $version . $statusCode;
-        if (isset($this->client[$infix])) {
-            return $this->client[$infix];
+        $userAgentString = $version === null ? $product : $product . '/' . $version;
+        if (isset($this->client[$userAgentString])) {
+            // Already cached
+            return $this->client[$userAgentString];
+        } elseif (isset($this->handler[$userAgentString])) {
+            // 100% match
+            return $this->client[$userAgentString] = new UserAgentClient($this->handler[$userAgentString], $this->base, $statusCode, $product);
         }
-        $userAgentProduct = rtrim($product . '/' . $version, '/');
-        $userAgentMatch = $userAgentProduct;
-        if (!isset($this->handler[$userAgentMatch])) {
-            $userAgentParser = new UserAgentStringParser($product, $version);
-            $userAgentProduct = $userAgentParser->getProduct();
-            if (($userAgentMatch = $userAgentParser->getMostSpecific($this->getUserAgents())) === false) {
-                $userAgentMatch = self::USER_AGENT;
-            }
+        $userAgentParser = new UserAgentStringParser($product, $version);
+        if (($match = $userAgentParser->getMostSpecific($this->getUserAgents())) === false) {
+            $match = self::USER_AGENT;
         }
-        // Clear cache
-        $this->client = [];
-        // Cache and return
-        return $this->client[$infix] = new UserAgentClient($this->handler[$userAgentMatch], $this->base, $statusCode, $userAgentProduct);
+        return $this->client[$userAgentString] = new UserAgentClient($this->handler[$match], $this->base, $statusCode, $product);
     }
 }

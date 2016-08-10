@@ -59,7 +59,7 @@ class CleanParamTest extends TestCase
             [
                 <<<ROBOTS
 User-agent: *
-Disallow: Clean-param: s&ref /forum*/sh*wthread.php
+Disallow: Clean-param: s&ref /forum*/sh*wthread.php**
 Disallow: Clean-param: uid /
 Clean-param: abc /forum/showthread.php
 Clean-param: sid&sort /forum/*.php

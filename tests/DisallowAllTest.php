@@ -61,9 +61,9 @@ class DisallowAllTest extends TestCase
             [
                 <<<ROBOTS
 User-agent: *
-Disallow: /
-Disallow: /admin/
 Disallow: *test*
+Disallow: /admin/
+Disallow: /
 ROBOTS
                 ,
                 <<<RENDERED

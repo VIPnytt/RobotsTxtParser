@@ -34,6 +34,12 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
     private $requestRates = [];
 
     /**
+     * Client cache
+     * @var RequestRateClient
+     */
+    private $client;
+
+    /**
      * RequestRate constructor.
      *
      * @param string $base
@@ -107,8 +113,11 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
      */
     public function client($userAgent = self::USER_AGENT, $fallbackValue = 0)
     {
+        if (isset($this->client)) {
+            return $this->client;
+        }
         $this->sort();
-        return new RequestRateClient($this->base, $userAgent, $this->requestRates, $fallbackValue);
+        return $this->client = new RequestRateClient($this->base, $userAgent, $this->requestRates, $fallbackValue);
     }
 
     /**

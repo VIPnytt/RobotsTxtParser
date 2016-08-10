@@ -125,9 +125,9 @@ User-agent: anyone
 User-agent: *
 Disallow: /admin
 Disallow: /admin
-Disallow: /Admin
+Disallow: /Admin*
 Disallow: /temp#comment
-Disallow: /forum
+Disallow: /forum**
 Disallow: /admin/cp/test/
 
 User-agent: agentV

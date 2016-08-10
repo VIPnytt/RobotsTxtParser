@@ -27,6 +27,12 @@ class SitemapParser implements ParserInterface, RobotsTxtInterface
     private $sitemaps = [];
 
     /**
+     * Client cache
+     * @var SitemapClient
+     */
+    private $client;
+
+    /**
      * Sitemap constructor.
      */
     public function __construct()
@@ -59,7 +65,10 @@ class SitemapParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        return new SitemapClient($this->sitemaps);
+        if (isset($this->client)) {
+            return $this->client;
+        }
+        return $this->client = new SitemapClient($this->sitemaps);
     }
 
     /**

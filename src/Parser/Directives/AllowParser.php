@@ -55,6 +55,18 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
     private $host;
 
     /**
+     * Optimized for performance
+     * @var bool
+     */
+    private $optimized = false;
+
+    /**
+     * Client cache
+     * @var AllowClient
+     */
+    private $client;
+
+    /**
      * AllowParser constructor
      *
      * @param string $base
@@ -94,59 +106,15 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
      */
     private function addPath($path)
     {
-        foreach ([
-                     $path,
-                     '/',
-                     '*',
-                 ] as $testPath) {
-            if (in_array($testPath, $this->path)) {
-                return false;
-            }
-        }
-        if ($this->isPath($path)) {
+        $path = rtrim($path, '*');
+        if (in_array(mb_substr($path, 0, 1), [
+            '/',
+            '*',
+        ])) {
             $this->path[] = $path;
-            $this->removeOverlapping();
+            $this->optimized = false;
         }
         return in_array($path, $this->path);
-    }
-
-    /**
-     * Check if path is valid
-     *
-     * @param string $path
-     * @return bool
-     */
-    private function isPath($path)
-    {
-        if (mb_strpos($path, '/') !== 0) {
-            foreach ([
-                         '*',
-                         '?',
-                     ] as $char) {
-                $path = str_replace($char, '/', $path);
-            }
-        }
-        return mb_strpos($path, '/') === 0;
-    }
-
-    /**
-     * Remove overlapping paths
-     *
-     * @return bool
-     */
-    private function removeOverlapping()
-    {
-        foreach ($this->path as $key1 => $path1) {
-            foreach ($this->path as $key2 => $path2) {
-                if ($key1 !== $key2 &&
-                    mb_strpos($path1, $path2) === 0
-                ) {
-                    unset($this->path[$key1]);
-                    return $this->removeOverlapping();
-                }
-            }
-        }
-        return true;
     }
 
     /**
@@ -157,6 +125,9 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
      */
     public function render(RenderHandler $handler)
     {
+        if (!$this->optimized) {
+            $this->removeOverlapping();
+        }
         sort($this->path);
         $inline = new RenderHandler($handler->getLevel());
         $this->host->render($inline);
@@ -169,12 +140,39 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
+     * Remove overlapping paths
+     *
+     * @return bool
+     */
+    private function removeOverlapping()
+    {
+        foreach ($this->path as $key1 => &$path1) {
+            foreach ($this->path as $key2 => &$path2) {
+                if ($key1 !== $key2 &&
+                    (mb_strpos($path1, $path2) === 0 ||
+                        mb_strpos(str_replace('*', '/', $path1), $path2) === 0
+                    )
+                ) {
+                    unset($this->path[$key1]);
+                }
+            }
+        }
+        $this->optimized = true;
+        return true;
+    }
+
+    /**
      * Client
      *
      * @return AllowClient
      */
     public function client()
     {
-        return new AllowClient($this->path, $this->host->client(), $this->cleanParam->client());
+        if (isset($this->client)) {
+            return $this->client;
+        } elseif (!$this->optimized) {
+            $this->removeOverlapping();
+        }
+        return $this->client = new AllowClient($this->path, $this->host->client(), $this->cleanParam->client());
     }
 }

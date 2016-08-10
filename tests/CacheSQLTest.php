@@ -38,22 +38,13 @@ class CacheSQLTest extends TestCase
         $client = $parser->client($uri);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $client);
 
-        $query = $pdo->prepare(<<<SQL
-SELECT *
-FROM robotstxt__cache1
-WHERE base = :base;
-SQL
-        );
-        $query->bindParam(':base', $base, PDO::PARAM_STR);
-        $query->execute();
-        $row = $query->fetch();
-        $this->assertEquals($client->render()->compressed(PHP_EOL), $row['content']);
+        $debug = $parser->debug($uri);
+        $this->assertTrue(count($debug, COUNT_NORMAL) >= 5);
+        $this->assertEquals($debug['content'], $client->render()->compressed(PHP_EOL));
 
         for ($i = 1; $i <= 2; $i++) {
             $parser->client($uri);
         }
-
-        $this->assertTrue(count($parser->debug($uri), COUNT_NORMAL) >= 5);
 
         $parser->cron();
         $parser->clean();
@@ -86,6 +77,10 @@ SQL
             [
                 'ftp://mirror.ox.ac.uk/',
                 'ftp://mirror.ox.ac.uk:21',
+            ],
+            [
+                'http://www.goldmansachs.com/robots.txt',
+                'http://www.goldmansachs.com:80',
             ],
         ];
     }

@@ -77,10 +77,10 @@ abstract class DelayCore implements DelayInterface, ClientInterface
      */
     public function handle(PDO $pdo)
     {
-        if ($this->handler === null) {
-            $handler = new DatabaseHandler($pdo);
-            $this->handler = $handler->delayClient($this->base, $this->userAgent, $this->getValue());
+        if (isset($this->handler)) {
+            return $this->handler;
         }
-        return $this->handler;
+        $handler = new DatabaseHandler($pdo);
+        return $this->handler = $handler->delayClient($this->base, $this->userAgent, $this->getValue());
     }
 }

@@ -19,6 +19,12 @@ use vipnytt\RobotsTxtParser\Client\Directives\InlineCleanParamClient;
 class InlineCleanParamParser extends CleanParamParserCore
 {
     /**
+     * Client cache
+     * @var InlineCleanParamClient
+     */
+    private $client;
+
+    /**
      * InlineCleanParamParser constructor.
      */
     public function __construct()
@@ -33,6 +39,9 @@ class InlineCleanParamParser extends CleanParamParserCore
      */
     public function client()
     {
-        return new InlineCleanParamClient($this->cleanParam);
+        if (isset($this->client)) {
+            return $this->client;
+        }
+        return $this->client = new InlineCleanParamClient($this->cleanParam);
     }
 }

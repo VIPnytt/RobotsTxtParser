@@ -28,6 +28,12 @@ class VisitTimeParser implements ParserInterface, RobotsTxtInterface
     private $visitTimes = [];
 
     /**
+     * Client cache
+     * @var VisitTimeClient
+     */
+    private $client;
+
+    /**
      * VisitTime constructor.
      */
     public function __construct()
@@ -57,7 +63,10 @@ class VisitTimeParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        return new VisitTimeClient($this->visitTimes);
+        if (isset($this->client)) {
+            return $this->client;
+        }
+        return $this->client = new VisitTimeClient($this->visitTimes);
     }
 
     /**

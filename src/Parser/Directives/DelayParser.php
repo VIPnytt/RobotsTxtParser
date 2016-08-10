@@ -38,6 +38,12 @@ class DelayParser implements ParserInterface, RobotsTxtInterface
     private $delay;
 
     /**
+     * Client cache
+     * @var DelayClient
+     */
+    private $client;
+
+    /**
      * DelayParser constructor.
      *
      * @param string $base
@@ -80,7 +86,10 @@ class DelayParser implements ParserInterface, RobotsTxtInterface
      */
     public function client($userAgent = self::USER_AGENT, $fallbackValue = 0)
     {
-        return new DelayClient($this->base, $userAgent, $this->delay, $fallbackValue);
+        if (isset($this->client)) {
+            return $this->client;
+        }
+        return $this->client = new DelayClient($this->base, $userAgent, $this->delay, $fallbackValue);
     }
 
     /**

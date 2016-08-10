@@ -42,12 +42,12 @@ abstract class CleanParamParserCore implements ParserInterface, RobotsTxtInterfa
     {
         // split into parameter and path
         $array = array_map('trim', mb_split('\s+', $line, 2));
-        // strip any invalid characters from path prefix
-        $path = '/';
         if (isset($array[1])) {
+            // strip any invalid characters from path prefix
             $uriParser = new UriParser(preg_replace('/[^A-Za-z0-9\.-\/\*\_]/', '', $array[1]));
-            $path = $uriParser->encode();
+            $path = rtrim($uriParser->encode(), '*');
         }
+        $path = empty($path) ? '/' : $path;
         $param = array_map('trim', explode('&', $array[0]));
         foreach ($param as $key) {
             $this->cleanParam[$key][] = $path;

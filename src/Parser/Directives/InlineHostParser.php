@@ -19,6 +19,12 @@ use vipnytt\RobotsTxtParser\Handler\RenderHandler;
 class InlineHostParser extends HostParserCore
 {
     /**
+     * Client cache
+     * @var InlineHostClient
+     */
+    private $client;
+
+    /**
      * InlineHostParser constructor.
      *
      * @param string $base
@@ -36,7 +42,10 @@ class InlineHostParser extends HostParserCore
      */
     public function client()
     {
-        return new InlineHostClient($this->base, $this->effective, $this->host);
+        if (isset($this->client)) {
+            return $this->client;
+        }
+        return $this->client = new InlineHostClient($this->base, $this->effective, $this->host);
     }
 
     /**

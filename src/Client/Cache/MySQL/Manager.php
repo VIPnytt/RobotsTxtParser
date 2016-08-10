@@ -290,6 +290,7 @@ SQL
 SELECT base
 FROM robotstxt__cache1
 WHERE worker = :workerID
+ORDER BY nextUpdate DESC
 LIMIT 10;
 SQL
             );
@@ -297,10 +298,9 @@ SQL
             $query->execute();
             if ($query->rowCount() > 0) {
                 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                    if (!$this->push(new UriClient($row['base'], $this->curlOptions, $this->byteLimit))) {
-                        throw new ClientException('Unable to update `' . $row['base'] . '`');
+                    if ($this->push(new UriClient($row['base'], $this->curlOptions, $this->byteLimit))) {
+                        $log[(string)microtime(true)] = $row['base'];
                     }
-                    $log[(string)microtime(true)] = $row['base'];
                 }
             }
         }
@@ -338,7 +338,7 @@ SQL
         $delay = self::CACHE_TIME + $delay;
         $query = $this->pdo->prepare(<<<SQL
 DELETE FROM robotstxt__cache1
-WHERE (worker = 0 OR worker IS NULL) AND nextUpdate < (UNIX_TIMESTAMP() - :delay);
+WHERE nextUpdate < (UNIX_TIMESTAMP() - :delay);
 SQL
         );
         $query->bindParam(':delay', $delay, PDO::PARAM_INT);
