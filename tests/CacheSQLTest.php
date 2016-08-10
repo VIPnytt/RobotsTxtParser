@@ -78,10 +78,6 @@ class CacheSQLTest extends TestCase
                 'ftp://mirror.ox.ac.uk/',
                 'ftp://mirror.ox.ac.uk:21',
             ],
-            [
-                'http://www.goldmansachs.com/robots.txt',
-                'http://www.goldmansachs.com:80',
-            ],
         ];
     }
 
