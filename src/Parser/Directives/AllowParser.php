@@ -107,10 +107,12 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
     private function addPath($path)
     {
         $path = rtrim($path, '*');
-        if (in_array(mb_substr($path, 0, 1), [
-            '/',
-            '*',
-        ])) {
+        if (!in_array('/', $this->path) &&
+            in_array(mb_substr($path, 0, 1), [
+                '/',
+                '*',
+            ])
+        ) {
             $this->path[] = $path;
             $this->optimized = false;
         }
@@ -149,9 +151,7 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
         foreach ($this->path as $key1 => &$path1) {
             foreach ($this->path as $key2 => &$path2) {
                 if ($key1 !== $key2 &&
-                    (mb_strpos($path1, $path2) === 0 ||
-                        mb_strpos(str_replace('*', '/', $path1), $path2) === 0
-                    )
+                    mb_strpos($path1, $path2) === 0
                 ) {
                     unset($this->path[$key1]);
                 }

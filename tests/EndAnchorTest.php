@@ -57,7 +57,7 @@ class EndAnchorTest extends TestCase
             [
                 <<<ROBOTS
 User-Agent: *
-Noindex: *$
+Noindex: $
 Disallow: /*
 Allow: /$
 
@@ -73,6 +73,7 @@ Disallow: /
 Allow: /$
 
 User-agent: denyme
+Disallow: *deny_all/$
 Disallow: /deny_all/$
 RENDERED
             ]
