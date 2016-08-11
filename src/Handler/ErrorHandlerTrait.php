@@ -30,7 +30,7 @@ trait ErrorHandlerTrait
      * @param string $errLine
      * @return bool
      */
-    protected function errorHandlerCallback($errNo, $errStr, $errFile, $errLine)
+    public function errorHandlerCallback($errNo, $errStr, $errFile, $errLine)
     {
         $this->errorLog[(string)microtime(true)] = "lvl: " . $errNo . " | msg:" . $errStr . " | file:" . $errFile . " | ln:" . $errLine;
         return true;
