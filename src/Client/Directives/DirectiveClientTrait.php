@@ -10,6 +10,7 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
 
 use DateTime;
 use DateTimeZone;
+use vipnytt\RobotsTxtParser\Handler\ErrorHandler;
 
 /**
  * Trait DirectiveClientTrait
@@ -97,24 +98,26 @@ trait DirectiveClientTrait
          * PHP PEG (parsing expression grammar)
          * @link https://github.com/hafriedlander/php-peg
          */
-        try {
-            if (!preg_match('#' . $rule . '#', $path)) {
-                // Rule does not match
-                return false;
-            } elseif (mb_strpos($rule, '$') === false || // No special parsing required
-                mb_substr($rule, 0, -1) === $path // Rule does contain an end anchor, and matches
-            ) {
+        $errorHandler = new ErrorHandler();
+        set_error_handler([$errorHandler, 'callback'], E_NOTICE | E_WARNING);
+        if (!preg_match('#' . $rule . '#', $path)) {
+            // Rule does not match
+            restore_error_handler();
+            return false;
+        } elseif (mb_strpos($rule, '$') === false || // No special parsing required
+            mb_substr($rule, 0, -1) === $path // Rule does contain an end anchor, and matches
+        ) {
+            restore_error_handler();
+            return true;
+        } elseif (($wildcardPos = mb_strrpos($rule, '*')) !== false) {
+            // Rule contains both an end anchor ($) and wildcard (*)
+            $afterWildcard = mb_substr($rule, $wildcardPos + 1, mb_strlen($rule) - $wildcardPos - 2);
+            if ($afterWildcard == mb_substr($path, -mb_strlen($afterWildcard))) {
+                restore_error_handler();
                 return true;
-            } elseif (($wildcardPos = mb_strrpos($rule, '*')) !== false) {
-                // Rule contains both an end anchor ($) and wildcard (*)
-                $afterWildcard = mb_substr($rule, $wildcardPos + 1, mb_strlen($rule) - $wildcardPos - 2);
-                if ($afterWildcard == mb_substr($path, -mb_strlen($afterWildcard))) {
-                    return true;
-                }
             }
-        } catch (\Exception $e) {
-            // An preg_match bug has occurred
         }
+        restore_error_handler();
         return false;
     }
 }

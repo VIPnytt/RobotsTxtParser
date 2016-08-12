@@ -19,8 +19,6 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  */
 class EncodingHandler implements RobotsTxtInterface
 {
-    use ErrorHandlerTrait;
-
     /**
      * String to convert
      * @var string
@@ -55,17 +53,18 @@ class EncodingHandler implements RobotsTxtInterface
         if (strtoupper($this->encoding) === self::ENCODING) {
             return $this->string;
         }
-        set_error_handler([$this, 'errorHandlerCallback'], E_NOTICE | E_WARNING);
+        $errorHandler = new ErrorHandler();
+        set_error_handler([$errorHandler, 'callback'], E_NOTICE | E_WARNING);
         foreach ([
                      'intl',
                      'iconv',
                      'xml',
                      'mbstring',
                  ] as $extension) {
-            $last = end($this->errorLog);
+            $last = $errorHandler->getLast();
             if (extension_loaded($extension) &&
                 ($result = call_user_func([$this, $extension])) !== false &&
-                $last === end($this->errorLog)
+                $last === $errorHandler->getLast()
             ) {
                 restore_error_handler();
                 return $result;
