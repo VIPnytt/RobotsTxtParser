@@ -26,12 +26,6 @@ class CommentParser implements ParserInterface, RobotsTxtInterface
     private $userAgent;
 
     /**
-     * Base uri
-     * @var string
-     */
-    private $base;
-
-    /**
      * Comment array
      * @var string[]
      */
@@ -40,12 +34,10 @@ class CommentParser implements ParserInterface, RobotsTxtInterface
     /**
      * Comment constructor.
      *
-     * @param string $base
      * @param string $userAgent
      */
-    public function __construct($base, $userAgent)
+    public function __construct($userAgent)
     {
-        $this->base = $base;
         $this->userAgent = $userAgent;
     }
 
@@ -68,7 +60,7 @@ class CommentParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        return new CommentClient($this->base, $this->userAgent, $this->comments);
+        return new CommentClient($this->userAgent, $this->comments);
     }
 
     /**

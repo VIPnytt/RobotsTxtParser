@@ -33,6 +33,8 @@ class CommentTest extends TestCase
         $this->assertTrue($parser->userAgent('receiver')->isDisallowed("/"));
         $this->assertFalse($parser->userAgent('receiver')->isAllowed("/"));
 
+        $this->assertEquals($parser->userAgent('*')->comment()->get(), []);
+
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testComment($rendered, $result, false);

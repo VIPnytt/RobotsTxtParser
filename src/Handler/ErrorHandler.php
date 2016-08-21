@@ -31,21 +31,21 @@ class ErrorHandler
     /**
      * Callback
      *
-     * @param int $no
-     * @param string $str
-     * @param string $file
-     * @param int $line
-     * @param array $context
+     * @param int $errno
+     * @param string $errstr
+     * @param string $errfile
+     * @param int $errline
+     * @param array $errcontext
      * @return bool
      */
-    public function callback($no, $str, $file = '', $line = 0, $context = [])
+    public function callback($errno, $errstr, $errfile = '', $errline = 0, $errcontext = [])
     {
         $this->log[(string)microtime(true)] = [
-            'no' => $no,
-            'str' => $str,
-            'file' => $file,
-            'line' => $line,
-            'context' => $context,
+            'no' => $errno,
+            'str' => $errstr,
+            'file' => $errfile,
+            'line' => $errline,
+            'context' => $errcontext,
         ];
         return $this->handle();
     }

@@ -113,9 +113,7 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
      */
     public function client($userAgent = self::USER_AGENT, $fallbackValue = 0)
     {
-        if (!$this->sorted) {
-            $this->sort();
-        }
+        $this->sort();
         return new RequestRateClient($this->base, $userAgent, $this->requestRates, $fallbackValue);
     }
 
@@ -126,11 +124,14 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
      */
     private function sort()
     {
-        $this->sorted = true;
-        return usort($this->requestRates, function (array $requestRateA, array $requestRateB) {
-            // PHP 7: Switch to the <=> "Spaceship" operator
-            return $requestRateB['rate'] > $requestRateA['rate'];
-        });
+        if (!$this->sorted) {
+            $this->sorted = true;
+            return usort($this->requestRates, function (array $requestRateA, array $requestRateB) {
+                // PHP 7: Switch to the <=> "Spaceship" operator
+                return $requestRateB['rate'] > $requestRateA['rate'];
+            });
+        }
+        return $this->sorted;
     }
 
     /**
@@ -141,9 +142,7 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
      */
     public function render(RenderHandler $handler)
     {
-        if (!$this->sorted) {
-            $this->sort();
-        }
+        $this->sort();
         foreach ($this->requestRates as $array) {
             $suffix = 's';
             if (isset($array['from']) &&

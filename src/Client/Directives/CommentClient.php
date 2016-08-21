@@ -19,12 +19,6 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 class CommentClient implements ClientInterface, RobotsTxtInterface
 {
     /**
-     * Base uri
-     * @var string
-     */
-    private $base;
-
-    /**
      * User-agent
      * @var string
      */
@@ -39,13 +33,11 @@ class CommentClient implements ClientInterface, RobotsTxtInterface
     /**
      * CommentClient constructor.
      *
-     * @param string $base
      * @param string $userAgent
      * @param array $comments
      */
-    public function __construct($base, $userAgent, array $comments)
+    public function __construct($userAgent, array $comments)
     {
-        $this->base = $base;
         $this->userAgent = $userAgent;
         $this->comments = $comments;
     }
@@ -57,7 +49,7 @@ class CommentClient implements ClientInterface, RobotsTxtInterface
      */
     public function get()
     {
-        return $this->userAgent == self::USER_AGENT ? [] : $this->export();
+        return $this->userAgent === self::USER_AGENT ? [] : $this->export();
     }
 
     /**

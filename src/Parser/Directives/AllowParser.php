@@ -121,9 +121,7 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
      */
     public function render(RenderHandler $handler)
     {
-        if (!$this->optimized) {
-            $this->removeOverlapping();
-        }
+        $this->removeOverlapping();
         sort($this->path);
         $inline = new RenderHandler($handler->getLevel());
         $this->host->render($inline);
@@ -142,17 +140,19 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
      */
     private function removeOverlapping()
     {
-        foreach ($this->path as $key1 => &$path1) {
-            foreach ($this->path as $key2 => &$path2) {
-                if ($key1 !== $key2 &&
-                    mb_strpos($path1, $path2) === 0
-                ) {
-                    unset($this->path[$key1]);
+        if (!$this->optimized) {
+            foreach ($this->path as $key1 => &$path1) {
+                foreach ($this->path as $key2 => &$path2) {
+                    if ($key1 !== $key2 &&
+                        mb_strpos($path1, $path2) === 0
+                    ) {
+                        unset($this->path[$key1]);
+                    }
                 }
             }
+            $this->optimized = true;
         }
-        $this->optimized = true;
-        return true;
+        return $this->optimized;
     }
 
     /**
@@ -162,9 +162,7 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        if (!$this->optimized) {
-            $this->removeOverlapping();
-        }
+        $this->removeOverlapping();
         return new AllowClient($this->path, $this->host->client(), $this->cleanParam->client());
     }
 }

@@ -28,6 +28,12 @@ class VisitTimeParser implements ParserInterface, RobotsTxtInterface
     private $visitTimes = [];
 
     /**
+     * Sorted
+     * @var bool
+     */
+    private $sorted = false;
+
+    /**
      * VisitTime constructor.
      */
     public function __construct()
@@ -57,7 +63,25 @@ class VisitTimeParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
+        $this->sort();
         return new VisitTimeClient($this->visitTimes);
+    }
+
+    /**
+     * Sort
+     *
+     * @return bool
+     */
+    private function sort()
+    {
+        if (!$this->sorted) {
+            $this->sorted = true;
+            return usort($this->visitTimes, function (array $visitTimeA, array $visitTimeB) {
+                // PHP 7: Switch to the <=> "Spaceship" operator
+                return $visitTimeA['from'] > $visitTimeB['from'];
+            });
+        }
+        return $this->sorted;
     }
 
     /**
@@ -73,18 +97,5 @@ class VisitTimeParser implements ParserInterface, RobotsTxtInterface
             $handler->add(self::DIRECTIVE_VISIT_TIME, $array['from'] . '-' . $array['to']);
         }
         return true;
-    }
-
-    /**
-     * Sort
-     *
-     * @return bool
-     */
-    private function sort()
-    {
-        return usort($this->visitTimes, function (array $visitTimeA, array $visitTimeB) {
-            // PHP 7: Switch to the <=> "Spaceship" operator
-            return $visitTimeA['from'] > $visitTimeB['from'];
-        });
     }
 }
