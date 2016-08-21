@@ -61,12 +61,6 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
     private $optimized = false;
 
     /**
-     * Client cache
-     * @var AllowClient
-     */
-    private $client;
-
-    /**
      * AllowParser constructor
      *
      * @param string $base
@@ -168,11 +162,9 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        if (isset($this->client)) {
-            return $this->client;
-        } elseif (!$this->optimized) {
+        if (!$this->optimized) {
             $this->removeOverlapping();
         }
-        return $this->client = new AllowClient($this->path, $this->host->client(), $this->cleanParam->client());
+        return new AllowClient($this->path, $this->host->client(), $this->cleanParam->client());
     }
 }

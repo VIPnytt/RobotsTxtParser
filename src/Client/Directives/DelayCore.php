@@ -32,12 +32,6 @@ abstract class DelayCore implements DelayInterface, ClientInterface
     protected $userAgent;
 
     /**
-     * Handler
-     * @var Delay\ClientInterface
-     */
-    private $handler;
-
-    /**
      * DelayClient constructor.
      *
      * @param string $baseUri
@@ -77,10 +71,7 @@ abstract class DelayCore implements DelayInterface, ClientInterface
      */
     public function handle(PDO $pdo)
     {
-        if (isset($this->handler)) {
-            return $this->handler;
-        }
         $handler = new DatabaseHandler($pdo);
-        return $this->handler = $handler->delayClient($this->base, $this->userAgent, $this->getValue());
+        return $handler->delayClient($this->base, $this->userAgent, $this->getValue());
     }
 }

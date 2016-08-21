@@ -28,7 +28,6 @@ _(compared to most other robots.txt libraries)_
 - Full support for [every single directive](#directives), from [every specification](#specifications).
 - HTTP Status code handler, _according to [Google](https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt) spec._
 - Dedicated `User-Agent` parser and group determiner library, for maximum accuracy.
-- _Inline directive_ support _according to [Yandex](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml) spec._
 - Provides additional data like _preferred host_, dynamic _URL parameters_, _Sitemap_ locations, etc.
 - Supported protocols: ``HTTP``, ``HTTPS``, ``FTP``, ``SFTP`` and ``FTP/S``.
 

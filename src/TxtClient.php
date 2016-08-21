@@ -147,7 +147,7 @@ class TxtClient extends RobotsTxtParser
      * User-agent specific rules
      *
      * @param string $product
-     * @param int|string|null $version
+     * @param float|int|string|null $version
      * @return UserAgentClient
      */
     public function userAgent($product = self::USER_AGENT, $version = null)

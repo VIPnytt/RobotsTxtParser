@@ -100,6 +100,12 @@ SQL
         );
         $query->bindParam(':base', $base, PDO::PARAM_STR);
         $query->execute();
-        return $query->rowCount() > 0 ? $query->fetch(PDO::FETCH_ASSOC) : [];
+        $result = [];
+        if ($query->rowCount() > 0) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $result[$row['userAgent']] = $row;
+            }
+        }
+        return $result;
     }
 }

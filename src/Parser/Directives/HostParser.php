@@ -19,12 +19,6 @@ use vipnytt\RobotsTxtParser\Handler\RenderHandler;
 class HostParser extends HostParserCore
 {
     /**
-     * Client cache
-     * @var HostClient
-     */
-    private $client;
-
-    /**
      * HostParser constructor.
      *
      * @param string $base
@@ -42,10 +36,7 @@ class HostParser extends HostParserCore
      */
     public function client()
     {
-        if (isset($this->client)) {
-            return $this->client;
-        }
-        return $this->client = new HostClient($this->base, $this->effective, isset($this->host[0]) ? [$this->host[0]] : []);
+        return new HostClient($this->base, $this->effective, isset($this->host[0]) ? [$this->host[0]] : []);
     }
 
     /**

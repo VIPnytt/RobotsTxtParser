@@ -100,8 +100,9 @@ class AllowClient implements ClientInterface, RobotsTxtInterface
     private function getPath($uri)
     {
         $uriParser = new UriParser($uri);
-        // Encode
-        $uri = explode('#', $uriParser->encode(), 2)[0];
+        // Prepare uri
+        $uriParser->encode();
+        $uri = $uriParser->stripFragment();
         if (mb_strpos($uri, '/') === 0) {
             // URI is already an path
             return $uri;

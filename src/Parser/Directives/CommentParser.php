@@ -38,12 +38,6 @@ class CommentParser implements ParserInterface, RobotsTxtInterface
     private $comments = [];
 
     /**
-     * Client cache
-     * @var CommentClient
-     */
-    private $client;
-
-    /**
      * Comment constructor.
      *
      * @param string $base
@@ -74,10 +68,7 @@ class CommentParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        if (isset($this->client)) {
-            return $this->client;
-        }
-        return $this->client = new CommentClient($this->base, $this->userAgent, $this->comments);
+        return new CommentClient($this->base, $this->userAgent, $this->comments);
     }
 
     /**

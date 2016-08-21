@@ -54,15 +54,6 @@ class UserAgentTools implements RobotsTxtInterface
     }
 
     /**
-     * UserAgentClient destructor.
-     */
-    public function __destruct()
-    {
-        // Make sure the Comment client is initialized at least once. 
-        $this->handler->comment()->client();
-    }
-
-    /**
      * Check if URI is allowed to crawl
      *
      * @param string $uri

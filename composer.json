@@ -42,7 +42,7 @@
     "docs": "https://github.com/VIPnytt/RobotsTxtParser/tree/master/docs"
   },
   "require": {
-    "php": ">=5.6.0",
+    "php": "^5.6 || ^7.0",
     "ext-curl": "*",
     "ext-mbstring": "*",
     "composer/ca-bundle": "~1.0",
@@ -54,8 +54,8 @@
     "ext-openssl": "*",
     "ext-pdo": "*",
     "ext-xml": "*",
-    "phpunit/phpunit": ">=5.2",
-    "codeclimate/php-test-reporter": ">=0.3"
+    "phpunit/phpunit": "^5.2",
+    "codeclimate/php-test-reporter": "^0.3"
   },
   "suggest": {
     "vipnytt/robotstagparser": "Robots meta tag and X-Robots-Tag HTTP header parser"

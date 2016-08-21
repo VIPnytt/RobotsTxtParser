@@ -37,12 +37,6 @@ class CommentClient implements ClientInterface, RobotsTxtInterface
     private $comments = [];
 
     /**
-     * Fetched status
-     * @var bool
-     */
-    private $fetched = false;
-
-    /**
      * CommentClient constructor.
      *
      * @param string $base
@@ -57,26 +51,12 @@ class CommentClient implements ClientInterface, RobotsTxtInterface
     }
 
     /**
-     * CommentClient destructor.
-     */
-    public function __destruct()
-    {
-        if ($this->fetched !== true) {
-            // Comment exists, but has not been fetched.
-            foreach ($this->get() as $message) {
-                trigger_error('`' . $this->userAgent . '` at `' . $this->base . self::PATH . '` -> ' . $message, E_USER_NOTICE);
-            }
-        }
-    }
-
-    /**
      * Get
      *
      * @return string[]
      */
     public function get()
     {
-        $this->fetched = true;
         return $this->userAgent == self::USER_AGENT ? [] : $this->export();
     }
 
@@ -87,7 +67,6 @@ class CommentClient implements ClientInterface, RobotsTxtInterface
      */
     public function export()
     {
-        $this->fetched = true;
         return $this->comments;
     }
 }

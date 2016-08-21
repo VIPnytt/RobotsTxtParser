@@ -13,6 +13,18 @@ use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 class UriParser
 {
     /**
+     * Scheme white-list
+     * @var string[]
+     */
+    protected $schemes = [
+        'http',
+        'https',
+        'ftp',
+        'ftps',
+        'sftp',
+    ];
+
+    /**
      * URI
      * @var string
      */
@@ -170,13 +182,7 @@ class UriParser
             $parsed = parse_url($this->uri);
             $scheme = isset($parsed['host']) ? $parsed['host'] : $parsed['path'];
         }
-        return in_array($scheme, [
-            'http',
-            'https',
-            'ftp',
-            'ftps',
-            'sftp',
-        ]);
+        return in_array($scheme, $this->schemes);
     }
 
     /**
@@ -196,5 +202,15 @@ class UriParser
         ];
         $parts['port'] = is_int($port = parse_url($this->uri, PHP_URL_PORT)) ? $port : getservbyname($parts['scheme'], 'tcp');
         return strtolower($parts['scheme'] . '://' . $parts['host'] . ':' . $parts['port']);
+    }
+
+    /**
+     * Strip fragment
+     *
+     * @return string
+     */
+    public function stripFragment()
+    {
+        return explode('#', $this->uri, 2)[0];
     }
 }

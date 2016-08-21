@@ -14,7 +14,7 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
  * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/RequestRateClient.md for documentation
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
-class RequestRateClient extends DelayCore implements ClientInterface, DelayInterface
+class RequestRateClient extends DelayCore
 {
     use DirectiveClientTrait;
 

@@ -28,12 +28,6 @@ class VisitTimeParser implements ParserInterface, RobotsTxtInterface
     private $visitTimes = [];
 
     /**
-     * Client cache
-     * @var VisitTimeClient
-     */
-    private $client;
-
-    /**
      * VisitTime constructor.
      */
     public function __construct()
@@ -63,10 +57,7 @@ class VisitTimeParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        if (isset($this->client)) {
-            return $this->client;
-        }
-        return $this->client = new VisitTimeClient($this->visitTimes);
+        return new VisitTimeClient($this->visitTimes);
     }
 
     /**
@@ -87,11 +78,11 @@ class VisitTimeParser implements ParserInterface, RobotsTxtInterface
     /**
      * Sort
      *
-     * @return void
+     * @return bool
      */
     private function sort()
     {
-        usort($this->visitTimes, function (array $visitTimeA, array $visitTimeB) {
+        return usort($this->visitTimes, function (array $visitTimeA, array $visitTimeB) {
             // PHP 7: Switch to the <=> "Spaceship" operator
             return $visitTimeA['from'] > $visitTimeB['from'];
         });

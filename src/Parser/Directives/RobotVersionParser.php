@@ -26,12 +26,6 @@ class RobotVersionParser implements ParserInterface, RobotsTxtInterface
     private $version;
 
     /**
-     * Client cache
-     * @var RobotVersionClient
-     */
-    private $client;
-
-    /**
      * RobotVersionParser constructor.
      */
     public function __construct()
@@ -60,10 +54,7 @@ class RobotVersionParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        if (isset($this->client)) {
-            return $this->client;
-        }
-        return $this->client = new RobotVersionClient($this->version);
+        return new RobotVersionClient($this->version);
     }
 
     /**

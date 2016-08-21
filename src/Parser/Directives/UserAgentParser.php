@@ -75,12 +75,6 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     private $count = [];
 
     /**
-     * User-agent client cache
-     * @var UserAgentClient[]
-     */
-    private $client = [];
-
-    /**
      * UserAgent constructor.
      *
      * @param string $base
@@ -244,17 +238,14 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     public function client($product = self::USER_AGENT, $version = null, $statusCode = null)
     {
         $userAgentString = $version === null ? $product : $product . '/' . $version;
-        if (isset($this->client[$userAgentString])) {
-            // Already cached
-            return $this->client[$userAgentString];
-        } elseif (isset($this->handler[$userAgentString])) {
-            // 100% match
-            return $this->client[$userAgentString] = new UserAgentClient($this->handler[$userAgentString], $this->base, $statusCode, $product);
+        $match = $userAgentString;
+        if (!isset($this->handler[$userAgentString])) {
+            // User-agent does not match any rule sets
+            $userAgentParser = new UserAgentStringParser($product, $version);
+            if (($match = $userAgentParser->getMostSpecific($this->getUserAgents())) === false) {
+                $match = self::USER_AGENT;
+            }
         }
-        $userAgentParser = new UserAgentStringParser($product, $version);
-        if (($match = $userAgentParser->getMostSpecific($this->getUserAgents())) === false) {
-            $match = self::USER_AGENT;
-        }
-        return $this->client[$userAgentString] = new UserAgentClient($this->handler[$match], $this->base, $statusCode, $product);
+        return new UserAgentClient($this->handler[$match], $this->base, $statusCode, $product);
     }
 }

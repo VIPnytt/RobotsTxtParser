@@ -34,10 +34,10 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
     private $requestRates = [];
 
     /**
-     * Client cache
-     * @var RequestRateClient
+     * Sorted
+     * @var bool
      */
-    private $client;
+    private $sorted = false;
 
     /**
      * RequestRate constructor.
@@ -113,21 +113,21 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
      */
     public function client($userAgent = self::USER_AGENT, $fallbackValue = 0)
     {
-        if (isset($this->client)) {
-            return $this->client;
+        if (!$this->sorted) {
+            $this->sort();
         }
-        $this->sort();
-        return $this->client = new RequestRateClient($this->base, $userAgent, $this->requestRates, $fallbackValue);
+        return new RequestRateClient($this->base, $userAgent, $this->requestRates, $fallbackValue);
     }
 
     /**
      * Sort
      *
-     * @return void
+     * @return bool
      */
     private function sort()
     {
-        usort($this->requestRates, function (array $requestRateA, array $requestRateB) {
+        $this->sorted = true;
+        return usort($this->requestRates, function (array $requestRateA, array $requestRateB) {
             // PHP 7: Switch to the <=> "Spaceship" operator
             return $requestRateB['rate'] > $requestRateA['rate'];
         });
@@ -141,7 +141,9 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
      */
     public function render(RenderHandler $handler)
     {
-        $this->sort();
+        if (!$this->sorted) {
+            $this->sort();
+        }
         foreach ($this->requestRates as $array) {
             $suffix = 's';
             if (isset($array['from']) &&
