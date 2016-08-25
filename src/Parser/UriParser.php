@@ -140,7 +140,7 @@ class UriParser
     {
         if ($ipAddress === null) {
             $parsed = parse_url($this->uri);
-            $ipAddress = isset($parsed['host']) ? $parsed['host'] : $parsed['path'];
+            $ipAddress = isset($parsed['host']) ? $parsed['host'] : null;
         }
         return (
             filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ||
