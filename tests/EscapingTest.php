@@ -39,6 +39,9 @@ class EscapingTest extends TestCase
         //$this->assertFalse($parser->userAgent()->isAllowed("/("));
 
         if ($rendered !== false) {
+            if (version_compare(phpversion(), '7.0.0', '<')) {
+                $this->markTestIncomplete('Sort algorithm changed as of PHP 7');
+            }
             $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testEscaping($rendered, false);
         }
@@ -62,9 +65,9 @@ ROBOTS
                 ,
                 <<<RENDERED
 User-agent: *
-Disallow: /(
-Disallow: /)
 Disallow: /.
+Disallow: /)
+Disallow: /(
 RENDERED
             ]
         ];

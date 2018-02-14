@@ -42,6 +42,9 @@ class EndAnchorTest extends TestCase
         $this->assertFalse($parser->userAgent('DenyMe')->isAllowed('http://example.com/deny_all/'));
 
         if ($rendered !== false) {
+            if (version_compare(phpversion(), '7.0.0', '<')) {
+                $this->markTestIncomplete('Sort algorithm changed as of PHP 7');
+            }
             $this->assertEquals($rendered, $parser->render()->normal("\n"));
             $this->testEndAnchor($rendered, false);
         }
@@ -74,8 +77,8 @@ Disallow: /
 Allow: /$
 
 User-agent: denyme
-Disallow: *deny_all/$
 Disallow: /deny_all/$
+Disallow: *deny_all/$
 RENDERED
             ]
         ];
