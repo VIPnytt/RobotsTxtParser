@@ -16,6 +16,8 @@ services:
   - mysql
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
+  - mysql -u root --password="" < res/Cache/MySQL.sql
+  - mysql -u root --password="" < res/Delay/MySQL.sql
 install:
   - composer install
 before_script:
