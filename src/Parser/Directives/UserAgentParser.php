@@ -46,12 +46,6 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     private $base;
 
     /**
-     * Effective uri
-     * @var string
-     */
-    private $effective;
-
-    /**
      * User-agent handler
      * @var SubDirectiveHandler[]
      */
@@ -73,12 +67,10 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
      * UserAgent constructor.
      *
      * @param string $base
-     * @param string $effective
      */
-    public function __construct($base, $effective)
+    public function __construct($base)
     {
         $this->base = $base;
-        $this->effective = $effective;
         $this->handlerAdd(self::USER_AGENT);
     }
 
@@ -91,7 +83,7 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     private function handlerAdd($group)
     {
         if (!in_array($group, array_keys($this->handler))) {
-            $this->handler[$group] = new SubDirectiveHandler($this->base, $this->effective, $group);
+            $this->handler[$group] = new SubDirectiveHandler($this->base, $group);
             return true;
         }
         return false;

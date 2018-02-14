@@ -56,6 +56,6 @@ class RootDirectiveHandler implements RobotsTxtInterface
         $this->cleanParam = new CleanParamParser();
         $this->host = new HostParser($base, $effective);
         $this->sitemap = new SitemapParser();
-        $this->userAgent = new UserAgentParser($base, $effective);
+        $this->userAgent = new UserAgentParser($base);
     }
 }

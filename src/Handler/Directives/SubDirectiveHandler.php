@@ -93,18 +93,17 @@ class SubDirectiveHandler implements RobotsTxtInterface
      * SubDirectiveHandler constructor.
      *
      * @param string $base
-     * @param string $effective
      * @param string $group
      */
-    public function __construct($base, $effective, $group)
+    public function __construct($base, $group)
     {
         $this->group = $group;
-        $this->allow = new AllowParser($base, $effective, self::DIRECTIVE_ALLOW);
+        $this->allow = new AllowParser(self::DIRECTIVE_ALLOW);
         $this->cacheDelay = new DelayParser($base, self::DIRECTIVE_CACHE_DELAY);
         $this->comment = new CommentParser($this->group);
         $this->crawlDelay = new DelayParser($base, self::DIRECTIVE_CRAWL_DELAY);
-        $this->disallow = new AllowParser($base, $effective, self::DIRECTIVE_DISALLOW);
-        $this->noIndex = new AllowParser($base, $effective, self::DIRECTIVE_NO_INDEX);
+        $this->disallow = new AllowParser(self::DIRECTIVE_DISALLOW);
+        $this->noIndex = new AllowParser(self::DIRECTIVE_NO_INDEX);
         $this->requestRate = new RequestRateParser($base);
         $this->robotVersion = new RobotVersionParser();
         $this->visitTime = new VisitTimeParser();

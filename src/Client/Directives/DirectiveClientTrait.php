@@ -101,7 +101,7 @@ trait DirectiveClientTrait
          */
         $errorHandler = new ErrorHandler();
         set_error_handler([$errorHandler, 'callback'], E_NOTICE | E_WARNING);
-        if (preg_match('#' . $rule . '#', $path) == false) {
+        if (preg_match('#' . $rule . '#', $path) === false) {
             // Rule does not match
             restore_error_handler();
             return false;

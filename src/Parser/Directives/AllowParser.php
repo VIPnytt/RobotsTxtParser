@@ -40,11 +40,9 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
     /**
      * AllowParser constructor
      *
-     * @param string $base
-     * @param string $effective
      * @param string $directive
      */
-    public function __construct($base, $effective, $directive)
+    public function __construct($directive)
     {
         $this->directive = $directive;
     }
