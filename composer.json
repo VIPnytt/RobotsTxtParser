@@ -25,17 +25,17 @@
   "authors": [
     {
       "name": "VIP nytt AS",
-      "email": "vipnytt@gmail.com",
-      "role": "Creator"
+      "email": "support@vipnytt.no",
+      "role": "Owner"
     },
     {
       "name": "Jan-Petter Gundersen",
-      "email": "europe.jpg@gmail.com",
+      "email": "jpg@vipnytt.no",
       "role": "Developer"
     }
   ],
   "support": {
-    "email": "vipnytt@gmail.com",
+    "email": "support@vipnytt.no",
     "issues": "https://github.com/VIPnytt/RobotsTxtParser/issues",
     "wiki": "https://github.com/VIPnytt/RobotsTxtParser/tree/master/docs",
     "source": "https://github.com/VIPnytt/RobotsTxtParser",
@@ -45,20 +45,11 @@
     "php": "^5.6 || ^7.0",
     "ext-curl": "*",
     "ext-mbstring": "*",
-    "composer/ca-bundle": "~1.0",
-    "vipnytt/useragentparser": "~1.0"
+    "composer/ca-bundle": "^1.0",
+    "vipnytt/useragentparser": "^1.0"
   },
   "require-dev": {
-    "ext-iconv": "*",
-    "ext-intl": "*",
-    "ext-openssl": "*",
-    "ext-pdo": "*",
-    "ext-xml": "*",
-    "phpunit/phpunit": "^5.2",
-    "codeclimate/php-test-reporter": "^0.3"
-  },
-  "suggest": {
-    "vipnytt/robotstagparser": "Robots meta tag and X-Robots-Tag HTTP header parser"
+    "phpunit/phpunit": "^5.2 || ^6.0"
   },
   "autoload": {
     "psr-4": {

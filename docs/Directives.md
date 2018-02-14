@@ -67,23 +67,6 @@ clean-param: [parameter1]&[parameter2]&[...] [path]
 __References:__
 - [Yandex robots.txt specifications](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#clean-param)
 
-### Inline Clean-param
-The directive can also be used _inside_ other directives, eg. to disallow crawling of pages with specific parameters.
-```
-disallow: clean-param: [parameter]
-```
-```
-noindex: clean-param: [parameter]
-```
-
-__See also:__
-- [Allow](#allow)
-- [Disallow](#disallow)
-- [NoIndex](#noindex)
-
-__References:__
-- [Yandex robots.txt specifications](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#clean-param)
-
 ## Comment
 Comments witch are supposed to be sent back to the author/user of the robot. It can be used to eg. provide contact information for white-listing requests, or even explain the robot policy of a site.
 
@@ -137,23 +120,6 @@ __robots.txt:__
 ```
 host: [host]
 ```
-
-### Inline Host
-The directive can also be used _inside_ other directives, eg. to disallow crawling of a mirror.
-```
-disallow: host: [host]
-```
-```
-noindex: host: [host]
-```
-
-__See also:__
-- [Allow](#allow)
-- [Disallow](#disallow)
-- [NoIndex](#noindex)
-
-__References:__
-- [Yandex robots.txt specifications](https://yandex.com/support/webmaster/controlling-robot/robots-txt.xml#host)
 
 ## NoIndex
 The ``noindex`` directive is used to completely remove all traces of any matching site url from the search-engines.

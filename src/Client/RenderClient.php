@@ -48,7 +48,7 @@ class RenderClient implements RobotsTxtInterface
      */
     public function compatibility($eol = "\r\n")
     {
-        return $this->generate(3, $eol) . $eol;
+        return $this->generate(2, $eol) . $eol;
     }
 
     /**
@@ -61,38 +61,24 @@ class RenderClient implements RobotsTxtInterface
     private function generate($level, $eol)
     {
         $handler = new RenderHandler($level, $eol);
-        if ($level === 3) {
-            $this->root->userAgent()->render($handler);
+        if ($level == 2) {
+            $this->root->userAgent->render($handler);
         }
-        $this->root->host()->render($handler);
-        $this->root->cleanParam()->render($handler);
-        $this->root->sitemap()->render($handler);
-        if ($level !== 3) {
-            $this->root->userAgent()->render($handler);
+        $this->root->host->render($handler);
+        $this->root->cleanParam->render($handler);
+        $this->root->sitemap->render($handler);
+        if ($level != 2) {
+            $this->root->userAgent->render($handler);
         }
         return $handler->generate();
-    }
-
-    /**
-     * Minimal but normal looking robots.txt
-     *
-     * Differences compared to Compressed:
-     * - The directives first character is uppercase
-     * - Whitespace between the directive and it's value
-     *
-     * @param string $eol
-     * @return string
-     */
-    public function minimal($eol = "\r\n")
-    {
-        return $this->generate(1, $eol);
     }
 
     /**
      * Normal looking robots.txt
      *
      * Differences compared to Compressed:
-     * - Maximum human readability
+     * - The directives first character is uppercase
+     * - Whitespace between the directive and it's value
      * - Easy to edit
      * - User-agent groups are separated with blank lines
      *
@@ -101,7 +87,7 @@ class RenderClient implements RobotsTxtInterface
      */
     public function normal($eol = "\r\n")
     {
-        return $this->generate(2, $eol);
+        return $this->generate(1, $eol);
     }
 
     /**

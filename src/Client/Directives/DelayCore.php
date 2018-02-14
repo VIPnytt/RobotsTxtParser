@@ -8,9 +8,7 @@
 
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
-use PDO;
 use vipnytt\RobotsTxtParser\Client\Delay;
-use vipnytt\RobotsTxtParser\Handler\DatabaseHandler;
 
 /**
  * Class DelayCore
@@ -29,18 +27,18 @@ abstract class DelayCore implements DelayInterface, ClientInterface
      * User-agent
      * @var string
      */
-    protected $userAgent;
+    protected $product;
 
     /**
      * DelayClient constructor.
      *
      * @param string $baseUri
-     * @param string $userAgent
+     * @param string $product
      */
-    public function __construct($baseUri, $userAgent)
+    public function __construct($baseUri, $product)
     {
         $this->base = $baseUri;
-        $this->userAgent = $userAgent;
+        $this->product = $product;
     }
 
     /**
@@ -60,18 +58,17 @@ abstract class DelayCore implements DelayInterface, ClientInterface
      */
     public function getUserAgent()
     {
-        return $this->userAgent;
+        return $this->product;
     }
 
     /**
      * Handle delay
      *
-     * @param PDO $pdo
-     * @return Delay\ClientInterface
+     * @param Delay\ManageInterface $handler
+     * @return Delay\BaseInterface
      */
-    public function handle(PDO $pdo)
+    public function handle(Delay\ManageInterface $handler)
     {
-        $handler = new DatabaseHandler($pdo);
-        return $handler->delayClient($this->base, $this->userAgent, $this->getValue());
+        return $handler->base($this->base, $this->product, $this->getValue());
     }
 }

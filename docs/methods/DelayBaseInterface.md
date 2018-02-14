@@ -1,13 +1,31 @@
-# Delay ClientInterface
+# Interface Delay BaseInterface
 ```php
 @package vipnytt\RobotsTxtParser\Client\Delay
 ```
 
+Delay handler
+
 ## Public functions
+- [__construct](#__construct)
+- [debug](#debug)
 - [getQueue](#getqueue)
 - [getTimeSleepUntil](#gettimesleepuntil)
 - [reset](#reset)
 - [sleep](#sleep)
+
+### __construct
+```php
+@param \PDO $pdo
+@param string $baseUri
+@param string $userAgent
+@param float|int $delay
+```
+
+### debug
+```php
+@return array
+```
+Get the raw data stored in the database
 
 ### getQueue
 ```php

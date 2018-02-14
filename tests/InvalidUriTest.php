@@ -10,7 +10,6 @@ namespace vipnytt\RobotsTxtParser\Tests;
 
 use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
-use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 
 /**
  * Class InvalidUriTest
@@ -25,7 +24,7 @@ class InvalidUriTest extends TestCase
      */
     public function testInvalidUri($base)
     {
-        $this->expectException(ClientException::class);
+        $this->expectException(\InvalidArgumentException::class);
         new RobotsTxtParser\UriClient($base);
     }
 

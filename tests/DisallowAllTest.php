@@ -22,6 +22,7 @@ class DisallowAllTest extends TestCase
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
      * @param string|false $rendered
+     * @throws RobotsTxtParser\Exceptions\ClientException
      */
     public function testDisallowAll($robotsTxtContent, $rendered)
     {
@@ -69,6 +70,8 @@ ROBOTS
                 <<<RENDERED
 User-agent: *
 Disallow: /
+Disallow: *test
+Disallow: /admin/
 RENDERED
             ]
         ];

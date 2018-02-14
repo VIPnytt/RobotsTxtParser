@@ -9,17 +9,17 @@
       - [Comment](CommentClient.md)
       - [Crawl-delay](DelayClient.md)
       - [Disallow](AllowClient.md)
-      - [Inline Clean-param](InlineCleanParamClient.md)
-      - [Inline Host](InlineHostClient.md)
       - [NoIndex](AllowClient.md)
       - [Request-rate](RequestRateClient.md)
       - [Robot-version](RobotVersionClient.md)
       - [Visit-time](VisitTimeClient.md)
 
 __Other available classes:__
-- [Cache](Cache.md)
-- [Delay](DelayManager.md)
-  - [ClientInterface](DelayInterface.md)
+
+- [Cache manage](CacheManageInterface.md)
+  - [Cache base](CacheBaseInterface.md)
+- [Delay manage](DelayManageInterface.md)
+  - [Delay base](DelayBaseInterface.md)
 - [Import](Import.md)
 - [RenderClient](RenderClient.md)
 - [UriClient](UriClient.md)

@@ -84,7 +84,7 @@ class EncodingHandler implements RobotsTxtInterface
     {
         try {
             $uConverter = new \UConverter(self::ENCODING, $this->encoding);
-            $converted = $uConverter->convert($this->string);
+            $converted = $uConverter->convert($this->string, false);
         } catch (\Exception $e) {
             return false;
         }

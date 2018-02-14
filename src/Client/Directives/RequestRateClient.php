@@ -34,13 +34,13 @@ class RequestRateClient extends DelayCore
      * RequestRateClient constructor.
      *
      * @param string $baseUri
-     * @param string $userAgent
+     * @param string $product
      * @param array $rates
      * @param float|int $fallbackValue
      */
-    public function __construct($baseUri, $userAgent, array $rates, $fallbackValue = 0)
+    public function __construct($baseUri, $product, array $rates, $fallbackValue = 0)
     {
-        parent::__construct($baseUri, $userAgent);
+        parent::__construct($baseUri, $product);
         $this->rates = $rates;
         $this->fallbackValue = $fallbackValue;
     }

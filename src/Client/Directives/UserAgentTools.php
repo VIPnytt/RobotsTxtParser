@@ -8,7 +8,6 @@
 
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
-use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 use vipnytt\RobotsTxtParser\Handler\Directives\SubDirectiveHandler;
 use vipnytt\RobotsTxtParser\Parser\StatusCodeParser;
 use vipnytt\RobotsTxtParser\Parser\UriParser;
@@ -42,11 +41,11 @@ class UserAgentTools implements RobotsTxtInterface
     /**
      * DisAllowClient constructor.
      *
+     * @param SubDirectiveHandler $handler
      * @param string $base
      * @param int|null $statusCode
-     * @param SubDirectiveHandler $handler
      */
-    public function __construct(SubDirectiveHandler $handler, $base, $statusCode)
+    public function __construct(SubDirectiveHandler $handler, $base, $statusCode = null)
     {
         $this->handler = $handler;
         $this->base = $base;
@@ -70,14 +69,14 @@ class UserAgentTools implements RobotsTxtInterface
      * @param string $directive
      * @param string $uri
      * @return bool
-     * @throws ClientException
+     * @throws \InvalidArgumentException
      */
     private function check($directive, $uri)
     {
         $uriParser = new UriParser($uri);
         $uri = $uriParser->convertToFull($this->base);
         if ($this->base !== $uriParser->base()) {
-            throw new ClientException('URI belongs to a different robots.txt');
+            throw new \InvalidArgumentException('URI belongs to a different robots.txt');
         }
         if (($result = $this->checkOverride($uri)) !== false) {
             return $directive === $result;
@@ -104,7 +103,7 @@ class UserAgentTools implements RobotsTxtInterface
             return $result;
         }
         // 3rd priority: Visit times
-        if ($this->handler->visitTime()->client()->isVisitTime() === false) {
+        if ($this->handler->visitTime->client()->isVisitTime() === false) {
             return self::DIRECTIVE_DISALLOW;
         }
         return false;
@@ -119,20 +118,18 @@ class UserAgentTools implements RobotsTxtInterface
      */
     private function checkPath($directive, $uri)
     {
-        $result = self::DIRECTIVE_ALLOW;
+        $resultLength = 0;
+        $resultDirective = self::DIRECTIVE_ALLOW;
         foreach ([
-                     self::DIRECTIVE_NO_INDEX => $this->handler->noIndex(),
-                     self::DIRECTIVE_DISALLOW => $this->handler->disallow(),
-                     self::DIRECTIVE_ALLOW => $this->handler->allow(),
-                 ] as $currentDirective => $handler) {
-            if ($handler->client()->isListed($uri)) {
-                if ($currentDirective === self::DIRECTIVE_NO_INDEX) {
-                    return $directive === self::DIRECTIVE_DISALLOW;
-                }
-                $result = $currentDirective;
+                     self::DIRECTIVE_DISALLOW => $this->handler->disallow->client()->hasPath($uri),
+                     self::DIRECTIVE_ALLOW => $this->handler->allow->client()->hasPath($uri),
+                 ] as $currentDirective => $currentLength) {
+            if ($currentLength >= $resultLength) {
+                $resultLength = $currentLength;
+                $resultDirective = $currentDirective;
             }
         }
-        return $directive === $result;
+        return $directive === $resultDirective;
     }
 
     /**
@@ -154,15 +151,25 @@ class UserAgentTools implements RobotsTxtInterface
     public function export()
     {
         return [
-            self::DIRECTIVE_ROBOT_VERSION => $this->handler->robotVersion()->client()->export(),
-            self::DIRECTIVE_VISIT_TIME => $this->handler->visitTime()->client()->export(),
-            self::DIRECTIVE_NO_INDEX => $this->handler->noIndex()->client()->export(),
-            self::DIRECTIVE_DISALLOW => $this->handler->disallow()->client()->export(),
-            self::DIRECTIVE_ALLOW => $this->handler->allow()->client()->export(),
-            self::DIRECTIVE_CRAWL_DELAY => $this->handler->crawlDelay()->client()->export(),
-            self::DIRECTIVE_CACHE_DELAY => $this->handler->cacheDelay()->client()->export(),
-            self::DIRECTIVE_REQUEST_RATE => $this->handler->requestRate()->client()->export(),
-            self::DIRECTIVE_COMMENT => $this->handler->comment()->client()->export(),
+            self::DIRECTIVE_ROBOT_VERSION => $this->handler->robotVersion->client()->export(),
+            self::DIRECTIVE_VISIT_TIME => $this->handler->visitTime->client()->export(),
+            self::DIRECTIVE_NO_INDEX => $this->handler->noIndex->client()->export(),
+            self::DIRECTIVE_DISALLOW => $this->handler->disallow->client()->export(),
+            self::DIRECTIVE_ALLOW => $this->handler->allow->client()->export(),
+            self::DIRECTIVE_CRAWL_DELAY => $this->handler->crawlDelay->client()->export(),
+            self::DIRECTIVE_CACHE_DELAY => $this->handler->cacheDelay->client()->export(),
+            self::DIRECTIVE_REQUEST_RATE => $this->handler->requestRate->client()->export(),
+            self::DIRECTIVE_COMMENT => $this->handler->comment->client()->export(),
         ];
+    }
+
+    /**
+     * Get rule set group name
+     *
+     * @return string
+     */
+    public function getUserAgentGroup()
+    {
+        return $this->handler->group;
     }
 }

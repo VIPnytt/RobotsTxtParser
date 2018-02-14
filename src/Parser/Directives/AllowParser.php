@@ -9,7 +9,6 @@
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Client\Directives\AllowClient;
-use vipnytt\RobotsTxtParser\Exceptions;
 use vipnytt\RobotsTxtParser\Handler\RenderHandler;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
@@ -20,16 +19,6 @@ use vipnytt\RobotsTxtParser\RobotsTxtInterface;
  */
 class AllowParser implements ParserInterface, RobotsTxtInterface
 {
-    use DirectiveParserTrait;
-
-    /**
-     * Sub directives white list
-     */
-    const SUB_DIRECTIVES = [
-        self::DIRECTIVE_CLEAN_PARAM,
-        self::DIRECTIVE_HOST,
-    ];
-
     /**
      * Directive
      * @var string
@@ -43,22 +32,10 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
     private $path = [];
 
     /**
-     * Sub-directive Clean-param
-     * @var InlineCleanParamParser
-     */
-    private $cleanParam;
-
-    /**
-     * Sub-directive Host
-     * @var InlineHostParser
-     */
-    private $host;
-
-    /**
-     * Optimized for performance
+     * Sort result
      * @var bool
      */
-    private $optimized = false;
+    private $sort = false;
 
     /**
      * AllowParser constructor
@@ -70,8 +47,6 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
     public function __construct($base, $effective, $directive)
     {
         $this->directive = $directive;
-        $this->cleanParam = new InlineCleanParamParser();
-        $this->host = new InlineHostParser($base, $effective);
     }
 
     /**
@@ -82,35 +57,18 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
      */
     public function add($line)
     {
-        $pair = $this->generateRulePair($line, self::SUB_DIRECTIVES);
-        switch ($pair['directive']) {
-            case self::DIRECTIVE_CLEAN_PARAM:
-                return $this->cleanParam->add($pair['value']);
-            case self::DIRECTIVE_HOST:
-                return $this->host->add($pair['value']);
-        }
-        return $this->addPath($line);
-    }
-
-    /**
-     * Add plain path to allow/disallow
-     *
-     * @param string $path
-     * @return bool
-     */
-    private function addPath($path)
-    {
-        $path = rtrim($path, '*');
-        if (!in_array('/', $this->path) &&
-            in_array(mb_substr($path, 0, 1), [
+        $line = rtrim($line, '*');
+        if (in_array(substr($line, 0, 1), [
                 '/',
                 '*',
-            ])
+                '?',
+            ]) &&
+            !in_array($line, $this->path)
         ) {
-            $this->path[] = $path;
-            $this->optimized = false;
+            $this->path[] = $line;
+            return true;
         }
-        return in_array($path, $this->path);
+        return false;
     }
 
     /**
@@ -121,12 +79,14 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
      */
     public function render(RenderHandler $handler)
     {
-        $this->removeOverlapping();
-        sort($this->path);
-        $inline = new RenderHandler($handler->getLevel());
-        $this->host->render($inline);
-        $this->cleanParam->render($inline);
-        $handler->addInline($this->directive, $inline);
+        if ($this->directive === self::DIRECTIVE_DISALLOW &&
+            count($this->path) === 0 &&
+            $handler->getLevel() == 2
+        ) {
+            $handler->add($this->directive, '');
+            return true;
+        }
+        $this->sort();
         foreach ($this->path as $path) {
             $handler->add($this->directive, $path);
         }
@@ -134,25 +94,19 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Remove overlapping paths
+     * Sort by length
      *
      * @return bool
      */
-    private function removeOverlapping()
+    private function sort()
     {
-        if (!$this->optimized) {
-            foreach ($this->path as $key1 => &$path1) {
-                foreach ($this->path as $key2 => &$path2) {
-                    if ($key1 !== $key2 &&
-                        mb_strpos($path1, $path2) === 0
-                    ) {
-                        unset($this->path[$key1]);
-                    }
-                }
-            }
-            $this->optimized = true;
-        }
-        return $this->optimized;
+        if ($this->sort) {
+            return $this->sort;
+        };
+        return $this->sort = rsort($this->path) && usort($this->path, function ($a, $b) {
+                // PHP 7: Switch to the <=> "Spaceship" operator
+                return mb_strlen($a) - mb_strlen($b);
+            });
     }
 
     /**
@@ -162,7 +116,7 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        $this->removeOverlapping();
-        return new AllowClient($this->path, $this->host->client(), $this->cleanParam->client());
+        $this->sort();
+        return new AllowClient($this->path);
     }
 }

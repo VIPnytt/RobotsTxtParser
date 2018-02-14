@@ -10,7 +10,6 @@ namespace vipnytt\RobotsTxtParser\Tests;
 
 use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
-use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 
 /**
  * Class InvalidPathTest
@@ -28,7 +27,7 @@ class InvalidPathTest extends TestCase
         $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
 
-        $this->expectException(ClientException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->assertFalse($parser->userAgent()->isAllowed('+£€@@1¤'));
     }
 
@@ -41,7 +40,7 @@ class InvalidPathTest extends TestCase
         $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
 
-        $this->expectException(ClientException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->assertTrue($parser->userAgent()->isDisallowed('&&/1@|'));
     }
 

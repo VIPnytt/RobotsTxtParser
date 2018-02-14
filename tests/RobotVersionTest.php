@@ -67,21 +67,9 @@ ROBOTS
                                 [
                                     'robot-version' => '2.0',
                                     'visit-time' => [],
-                                    'noindex' => [
-                                        'host' => [],
-                                        'path' => [],
-                                        'clean-param' => [],
-                                    ],
-                                    'disallow' => [
-                                        'host' => [],
-                                        'path' => [],
-                                        'clean-param' => [],
-                                    ],
-                                    'allow' => [
-                                        'host' => [],
-                                        'path' => [],
-                                        'clean-param' => [],
-                                    ],
+                                    'noindex' => [],
+                                    'disallow' => [],
+                                    'allow' => [],
                                     'crawl-delay' => null,
                                     'cache-delay' => null,
                                     'request-rate' => [],
@@ -91,21 +79,9 @@ ROBOTS
                                 [
                                     'robot-version' => '1.0',
                                     'visit-time' => [],
-                                    'noindex' => [
-                                        'host' => [],
-                                        'path' => [],
-                                        'clean-param' => [],
-                                    ],
-                                    'disallow' => [
-                                        'host' => [],
-                                        'path' => [],
-                                        'clean-param' => [],
-                                    ],
-                                    'allow' => [
-                                        'host' => [],
-                                        'path' => [],
-                                        'clean-param' => [],
-                                    ],
+                                    'noindex' => [],
+                                    'disallow' => [],
+                                    'allow' => [],
                                     'crawl-delay' => null,
                                     'cache-delay' => null,
                                     'request-rate' => [],

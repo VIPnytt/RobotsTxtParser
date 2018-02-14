@@ -7,35 +7,38 @@ It's common practice to cache the `robots.txt` for up to 24 hours.
 Multiple crawlers may with benefits share the same database.
 
 ### Requirements:
-- MySQL
+- MySQL _(or similar replacement, such as MariaDB)_
 
 The library is built with cross-system in mind, and everything is set for additional database support. Just [submit an issue](https://github.com/VIPnytt/RobotsTxtParser/issues) and we'll see what we can do about it.
 
 ## Usage
 ```php
-$handler = new RobotsTxtParser\Cache($pdo);
-$client = $handler->client('http://example.com');
+<?php
+$handler = new \vipnytt\RobotsTxtParser\Database($pdo);
+$client = $handler->cache()->base('http://example.com');
 ```
 
-See the [Cache class documentation](../methods/Cache.md) for more information and additional available methods.
+See the [Cache manage interface documentation](../methods/CacheManageInterface.md) for more information and additional available methods.
 
 #### Cron job
 Recommended, but not required.
 
 Automates the `robots.txt` cache update process, and makes sure the cache stays up to date. Faster client, less overhead.
 ```php
-$handler = new RobotsTxtParser\Cache($pdo);
-$handler->cron();
+<?php
+$handler = new \vipnytt\RobotsTxtParser\Database($pdo);
+$handler->cache()->cron();
 ```
 
 #### Table maintenance
 Clean old data:
 ```php
-$handler = new RobotsTxtParser\Cache($pdo);
-$handler->clean();
+<?php
+$handler = new \vipnytt\RobotsTxtParser\Database($pdo);
+$handler->cache()->clean();
 ```
 
-Internal tests is showing that 10.000 cached `robots.txt` files, only takes up about 5 Megabytes in the database.
+10.000 random `robots.txt` files, takes up about 5 Megabytes in the database. The size does vary based on setup, server and other real-world conditions.
 
 ## Issues
 In case of problems, please [submit an issue](https://github.com/VIPnytt/RobotsTxtParser/issues).
@@ -58,7 +61,6 @@ CREATE TABLE `robotstxt__cache1` (
   PRIMARY KEY (`base`),
   KEY `worker` (`worker`, `nextUpdate`)
 )
-  ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin
 ```

@@ -7,13 +7,16 @@
 - [Clean-param](../Directives.md#clean-param)
 
 ## Public functions
-- [parent::InlineCleanParamClient](#parentinlinecleanparamclient)
+- [detect](#detect)
 - [detectWithCommon](#detectwithcommon)
+- [export](#export)
 
-### parent::InlineCleanParamClient
-The `CleanParamClient` class extends the [`InlineCleanParamClient`](InlineCleanParamClient.md) class, every single public function from that class class, is also available here.
-
-See [`InlineCleanParamClient`](InlineCleanParamClient.md) for more information.
+### detect
+```php
+@param  string $uri
+@return string[]
+```
+Detect and lists dynamic uri parameters.
 
 ### detectWithCommon
 ```php
@@ -22,3 +25,10 @@ See [`InlineCleanParamClient`](InlineCleanParamClient.md) for more information.
 @return string[]
 ```
 Array of uri parameters witch are considered dynamic. This function includes generic dynamic parameters, in addition to those in the `robots.txt` and in the input parameter `$customParam` (optional).
+
+
+### export
+```php
+@return array
+```
+Export an array of parameters and their corresponding paths.

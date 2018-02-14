@@ -8,7 +8,6 @@
 
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
-use PDO;
 use vipnytt\RobotsTxtParser\Client\Delay;
 
 /**
@@ -42,8 +41,8 @@ interface DelayInterface
     /**
      * Handle delay
      *
-     * @param PDO $pdo
-     * @return Delay\ClientInterface
+     * @param Delay\ManageInterface $handler
+     * @return Delay\BaseInterface
      */
-    public function handle(PDO $pdo);
+    public function handle(Delay\ManageInterface $handler);
 }

@@ -8,8 +8,6 @@
 
 namespace vipnytt\RobotsTxtParser\Parser;
 
-use vipnytt\RobotsTxtParser\Exceptions\ClientException;
-
 class UriParser
 {
     /**
@@ -45,7 +43,6 @@ class UriParser
      *
      * @param string $fallbackBase
      * @return string
-     * @throws ClientException
      */
     public function convertToFull($fallbackBase)
     {
@@ -57,7 +54,7 @@ class UriParser
             $this->uri = $fallbackBase;
             return $this->base() . $relative;
         }
-        throw new ClientException("Invalid URI `$this->uri`");
+        throw new \InvalidArgumentException("Invalid URI `$this->uri`");
     }
 
     /**
@@ -189,12 +186,11 @@ class UriParser
      * Base
      *
      * @return string
-     * @throws ClientException
      */
     public function base()
     {
         if (!$this->validate()) {
-            throw new ClientException("Invalid URI: $this->uri");
+            throw new \InvalidArgumentException("Invalid URI: $this->uri");
         }
         $parts = [
             'scheme' => parse_url($this->uri, PHP_URL_SCHEME),

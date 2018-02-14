@@ -1,20 +1,25 @@
+env:
+  global:
+    - CC_TEST_REPORTER_ID=4e66a7998029f3206d05cc068c5f4cf721a961f400b8c30b86bc500eaa835212
 sudo: false
 language: php
 php:
+  - 7.2
   - 7.1
   - 7.0
   - 5.6
   - hhvm
-  - nightly
 matrix:
   allow_failures:
     - php: hhvm
-    - php: nightly
 services:
   - mysql
 install:
   - composer install
 before_script:
   - mysql -e 'create database test;'
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 after_script:
-  - CODECLIMATE_REPO_TOKEN=4e66a7998029f3206d05cc068c5f4cf721a961f400b8c30b86bc500eaa835212 ./vendor/bin/test-reporter
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT

@@ -39,12 +39,12 @@ trait DirectiveClientTrait
             $dtTo->modify('+1 day');
         }
         return (
-            $dtFrom <= $dtRef &&
-            $dtRef <= $dtTo
-        ) || (
-            $dtFrom <= $dtRef->modify('+1 day') &&
-            $dtRef <= $dtTo
-        );
+                $dtFrom <= $dtRef &&
+                $dtRef <= $dtTo
+            ) || (
+                $dtFrom <= $dtRef->modify('+1 day') &&
+                $dtRef <= $dtTo
+            );
     }
 
     /**
@@ -52,21 +52,22 @@ trait DirectiveClientTrait
      *
      * @param string $path
      * @param string[] $paths
-     * @return bool
+     * @return int|false
      */
     private function checkPaths($path, array $paths)
     {
-        $escape = [
+        $pairs = [
             '?' => '\?',
             '.' => '\.',
             '*' => '.*',
         ];
         foreach ($paths as $rule) {
-            foreach ($escape as $search => $replace) {
-                $rule = str_replace($search, $replace, $rule);
+            $escaped = $rule;
+            foreach ($pairs as $search => $replace) {
+                $escaped = str_replace($search, $replace, $escaped);
             }
-            if ($this->checkPathsCallback($rule, $path)) {
-                return true;
+            if ($this->checkPathsCallback($escaped, $path)) {
+                return mb_strlen($rule);
             }
         }
         return false;
@@ -100,12 +101,12 @@ trait DirectiveClientTrait
          */
         $errorHandler = new ErrorHandler();
         set_error_handler([$errorHandler, 'callback'], E_NOTICE | E_WARNING);
-        if (!preg_match('#' . $rule . '#', $path)) {
+        if (preg_match('#' . $rule . '#', $path) == false) {
             // Rule does not match
             restore_error_handler();
             return false;
-        } elseif (mb_strpos($rule, '$') === false || // No special parsing required
-            mb_substr($rule, 0, -1) === $path // Rule does contain an end anchor, and matches
+        } elseif (mb_strpos($rule, '$') === false || // No end anchor, return true
+            mb_substr($rule, 0, -1) === $path // End anchor detected, path exact match, return true
         ) {
             restore_error_handler();
             return true;

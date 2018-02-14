@@ -12,7 +12,6 @@ use vipnytt\RobotsTxtParser\Client\Directives\CleanParamClient;
 use vipnytt\RobotsTxtParser\Client\Directives\HostClient;
 use vipnytt\RobotsTxtParser\Client\Directives\SitemapClient;
 use vipnytt\RobotsTxtParser\Client\Directives\UserAgentClient;
-use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 use vipnytt\RobotsTxtParser\Handler\EncodingHandler;
 use vipnytt\RobotsTxtParser\Parser\RobotsTxtParser;
 
@@ -59,7 +58,8 @@ class TxtClient extends RobotsTxtParser
         $encoding = self::ENCODING,
         $effectiveUri = null,
         $byteLimit = self::BYTE_LIMIT
-    ) {
+    )
+    {
         $this->statusCode = $statusCode;
         $this->content = $content;
         $this->encoding = $encoding;
@@ -90,7 +90,7 @@ class TxtClient extends RobotsTxtParser
      *
      * @param int|null $bytes
      * @return string
-     * @throws ClientException
+     * @throws \InvalidArgumentException
      */
     private function limitBytes($bytes)
     {
@@ -98,7 +98,7 @@ class TxtClient extends RobotsTxtParser
             return $this->content;
         } elseif (intval($bytes) < (self::BYTE_LIMIT * 0.046875)) {
             // less than 24 kilobytes (512 kilobytes * 0.046875)
-            throw new ClientException('Byte limit is set dangerously low! Default value=' . self::BYTE_LIMIT);
+            throw new \InvalidArgumentException('Byte limit is set dangerously low! Default value=' . self::BYTE_LIMIT);
         }
         return $this->content = mb_strcut($this->content, 0, intval($bytes));
     }
@@ -110,7 +110,7 @@ class TxtClient extends RobotsTxtParser
      */
     public function getUserAgents()
     {
-        return $this->handler->userAgent()->getUserAgents();
+        return $this->handler->userAgent->getUserAgents();
     }
 
     /**
@@ -120,7 +120,7 @@ class TxtClient extends RobotsTxtParser
      */
     public function cleanParam()
     {
-        return $this->handler->cleanParam()->client();
+        return $this->handler->cleanParam->client();
     }
 
     /**
@@ -130,7 +130,7 @@ class TxtClient extends RobotsTxtParser
      */
     public function host()
     {
-        return $this->handler->host()->client();
+        return $this->handler->host->client();
     }
 
     /**
@@ -140,7 +140,7 @@ class TxtClient extends RobotsTxtParser
      */
     public function sitemap()
     {
-        return $this->handler->sitemap()->client();
+        return $this->handler->sitemap->client();
     }
 
     /**
@@ -152,6 +152,6 @@ class TxtClient extends RobotsTxtParser
      */
     public function userAgent($product = self::USER_AGENT, $version = null)
     {
-        return $this->handler->userAgent()->client($product, $version, $this->statusCode);
+        return $this->handler->userAgent->client($product, $version, $this->statusCode);
     }
 }

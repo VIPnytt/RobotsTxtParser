@@ -18,8 +18,6 @@ use vipnytt\RobotsTxtParser;
  */
 class ImportTest extends TestCase
 {
-    use RobotsTxtParser\Handler\PhpAddOnTrait;
-
     /**
      * @dataProvider generateDataForTest
      * @param array $source
@@ -60,28 +58,13 @@ class ImportTest extends TestCase
                                 ],
                             ],
                             'index' => [
-                                'path' => [
-                                    '/private',
-                                ],
+                                '/private',
                             ],
                             'disallow' => [
-                                'hosts' => [
-                                    'www.example.com',
-                                ],
-                                'cleanparam' => [
-                                    'token' => [
-                                        '/public/users',
-                                    ],
-                                    'uid' => [
-                                        '/public/users',
-                                    ],
-                                ],
                                 '/admin/',
                             ],
                             'allow' => [
-                                'path' => [
-                                    '/public',
-                                ],
+                                '/public',
                             ],
                             'crawl-delay' => 'five',
                             'cache-delay' => 'ten',
@@ -102,23 +85,17 @@ class ImportTest extends TestCase
                         ],
                         'googlebot' => [
                             'disallow' => [
-                                'path' => [
-                                    '/',
-                                ],
+                                '/',
                             ],
                         ],
                         'bingbot' => [
                             'disallow' => [
-                                'path' => [
-                                    '/',
-                                ],
+                                '/',
                             ],
                         ],
                         'duckduckgo' => [
                             'disallow' => [
-                                'path' => [
-                                    '/',
-                                ],
+                                '/',
                             ],
                         ],
                     ],
@@ -139,24 +116,12 @@ class ImportTest extends TestCase
                                     'to' => '2301',
                                 ],
                             ],
-                            'noindex' => [
-                                'host' => [],
-                                'path' => [],
-                                'clean-param' => [],
-                            ],
+                            'noindex' => [],
                             'disallow' => [
-                                'host' => [],
-                                'path' =>
-                                    [],
-                                'clean-param' => [],
+                                '/admin/',
                             ],
                             'allow' => [
-                                'host' => [],
-                                'path' =>
-                                    [
-                                        '/public',
-                                    ],
-                                'clean-param' => [],
+                                '/public',
                             ],
                             'crawl-delay' => null,
                             'cache-delay' => null,
@@ -179,23 +144,11 @@ class ImportTest extends TestCase
                         'googlebot' => [
                             'robot-version' => null,
                             'visit-time' => [],
-                            'noindex' => [
-                                'host' => [],
-                                'path' => [],
-                                'clean-param' => [],
-                            ],
+                            'noindex' => [],
                             'disallow' => [
-                                'host' => [],
-                                'path' => [
-                                    '/',
-                                ],
-                                'clean-param' => [],
+                                '/',
                             ],
-                            'allow' => [
-                                'host' => [],
-                                'path' => [],
-                                'clean-param' => [],
-                            ],
+                            'allow' => [],
                             'crawl-delay' => null,
                             'cache-delay' => null,
                             'request-rate' => [],
@@ -204,23 +157,11 @@ class ImportTest extends TestCase
                         'bingbot' => [
                             'robot-version' => null,
                             'visit-time' => [],
-                            'noindex' => [
-                                'host' => [],
-                                'path' => [],
-                                'clean-param' => [],
-                            ],
+                            'noindex' => [],
                             'disallow' => [
-                                'host' => [],
-                                'path' => [
-                                    '/',
-                                ],
-                                'clean-param' => [],
+                                '/',
                             ],
-                            'allow' => [
-                                'host' => [],
-                                'path' => [],
-                                'clean-param' => [],
-                            ],
+                            'allow' => [],
                             'crawl-delay' => null,
                             'cache-delay' => null,
                             'request-rate' => [],
@@ -229,23 +170,11 @@ class ImportTest extends TestCase
                         'duckduckgo' => [
                             'robot-version' => null,
                             'visit-time' => [],
-                            'noindex' => [
-                                'host' => [],
-                                'path' => [],
-                                'clean-param' => [],
-                            ],
+                            'noindex' => [],
                             'disallow' => [
-                                'host' => [],
-                                'path' => [
-                                    '/',
-                                ],
-                                'clean-param' => [],
+                                '/',
                             ],
-                            'allow' => [
-                                'host' => [],
-                                'path' => [],
-                                'clean-param' => [],
-                            ],
+                            'allow' => [],
                             'crawl-delay' => null,
                             'cache-delay' => null,
                             'request-rate' => [],
@@ -258,24 +187,8 @@ class ImportTest extends TestCase
                         '*' => [
                             'cache-delay' => 'ten',
                             'crawl-delay' => 'five',
-                            'disallow' => [
-                                '/admin/',
-                                'cleanparam' => [
-                                    'token' => [
-                                        '/public/users',
-                                    ],
-                                    'uid' => [
-                                        '/public/users',
-                                    ],
-                                ],
-                                'hosts' => [
-                                    'www.example.com',
-                                ],
-                            ],
                             'index' => [
-                                'path' => [
-                                    '/private',
-                                ],
+                                '/private',
                             ],
                             'request-rate' => [
                                 1 => [

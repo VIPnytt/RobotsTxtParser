@@ -8,6 +8,5 @@ CREATE TABLE `robotstxt__delay0` (
   PRIMARY KEY (`base`, `userAgent`),
   KEY `delayUntil` (`delayUntil`)
 )
-  ENGINE = InnoDB
   DEFAULT CHARSET = ascii
   COLLATE = ascii_bin

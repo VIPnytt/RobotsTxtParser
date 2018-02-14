@@ -67,7 +67,7 @@ class RobotsTxtParser implements RobotsTxtInterface
     private function parseTxt($txt)
     {
         $result = [];
-        $lines = array_filter(array_map('trim', mb_split('\r\n|\n|\r', $txt)));
+        $lines = array_map('trim', mb_split('\r\n|\n|\r', $txt));
         // Parse each line individually
         foreach ($lines as $key => $line) {
             // Limit rule length
@@ -90,9 +90,9 @@ class RobotsTxtParser implements RobotsTxtInterface
     private function parseLine($line)
     {
         if (($pair = $this->generateRulePair($line, array_keys(self::TOP_LEVEL_DIRECTIVES))) !== false) {
-            return $this->handler->{self::TOP_LEVEL_DIRECTIVES[$pair['directive']]}()->add($pair['value']);
+            return $this->handler->{self::TOP_LEVEL_DIRECTIVES[$pair[0]]}->add($pair[1]);
         }
-        return $this->handler->userAgent()->add($line);
+        return $this->handler->userAgent->add($line);
     }
 
     /**
@@ -113,10 +113,10 @@ class RobotsTxtParser implements RobotsTxtInterface
     public function export()
     {
         return [
-            self::DIRECTIVE_HOST => $this->handler->host()->client()->export(),
-            self::DIRECTIVE_CLEAN_PARAM => $this->handler->cleanParam()->client()->export(),
-            self::DIRECTIVE_SITEMAP => $this->handler->sitemap()->client()->export(),
-            self::DIRECTIVE_USER_AGENT => $this->handler->userAgent()->export(),
+            self::DIRECTIVE_HOST => $this->handler->host->client()->export(),
+            self::DIRECTIVE_CLEAN_PARAM => $this->handler->cleanParam->client()->export(),
+            self::DIRECTIVE_SITEMAP => $this->handler->sitemap->client()->export(),
+            self::DIRECTIVE_USER_AGENT => $this->handler->userAgent->export(),
         ];
     }
 }

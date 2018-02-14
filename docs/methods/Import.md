@@ -3,7 +3,7 @@
 @package vipnytt\RobotsTxtParser
 ```
 
-Import arrays that has been exported by the [`TxtClient`](TxtClient.md#export).
+Import an array earlier exported by the [`TxtClient`](TxtClient.md#export).
 
 ## Public functions
 - [__construct](#__construct)
@@ -25,6 +25,6 @@ See [`TxtClient`](TxtClient.md) for more information.
 ```php
 @return array
 ```
-Returns the difference between the input array and the computed exportable array. Normally this should return an empty array, but in cases where invalid/unreadable/unsupported data is given, it returns that data only.
+Returns the difference between the input array and the computed exportable array. Normally this should return an empty array, but in cases where invalid/unreadable/unsupported data is given, that data is returned.
 
 Perfect for debugging purposes, eg. when importing an custom or modified array.

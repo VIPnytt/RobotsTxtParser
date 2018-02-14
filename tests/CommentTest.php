@@ -23,6 +23,7 @@ class CommentTest extends TestCase
      * @param string $robotsTxtContent
      * @param array $result
      * @param string|false $rendered
+     * @throws RobotsTxtParser\Exceptions\ClientException
      */
     public function testComment($robotsTxtContent, $result, $rendered)
     {

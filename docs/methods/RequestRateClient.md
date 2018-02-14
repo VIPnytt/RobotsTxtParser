@@ -42,9 +42,9 @@ When the value is requested but not found, the value of [``Crawl-delay``](../Dir
 
 ### handle
 ```php
-@param PDO $pdo
-@return Delay\ClientInterface
+@param Client\Delay\ManageInterface $handler
+@return Client\Delay\BaseInterface
 ```
-Returns an instance of [Delay\ClientInterface](DelayInterface.md).
+Returns an instance of [Client\Delay\ClientInterface](DelayBaseInterface.md).
 
 When the value is requested but not found, the value of [``Crawl-delay``](../Directives.md#crawl-delay) is returned, to maintain compatibility.

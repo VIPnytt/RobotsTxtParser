@@ -22,6 +22,7 @@ class WhitespaceTest extends TestCase
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
      * @param string|false $rendered
+     * @throws RobotsTxtParser\Exceptions\ClientException
      */
     public function testWhitespace($robotsTxtContent, $rendered)
     {

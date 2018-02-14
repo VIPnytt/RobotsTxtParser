@@ -8,24 +8,25 @@
 
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use PDO;
 use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
 /**
- * Class CacheDisplaceSQLTest
+ * Class MysqlCacheDisplaceTest
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class CacheDisplaceSQLTest extends TestCase
+class MysqlCacheDisplaceTest extends TestCase
 {
     /**
      * Test that the robots.txt content is cached for longer than 24h in case of failures when updating the cache
      *
      * This test searches for hosts with an http status code of 500 when fetching the robots.txt.
      * If none is found, then the test fails.
+     *
+     * @throws RobotsTxtParser\Exceptions\DatabaseException
      */
-    public function testCacheDisplaceSQL()
+    public function testCacheDisplace()
     {
         // This URL list is based on real data. Update when needed!
         // It loops thou the list, until an http 500 match is found. Therefore not all URL are fetched...
@@ -77,28 +78,32 @@ class CacheDisplaceSQLTest extends TestCase
     }
 
     /**
-     * @param string $base
+     * @param string $baseUri
      * @return bool
+     * @throws RobotsTxtParser\Exceptions\DatabaseException
      */
-    private function check($base)
+    private function check($baseUri)
     {
-        $pdo = new PDO($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
-        $parser = new RobotsTxtParser\Cache($pdo);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Cache', $parser);
+        $pdo = new \PDO($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
+        $cache = (new RobotsTxtParser\Database($pdo))->cache();
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client\Cache\ManageInterface', $cache);
+
+        $base = $cache->base($baseUri);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client\Cache\BaseInterface', $base);
 
         // Insert fake data
-        $parser->invalidate($base);
+        $base->invalidate();
         $query = $pdo->prepare(<<<SQL
 INSERT INTO robotstxt__cache1 (base, content, statusCode, validUntil, nextUpdate)
 VALUES (:base, '', NULL, UNIX_TIMESTAMP() + 86400, UNIX_TIMESTAMP() - 3600);
 SQL
         );
-        $query->bindParam(':base', $base, PDO::PARAM_STR);
+        $query->bindParam('base', $baseUri, \PDO::PARAM_STR);
         $query->execute();
 
-        $parser->client($base);
-
-        $parser->cron();
+        $cache->cron();
 
         // Check if update has been displaced
         $query = $pdo->prepare(<<<SQL
@@ -107,10 +112,10 @@ FROM robotstxt__cache1
 WHERE base = :base AND validUntil > UNIX_TIMESTAMP() AND nextUpdate > UNIX_TIMESTAMP() AND statusCode IS NULL;
 SQL
         );
-        $query->bindParam(':base', $base, PDO::PARAM_STR);
+        $query->bindParam('base', $baseUri, \PDO::PARAM_STR);
         $query->execute();
         // Delete fake data
-        $parser->invalidate($base);
+        $base->invalidate();
         if ($query->rowCount() > 0) {
             return true;
         }

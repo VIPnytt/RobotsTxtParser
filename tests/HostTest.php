@@ -22,26 +22,20 @@ class HostTest extends TestCase
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
      * @param string|false $rendered
+     * @throws RobotsTxtParser\Exceptions\ClientException
      */
     public function testHost($robotsTxtContent, $rendered)
     {
         $parser = new RobotsTxtParser\TxtClient('http://www.myhost.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
 
-        $this->assertTrue($parser->userAgent()->isDisallowed('http://www.myhost.com/'));
-        $this->assertFalse($parser->userAgent()->isAllowed('http://www.myhost.com/'));
-        $this->assertTrue($parser->userAgent()->isDisallowed('/'));
-        $this->assertFalse($parser->userAgent()->isAllowed('/'));
+        $this->assertFalse($parser->host()->isPreferred());
+        $this->assertFalse($parser->userAgent()->isDisallowed('/'));
+        $this->assertTrue($parser->userAgent()->isAllowed('/'));
 
         $this->assertEquals('myhost.com', $parser->host()->export());
         $this->assertEquals('myhost.com', $parser->host()->getWithUriFallback());
         $this->assertFalse($parser->host()->isPreferred());
-
-        for ($i = 1; $i <= 2; $i++) {
-            $this->assertFalse($parser->userAgent()->allow()->host()->isListed('http://www.myhost.com/'));
-            $this->assertTrue($parser->userAgent()->disallow()->host()->isListed('http://www.myhost.com/'));
-            $this->assertFalse($parser->userAgent()->noIndex()->host()->isListed('http://www.myhost.com/'));
-        }
 
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render()->normal("\n"));
@@ -61,7 +55,6 @@ class HostTest extends TestCase
                 <<<ROBOTS
 User-agent: *
 Disallow: /cgi-bin
-Disallow: Host: www.myhost.com
 
 User-agent: Yandex
 Disallow: /cgi-bin
@@ -91,9 +84,6 @@ ROBOTS
 Host: myhost.com
 
 User-agent: *
-Disallow: Host: www.myhost.com
-Disallow: /cgi-bin
-
 User-agent: yandex
 Disallow: /cgi-bin
 RENDERED

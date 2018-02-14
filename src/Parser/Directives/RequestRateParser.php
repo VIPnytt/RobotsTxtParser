@@ -40,6 +40,17 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
     private $sorted = false;
 
     /**
+     * Time units
+     * @var int[]
+     */
+    private $units = [
+        'w' => 604800,
+        'd' => 86400,
+        'h' => 3600,
+        'm' => 60,
+    ];
+
+    /**
      * RequestRate constructor.
      *
      * @param string $base
@@ -88,18 +99,8 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
         if (count($parts) != 2) {
             return false;
         }
-        $multiplier = 1;
-        switch (strtolower(substr(preg_replace('/[^A-Za-z]/', '', filter_var($parts[1], FILTER_SANITIZE_STRING)), 0, 1))) {
-            case 'm':
-                $multiplier = 60;
-                break;
-            case 'h':
-                $multiplier = 3600;
-                break;
-            case 'd':
-                $multiplier = 86400;
-                break;
-        }
+        $unit = strtolower(substr(preg_replace('/[^A-Za-z]/', '', filter_var($parts[1], FILTER_SANITIZE_STRING)), 0, 1));
+        $multiplier = isset($this->units[$unit]) ? $this->units[$unit] : 1;
         $rate = abs(filter_var($parts[1], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION)) * $multiplier / abs(filter_var($parts[0], FILTER_SANITIZE_NUMBER_INT));
         return $rate > 0 ? $rate : false;
     }
@@ -144,14 +145,58 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
     {
         $this->sort();
         foreach ($this->requestRates as $array) {
+            $multiplyFactor = $this->decimalMultiplier($array['rate']);
+            $multipliedRate = $array['rate'] * $multiplyFactor;
+            $gcd = $this->getGCD($multiplyFactor, $multipliedRate);
+            $requests = $multiplyFactor / $gcd;
+            $time = $multipliedRate / $gcd;
             $suffix = 's';
+            foreach ($this->units as $unit => $sec) {
+                if ($time % $sec === 0) {
+                    $suffix = $unit;
+                    $time /= $sec;
+                    break;
+                }
+            }
             if (isset($array['from']) &&
                 isset($array['to'])
             ) {
                 $suffix .= ' ' . $array['from'] . '-' . $array['to'];
             }
-            $handler->add(self::DIRECTIVE_REQUEST_RATE, '1/' . $array['rate'] . $suffix);
+            $handler->add(self::DIRECTIVE_REQUEST_RATE, $requests . '/' . $time . $suffix);
         }
         return true;
+    }
+
+    /**
+     * @param int|float $value
+     * @return int
+     */
+    private function decimalMultiplier($value)
+    {
+        $multiplier = 1;
+        while (fmod($value, 1) != 0) {
+            $value *= 10;
+            $multiplier *= 10;
+        }
+        return $multiplier;
+    }
+
+    /**
+     * Returns the greatest common divisor of two integers using the Euclidean algorithm.
+     *
+     * @param int $a
+     * @param int $b
+     * @return int
+     */
+    private function getGCD($a, $b)
+    {
+        if (extension_loaded('gmp')) {
+            return gmp_intval(gmp_gcd((string)$a, (string)$b));
+        }
+        $large = $a > $b ? $a : $b;
+        $small = $a > $b ? $b : $a;
+        $remainder = $large % $small;
+        return 0 === $remainder ? $small : $this->getGCD($small, $remainder);
     }
 }

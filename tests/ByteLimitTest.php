@@ -26,7 +26,7 @@ class ByteLimitTest extends TestCase
     public function testByteLimitException($byteLimit, $warning)
     {
         if ($warning) {
-            $this->expectException(RobotsTxtParser\Exceptions\ClientException::class);
+            $this->expectException(\InvalidArgumentException::class);
         }
         new RobotsTxtParser\TxtClient('http://example.com', 200, '', 'UTF-8', 'http://example.com', $byteLimit);
     }

@@ -14,8 +14,10 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
  * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/CleanParamClient.md for documentation
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
-class CleanParamClient extends InlineCleanParamClient
+class CleanParamClient implements ClientInterface
 {
+    use DirectiveClientTrait;
+
     /**
      * Common dynamic uri parameters
      * @var string[]
@@ -24,9 +26,18 @@ class CleanParamClient extends InlineCleanParamClient
         'popup',
         'ref',
         'token',
+        'utm_campaign',
+        'utm_content',
         'utm_medium',
         'utm_source',
+        'utm_term',
     ];
+
+    /**
+     * Clean-param
+     * @var string[][]
+     */
+    private $cleanParam = [];
 
     /**
      * CleanParamClient constructor.
@@ -35,7 +46,7 @@ class CleanParamClient extends InlineCleanParamClient
      */
     public function __construct(array $cleanParam)
     {
-        parent::__construct($cleanParam);
+        $this->cleanParam = $cleanParam;
     }
 
     /**
@@ -68,5 +79,50 @@ class CleanParamClient extends InlineCleanParamClient
             $result[$parameter] = ['/'];
         }
         return $result;
+    }
+
+    /**
+     * Parse uri and return detected parameters
+     *
+     * @param string $uri
+     * @param array $pairs
+     * @return string[]
+     */
+    protected function parse($uri, array $pairs)
+    {
+        $result = [];
+        foreach ($pairs as $param => $paths) {
+            if ((
+                    strpos($uri, "?$param=") ||
+                    strpos($uri, "&$param=")
+                ) &&
+                $this->checkPaths($uri, $paths) !== false
+            ) {
+                $result[] = $param;
+            }
+        }
+        sort($result);
+        return $result;
+    }
+
+    /**
+     * Export
+     *
+     * @return string[][]
+     */
+    public function export()
+    {
+        return $this->cleanParam;
+    }
+
+    /**
+     * Detect dynamic parameters
+     *
+     * @param  string $uri
+     * @return string[]
+     */
+    public function detect($uri)
+    {
+        return $this->parse($uri, $this->cleanParam);
     }
 }

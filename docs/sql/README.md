@@ -9,9 +9,9 @@ Every `robots.txt` parser needs some sort of a caching system.
 
 By caching data to the SQL server, overall performance is increased, you'll limit the number of network lags and timeouts to a bare minimum, and last but not least, no more spamming of the remote host.
 
-[Enable the built-in caching system.](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/sql/cache.md)
+[Enable the built-in caching system.](cache.md)
 
 ## Delay handler
 Many hosts requires you to control the robot's request flow, using a minimum interval between each request.
 
-[Learn how to honor the delay directives.](https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/sql/delay.md)
+[Learn how to honor the delay directives.](delay.md)

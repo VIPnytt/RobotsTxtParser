@@ -29,19 +29,10 @@ class CleanParamTest extends TestCase
         $parser = new RobotsTxtParser\TxtClient('http://www.site1.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
 
-        $this->assertTrue($parser->userAgent()->isDisallowed('http://www.site1.com/forums/showthread.php?s=681498b9648949605&ref=parent'));
-        $this->assertFalse($parser->userAgent()->isAllowed('http://www.site1.com/forums/showthread.php?s=681498b9648949605&ref=parent'));
-
-        $this->assertTrue($parser->userAgent()->isDisallowed('http://www.site1.com/page.php?ref=ads&uid=123456'));
-        $this->assertFalse($parser->userAgent()->isAllowed('http://www.site1.com/page.php?ref=ads&uid=123456'));
+        $this->assertEquals(['ref', 's'], $parser->cleanParam()->detect('http://www.site1.com/forums/showthread.php?s=681498b9648949605&ref=parent&popup=0'));
+        $this->assertEquals(['popup', 'ref', 's'], $parser->cleanParam()->detectWithCommon('http://www.site1.com/forums/showthread.php?s=681498b9648949605&ref=parent&popup=0'));
 
         $this->assertEquals($result['Clean-param'], $parser->cleanParam()->export());
-
-        for ($i = 1; $i <= 2; $i++) {
-            $this->assertEquals($result['NoIndex'], $parser->userAgent()->noIndex()->cleanParam()->export());
-            $this->assertEquals($result['Disallow'], $parser->userAgent()->disallow()->cleanParam()->export());
-            $this->assertEquals($result['Allow'], $parser->userAgent()->allow()->cleanParam()->export());
-        }
 
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render()->normal("\n"));
@@ -54,15 +45,14 @@ class CleanParamTest extends TestCase
      *
      * @return array
      */
-    public
-    function generateDataForTest()
+    public function generateDataForTest()
     {
         return [
             [
                 <<<ROBOTS
 User-agent: *
-Disallow: Clean-param: s&ref /forum*/sh*wthread.php**
-Disallow: Clean-param: uid /
+Clean-param: s&ref /forum*/sh*wthread.php**
+Clean-param: uid /
 Clean-param: abc /forum/showthread.php
 Clean-param: sid&sort /forum/*.php
 Clean-param: someTrash&otherTrash
@@ -85,29 +75,25 @@ ROBOTS
                         "otherTrash" => [
                             "/",
                         ],
+                        "uid" => [
+                            "/",
+                        ],
+                        "s" => [
+                            "/forum*/sh*wthread.php",
+                        ],
+                        "ref" => [
+                            "/forum*/sh*wthread.php",
+                        ],
                     ],
                     'NoIndex' => [],
-                    'Disallow' => [
-                        'ref' => [
-                            '/forum*/sh*wthread.php',
-                        ],
-                        's' => [
-                            '/forum*/sh*wthread.php',
-                        ],
-                        'uid' => [
-                            '/',
-                        ]
-                    ],
+                    'Disallow' => [],
                     'Allow' => [],
                 ],
                 <<<RENDERED
 Clean-param: abc /forum/showthread.php
-Clean-param: otherTrash&someTrash /
+Clean-param: otherTrash&someTrash&uid /
+Clean-param: ref&s /forum*/sh*wthread.php
 Clean-param: sid&sort /forum/*.php
-
-User-agent: *
-Disallow: Clean-param: ref&s /forum*/sh*wthread.php
-Disallow: Clean-param: uid /
 RENDERED
             ]
         ];

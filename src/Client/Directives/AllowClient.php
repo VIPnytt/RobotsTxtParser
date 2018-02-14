@@ -8,7 +8,6 @@
 
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
-use vipnytt\RobotsTxtParser\Exceptions\ClientException;
 use vipnytt\RobotsTxtParser\Parser\UriParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
@@ -29,65 +28,24 @@ class AllowClient implements ClientInterface, RobotsTxtInterface
     private $paths;
 
     /**
-     * Host
-     * @var InlineHostClient
-     */
-    private $host;
-
-    /**
-     * Clean-param
-     * @var InlineCleanParamClient
-     */
-    private $cleanParam;
-
-    /**
      * AllowClient constructor.
      *
      * @param string[] $paths
-     * @param InlineHostClient $host
-     * @param InlineCleanParamClient $cleanParam
      */
-    public function __construct(array $paths, InlineHostClient $host, InlineCleanParamClient $cleanParam)
+    public function __construct(array $paths)
     {
-        $this->host = $host;
         $this->paths = $paths;
-        $this->cleanParam = $cleanParam;
-    }
-
-    /**
-     * Inline Clean-param directive
-     *
-     * @return InlineCleanParamClient
-     */
-    public function cleanParam()
-    {
-        return $this->cleanParam;
-    }
-
-    /**
-     * Inline Host directive
-     *
-     * @return InlineHostClient
-     */
-    public function host()
-    {
-        return $this->host;
     }
 
     /**
      * Check
      *
      * @param  string $uri
-     * @return bool
+     * @return int|false
      */
-    public function isListed($uri)
+    public function hasPath($uri)
     {
-        $path = $this->getPath($uri);
-        return (
-            $this->checkPaths($path, $this->paths) ||
-            $this->host->isListed($uri) ||
-            !empty($this->cleanParam->detect($path))
-        );
+        return $this->checkPaths($this->getPathFromUri($uri), $this->paths);
     }
 
     /**
@@ -95,20 +53,20 @@ class AllowClient implements ClientInterface, RobotsTxtInterface
      *
      * @param string $uri
      * @return string
-     * @throws ClientException
+     * @throws \InvalidArgumentException
      */
-    private function getPath($uri)
+    private function getPathFromUri($uri)
     {
         $uriParser = new UriParser($uri);
         // Prepare uri
         $uriParser->encode();
         $uri = $uriParser->stripFragment();
-        if (mb_strpos($uri, '/') === 0) {
+        if (strpos($uri, '/') === 0) {
             // URI is already an path
             return $uri;
         }
         if (!$uriParser->validate()) {
-            throw new ClientException('Invalid URI');
+            throw new \InvalidArgumentException('Invalid URI');
         }
         $path = (($path = parse_url($uri, PHP_URL_PATH)) === null) ? '/' : $path;
         $query = (($query = parse_url($uri, PHP_URL_QUERY)) === null) ? '' : '?' . $query;
@@ -122,10 +80,6 @@ class AllowClient implements ClientInterface, RobotsTxtInterface
      */
     public function export()
     {
-        return [
-            'host' => $this->host->export(),
-            'path' => $this->paths,
-            'clean-param' => $this->cleanParam->export(),
-        ];
+        return $this->paths;
     }
 }

@@ -14,8 +14,26 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
  * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/HostClient.md for documentation
  * @package vipnytt\RobotsTxtParser\Client\Directives
  */
-class HostClient extends HostClientCore
+class HostClient implements ClientInterface
 {
+    /**
+     * Host values
+     * @var string[]
+     */
+    protected $host;
+
+    /**
+     * Base uri
+     * @var string
+     */
+    protected $base;
+
+    /**
+     * Effective uri
+     * @var string
+     */
+    protected $effective;
+
     /**
      * HostClient constructor.
      * @param string $base
@@ -24,7 +42,9 @@ class HostClient extends HostClientCore
      */
     public function __construct($base, $effective, $host)
     {
-        parent::__construct($base, $effective, $host);
+        $this->base = $base;
+        $this->effective = $effective;
+        $this->host = $host;
     }
 
     /**

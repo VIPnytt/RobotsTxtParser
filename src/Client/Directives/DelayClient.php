@@ -32,13 +32,13 @@ class DelayClient extends DelayCore
      * DelayClient constructor.
      *
      * @param string $baseUri
-     * @param string $userAgent
+     * @param string $product
      * @param float|int $value
      * @param float|int $fallbackValue
      */
-    public function __construct($baseUri, $userAgent, $value, $fallbackValue = 0)
+    public function __construct($baseUri, $product, $value, $fallbackValue = 0)
     {
-        parent::__construct($baseUri, $userAgent);
+        parent::__construct($baseUri, $product);
         $this->exportValue = $value;
         $this->value = $value > 0 ? $value : $fallbackValue;
     }

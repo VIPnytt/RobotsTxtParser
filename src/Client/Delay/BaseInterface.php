@@ -8,25 +8,27 @@
 
 namespace vipnytt\RobotsTxtParser\Client\Delay;
 
-use PDO;
+use vipnytt\RobotsTxtParser\Exceptions\OutOfSyncException;
 
 /**
- * Interface ClientInterface
+ * Interface BaseInterface
  *
  * @see https://github.com/VIPnytt/RobotsTxtParser/blob/master/docs/methods/DelayClient.md for documentation
  * @package vipnytt\RobotsTxtParser\Client\Delay
  */
-interface ClientInterface
+interface BaseInterface extends DelayInterface
 {
+    const RESET_NEW_DELAY = 0;
+
     /**
-     * Client constructor.
+     * BaseInterface constructor.
      *
-     * @param PDO $pdo
+     * @param \PDO $pdo
      * @param string $baseUri
      * @param string $userAgent
      * @param float|int $delay
      */
-    public function __construct(PDO $pdo, $baseUri, $userAgent, $delay);
+    public function __construct(\PDO $pdo, $baseUri, $userAgent, $delay);
 
     /**
      * Queue
@@ -38,15 +40,16 @@ interface ClientInterface
     /**
      * Reset queue
      *
-     * @param float|int|null $delay
+     * @param float|int $newDelay
      * @return bool
      */
-    public function reset($delay = null);
+    public function reset($newDelay = self::RESET_NEW_DELAY);
 
     /**
      * Sleep
      *
      * @return float|int
+     * @throws OutOfSyncException
      */
     public function sleep();
 
@@ -54,6 +57,14 @@ interface ClientInterface
      * Timestamp with milliseconds
      *
      * @return float|int
+     * @throws OutOfSyncException
      */
     public function getTimeSleepUntil();
+
+    /**
+     * Debug - get raw data
+     *
+     * @return array
+     */
+    public function debug();
 }

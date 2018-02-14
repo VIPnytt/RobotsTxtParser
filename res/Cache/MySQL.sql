@@ -13,6 +13,5 @@ CREATE TABLE `robotstxt__cache1` (
   PRIMARY KEY (`base`),
   KEY `worker` (`worker`, `nextUpdate`)
 )
-  ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin

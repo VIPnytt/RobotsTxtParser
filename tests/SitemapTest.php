@@ -82,6 +82,10 @@ Sitemap: http://worldwideweb.com/sitemap.xml
 
 User-agent: *
 Disallow: /admin/
+
+User-agent: googlebot
+User-agent: yahoo
+Disallow:
 RENDERED
             ]
         ];

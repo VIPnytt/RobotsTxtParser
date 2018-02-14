@@ -8,39 +8,38 @@
 
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use PDO;
 use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
-use vipnytt\RobotsTxtParser\Exceptions\DatabaseException;
 
 /**
- * Class DelaySQLTest
+ * Class MysqlDelayTest
  *
  * @package vipnytt\RobotsTxtParser\Tests
  */
-class DelaySQLTest extends TestCase
+class MysqlDelayTest extends TestCase
 {
     /**
      * @dataProvider generateDataForTest
      * @param string $uri
      * @param string $userAgent
+     * @throws RobotsTxtParser\Exceptions\DatabaseException
      */
-    public function testDelaySQL($uri, $userAgent)
+    public function testDelay($uri, $userAgent)
     {
-        $pdo = new PDO($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
+        $pdo = new \PDO($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
+        $handler = (new RobotsTxtParser\Database($pdo))->delay();
         $parser = new RobotsTxtParser\UriClient($uri);
-        $this->assertTrue(is_numeric($parser->userAgent($userAgent)->crawlDelay()->handle($pdo)->checkQueue()));
-        $this->assertTrue(is_numeric($parser->userAgent($userAgent)->crawlDelay()->handle($pdo)->getTimeSleepUntil()));
-        $this->assertTrue(is_numeric($parser->userAgent($userAgent)->crawlDelay()->handle($pdo)->sleep()));
+        $this->assertTrue(is_numeric($parser->userAgent($userAgent)->crawlDelay()->handle($handler)->checkQueue()));
+        $this->assertTrue(is_numeric($parser->userAgent($userAgent)->crawlDelay()->handle($handler)->getTimeSleepUntil()));
+        $this->assertTrue(is_numeric($parser->userAgent($userAgent)->crawlDelay()->handle($handler)->sleep()));
 
-        $delayHandler = new RobotsTxtParser\Delay($pdo);
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Delay', $delayHandler);
-        $this->assertFalse($pdo->getAttribute(PDO::ATTR_ERRMODE) === PDO::ERRMODE_SILENT);
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client\Delay\ManageInterface', $handler);
+        $this->assertFalse($pdo->getAttribute(\PDO::ATTR_ERRMODE) === \PDO::ERRMODE_SILENT);
 
-        $client = $delayHandler->client($parser->userAgent($userAgent)->crawlDelay());
-        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client\Delay\ClientInterface', $client);
+        $client = $handler->base($uri, $userAgent, $parser->userAgent($userAgent)->crawlDelay()->getValue());
+        $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client\Delay\BaseInterface', $client);
         $this->assertTrue(is_numeric($client->getTimeSleepUntil()));
 
         $this->assertTrue(is_numeric($client->checkQueue()));
@@ -52,7 +51,7 @@ class DelaySQLTest extends TestCase
             $sleepTime <= ($stop - $start + 1)
         );
 
-        $this->assertTrue(is_array($delayHandler->getTopWaitTimes()));
+        $this->assertTrue(is_array($handler->getTopWaitTimes()));
 
         $client->reset();
         $this->assertTrue($client->getTimeSleepUntil() === 0);
@@ -62,12 +61,11 @@ class DelaySQLTest extends TestCase
             $queue = $client->checkQueue();
             $this->assertLessThanOrEqual(60, $queue);
             $this->assertGreaterThan(59, $queue);
-            $debug = $delayHandler->debug($uri);
-            $this->assertTrue(count($debug[strtolower($userAgent)], COUNT_NORMAL) >= 3);
+            $this->assertTrue(count($client->debug(), COUNT_NORMAL) >= 3);
         }
 
         $client->reset();
-        $delayHandler->clean();
+        $handler->clean();
     }
 
     /**
@@ -95,13 +93,5 @@ class DelaySQLTest extends TestCase
                 'Test'
             ],
         ];
-    }
-
-    public function testDelaySQLite()
-    {
-        $pdo = new PDO('sqlite::memory:');
-        $class = new RobotsTxtParser\Delay($pdo);
-        $this->expectException(DatabaseException::class);
-        $class->clean();
     }
 }

@@ -104,11 +104,12 @@ class AllowTest extends TestCase
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
         $this->assertEquals($rendered, $parser->render()->normal("\n"));
 
-        $this->assertTrue($parser->userAgent('*')->disallow()->isListed('/admin'));
-        $this->assertTrue($parser->userAgent('agentV')->allow()->isListed('/bar'));
+        // Expected result: String length of matching rule
+        $this->assertEquals(6, $parser->userAgent('*')->disallow()->hasPath('/admin'));
+        $this->assertEquals(4, $parser->userAgent('agentV')->allow()->hasPath('/bar'));
 
-        $this->expectException(RobotsTxtParser\Exceptions\ClientException::class);
-        $parser->userAgent('*')->disallow()->isListed('http;//www.example.com/invalid');
+        $this->expectException(\InvalidArgumentException::class);
+        $parser->userAgent('*')->disallow()->hasPath('http;//www.example.com/invalid');
     }
 
     /**
@@ -154,10 +155,12 @@ ROBOTS
                 ,
                 <<<RENDERED
 User-agent: *
-Disallow: /Admin
+User-agent: anyone
+Disallow: /temp
 Disallow: /admin
 Disallow: /forum
-Disallow: /temp
+Disallow: /Admin
+Disallow: /admin/cp/test/
 
 User-agent: agentv
 User-agent: agentw

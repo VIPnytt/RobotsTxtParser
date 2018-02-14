@@ -22,18 +22,18 @@ class NoIndexTest extends TestCase
      * @dataProvider generateDataForTest
      * @param string $robotsTxtContent
      * @param string|false $rendered
+     * @throws RobotsTxtParser\Exceptions\ClientException
      */
     public function testNoIndex($robotsTxtContent, $rendered)
     {
         $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, $robotsTxtContent);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
 
-        $this->assertTrue($parser->userAgent('*')->noIndex()->isListed('/public/'));
+        // Expected result: String length of matching rule
+        $this->assertEquals(1, $parser->userAgent()->noIndex()->hasPath('/public/'));
 
-        $this->assertTrue($parser->userAgent('*')->isDisallowed('/public/'));
-        $this->assertFalse($parser->userAgent('*')->isAllowed('/public/'));
-        $this->assertTrue($parser->userAgent()->isDisallowed('/public/'));
-        $this->assertFalse($parser->userAgent()->isAllowed('/public/'));
+        $this->assertTrue($parser->userAgent()->isAllowed('/public/'));
+        $this->assertFalse($parser->userAgent()->isDisallowed('/public/'));
 
         if ($rendered !== false) {
             $this->assertEquals($rendered, $parser->render()->normal("\n"));

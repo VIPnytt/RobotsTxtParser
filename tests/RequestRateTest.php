@@ -54,6 +54,7 @@ class RequestRateTest extends TestCase
                 <<<ROBOTS
 User-agent: *
 Request-rate: 1/1s 2200-0600
+Request-rate: 1/1h 0230-0330
 Request-rate: 8/2m 07:00-21:00
 Request-rate: 1200/3h 09.00-15.00
 Request-rate: 9216/4d 07-21 # invalid time
@@ -61,6 +62,11 @@ Request-rate: 5 # invalid rate
 ROBOTS
                 ,
                 [
+                    [
+                        'rate' => 3600,
+                        'from' => '0230',
+                        'to' => '0330',
+                    ],
                     [
                         'rate' => 37.5,
                         'from' => null,
@@ -84,7 +90,8 @@ ROBOTS
                 ],
                 <<<RENDERED
 User-agent: *
-Request-rate: 1/37.5s
+Request-rate: 1/1h 0230-0330
+Request-rate: 2/75s
 Request-rate: 1/15s 0700-2100
 Request-rate: 1/9s 0900-1500
 Request-rate: 1/1s 2200-0600

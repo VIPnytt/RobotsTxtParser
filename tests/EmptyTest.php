@@ -21,8 +21,9 @@ class EmptyTest extends TestCase
     /**
      * @dataProvider generateDataForTest
      * @param array $result
+     * @param string $rendered
      */
-    public function testEmpty($result)
+    public function testEmpty($result, $rendered)
     {
         $parser = new RobotsTxtParser\TxtClient('http://example.com', 200, '');
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $parser);
@@ -40,7 +41,9 @@ class EmptyTest extends TestCase
         $this->assertEquals([], $parser->cleanParam()->export());
 
         $this->assertEquals($result, $parser->export());
+        $this->assertEquals('', $parser->render()->compressed("\n"));
         $this->assertEquals('', $parser->render()->normal("\n"));
+        $this->assertEquals($rendered, $parser->render()->compatibility("\n"));
     }
 
     /**
@@ -58,7 +61,12 @@ class EmptyTest extends TestCase
                     'sitemap' => [],
                     'user-agent' => [],
                 ],
-            ]
+                <<<COMPATIBILITY
+User-agent: *
+Disallow:
+
+COMPATIBILITY
+            ],
         ];
     }
 }

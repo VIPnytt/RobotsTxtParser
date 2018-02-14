@@ -9,18 +9,8 @@
 - [NoIndex](../Directives.md#noindex)
 
 ## Public functions
-- [cleanParam](#cleanparam)
 - [export](#export)
-- [host](#host)
-- [isListed](#isListed)
-
-### cleanParam
-```php
-@return CleanParamClient
-```
-Wrapper for the inline [CleanParam](../Directives.md#cleanparam) directive.
-
-Returns an instance of [CleanParamClient](CleanParamClient.md).
+- [hasPath](#haspath)
 
 ### export
 ```php
@@ -28,17 +18,9 @@ Returns an instance of [CleanParamClient](CleanParamClient.md).
 ```
 Export an array of the current directives rules.
 
-### host
-```php
-@return HostInlineClient
-```
-Wrapper for the inline [Host](../Directives.md#host) directive.
-
-Returns an instance of [HostInlineClient](Hostinlineclient.md).
-
-### isListed
+### hasPath
 ```php
 @param  string $uri
-@return bool
+@return int|false
 ```
-Check if the URI's path is listed in the current directive
+Check if the URI's path is covered by this directive. Returns rule string length on success, otherwise false.

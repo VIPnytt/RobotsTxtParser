@@ -76,14 +76,6 @@ class DownloadExampleTest extends TestCase
                 'https://www.example.com',
                 $array
             ],
-            [
-                'http://127.0.0.1',
-                $array
-            ],
-            [
-                'http://[::1]/',
-                $array
-            ],
         ];
     }
 }

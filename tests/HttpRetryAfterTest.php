@@ -8,7 +8,6 @@
 
 namespace vipnytt\RobotsTxtParser\Tests;
 
-use PDO;
 use PHPUnit\Framework\TestCase;
 use vipnytt\RobotsTxtParser;
 
@@ -29,17 +28,21 @@ class HttpRetryAfterTest extends TestCase
         'http://geeko.lesoir.be',
     ];
 
+    /**
+     * @throws RobotsTxtParser\Exceptions\DatabaseException
+     */
     public function testHttpRetryAfter()
     {
-        $pdo = new PDO($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+        $pdo = new \PDO($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
         $count = 0;
         foreach ($this->uriPool as $uri) {
-            $cache = new RobotsTxtParser\Cache($pdo);
-            $this->assertInstanceOf('vipnytt\RobotsTxtParser\Cache', $cache);
-            $cache->invalidate($uri);
+            $cache = (new RobotsTxtParser\Database($pdo))->cache();
+            $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client\Cache\ManageInterface', $cache);
+            $base = $cache->base($uri);
+            $base->invalidate();
+            $base->client();
             $halfTime = time() + 43200; // 12 hours
-            $cache->client($uri);
-            $debug = $cache->debug($uri);
+            $debug = $base->debug();
             if ($debug['statusCode'] == 503 &&
                 $halfTime > $debug['nextUpdate']
             ) {

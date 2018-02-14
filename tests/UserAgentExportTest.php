@@ -65,71 +65,46 @@ ROBOTS
                     'host' => null,
                     'clean-param' => [],
                     'sitemap' => [],
-                    'user-agent' => [
-                        'bingbot' => [
-                            'robot-version' => null,
-                            'visit-time' => [],
-                            'noindex' => [
-                                'host' => [],
-                                'path' => [],
-                                'clean-param' => [],
-                            ],
-                            'disallow' =>
+                    'user-agent' =>
+                        [
+                            'bingbot' =>
                                 [
-                                    'host' => [],
-                                    'path' =>
+                                    'robot-version' => null,
+                                    'visit-time' => [],
+                                    'noindex' => [],
+                                    'disallow' =>
                                         [
                                             '/',
                                         ],
-                                    'clean-param' => [],
+                                    'allow' => [],
+                                    'crawl-delay' => null,
+                                    'cache-delay' => null
+                                    ,
+                                    'request-rate' => [],
+                                    'comment' => [],
                                 ],
-                            'allow' =>
+                            'googlebot' =>
                                 [
-                                    'host' => [],
-                                    'path' => [],
-                                    'clean-param' => [],
+                                    'robot-version' => null,
+                                    'visit-time' => [],
+                                    'noindex' => [],
+                                    'disallow' =>
+                                        [
+                                            '/admin/',
+                                        ],
+                                    'allow' =>
+                                        [
+                                            '/public/',
+                                        ],
+                                    'crawl-delay' => 5,
+                                    'cache-delay' => null,
+                                    'request-rate' => [],
+                                    'comment' => [],
                                 ],
-                            'crawl-delay' => null,
-                            'cache-delay' => null
-                            ,
-                            'request-rate' => [],
-                            'comment' => [],
-                        ],
-                        'googlebot' =>
-                            [
-                                'robot-version' => null,
-                                'visit-time' => [],
-                                'noindex' => [
-                                    'host' => [],
-                                    'path' => [],
-                                    'clean-param' => [],
-                                ],
-                                'disallow' =>
-                                    [
-                                        'host' => [],
-                                        'path' =>
-                                            [
-                                                '/admin/',
-                                            ],
-                                        'clean-param' => [],
-                                    ],
-                                'allow' =>
-                                    [
-                                        'host' => [],
-                                        'path' =>
-                                            [
-                                                '/public/',
-                                            ],
-                                        'clean-param' => [],
-                                    ],
-                                'crawl-delay' => 5,
-                                'cache-delay' => null,
-                                'request-rate' => [],
-                                'comment' => [],
-                            ]
-                    ]
+                        ]
                 ],
                 [
+                    '*',
                     'bingbot',
                     'googlebot',
                 ],

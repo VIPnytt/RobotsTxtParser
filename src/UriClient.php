@@ -104,22 +104,31 @@ class UriClient extends TxtClient
     private function request($options = [])
     {
         $curl = curl_init();
+        $caPathOrFile = CaBundle::getSystemCaRootBundlePath();
         // Set default cURL options
         curl_setopt_array($curl, [
             CURLOPT_AUTOREFERER => true,
-            CURLOPT_CAINFO => CaBundle::getSystemCaRootBundlePath(),
             CURLOPT_CONNECTTIMEOUT => 30,
             CURLOPT_ENCODING => 'identity',
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_NONE,
             CURLOPT_IPRESOLVE => CURL_IPRESOLVE_WHATEVER,
             CURLOPT_SSL_VERIFYHOST => 2,
             CURLOPT_SSL_VERIFYPEER => true,
-            //CURLOPT_SSL_VERIFYSTATUS => true, // PHP 7.0.7
             CURLOPT_TIMEOUT => 120,
             CURLOPT_USERAGENT => self::CURL_USER_AGENT,
+            (is_dir($caPathOrFile) ||
+                (
+                    is_link($caPathOrFile) &&
+                    is_dir(readlink($caPathOrFile))
+                )
+            ) ? CURLOPT_CAPATH : CURLOPT_CAINFO => $caPathOrFile
         ]);
+        if (PHP_VERSION_ID >= 70700) {
+            curl_setopt($curl, CURLOPT_SSL_VERIFYSTATUS, true);
+        }
         // Apply custom cURL options
         curl_setopt_array($curl, $options);
+        // Initialize the header parser
         $this->headerParser = new Parser\HeaderParser($curl);
         // Make sure these cURL options stays untouched
         curl_setopt_array($curl, [

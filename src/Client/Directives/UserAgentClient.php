@@ -22,7 +22,7 @@ class UserAgentClient extends UserAgentTools
      * User-agent
      * @var string
      */
-    private $userAgent;
+    private $product;
 
     /**
      * UserAgentClient constructor.
@@ -30,12 +30,12 @@ class UserAgentClient extends UserAgentTools
      * @param SubDirectiveHandler $handler
      * @param string $baseUri
      * @param int|null $statusCode
-     * @param string $userAgent
+     * @param string $product
      */
-    public function __construct(SubDirectiveHandler $handler, $baseUri, $statusCode, $userAgent)
+    public function __construct(SubDirectiveHandler $handler, $baseUri, $statusCode, $product)
     {
-        $this->userAgent = $userAgent;
         parent::__construct($handler, $baseUri, $statusCode);
+        $this->product = $product;
     }
 
     /**
@@ -45,7 +45,7 @@ class UserAgentClient extends UserAgentTools
      */
     public function allow()
     {
-        return $this->handler->allow()->client();
+        return $this->handler->allow->client();
     }
 
     /**
@@ -55,7 +55,7 @@ class UserAgentClient extends UserAgentTools
      */
     public function cacheDelay()
     {
-        return $this->handler->cacheDelay()->client($this->userAgent, $this->crawlDelay()->getValue());
+        return $this->handler->cacheDelay->client($this->product, $this->crawlDelay()->getValue());
     }
 
     /**
@@ -65,7 +65,7 @@ class UserAgentClient extends UserAgentTools
      */
     public function crawlDelay()
     {
-        return $this->handler->crawlDelay()->client($this->userAgent);
+        return $this->handler->crawlDelay->client($this->product);
     }
 
     /**
@@ -75,7 +75,7 @@ class UserAgentClient extends UserAgentTools
      */
     public function requestRate()
     {
-        return $this->handler->requestRate()->client($this->userAgent, $this->crawlDelay()->getValue());
+        return $this->handler->requestRate->client($this->product, $this->crawlDelay()->getValue());
     }
 
     /**
@@ -85,7 +85,7 @@ class UserAgentClient extends UserAgentTools
      */
     public function comment()
     {
-        return $this->handler->comment()->client();
+        return $this->handler->comment->client();
     }
 
     /**
@@ -95,7 +95,7 @@ class UserAgentClient extends UserAgentTools
      */
     public function disallow()
     {
-        return $this->handler->disallow()->client();
+        return $this->handler->disallow->client();
     }
 
     /**
@@ -105,7 +105,7 @@ class UserAgentClient extends UserAgentTools
      */
     public function noIndex()
     {
-        return $this->handler->noIndex()->client();
+        return $this->handler->noIndex->client();
     }
 
     /**
@@ -115,7 +115,7 @@ class UserAgentClient extends UserAgentTools
      */
     public function robotVersion()
     {
-        return $this->handler->robotVersion()->client();
+        return $this->handler->robotVersion->client();
     }
 
     /**
@@ -125,6 +125,6 @@ class UserAgentClient extends UserAgentTools
      */
     public function visitTime()
     {
-        return $this->handler->visitTime()->client();
+        return $this->handler->visitTime->client();
     }
 }

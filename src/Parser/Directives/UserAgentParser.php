@@ -9,6 +9,7 @@
 namespace vipnytt\RobotsTxtParser\Parser\Directives;
 
 use vipnytt\RobotsTxtParser\Client\Directives\UserAgentClient;
+use vipnytt\RobotsTxtParser\Client\Directives\UserAgentTools;
 use vipnytt\RobotsTxtParser\Handler\Directives\SubDirectiveHandler;
 use vipnytt\RobotsTxtParser\Handler\RenderHandler;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
@@ -32,7 +33,7 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
         self::DIRECTIVE_COMMENT => 'comment',
         self::DIRECTIVE_CRAWL_DELAY => 'crawlDelay',
         self::DIRECTIVE_DISALLOW => 'disallow',
-        self::DIRECTIVE_NO_INDEX => 'noindex',
+        self::DIRECTIVE_NO_INDEX => 'noIndex',
         self::DIRECTIVE_REQUEST_RATE => 'requestRate',
         self::DIRECTIVE_ROBOT_VERSION => 'robotVersion',
         self::DIRECTIVE_VISIT_TIME => 'visitTime',
@@ -69,12 +70,6 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     private $append = false;
 
     /**
-     * User-agent directive count
-     * @var int[]
-     */
-    private $count = [];
-
-    /**
      * UserAgent constructor.
      *
      * @param string $base
@@ -84,57 +79,64 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     {
         $this->base = $base;
         $this->effective = $effective;
-        $this->set(self::USER_AGENT);
-        $this->append = false;
+        $this->handlerAdd(self::USER_AGENT);
     }
 
     /**
-     * Set new User-agent
+     * Add sub-directive handler
      *
-     * @param string $userAgent
+     * @param string $group
      * @return bool
      */
-    private function set($userAgent)
+    private function handlerAdd($group)
     {
-        if (!$this->append) {
-            $this->current = [];
+        if (!in_array($group, array_keys($this->handler))) {
+            $this->handler[$group] = new SubDirectiveHandler($this->base, $this->effective, $group);
+            return true;
         }
-        $userAgent = mb_strtolower($userAgent);
-        if (in_array(self::USER_AGENT, array_merge($this->current, [$userAgent]))) {
-            $this->current = [];
-            $userAgent = self::USER_AGENT;
-        }
-        $this->current[] = $userAgent;
-        if (!in_array($userAgent, array_keys($this->handler))) {
-            $this->handler[$userAgent] = new SubDirectiveHandler($this->base, $this->effective, $userAgent);
-            $this->count[$userAgent] = 0;
-        }
-        $this->append = true;
-        return true;
+        return false;
     }
 
     /**
-     * Add
+     * Add line
      *
      * @param string $line
      * @return bool
      */
     public function add($line)
     {
-        if (($pair = $this->generateRulePair($line, array_merge([self::DIRECTIVE_USER_AGENT], array_keys(self::SUB_DIRECTIVES)))) === false) {
-            $this->append = false;
-            return false;
+        if ($line == '' ||
+            ($pair = $this->generateRulePair($line, [-1 => self::DIRECTIVE_USER_AGENT] + array_keys(self::SUB_DIRECTIVES))) === false) {
+            return $this->append = false;
         }
-        if ($pair['directive'] === self::DIRECTIVE_USER_AGENT) {
-            return $this->set($pair['value']);
+        if ($pair[0] === self::DIRECTIVE_USER_AGENT) {
+            return $this->set($pair[1]);
         }
         $this->append = false;
         $result = [];
-        foreach ($this->current as $userAgent) {
-            $result[] = $this->handler[$userAgent]->{self::SUB_DIRECTIVES[$pair['directive']]}()->add($pair['value']);
-            $this->count[$userAgent]++;
+        foreach ($this->current as $group) {
+            $result[] = $this->handler[$group]->{self::SUB_DIRECTIVES[$pair[0]]}->add($pair[1]);
+            $this->handler[$group]->count++;
         }
         return in_array(true, $result, true);
+    }
+
+    /**
+     * Set new User-agent
+     *
+     * @param string $group
+     * @return bool
+     */
+    private function set($group)
+    {
+        if (!$this->append) {
+            $this->current = [];
+        }
+        $group = mb_strtolower($group);
+        $this->current[] = $group;
+        $this->handlerAdd($group);
+        $this->append = true;
+        return true;
     }
 
     /**
@@ -145,7 +147,7 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
      */
     public function render(RenderHandler $handler)
     {
-        return $handler->getLevel() >= 3 ? $this->renderExtensive($handler) : $this->renderCompressed($handler);
+        return $handler->getLevel() == 2 ? $this->renderExtensive($handler) : $this->renderCompressed($handler);
     }
 
     /**
@@ -172,22 +174,34 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
      */
     public function getUserAgents()
     {
-        $list = array_keys(array_filter($this->count));
+        $list = array_keys($this->handler);
         sort($list);
         return $list;
     }
 
+    /**
+     * Add sub-directives to the RenderHandler
+     *
+     * @param string $userAgent
+     * @param RenderHandler $handler
+     */
     private function renderAdd($userAgent, RenderHandler $handler)
     {
-        $this->handler[$userAgent]->robotVersion()->render($handler);
-        $this->handler[$userAgent]->visitTime()->render($handler);
-        $this->handler[$userAgent]->noIndex()->render($handler);
-        $this->handler[$userAgent]->disallow()->render($handler);
-        $this->handler[$userAgent]->allow()->render($handler);
-        $this->handler[$userAgent]->crawlDelay()->render($handler);
-        $this->handler[$userAgent]->cacheDelay()->render($handler);
-        $this->handler[$userAgent]->requestRate()->render($handler);
-        $this->handler[$userAgent]->comment()->render($handler);
+        if ($userAgent !== self::USER_AGENT &&
+            $this->handler[$userAgent]->count === 0
+        ) {
+            $handler->add(self::DIRECTIVE_DISALLOW, '');
+            return;
+        }
+        $this->handler[$userAgent]->robotVersion->render($handler);
+        $this->handler[$userAgent]->visitTime->render($handler);
+        $this->handler[$userAgent]->noIndex->render($handler);
+        $this->handler[$userAgent]->disallow->render($handler);
+        $this->handler[$userAgent]->allow->render($handler);
+        $this->handler[$userAgent]->crawlDelay->render($handler);
+        $this->handler[$userAgent]->cacheDelay->render($handler);
+        $this->handler[$userAgent]->requestRate->render($handler);
+        $this->handler[$userAgent]->comment->render($handler);
     }
 
     /**
@@ -221,8 +235,13 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
     public function export()
     {
         $array = [];
-        foreach ($this->getUserAgents() as $userAgent) {
-            $array[$userAgent] = $this->client($userAgent)->export();
+        foreach ($this->getUserAgents() as $group) {
+            if ($group == self::USER_AGENT &&
+                $this->handler[$group]->count === 0
+            ) {
+                continue;
+            }
+            $array[$group] = (new UserAgentTools($this->handler[$group], $this->base))->export();
         }
         return $array;
     }
@@ -237,15 +256,14 @@ class UserAgentParser implements ParserInterface, RobotsTxtInterface
      */
     public function client($product = self::USER_AGENT, $version = null, $statusCode = null)
     {
-        $userAgentString = $version === null ? $product : $product . '/' . $version;
-        $match = $userAgentString;
-        if (!isset($this->handler[$userAgentString])) {
+        $parser = new UserAgentStringParser($product, $version);
+        $match = $parser->getUserAgent();
+        if (!isset($this->handler[$match])) {
             // User-agent does not match any rule sets
-            $userAgentParser = new UserAgentStringParser($product, $version);
-            if (($match = $userAgentParser->getMostSpecific($this->getUserAgents())) === false) {
+            if (($match = $parser->getMostSpecific($this->getUserAgents())) === false) {
                 $match = self::USER_AGENT;
             }
         }
-        return new UserAgentClient($this->handler[$match], $this->base, $statusCode, $product);
+        return new UserAgentClient($this->handler[$match], $this->base, $statusCode, $parser->getProduct());
     }
 }

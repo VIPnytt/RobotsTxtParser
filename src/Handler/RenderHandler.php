@@ -8,7 +8,7 @@
 
 namespace vipnytt\RobotsTxtParser\Handler;
 
-use vipnytt\RobotsTxtParser\Exceptions\ClientException;
+use vipnytt\RobotsTxtParser\Parser\RobotsTxtParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -70,7 +70,7 @@ class RenderHandler implements RobotsTxtInterface
      * Line separator check
      *
      * @param string $eol
-     * @throws ClientException
+     * @throws \InvalidArgumentException
      */
     private function separatorCheck($eol)
     {
@@ -80,7 +80,7 @@ class RenderHandler implements RobotsTxtInterface
             "\r",
         ])
         ) {
-            throw new ClientException('Invalid line separator');
+            throw new \InvalidArgumentException('Invalid line separator');
         }
         $this->eol = $eol;
     }
@@ -93,22 +93,6 @@ class RenderHandler implements RobotsTxtInterface
     public function getLevel()
     {
         return $this->level;
-    }
-
-    /**
-     * Implode
-     *
-     * @param string $directive
-     * @param RenderHandler $handler
-     * @return bool
-     */
-    public function addInline($directive, RenderHandler $handler)
-    {
-        $lines = array_map('trim', $handler->export());
-        foreach ($lines as $line) {
-            $this->add($directive, $line);
-        }
-        return true;
     }
 
     /**
@@ -132,11 +116,7 @@ class RenderHandler implements RobotsTxtInterface
     {
         $this->previous = $this->directive;
         $this->directive = $directive;
-        if ($this->level >= 2) {
-            $this->strings[] = $this->advanced() . $line;
-            return true;
-        }
-        $this->strings[] = $this->basic() . $line;
+        $this->strings[] = rtrim($this->prefix() . $line);
         return true;
     }
 
@@ -145,48 +125,33 @@ class RenderHandler implements RobotsTxtInterface
      *
      * @return string
      */
-    private function advanced()
+    private function prefix()
     {
-        $result = '';
-        if ($this->boolInsertSeparatorLevel3() ||
-            $this->previous !== self::DIRECTIVE_USER_AGENT &&
-            $this->directive === self::DIRECTIVE_USER_AGENT
-        ) {
-            $result = $this->eol;
-            $this->previousRoot = $this->directive;
-        }
-        $result .= $this->basic();
-        return $result;
-    }
-
-    /**
-     * Should insert line separator? requires mode 3
-     *
-     * @return bool
-     */
-    private function boolInsertSeparatorLevel3()
-    {
-        return $this->level >= 3 &&
-        $this->previousRoot !== $this->directive &&
-        in_array($this->directive, [
-            self::DIRECTIVE_HOST,
-            self::DIRECTIVE_CLEAN_PARAM,
-            self::DIRECTIVE_SITEMAP,
-        ]);
-    }
-
-    /**
-     * Basic beautifier
-     *
-     * @return string
-     */
-    private function basic()
-    {
-        $result = $this->directive . ':';
+        $result = $this->lineBreak() . $this->directive . ':';
         if ($this->level === 0) {
             return $result;
         }
-        return ucfirst($result) . ' ';
+        return ucwords($result) . ' ';
+    }
+
+    /**
+     * Returns an line separator if required
+     *
+     * @return string
+     */
+    private function lineBreak()
+    {
+        if ($this->previousRoot !== $this->directive &&
+            in_array($this->directive, array_keys(RobotsTxtParser::TOP_LEVEL_DIRECTIVES)) ||
+            $this->previous !== self::DIRECTIVE_USER_AGENT &&
+            $this->directive === self::DIRECTIVE_USER_AGENT
+        ) {
+            $this->previousRoot = $this->directive;
+            if ($this->level >= 1) {
+                return $this->eol;
+            }
+        }
+        return '';
     }
 
     /**
@@ -196,6 +161,6 @@ class RenderHandler implements RobotsTxtInterface
      */
     public function generate()
     {
-        return trim(implode($this->eol, $this->strings));
+        return trim(implode($this->eol, $this->strings), $this->eol);
     }
 }

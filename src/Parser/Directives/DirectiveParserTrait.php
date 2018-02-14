@@ -36,10 +36,7 @@ trait DirectiveParserTrait
             // Line does not contain any supported directive
             return false;
         }
-        return [
-            'directive' => $pair[0],
-            'value' => $pair[1],
-        ];
+        return $pair;
     }
 
     /**

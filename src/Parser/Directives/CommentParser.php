@@ -23,7 +23,7 @@ class CommentParser implements ParserInterface, RobotsTxtInterface
      * User-agent
      * @var string
      */
-    private $userAgent;
+    private $group;
 
     /**
      * Comment array
@@ -34,11 +34,11 @@ class CommentParser implements ParserInterface, RobotsTxtInterface
     /**
      * Comment constructor.
      *
-     * @param string $userAgent
+     * @param string $group
      */
-    public function __construct($userAgent)
+    public function __construct($group)
     {
-        $this->userAgent = $userAgent;
+        $this->group = $group;
     }
 
     /**
@@ -60,7 +60,7 @@ class CommentParser implements ParserInterface, RobotsTxtInterface
      */
     public function client()
     {
-        return new CommentClient($this->userAgent, $this->comments);
+        return new CommentClient($this->group, $this->comments);
     }
 
     /**

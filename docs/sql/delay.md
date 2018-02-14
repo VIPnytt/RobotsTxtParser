@@ -2,7 +2,6 @@
 Many hosts requires you to control the robot's request flow, using a minimum interval between each request. The reasons for this isn't always obvious, and may sometimes be complicated.
 
 Did you know this number is as high as about 40% of all `robots.txt` files?
-_Source: internal statistics_
 
 Examples of a 5 second interval:
 - [`Crawl-delay: 5`](../Directives.md#crawl-delay)
@@ -13,29 +12,33 @@ Examples of a 5 second interval:
 Multiple _user-agents_ / _crawlers_ may share the same database. The delay is handled and stored individually for each user-agent, leaving no worries.
 
 ### Requirements
-- MySQL 5.6+
+- MySQL 5.6+ _(or similar replacement, such as MariaDB)_
 
-The library is built with cross-system in mind, and everything is set for additional database support. Just [submit an issue](https://github.com/VIPnytt/RobotsTxtParser/issues) and we'll see what we can do about it.
+The library is developed with cross-system support in mind, and everything is set for additional database support. Just [submit an issue](https://github.com/VIPnytt/RobotsTxtParser/issues) and we'll see what we can do about it.
 
 ## Usage
-- See the [DelayInterface](../methods/DelayInterface.md) for client usage
-- See the [Delay class](../methods/Delay.md) for management
+- See the [Delay base interface](../methods/DelayBaseInterface.md) for client usage
+- See the [Delay manage interface](../methods/DelayManageInterface.md) for management
 
 #### Automated
 Sleep until the timestamp is reached
 ```php
+<?php
+$db = new \vipnytt\RobotsTxtParser\Database($pdo);
 if ($client->userAgent('MyBot')->isAllowed('http://example.com/path/to/file')) {
     // Crawl allowed
-    $client->userAgent('MyBot')->crawlDelay()->handle($pdo)->sleep();
+    $client->userAgent('MyBot')->crawlDelay()->handle($db->delay())->sleep();
     // Put your crawling code here!
 }
 ```
 #### Semi-automated
 Get timestamp with micro seconds
 ```php
+<?php
+$db = new \vipnytt\RobotsTxtParser\Database($pdo);
 if ($client->userAgent('MyBot')->isAllowed('http://example.com/path/to/file')) {
     // Crawl allowed
-    $timestamp = $client->userAgent('MyBot')->crawlDelay()->handle($pdo)->getTimeSleepUntil();
+    $timestamp = $client->userAgent('MyBot')->crawlDelay()->handle($db->delay())->getTimeSleepUntil();
     time_sleep_until($timestamp);
     // Put your crawling code here!
 }
@@ -44,8 +47,9 @@ if ($client->userAgent('MyBot')->isAllowed('http://example.com/path/to/file')) {
 #### Table maintenance
 Clean old data:
 ```php
-$handler = new RobotsTxtParser\Delay($pdo);
-$handler->clean();
+<?php
+$db = new \vipnytt\RobotsTxtParser\Database($pdo);
+$db->delay()->clean();
 ```
 
 ## Issues
@@ -64,7 +68,6 @@ CREATE TABLE `robotstxt__delay0` (
   PRIMARY KEY (`base`, `userAgent`),
   KEY `delayUntil` (`delayUntil`)
 )
-  ENGINE = InnoDB
   DEFAULT CHARSET = ascii
   COLLATE = ascii_bin
 ```
