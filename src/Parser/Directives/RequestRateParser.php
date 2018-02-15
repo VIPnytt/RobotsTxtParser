@@ -69,14 +69,23 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
     public function add($line)
     {
         $array = preg_split('/\s+/', $line, 2);
+        $parts = array_map('trim', explode('/', $array[0]));
+        if (count($parts) != 2) {
+            return false;
+        }
+        $unit = strtolower(substr(preg_replace('/[^A-Za-z]/', '', filter_var($parts[1], FILTER_SANITIZE_STRING)), 0, 1));
+        $multiplier = isset($this->units[$unit]) ? $this->units[$unit] : 1;
+
+        $rate = (int)abs(filter_var($parts[0], FILTER_SANITIZE_NUMBER_INT));
+        $time = $multiplier * (int)abs(filter_var($parts[1], FILTER_SANITIZE_NUMBER_INT));
+
         $result = [
-            'rate' => $this->draftParseRate($array[0]),
+            'rate' => $time / $rate,
+            'ratio' => $this->getRatio($rate, $time),
             'from' => null,
             'to' => null,
         ];
-        if ($result['rate'] === false) {
-            return false;
-        } elseif (!empty($array[1]) &&
+        if (!empty($array[1]) &&
             ($times = $this->draftParseTime($array[1])) !== false
         ) {
             $result = array_merge($result, $times);
@@ -86,23 +95,44 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
     }
 
     /**
-     * Client rate as specified in the `Robot exclusion standard` version 2.0 draft
-     * rate = numDocuments / timeUnit
-     * @link http://www.conman.org/people/spc/robots2.html#format.directives.request-rate
+     * Get ratio string
      *
-     * @param string $string
-     * @return float|int|false
+     * @param int $rate
+     * @param int $time
+     * @return string
      */
-    private function draftParseRate($string)
+    private function getRatio($rate, $time)
     {
-        $parts = array_map('trim', explode('/', $string));
-        if (count($parts) != 2) {
-            return false;
+        $gcd = $this->getGCD($rate, $time);
+        $requests = $rate / $gcd;
+        $time = $time / $gcd;
+        $suffix = 's';
+        foreach ($this->units as $unit => $sec) {
+            if ($time % $sec === 0) {
+                $suffix = $unit;
+                $time /= $sec;
+                break;
+            }
         }
-        $unit = strtolower(substr(preg_replace('/[^A-Za-z]/', '', filter_var($parts[1], FILTER_SANITIZE_STRING)), 0, 1));
-        $multiplier = isset($this->units[$unit]) ? $this->units[$unit] : 1;
-        $rate = abs(filter_var($parts[1], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION)) * $multiplier / abs(filter_var($parts[0], FILTER_SANITIZE_NUMBER_INT));
-        return $rate > 0 ? $rate : false;
+        return $requests . '/' . $time . $suffix;
+    }
+
+    /**
+     * Returns the greatest common divisor of two integers using the Euclidean algorithm.
+     *
+     * @param int $a
+     * @param int $b
+     * @return int
+     */
+    private function getGCD($a, $b)
+    {
+        if (extension_loaded('gmp')) {
+            return gmp_intval(gmp_gcd((string)$a, (string)$b));
+        }
+        $large = $a > $b ? $a : $b;
+        $small = $a > $b ? $b : $a;
+        $remainder = $large % $small;
+        return 0 === $remainder ? $small : $this->getGCD($small, $remainder);
     }
 
     /**
@@ -145,58 +175,14 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
     {
         $this->sort();
         foreach ($this->requestRates as $array) {
-            $multiplyFactor = $this->decimalMultiplier($array['rate']);
-            $multipliedRate = $array['rate'] * $multiplyFactor;
-            $gcd = $this->getGCD($multiplyFactor, $multipliedRate);
-            $requests = $multiplyFactor / $gcd;
-            $time = $multipliedRate / $gcd;
-            $suffix = 's';
-            foreach ($this->units as $unit => $sec) {
-                if ($time % $sec === 0) {
-                    $suffix = $unit;
-                    $time /= $sec;
-                    break;
-                }
-            }
+            $time = '';
             if (isset($array['from']) &&
                 isset($array['to'])
             ) {
-                $suffix .= ' ' . $array['from'] . '-' . $array['to'];
+                $time .= ' ' . $array['from'] . '-' . $array['to'];
             }
-            $handler->add(self::DIRECTIVE_REQUEST_RATE, $requests . '/' . $time . $suffix);
+            $handler->add(self::DIRECTIVE_REQUEST_RATE, $array['ratio'] . $time);
         }
         return true;
-    }
-
-    /**
-     * @param int|float $value
-     * @return int
-     */
-    private function decimalMultiplier($value)
-    {
-        $multiplier = 1;
-        while (fmod($value, 1) != 0) {
-            $value *= 10;
-            $multiplier *= 10;
-        }
-        return $multiplier;
-    }
-
-    /**
-     * Returns the greatest common divisor of two integers using the Euclidean algorithm.
-     *
-     * @param int $a
-     * @param int $b
-     * @return int
-     */
-    private function getGCD($a, $b)
-    {
-        if (extension_loaded('gmp')) {
-            return gmp_intval(gmp_gcd((string)$a, (string)$b));
-        }
-        $large = $a > $b ? $a : $b;
-        $small = $a > $b ? $b : $a;
-        $remainder = $large % $small;
-        return 0 === $remainder ? $small : $this->getGCD($small, $remainder);
     }
 }

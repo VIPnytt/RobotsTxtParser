@@ -65,7 +65,7 @@ class RequestRateClient extends DelayCore
     {
         $values = $this->determine(is_int($timestamp) ? $timestamp : time());
         if (count($values) > 0 &&
-            ($rate = min($values)) > 0
+            ($rate = max($values)) > 0
         ) {
             return $rate;
         }

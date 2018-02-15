@@ -196,7 +196,7 @@ class Import extends TxtClient
     {
         $result = [];
         foreach ($array as $pair) {
-            $string = self::DIRECTIVE_REQUEST_RATE . ':1/' . $pair['rate'] . 's';
+            $string = self::DIRECTIVE_REQUEST_RATE . ':' . $pair['ratio'];
             if (isset($pair['from']) &&
                 isset($pair['to'])
             ) {

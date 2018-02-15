@@ -71,11 +71,13 @@ class ImportTest extends TestCase
                             'request-rate' => [
                                 [
                                     'rate' => 9,
+                                    'ratio' => '1/9s',
                                     'from' => '0900',
                                     'to' => '1500',
                                 ],
                                 [
                                     'rate' => 3.6,
+                                    'ratio' => '5/18s',
                                     'from' => '0900',
                                 ],
                             ],
@@ -128,11 +130,13 @@ class ImportTest extends TestCase
                             'request-rate' => [
                                 [
                                     'rate' => 9,
+                                    'ratio' => '1/9s',
                                     'from' => '0900',
                                     'to' => '1500',
                                 ],
                                 [
                                     'rate' => 3.6,
+                                    'ratio' => '5/18s',
                                     'from' => null,
                                     'to' => null,
                                 ],
