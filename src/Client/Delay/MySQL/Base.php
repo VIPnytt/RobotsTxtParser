@@ -55,7 +55,7 @@ DELETE FROM robotstxt__delay0
 WHERE base = :base AND userAgent = :userAgent;
 SQL
             );
-            $query->bindValue('base', $this->base, \PDO::PARAM_INT);
+            $query->bindValue('base', $this->base, \PDO::PARAM_STR);
             $query->bindValue('userAgent', $this->userAgent, \PDO::PARAM_STR);
             return $query->execute();
         }
@@ -67,9 +67,9 @@ ON DUPLICATE KEY UPDATE
   lastDelay  = :delay * 1000000;
 SQL
         );
-        $query->bindValue('base', $this->base, \PDO::PARAM_INT);
+        $query->bindValue('base', $this->base, \PDO::PARAM_STR);
         $query->bindValue('userAgent', $this->userAgent, \PDO::PARAM_STR);
-        $query->bindValue('delay', $newDelay, \PDO::PARAM_INT | \PDO::PARAM_STR);
+        $query->bindValue('delay', $newDelay, \PDO::PARAM_INT);
         return $query->execute();
     }
 
@@ -121,7 +121,7 @@ SQL
         );
         $query->bindValue('base', $this->base, \PDO::PARAM_STR);
         $query->bindValue('userAgent', $this->userAgent, \PDO::PARAM_STR);
-        $query->bindValue('delay', $this->delay, \PDO::PARAM_INT | \PDO::PARAM_STR);
+        $query->bindValue('delay', $this->delay, \PDO::PARAM_INT);
         return $query->execute();
     }
 
