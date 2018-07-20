@@ -38,8 +38,26 @@ class EndAnchorTest extends TestCase
         $this->assertTrue($parser->userAgent()->isDisallowed('/asd/'));
         $this->assertFalse($parser->userAgent()->isAllowed('/asd/'));
 
-        $this->assertTrue($parser->userAgent('DenyMe')->isDisallowed('http://example.com/deny_all/'));
-        $this->assertFalse($parser->userAgent('DenyMe')->isAllowed('http://example.com/deny_all/'));
+        $this->assertTrue($parser->userAgent('DenyMe')->isDisallowed('http://example.com/deny/'));
+        $this->assertFalse($parser->userAgent('DenyMe')->isAllowed('http://example.com/deny/'));
+
+        $this->assertTrue($parser->userAgent('DenyMe')->isAllowed('http://example.com/deny/allow/'));
+        $this->assertFalse($parser->userAgent('DenyMe')->isDisallowed('http://example.com/deny/allow/'));
+
+        $this->assertTrue($parser->userAgent('DenyUs')->isDisallowed('http://example.com/deny/'));
+        $this->assertFalse($parser->userAgent('DenyUs')->isAllowed('http://example.com/deny/'));
+
+        $this->assertTrue($parser->userAgent('DenyUs')->isAllowed('http://example.com/deny/allow/'));
+        $this->assertFalse($parser->userAgent('DenyUs')->isDisallowed('http://example.com/deny/allow/'));
+
+        $this->assertTrue($parser->userAgent('ImageBot')->isDisallowed('/image.jpg'));
+        $this->assertFalse($parser->userAgent('ImageBot')->isAllowed('/image.jpg'));
+
+        $this->assertTrue($parser->userAgent('ImageBot')->isDisallowed('http://example.com/image.jpg'));
+        $this->assertFalse($parser->userAgent('ImageBot')->isAllowed('http://example.com/image.jpg'));
+
+        $this->assertTrue($parser->userAgent('ImageBot')->isDisallowed('http://example.com/foo/bar/image.jpg'));
+        $this->assertFalse($parser->userAgent('ImageBot')->isAllowed('http://example.com/foo/bar/image.jpg'));
 
         if ($rendered !== false) {
             if (version_compare(phpversion(), '7.0.0', '<')) {
@@ -66,9 +84,14 @@ Disallow: /*
 Allow: /$
 
 User-Agent: DenyMe
-Disallow: /deny_all/$
-Disallow: *deny_all/$
-Disallow: deny_all/$
+Disallow: /deny/$$
+
+User-Agent: DenyUs
+Disallow: /*deny/$
+Disallow: deny/$
+
+User-Agent: ImageBot
+Disallow: /*.jpg$
 ROBOTS
                 ,
                 <<<RENDERED
@@ -77,8 +100,13 @@ Disallow: /
 Allow: /$
 
 User-agent: denyme
-Disallow: /deny_all/$
-Disallow: *deny_all/$
+Disallow: /deny/$
+
+User-agent: denytus
+Disallow: *deny/$
+
+User-Agent: imagebot
+Disallow: /*.jpg$
 RENDERED
             ]
         ];

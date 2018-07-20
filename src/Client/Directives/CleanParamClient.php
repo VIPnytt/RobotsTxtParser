@@ -90,13 +90,14 @@ class CleanParamClient implements ClientInterface
      */
     protected function parse($uri, array $pairs)
     {
+        $path = $this->getPathFromUri($uri);
         $result = [];
         foreach ($pairs as $param => $paths) {
             if ((
                     strpos($uri, "?$param=") ||
                     strpos($uri, "&$param=")
                 ) &&
-                $this->checkPaths($uri, $paths) !== false
+                $this->checkPaths($path, $paths) !== false
             ) {
                 $result[] = $param;
             }

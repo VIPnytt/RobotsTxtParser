@@ -58,9 +58,12 @@ class AllowTest extends TestCase
         $this->assertTrue($parser->userAgent('agentV')->isDisallowed("/foo"));
         $this->assertTrue($parser->userAgent('agentV')->isAllowed("/bar"));
         $this->assertTrue($parser->userAgent('agentV')->isAllowed("/Foo"));
+        $this->assertTrue($parser->userAgent('agentV')->isAllowed("/public/foo"));
+
         $this->assertTrue($parser->userAgent('agentW')->isDisallowed("/foo"));
         $this->assertTrue($parser->userAgent('agentW')->isAllowed("/bar"));
         $this->assertTrue($parser->userAgent('agentW')->isAllowed("/Foo"));
+        $this->assertTrue($parser->userAgent('agentW')->isAllowed("/public/foo"));
 
         $this->assertTrue($parser->userAgent('spiderX/1.0')->isAllowed("/temp"));
         $this->assertTrue($parser->userAgent('spiderX/1.0')->isDisallowed("/assets"));

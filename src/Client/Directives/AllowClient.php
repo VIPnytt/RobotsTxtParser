@@ -8,7 +8,6 @@
 
 namespace vipnytt\RobotsTxtParser\Client\Directives;
 
-use vipnytt\RobotsTxtParser\Parser\UriParser;
 use vipnytt\RobotsTxtParser\RobotsTxtInterface;
 
 /**
@@ -46,31 +45,6 @@ class AllowClient implements ClientInterface, RobotsTxtInterface
     public function hasPath($uri)
     {
         return $this->checkPaths($this->getPathFromUri($uri), $this->paths);
-    }
-
-    /**
-     * Get path and query
-     *
-     * @param string $uri
-     * @return string
-     * @throws \InvalidArgumentException
-     */
-    private function getPathFromUri($uri)
-    {
-        $uriParser = new UriParser($uri);
-        // Prepare uri
-        $uriParser->encode();
-        $uri = $uriParser->stripFragment();
-        if (strpos($uri, '/') === 0) {
-            // URI is already an path
-            return $uri;
-        }
-        if (!$uriParser->validate()) {
-            throw new \InvalidArgumentException('Invalid URI');
-        }
-        $path = (($path = parse_url($uri, PHP_URL_PATH)) === null) ? '/' : $path;
-        $query = (($query = parse_url($uri, PHP_URL_QUERY)) === null) ? '' : '?' . $query;
-        return $path . $query;
     }
 
     /**

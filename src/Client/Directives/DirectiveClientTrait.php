@@ -11,6 +11,7 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
 use DateTime;
 use DateTimeZone;
 use vipnytt\RobotsTxtParser\Handler\ErrorHandler;
+use vipnytt\RobotsTxtParser\Parser\UriParser;
 
 /**
  * Trait DirectiveClientTrait
@@ -19,6 +20,31 @@ use vipnytt\RobotsTxtParser\Handler\ErrorHandler;
  */
 trait DirectiveClientTrait
 {
+    /**
+     * Get path and query
+     *
+     * @param string $uri
+     * @return string
+     * @throws \InvalidArgumentException
+     */
+    private function getPathFromUri($uri)
+    {
+        $uriParser = new UriParser($uri);
+        // Prepare uri
+        $uriParser->encode();
+        $uri = $uriParser->stripFragment();
+        if (strpos($uri, '/') === 0) {
+            // URI is already an path
+            return $uri;
+        }
+        if (!$uriParser->validate()) {
+            throw new \InvalidArgumentException('Invalid URI');
+        }
+        $path = (($path = parse_url($uri, PHP_URL_PATH)) === null) ? '/' : $path;
+        $query = (($query = parse_url($uri, PHP_URL_QUERY)) === null) ? '' : '?' . $query;
+        return $path . $query;
+    }
+
     /**
      * Is time between
      *
@@ -61,61 +87,16 @@ trait DirectiveClientTrait
             '.' => '\.',
             '*' => '.*',
         ];
+        $errorHandler = new ErrorHandler();
+        set_error_handler([$errorHandler, 'callback'], E_NOTICE | E_WARNING);
         foreach ($paths as $rule) {
             $escaped = $rule;
             foreach ($pairs as $search => $replace) {
                 $escaped = str_replace($search, $replace, $escaped);
             }
-            if ($this->checkPathsCallback($escaped, $path)) {
-                return mb_strlen($rule);
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Callback for CheckPath
-     *
-     * @param string $rule
-     * @param string $path
-     * @return bool
-     */
-    private function checkPathsCallback($rule, $path)
-    {
-        /**
-         * Warning: preg_match need to be replaced
-         *
-         * Bug report
-         * @link https://github.com/t1gor/Robots.txt-Parser-Class/issues/59
-         *
-         * An robots.txt parser, where a bug-fix is/was planned
-         * @link https://github.com/diggin/Diggin_RobotRules
-         *
-         * References:
-         * @link https://github.com/diggin/Diggin_RobotRules/blob/d5fe3c7a41be28dcd20fafee3ed4297dbc9e0378/README.markdown
-         * @link https://github.com/diggin/Diggin_RobotRules/commit/d5fe3c7a41be28dcd20fafee3ed4297dbc9e0378#diff-0a369498a5a8db3ac8fa606b544c9810R19
-         *
-         * The solution?
-         * PHP PEG (parsing expression grammar)
-         * @link https://github.com/hafriedlander/php-peg
-         */
-        $errorHandler = new ErrorHandler();
-        set_error_handler([$errorHandler, 'callback'], E_NOTICE | E_WARNING);
-        if (preg_match('#' . $rule . '#', $path) !== 1) {
-            // Rule does not match
-            restore_error_handler();
-            return false;
-        } elseif (mb_strpos($rule, '$') === false || // No end anchor, return true
-            mb_substr($rule, 0, -1) === $path // End anchor detected, path exact match, return true
-        ) {
-            restore_error_handler();
-            return true;
-        } elseif (($wildcardPos = mb_strrpos($rule, '*')) !== false) {
-            // Rule contains both an end anchor ($) and wildcard (*)
-            $afterWildcard = mb_substr($rule, $wildcardPos + 1, mb_strlen($rule) - $wildcardPos - 2);
-            if ($afterWildcard == mb_substr($path, -mb_strlen($afterWildcard))) {
+            if (preg_match('#^' . $escaped . '#', $path) === 1) {
                 restore_error_handler();
-                return true;
+                return mb_strlen($rule);
             }
         }
         restore_error_handler();

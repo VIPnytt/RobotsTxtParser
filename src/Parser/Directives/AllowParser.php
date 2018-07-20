@@ -56,6 +56,9 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
     public function add($line)
     {
         $line = rtrim($line, '*');
+        if (($pos = mb_strpos($line, '$')) !== false) {
+            $line = mb_substr($line, 0, $pos + 1);
+        }
         if (in_array(substr($line, 0, 1), [
                 '/',
                 '*',
