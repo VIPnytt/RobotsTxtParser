@@ -91,7 +91,7 @@ Disallow: /*deny/$
 Disallow: deny/$
 
 User-Agent: ImageBot
-Disallow: /*.jpg$
+Disallow: *.jpg$
 ROBOTS
                 ,
                 <<<RENDERED
@@ -102,10 +102,10 @@ Allow: /$
 User-agent: denyme
 Disallow: /deny/$
 
-User-agent: denytus
-Disallow: *deny/$
+User-agent: denyus
+Disallow: /*deny/$
 
-User-Agent: imagebot
+User-agent: imagebot
 Disallow: /*.jpg$
 RENDERED
             ]
