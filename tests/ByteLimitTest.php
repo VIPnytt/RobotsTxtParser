@@ -21,12 +21,16 @@ class ByteLimitTest extends TestCase
     /**
      * @dataProvider generateDataForTest
      * @param int|null $byteLimit
-     * @param bool $warning
      */
-    public function testByteLimitException($byteLimit, $warning)
+    public function testByteLimitException($byteLimit)
     {
-        if ($warning) {
-            $this->expectException(\InvalidArgumentException::class);
+        if ($byteLimit !== null) {
+            // PHPUnit 7: Switch to \PHPUnit\Framework\Constraint\IsType::TYPE_INT
+            $this->assertInternalType('int', $byteLimit);
+            if (24 * 1024 > $byteLimit) {
+                // Less than 24 kilobytes
+                $this->expectException(\InvalidArgumentException::class);
+            }
         }
         new RobotsTxtParser\TxtClient('http://example.com', 200, '', 'UTF-8', 'http://example.com', $byteLimit);
     }
@@ -41,15 +45,12 @@ class ByteLimitTest extends TestCase
         return [
             [
                 null,
-                false,
             ],
             [
                 24000,
-                true,
             ],
             [
                 25000,
-                false,
             ],
         ];
     }
