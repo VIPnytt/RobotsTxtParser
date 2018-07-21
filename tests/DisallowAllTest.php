@@ -70,7 +70,7 @@ ROBOTS
                 <<<RENDERED
 User-agent: *
 Disallow: /
-Disallow: *test
+Disallow: /*test
 Disallow: /admin/
 RENDERED
             ]

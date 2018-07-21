@@ -87,8 +87,7 @@ User-Agent: DenyMe
 Disallow: /deny/$$
 
 User-Agent: DenyUs
-Disallow: /*deny/$
-Disallow: deny/$
+Disallow: *deny/$
 
 User-Agent: ImageBot
 Disallow: *.jpg$

@@ -55,21 +55,35 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
      */
     public function add($line)
     {
-        $line = rtrim($line, '*');
-        if (($pos = mb_strpos($line, '$')) !== false) {
-            $line = mb_substr($line, 0, $pos + 1);
-        }
-        if (in_array(substr($line, 0, 1), [
-                '/',
-                '*',
-                '?',
-            ]) &&
+        $line = $this->normalize($line);
+        if (substr($line, 0, 1) == '/' &&
             !in_array($line, $this->path)
         ) {
             $this->path[] = $line;
             return true;
         }
         return false;
+    }
+
+    /**
+     * Normalize rules
+     *
+     * @param $line
+     * @return string
+     */
+    private function normalize($line)
+    {
+        // Prepend slash if starting with an wildcard
+        if (substr($line, 0, 1) == '*') {
+            $line = '/' . $line;
+        }
+        // Remove unnecessary characters after an end anchor
+        if (($pos = mb_strpos($line, '$')) !== false) {
+            $line = mb_substr($line, 0, $pos + 1);
+        }
+        // Remove unnecessary wildcards
+        $line = rtrim($line, '*');
+        return $line;
     }
 
     /**
