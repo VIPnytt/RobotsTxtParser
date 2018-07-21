@@ -42,7 +42,11 @@ class RenderTest extends TestCase
         $this->assertEquals($rendered['compatibility'], $parser->render()->compatibility("\n"));
 
         // Make sure the compatibility robots.txt has a newline at the end
-        foreach (["\r", "\n", "\r\n"] as $separator) {
+        foreach ([
+                     "\r",
+                     "\n",
+                     "\r\n"
+                 ] as $separator) {
             $length = strlen($separator);
             $this->assertEquals($separator, substr($parser->render()->compatibility($separator), -$length));
         }

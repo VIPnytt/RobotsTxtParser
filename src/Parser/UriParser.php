@@ -70,7 +70,6 @@ class UriParser
             '!%21!ui' => "!",
             '!%23!ui' => "#",
             '!%24!ui' => "$",
-            '!%25!ui' => "%",
             '!%26!ui' => "&",
             '!%27!ui' => "'",
             '!%28!ui' => "(",
@@ -86,7 +85,10 @@ class UriParser
             '!%40!ui' => "@",
             '!%5B!ui' => "[",
             '!%5D!ui' => "]",
+            '!%25!ui' => "%",
         ];
+        // The % character must be the last in the $reserved array.
+        // This makes sure that the already encoded values are not lost or encoded again.
         $this->uri = preg_replace(array_keys($reserved), array_values($reserved), rawurlencode($this->uri));
         return $this->baseToLowercase();
     }

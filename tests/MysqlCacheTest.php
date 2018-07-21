@@ -27,7 +27,12 @@ class MysqlCacheTest extends TestCase
      */
     public function testCache($uri, $baseUri)
     {
-        $pdo = new \PDO($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+        try {
+            $pdo = new \PDO($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+        } catch (\PDOException $e) {
+            $this->markTestSkipped('Unable to connect to the MySQL database');
+            return;
+        }
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
         $database = new RobotsTxtParser\Database($pdo);

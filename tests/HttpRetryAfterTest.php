@@ -50,7 +50,7 @@ class HttpRetryAfterTest extends TestCase
             }
         }
         if ($count === 0) {
-            $this->markTestSkipped("No URLs returned both `HTTP 503` and the `Retry-after` header. NB! Such circumstances are uncommon, and if the criteria is met, it's only a temporary state.");
+            $this->markTestIncomplete('None of the test urls returned both `HTTP 503` and the `Retry-after` header. Such circumstances are usually temporary and uncommon. Try updating the list of test subjects.');
         }
     }
 }

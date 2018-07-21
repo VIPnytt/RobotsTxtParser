@@ -82,18 +82,20 @@ trait DirectiveClientTrait
      */
     private function checkPaths($path, array $paths)
     {
-        $pairs = [
+        $reserved = [
             '?' => '\?',
             '.' => '\.',
             '*' => '.*',
+            '+' => '\+',
+            '(' => '\(',
+            ')' => '\)',
+            '[' => '\[',
+            ']' => '\]',
         ];
         $errorHandler = new ErrorHandler();
         set_error_handler([$errorHandler, 'callback'], E_NOTICE | E_WARNING);
         foreach ($paths as $rule) {
-            $escaped = $rule;
-            foreach ($pairs as $search => $replace) {
-                $escaped = str_replace($search, $replace, $escaped);
-            }
+            $escaped = str_replace(array_keys($reserved), array_values($reserved), $rule);
             if (preg_match('#^' . $escaped . '#', $path) === 1) {
                 restore_error_handler();
                 return mb_strlen($rule);

@@ -29,7 +29,7 @@ class MysqlCacheDisplaceTest extends TestCase
     public function testCacheDisplace()
     {
         // This URL list is based on real data. Update when needed!
-        // It loops thou the list, until an http 500 match is found. Therefore not all URL are fetched...
+        // It loops thou the list, until an http 500 match is found. Therefore not all URLs are fetched...
         $bases = [
             'http://acheterdesvues.fr:80',
             'http://basbaassauce.com:80',
@@ -67,14 +67,14 @@ class MysqlCacheDisplaceTest extends TestCase
             'https://www.aei.org:443',
             'https://www.edoramedia.com:443',
         ];
-        $result = false;
+        // Query these (random) hosts at random order, we don't want to prioritize any of them over each other.
+        shuffle($bases);
         foreach ($bases as $base) {
-            if ($result) {
-                continue;
+            if ($this->check($base)) {
+                return;
             }
-            $result = $this->check($base);
         }
-        $this->assertTrue($result);
+        $this->markTestIncomplete('None of the test urls returned an HTTP 500 status code. Try updating the list of test subjects.');
     }
 
     /**
@@ -84,7 +84,12 @@ class MysqlCacheDisplaceTest extends TestCase
      */
     private function check($baseUri)
     {
-        $pdo = new \PDO($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+        try {
+            $pdo = new \PDO($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+        } catch (\PDOException $e) {
+            $this->markTestSkipped('Unable to connect to the MySQL database');
+            return false;
+        }
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
         $cache = (new RobotsTxtParser\Database($pdo))->cache();
@@ -116,9 +121,6 @@ SQL
         $query->execute();
         // Delete fake data
         $base->invalidate();
-        if ($query->rowCount() > 0) {
-            return true;
-        }
-        return false;
+        return $query->rowCount() > 0;
     }
 }

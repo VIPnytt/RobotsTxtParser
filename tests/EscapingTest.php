@@ -32,11 +32,14 @@ class EscapingTest extends TestCase
         $this->assertTrue($parser->userAgent()->isAllowed("/%5C."));
         $this->assertFalse($parser->userAgent()->isDisallowed("/%5C."));
 
-        /**
-         * Additional tests to enable in the future, currently disabled due to bugs
-         */
-        //$this->assertTrue($parser->userAgent()->isDisallowed("/("));
-        //$this->assertFalse($parser->userAgent()->isAllowed("/("));
+        $this->assertTrue($parser->userAgent()->isDisallowed("/("));
+        $this->assertFalse($parser->userAgent()->isAllowed("/("));
+
+        $this->assertTrue($parser->userAgent()->isDisallowed("/)"));
+        $this->assertFalse($parser->userAgent()->isAllowed("/)"));
+
+        $this->assertTrue($parser->userAgent()->isAllowed("/+"));
+        $this->assertFalse($parser->userAgent()->isDisallowed("/+"));
 
         if ($rendered !== false) {
             if (version_compare(phpversion(), '7.0.0', '<')) {
