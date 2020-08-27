@@ -68,10 +68,6 @@ class RobotsTxtParser implements RobotsTxtInterface
     {
         $result = [];
         $lines = array_map('trim', mb_split('\r\n|\n|\r', $txt));
-        // If robots txt is empty
-        if (empty($lines)) {
-            return false;
-        }
         // Parse each line individually
         foreach ($lines as $key => $line) {
             // Limit rule length
