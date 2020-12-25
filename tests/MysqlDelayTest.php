@@ -36,18 +36,18 @@ class MysqlDelayTest extends TestCase
 
         $handler = (new RobotsTxtParser\Database($pdo))->delay();
         $parser = new RobotsTxtParser\UriClient($uri);
-        $this->assertTrue(is_numeric($parser->userAgent($userAgent)->crawlDelay()->handle($handler)->checkQueue()));
-        $this->assertTrue(is_numeric($parser->userAgent($userAgent)->crawlDelay()->handle($handler)->getTimeSleepUntil()));
-        $this->assertTrue(is_numeric($parser->userAgent($userAgent)->crawlDelay()->handle($handler)->sleep()));
+        $this->assertInternalType('numeric', $parser->userAgent($userAgent)->crawlDelay()->handle($handler)->checkQueue());
+        $this->assertInternalType('numeric', $parser->userAgent($userAgent)->crawlDelay()->handle($handler)->getTimeSleepUntil());
+        $this->assertInternalType('numeric', $parser->userAgent($userAgent)->crawlDelay()->handle($handler)->sleep());
 
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client\Delay\ManageInterface', $handler);
         $this->assertFalse($pdo->getAttribute(\PDO::ATTR_ERRMODE) === \PDO::ERRMODE_SILENT);
 
         $client = $handler->base($uri, $userAgent, $parser->userAgent($userAgent)->crawlDelay()->getValue());
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client\Delay\BaseInterface', $client);
-        $this->assertTrue(is_numeric($client->getTimeSleepUntil()));
+        $this->assertInternalType('numeric', $client->getTimeSleepUntil());
 
-        $this->assertTrue(is_numeric($client->checkQueue()));
+        $this->assertInternalType('numeric', $client->checkQueue());
         $start = microtime(true);
         $sleepTime = $client->sleep();
         $stop = microtime(true);
@@ -56,7 +56,7 @@ class MysqlDelayTest extends TestCase
             $sleepTime <= ($stop - $start + 1)
         );
 
-        $this->assertTrue(is_array($handler->getTopWaitTimes()));
+        $this->assertInternalType('array', $handler->getTopWaitTimes());
 
         $client->reset();
         $this->assertTrue($client->getTimeSleepUntil() === 0);

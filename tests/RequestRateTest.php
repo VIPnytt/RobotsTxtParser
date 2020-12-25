@@ -33,7 +33,7 @@ class RequestRateTest extends TestCase
         foreach ($result as $value) {
             $validRates[] = $value['rate'];
         }
-        $this->assertTrue(in_array($parser->userAgent('Legacy')->requestRate()->getValue(), $validRates));
+        $this->assertContains($parser->userAgent('Legacy')->requestRate()->getValue(), $validRates);
 
         if ($rendered !== false) {
             $this->assertEquals($result, $parser->userAgent('*')->requestRate()->export());
