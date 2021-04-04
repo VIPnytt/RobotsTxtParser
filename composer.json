@@ -42,7 +42,7 @@
     "docs": "https://github.com/VIPnytt/RobotsTxtParser/tree/master/docs"
   },
   "require": {
-    "php": "^5.6 || ^7.0",
+    "php": "^5.6 || ^7.0 || ^8.0",
     "ext-curl": "*",
     "ext-mbstring": "*",
     "composer/ca-bundle": "^1.0",
