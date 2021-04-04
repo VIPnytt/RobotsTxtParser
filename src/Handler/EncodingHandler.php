@@ -138,7 +138,7 @@ class EncodingHandler implements RobotsTxtInterface
     {
         try {
             $converted = mb_convert_encoding($this->string, self::ENCODING, $fromOverride === null ? $this->encoding : $fromOverride);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return false;
         }
         return $converted;

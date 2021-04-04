@@ -119,8 +119,7 @@ class AllowParser implements ParserInterface, RobotsTxtInterface
             return $this->sort;
         };
         return $this->sort = rsort($this->path) && usort($this->path, function ($a, $b) {
-                // PHP 7: Switch to the <=> "Spaceship" operator
-                return mb_strlen($a) - mb_strlen($b);
+                return mb_strlen($a) <=> mb_strlen($b);
             });
     }
 
