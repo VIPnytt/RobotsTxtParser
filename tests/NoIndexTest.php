@@ -31,6 +31,7 @@ class NoIndexTest extends TestCase
 
         // Expected result: String length of matching rule
         $this->assertEquals(1, $parser->userAgent()->noIndex()->hasPath('/public/'));
+        $this->assertEquals('/', $parser->userAgent()->noIndex()->isCovered('/public/'));
 
         $this->assertTrue($parser->userAgent()->isAllowed('/public/'));
         $this->assertFalse($parser->userAgent()->isDisallowed('/public/'));

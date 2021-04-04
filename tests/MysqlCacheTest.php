@@ -90,7 +90,12 @@ class MysqlCacheTest extends TestCase
      */
     public function testCacheSQLite()
     {
-        $pdo = new \PDO('sqlite::memory:');
+        try {
+            $pdo = new \PDO('sqlite::memory:');
+        } catch (\PDOException $e) {
+            $this->markTestSkipped('Unable to connect to the SQLlite database');
+            return;
+        }
         $client = new RobotsTxtParser\Database($pdo);
         $this->expectException(DatabaseException::class);
         $client->cache();

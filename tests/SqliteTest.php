@@ -18,7 +18,12 @@ class SqliteTest extends TestCase
      */
     public function testDelay()
     {
-        $pdo = new \PDO('sqlite::memory:');
+        try {
+            $pdo = new \PDO('sqlite::memory:');
+        } catch (\PDOException $e) {
+            $this->markTestSkipped('Unable to connect to the SQLite database');
+            return;
+        }
         $client = new RobotsTxtParser\Database($pdo);
         $this->expectException(RobotsTxtParser\Exceptions\DatabaseException::class);
         $client->delay();

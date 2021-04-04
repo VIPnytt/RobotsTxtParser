@@ -36,18 +36,18 @@ class MysqlDelayTest extends TestCase
 
         $handler = (new RobotsTxtParser\Database($pdo))->delay();
         $parser = new RobotsTxtParser\UriClient($uri);
-        $this->assertInternalType('numeric', $parser->userAgent($userAgent)->crawlDelay()->handle($handler)->checkQueue());
-        $this->assertInternalType('numeric', $parser->userAgent($userAgent)->crawlDelay()->handle($handler)->getTimeSleepUntil());
-        $this->assertInternalType('numeric', $parser->userAgent($userAgent)->crawlDelay()->handle($handler)->sleep());
+        $this->assertIsNumeric($parser->userAgent($userAgent)->crawlDelay()->handle($handler)->checkQueue());
+        $this->assertIsNumeric($parser->userAgent($userAgent)->crawlDelay()->handle($handler)->getTimeSleepUntil());
+        $this->assertIsNumeric($parser->userAgent($userAgent)->crawlDelay()->handle($handler)->sleep());
 
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client\Delay\ManageInterface', $handler);
         $this->assertFalse($pdo->getAttribute(\PDO::ATTR_ERRMODE) === \PDO::ERRMODE_SILENT);
 
         $client = $handler->base($uri, $userAgent, $parser->userAgent($userAgent)->crawlDelay()->getValue());
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\Client\Delay\BaseInterface', $client);
-        $this->assertInternalType('numeric', $client->getTimeSleepUntil());
+        $this->assertIsNumeric($client->getTimeSleepUntil());
 
-        $this->assertInternalType('numeric', $client->checkQueue());
+        $this->assertIsNumeric($client->checkQueue());
         $start = microtime(true);
         $sleepTime = $client->sleep();
         $stop = microtime(true);
@@ -56,7 +56,7 @@ class MysqlDelayTest extends TestCase
             $sleepTime <= ($stop - $start + 1)
         );
 
-        $this->assertInternalType('array', $handler->getTopWaitTimes());
+        $this->assertIsArray($handler->getTopWaitTimes());
 
         $client->reset();
         $this->assertTrue($client->getTimeSleepUntil() === 0);

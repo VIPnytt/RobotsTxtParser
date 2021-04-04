@@ -39,10 +39,24 @@ class AllowClient implements ClientInterface, RobotsTxtInterface
     /**
      * Check
      *
+     * @deprecated 2.1.0
+     * @see AllowClient::isCovered()
+     *
      * @param  string $uri
      * @return int|false
      */
     public function hasPath($uri)
+    {
+        return mb_strlen($this->checkPaths($this->getPathFromUri($uri), $this->paths));
+    }
+
+    /**
+     * Get the most specific rule
+     *
+     * @param  string $uri
+     * @return string|false
+     */
+    public function isCovered($uri)
     {
         return $this->checkPaths($this->getPathFromUri($uri), $this->paths);
     }

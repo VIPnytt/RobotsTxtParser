@@ -47,7 +47,7 @@ class TxtClient extends RobotsTxtParser
      * @param string $baseUri
      * @param int|null $statusCode
      * @param string $content
-     * @param string $encoding
+     * @param string|null $encoding
      * @param string|null $effectiveUri
      * @param int|null $byteLimit
      */
@@ -62,7 +62,7 @@ class TxtClient extends RobotsTxtParser
     {
         $this->statusCode = $statusCode;
         $this->content = $content;
-        $this->encoding = $encoding;
+        $this->encoding = ($encoding === null ? self::ENCODING : $encoding);
         $this->convertEncoding();
         $this->limitBytes($byteLimit);
         parent::__construct($baseUri, $this->content, $effectiveUri);

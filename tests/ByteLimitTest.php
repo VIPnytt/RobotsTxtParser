@@ -26,11 +26,13 @@ class ByteLimitTest extends TestCase
     {
         if ($byteLimit !== null) {
             // PHPUnit 7: Switch to \PHPUnit\Framework\Constraint\IsType::TYPE_INT
-            $this->assertInternalType('int', $byteLimit);
+            $this->assertIsInt($byteLimit);
             if (24 * 1024 > $byteLimit) {
                 // Less than 24 kilobytes
                 $this->expectException(\InvalidArgumentException::class);
             }
+        } else {
+            $this->expectNotToPerformAssertions();
         }
         new RobotsTxtParser\TxtClient('http://example.com', 200, '', 'UTF-8', 'http://example.com', $byteLimit);
     }

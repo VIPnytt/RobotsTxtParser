@@ -273,7 +273,7 @@ $client->userAgent('myBot')->allow()->export();
 ```
 Check if the specified path is covered by this directive
 ```php
-$client->userAgent('myBot')->allow()->hasPath('http://example.com/path/to/file');
+$client->userAgent('myBot')->allow()->isCovered('http://example.com/path/to/file');
 ```
 
 ### `Cache-delay` directive
@@ -377,7 +377,7 @@ $client->userAgent('myBot')->disallow()->export();
 ```
 Check if the specified path is covered by this directive
 ```php
-$client->userAgent('myBot')->disallow()->hasPath('http://example.com/path/to/file');
+$client->userAgent('myBot')->disallow()->isCovered('http://example.com/path/to/file');
 ```
 
 ### Export
@@ -413,7 +413,7 @@ $client->userAgent('myBot')->noIndex()->export();
 ```
 Check if the specified path is covered by this directive
 ```php
-$client->userAgent('myBot')->noIndex()->hasPath('http://example.com/path/to/file');
+$client->userAgent('myBot')->noIndex()->isCovered('http://example.com/path/to/file');
 ```
 
 ### `Request-rate` directive

@@ -117,8 +117,11 @@ class AllowTest extends TestCase
         $this->assertEquals(6, $parser->userAgent('*')->disallow()->hasPath('/admin'));
         $this->assertEquals(4, $parser->userAgent('agentV')->allow()->hasPath('/bar'));
 
+        $this->assertEquals('/admin', $parser->userAgent('*')->disallow()->isCovered('/admin'));
+        $this->assertEquals('/bar', $parser->userAgent('agentV')->allow()->isCovered('/bar'));
+
         $this->expectException(\InvalidArgumentException::class);
-        $parser->userAgent('*')->disallow()->hasPath('http;//www.example.com/invalid');
+        $parser->userAgent('*')->disallow()->isCovered('http;//www.example.com/invalid');
     }
 
     /**

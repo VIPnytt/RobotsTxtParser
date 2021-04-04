@@ -35,7 +35,7 @@ class DownloadMicrosoftTest extends TestCase
 
         $this->assertTrue(count($uriClient->sitemap()->export()) > 0);
 
-        $this->assertInternalType('string', $uriClient->host()->getWithUriFallback());
+        $this->assertIsString($uriClient->host()->getWithUriFallback());
 
         $txtClient = new RobotsTxtParser\TxtClient($uriClient->getBaseUri(), $uriClient->getStatusCode(), $uriClient->getContents(), $uriClient->getEncoding(), $uriClient->getEffectiveUri());
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $txtClient);
@@ -51,12 +51,6 @@ class DownloadMicrosoftTest extends TestCase
     public function generateDataForTest()
     {
         return [
-            [
-                'http://microsoft.com'
-            ],
-            [
-                'http://www.microsoft.com'
-            ],
             [
                 'https://microsoft.com'
             ],

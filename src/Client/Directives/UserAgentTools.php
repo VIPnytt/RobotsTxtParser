@@ -121,8 +121,8 @@ class UserAgentTools implements RobotsTxtInterface
         $resultLength = 0;
         $resultDirective = self::DIRECTIVE_ALLOW;
         foreach ([
-                     self::DIRECTIVE_DISALLOW => $this->handler->disallow->client()->hasPath($uri),
-                     self::DIRECTIVE_ALLOW => $this->handler->allow->client()->hasPath($uri),
+                     self::DIRECTIVE_DISALLOW => mb_strlen($this->handler->disallow->client()->isCovered($uri)),
+                     self::DIRECTIVE_ALLOW => mb_strlen($this->handler->allow->client()->isCovered($uri)),
                  ] as $currentDirective => $currentLength) {
             if ($currentLength >= $resultLength) {
                 $resultLength = $currentLength;
