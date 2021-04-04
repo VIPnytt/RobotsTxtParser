@@ -27,8 +27,8 @@ class DownloadGoogleTest extends TestCase
         $uriClient = new RobotsTxtParser\UriClient($base);
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\UriClient', $uriClient);
 
-        $this->assertTrue($uriClient->userAgent()->isDisallowed('/search'));
         $this->assertFalse($uriClient->userAgent()->isAllowed('/search'));
+        $this->assertTrue($uriClient->userAgent()->isDisallowed('/search'));
 
         $this->assertTrue($uriClient->userAgent()->isAllowed('/search/about'));
         $this->assertFalse($uriClient->userAgent()->isDisallowed('/search/about'));
@@ -41,6 +41,18 @@ class DownloadGoogleTest extends TestCase
         $this->assertInstanceOf('vipnytt\RobotsTxtParser\TxtClient', $txtClient);
 
         $this->assertEquals($uriClient->render()->normal("\n"), $txtClient->render()->normal("\n"));
+    }
+
+    /**
+     * This method is called when a test method did not execute successfully.
+     *
+     * @param \Throwable $t
+     * @throws \Throwable
+     */
+    protected function onNotSuccessfulTest(\Throwable $t): void
+    {
+        print_r($t->)
+        throw $t;
     }
 
     /**

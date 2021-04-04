@@ -10,6 +10,7 @@ namespace vipnytt\RobotsTxtParser\Client\Directives;
 
 use DateTime;
 use DateTimeZone;
+use vipnytt\RobotsTxtParser\Handler\ErrorHandler;
 use vipnytt\RobotsTxtParser\Parser\UriParser;
 
 /**
@@ -91,12 +92,12 @@ trait DirectiveClientTrait
             '[' => '\[',
             ']' => '\]',
         ];
-        //$errorHandler = new ErrorHandler();
-        //set_error_handler([$errorHandler, 'callback'], E_NOTICE | E_WARNING);
+        $errorHandler = new ErrorHandler();
+        set_error_handler([$errorHandler, 'callback'], E_NOTICE | E_WARNING);
         foreach ($paths as $rule) {
             $escaped = str_replace(array_keys($reserved), array_values($reserved), $rule);
             if (preg_match('#^' . $escaped . '#', $path) === 1) {
-                //restore_error_handler();
+                restore_error_handler();
                 return $rule;
             }
         }
