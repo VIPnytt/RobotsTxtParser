@@ -158,8 +158,7 @@ class RequestRateParser implements ParserInterface, RobotsTxtInterface
         if (!$this->sorted) {
             $this->sorted = true;
             return usort($this->requestRates, function (array $requestRateA, array $requestRateB) {
-                // PHP 7: Switch to the <=> "Spaceship" operator
-                return $requestRateB['rate'] > $requestRateA['rate'];
+                return $requestRateB['rate'] <=> $requestRateA['rate'];
             });
         }
         return $this->sorted;

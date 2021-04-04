@@ -32,7 +32,7 @@ _(compared to most other robots.txt libraries)_
 - Protocols supported: ``HTTP``, ``HTTPS``, ``FTP``, ``SFTP`` and ``FTP/S``.
 
 #### Requirements:
-- PHP 5.6 or 7.0+
+- PHP 7.3+ or 8.0+
 - PHP extensions:
   - [cURL](http://php.net/manual/en/book.curl.php)
   - [mbstring](http://php.net/manual/en/book.mbstring.php)
@@ -42,7 +42,7 @@ The recommended way to install the robots.txt parser is through [Composer](http:
 ```json
 {
   "require": {
-    "vipnytt/robotstxtparser": "^2.0"
+    "vipnytt/robotstxtparser": "^2.1"
   }
 }
 ```
