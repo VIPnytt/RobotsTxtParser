@@ -101,7 +101,7 @@ trait DirectiveClientTrait
                 return $rule;
             }
         }
-        //restore_error_handler();
+        restore_error_handler();
         return false;
     }
 }

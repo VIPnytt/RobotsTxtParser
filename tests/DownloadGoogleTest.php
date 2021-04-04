@@ -44,18 +44,6 @@ class DownloadGoogleTest extends TestCase
     }
 
     /**
-     * This method is called when a test method did not execute successfully.
-     *
-     * @param \Throwable $t
-     * @throws \Throwable
-     */
-    protected function onNotSuccessfulTest(\Throwable $t): void
-    {
-        print_r($t->)
-        throw $t;
-    }
-
-    /**
      * Generate test data
      *
      * @return array
