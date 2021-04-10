@@ -23,7 +23,7 @@ class UriClient extends TxtClient
     /**
      * User-agent
      */
-    const CURL_USER_AGENT = 'RobotsTxtParser-VIPnytt/2.0 (+https://github.com/VIPnytt/RobotsTxtParser/blob/master/README.md)';
+    const CURL_USER_AGENT = 'RobotsTxtParser-VIPnytt/2.1 (+https://github.com/VIPnytt/RobotsTxtParser/blob/master/README.md)';
 
     /**
      * Base uri
@@ -123,9 +123,6 @@ class UriClient extends TxtClient
                 )
             ) ? CURLOPT_CAPATH : CURLOPT_CAINFO => $caPathOrFile
         ]);
-        if (PHP_VERSION_ID >= 70700) {
-            curl_setopt($curl, CURLOPT_SSL_VERIFYSTATUS, true);
-        }
         // Apply custom cURL options
         curl_setopt_array($curl, $options);
         // Initialize the header parser
